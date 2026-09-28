@@ -430,6 +430,15 @@
   <section id="tab-ajustes" class="hidden">
     <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Ajustes</div></div><button class="gear" onclick="irA('hoy')" aria-label="Volver"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div class="wrap">
+    <div class="card" id="cuentaCard" style="display:none">
+      <h2>Cuenta</h2>
+      <div class="meta" id="cuentaTxt"></div>
+    </div>
+    <div class="card" id="invCard" style="display:none">
+      <h2>Invitados</h2>
+      <div class="meta">Quien quiera probar la app abre este enlace en su celular, toca <b>Crear mi cuenta</b> y escribe el código. Cada persona tiene su propia hoja de datos en tu Drive.</div>
+      <div id="invBody" class="meta" style="margin-top:8px">Cargando…</div>
+    </div>
     <div class="card" id="progCard">
       <h2>Programa</h2>
       <div class="meta">Cargando programas…</div>
@@ -459,7 +468,7 @@
       <label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aSemanal" style="width:auto"> Informe del Coach los domingos 7 p. m.</label>
       <div class="acts" style="margin-top:10px"><button class="btn sec" id="aProbar">Enviarme una prueba</button><button class="btn" id="aGuardar">Guardar avisos</button></div>
     </div>
-    <div class="card">
+    <div class="card" id="iaCard">
       <h2>Inteligencia artificial</h2>
       <div class="meta" id="pClaveEstado"></div>
       <label for="pClave">Clave de Gemini (aistudio.google.com/apikey)</label><input id="pClave" type="password" placeholder="Pega aquí tu clave">
@@ -484,15 +493,27 @@
 <div id="toast"></div>
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
   <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
-  <h1 style="font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:6px 0 14px">Vincula<br>tu app</h1>
-  <p id="vincMsg" style="color:var(--muted);font-size:15px;line-height:1.5;margin:0 0 14px"></p>
-  <textarea id="vincTxt" rows="4" placeholder="https://…/#api=…&t=…" style="width:100%;box-sizing:border-box;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px"></textarea>
-  <button class="btn" style="width:100%;margin-top:12px" onclick="vincular()">Vincular</button>
-  <p style="color:var(--faint);font-size:12px;margin-top:18px">El enlace lleva la dirección de tu servidor y tu token privado. Se guarda solo en este celular.</p>
+  <h1 style="font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:6px 0 14px">Empieza<br>aquí</h1>
+  <div class="card" style="margin:0 0 14px">
+    <h2>Soy nuevo · Crear mi cuenta</h2>
+    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Necesitas el código de invitación que te dio quien te compartió la app.</p>
+    <label for="regNombre">Tu nombre</label><input id="regNombre" autocomplete="name" placeholder="Ej.: Carlos">
+    <label for="regCorreo">Tu correo</label><input id="regCorreo" type="email" autocomplete="email" inputmode="email" placeholder="tucorreo@gmail.com">
+    <label for="regCodigo">Código de invitación</label><input id="regCodigo" autocapitalize="characters" placeholder="GYM-XXXXXX" style="text-transform:uppercase">
+    <button class="btn" id="regBtn" style="width:100%;margin-top:12px" onclick="registrar()">Crear mi cuenta</button>
+    <p id="regMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
+  </div>
+  <div class="card" style="margin:0">
+    <h2>Ya tengo mi enlace</h2>
+    <p id="vincMsg" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px"></p>
+    <textarea id="vincTxt" rows="3" placeholder="https://…/#api=…&t=…" style="width:100%;box-sizing:border-box;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px"></textarea>
+    <button class="btn sec" style="width:100%;margin-top:12px" onclick="vincular()">Usar mi enlace</button>
+  </div>
+  <p style="color:var(--faint);font-size:12px;margin-top:18px">Tu enlace lleva tu token privado y se guarda solo en este celular. Cada persona tiene su propia hoja de datos.</p>
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281412';
+var INICIAL = null, APP_VERSION = '202609281506', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -548,14 +569,33 @@ function api(fn) {
 }
 function mostrarVincular(tokenMalo) {
   var v = $('vincular'); v.classList.remove('hidden');
-  $('vincMsg').textContent = tokenMalo ? 'El token cambió o no es válido. Abre de nuevo el enlace de instalación o pégalo aquí.' : 'Pega el enlace de instalación que te dieron (o ábrelo directamente en este celular).';
+  $('vincMsg').textContent = tokenMalo ? 'Tu token cambió o no es válido. Abre de nuevo tu enlace de instalación o pégalo aquí.' : 'Si ya tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
+}
+function guardarCfgDesdeEnlace(txt) {
+  var a = /[#&?]api=([^&\s]+)/.exec(txt), t = /[#&?]t=([^&\s]+)/.exec(txt);
+  if (!a || !t) return false;
+  try { localStorage.setItem('cfg', JSON.stringify({ api: decodeURIComponent(a[1]), t: decodeURIComponent(t[1]) })); } catch (e) {}
+  return true;
 }
 function vincular() {
-  var txt = ($('vincTxt').value || '').trim();
-  var a = /[#&?]api=([^&\s]+)/.exec(txt), t = /[#&?]t=([^&\s]+)/.exec(txt);
-  if (!a || !t) { toast('Ese texto no parece el enlace de instalación'); return; }
-  try { localStorage.setItem('cfg', JSON.stringify({ api: decodeURIComponent(a[1]), t: decodeURIComponent(t[1]) })); } catch (e) {}
+  if (!guardarCfgDesdeEnlace(($('vincTxt').value || '').trim())) { toast('Ese texto no parece el enlace de instalación'); return; }
   location.href = location.pathname;
+}
+/* Cuenta nueva (invitados): el servidor crea su hoja y devuelve su enlace privado */
+function registrar() {
+  var nombre = ($('regNombre').value || '').trim(), correo = ($('regCorreo').value || '').trim(), codigo = ($('regCodigo').value || '').trim();
+  if (!nombre || !correo || !codigo) { toast('Completa nombre, correo y código de invitación'); return; }
+  var b = $('regBtn'), msg = $('regMsg'); b.disabled = true; b.textContent = 'Creando tu cuenta…'; msg.textContent = '';
+  fetch(API_PUBLICA, { method: 'POST', body: JSON.stringify({ fn: 'registrarUsuario', args: [{ nombre: nombre, correo: correo, codigo: codigo }] }), redirect: 'follow' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (j) {
+      if (!j.ok) throw new Error(j.error || 'No se pudo crear la cuenta');
+      if (j.r.existente) { msg.textContent = j.r.mensaje; b.disabled = false; b.textContent = 'Crear mi cuenta'; return; }
+      if (!guardarCfgDesdeEnlace(j.r.enlace)) throw new Error('El servidor no devolvió un enlace válido');
+      msg.textContent = '¡Listo, ' + j.r.nombre + '! Abriendo tu app…' + (j.r.correoEnviado ? ' (también te enviamos el enlace a tu correo)' : '');
+      setTimeout(function () { location.href = location.pathname; }, 800);
+    })
+    .catch(function (e) { b.disabled = false; b.textContent = 'Crear mi cuenta'; msg.textContent = ''; toast(e.message || e); });
 }
 function toast(msg) { var t = $('toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function(){ t.style.display='none'; }, 2600); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -1353,6 +1393,7 @@ function quitar(f) { api('quitarAjuste', f).then(function () { toast('Ajuste qui
 $('btnAjustes').onclick = function () { irA('ajustes'); };
 var DIAS_N = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
 function cargarAjustes() {
+  cargarCuenta();
   cargarAvisos();
   cargarProgramas();
   api('getPerfil').then(function (p) {
@@ -1696,6 +1737,42 @@ $('fSubir').onclick = function () {
   };
   rd.readAsDataURL(file);
 };
+
+/* =================== CUENTA E INVITADOS (en Ajustes) =================== */
+function cargarCuenta() {
+  var u = estado && estado.usuario;
+  if (!u) return;
+  $('cuentaCard').style.display = '';
+  $('cuentaTxt').textContent = (u.nombre ? u.nombre + ' · ' : '') + (u.esDueno ? 'dueño de la app' : 'invitado (tus datos van en tu propia hoja)');
+  $('iaCard').style.display = u.esDueno ? '' : 'none';   // la clave de Gemini es del dueño
+  if (!u.esDueno) { $('invCard').style.display = 'none'; return; }
+  $('invCard').style.display = '';
+  api('getInvitacion').then(pintarInvitacion).catch(function (e) { $('invBody').textContent = 'No pude cargar la invitación: ' + (e.message || e); });
+}
+function pintarInvitacion(r) {
+  var h = '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:4px 0 10px">' +
+    '<div><div class="kicker">Código</div><div style="font-family:var(--disp);font-size:30px;font-weight:800;letter-spacing:2px;color:var(--amber)">' + esc(r.codigo) + '</div></div>' +
+    '<div style="flex:1;min-width:180px"><div class="kicker">Enlace de la app</div><div style="word-break:break-all;color:var(--ink)">' + esc(r.enlace) + '</div></div></div>' +
+    '<div class="acts"><button class="btn sec" onclick="copiarInvitacion()">Copiar invitación</button><button class="btn txt" onclick="nuevoCodigo()">Nuevo código</button></div>';
+  if (r.usuarios.length) {
+    h += '<div class="kicker" style="margin-top:14px">Personas registradas (' + r.usuarios.length + ')</div><ul style="margin:6px 0 0;padding-left:18px">' +
+      r.usuarios.map(function (u) { return '<li>' + esc(u.nombre) + ' · ' + esc(u.correo) + ' · desde ' + esc(u.creado) + ' · <a href="' + esc(u.hoja) + '" target="_blank" rel="noopener">hoja</a></li>'; }).join('') + '</ul>';
+  } else h += '<div style="margin-top:12px">Todavía nadie se ha registrado.</div>';
+  invitacionCache = r;
+  $('invBody').innerHTML = h;
+}
+var invitacionCache = null;
+function copiarInvitacion() {
+  if (!invitacionCache) return;
+  var txt = 'Prueba mi app de entrenamiento: abre ' + invitacionCache.enlace + ' en tu celular, toca "Crear mi cuenta" y usa el código ' + invitacionCache.codigo + '. Luego "Añadir a pantalla de inicio".';
+  var listo = function () { toast('Invitación copiada: pégala en WhatsApp'); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(listo).catch(function () { prompt('Copia este texto:', txt); });
+  else prompt('Copia este texto:', txt);
+}
+function nuevoCodigo() {
+  if (!confirm('¿Generar un código nuevo? El anterior dejará de servir para registrarse (quienes ya se registraron no se ven afectados).')) return;
+  api('nuevoCodigoInvitacion').then(pintarInvitacion).catch(err);
+}
 
 /* =================== AVISOS (en Ajustes) =================== */
 function cargarAvisos() {
