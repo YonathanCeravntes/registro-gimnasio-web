@@ -125,6 +125,17 @@
   .dp.sinreg{background:var(--bad-bg)} .dp.sinreg i{background:var(--bad)} .dp.sinreg em{color:var(--bad)}
   .dp.desc{opacity:.7}
   .dp.hoy{border-color:var(--amber)} .dp.hoy small{color:var(--amber)}
+  .prog-bloques{display:flex;flex-wrap:wrap;gap:6px}
+  .prog-bloques .pb{display:flex;flex-direction:column;gap:1px;padding:6px 9px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--dim)}
+  .prog-bloques .pb small{font-weight:500;font-size:10px;color:var(--faint)}
+  .prog-bloques .pb.done{color:var(--green-ink);border-color:var(--green-line)} .prog-bloques .pb.now{color:var(--amber);border-color:var(--amber)} .prog-bloques .pb.des{font-style:italic}
+  .prog-lista{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .prog-op{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:14px;background:var(--card2);border:1px solid var(--line);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400;font-size:14px}
+  .prog-op.act{border-color:var(--amber)}
+  .prog-op input{width:auto;margin-top:4px}
+  .prog-op .t{font-weight:700;color:var(--ink);font-size:15px;display:flex;align-items:center;flex-wrap:wrap}
+  .prog-op .s{color:var(--amber);font-size:12.5px;font-weight:700;margin-top:2px}
+  .prog-op .d{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.4;font-weight:400} .prog-op .d.dim{color:var(--faint);font-size:12px;margin-top:4px}
   .leyenda{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11.5px;color:var(--dim)}
   .leyenda i{display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:5px;vertical-align:0}
   /* Semana (pestaña) */
@@ -411,6 +422,10 @@
   <section id="tab-ajustes" class="hidden">
     <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Ajustes</div></div><button class="gear" onclick="irA('hoy')" aria-label="Volver"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div class="wrap">
+    <div class="card" id="progCard">
+      <h2>Programa</h2>
+      <div class="meta">Cargando programas…</div>
+    </div>
     <div class="card">
       <h2>Perfil</h2>
       <div class="row">
@@ -461,7 +476,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609280155';
+var INICIAL = null, APP_VERSION = '202609280243';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -593,13 +608,15 @@ function cargarEstado(sesionForzada) {
 
 function pintarEstado(e, codigo) {
   estado = e;
-  var kick = (e.ciclo > 1 ? 'Ciclo ' + e.ciclo + ' · ' : '') + 'Semana ' + e.semana + ' de 12 · ' + e.fase;
+  var pg = e.programa || {};
+  var bloqueTxt = pg.bloque ? pg.bloque.nombre + ' · sesión ' + pg.sesionEnBloque + ' de ' + pg.sesionesBloque : e.fase;
+  var kick = (pg.nombre || 'Mi plan') + (pg.bloque ? ' · ' + pg.bloque.nombre : '');
   document.querySelectorAll('.kick-sem').forEach(function (x) { x.textContent = kick; });
-  $('kSemana').textContent = 'Semana ' + e.semana + ' · ' + rangoSemana(e.plan);
-  $('heroKickerTxt').textContent = fechaKicker(e.fecha) + ' · SEMANA ' + e.semana;
-  $('heroPill').textContent = e.antesDeEmpezar ? 'Empieza el ' + e.fechaInicio : e.hechasSemana + ' de ' + e.metaSemana + ' sesiones';
-  $('cicloCard').innerHTML = e.cicloTerminado ? '<div class="card"><h2>¡Terminaste el ciclo ' + e.ciclo + '!</h2><div class="meta">El siguiente ciclo empieza en la fase de hipertrofia (sin readaptación), con tus cargas actuales y algunos ejercicios accesorios nuevos. Elige el lunes en que empiezas.</div>' +
-    '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button></div></div>' : '';
+  $('kSemana').textContent = (pg.bloque ? pg.bloque.nombre + ' · ' : '') + 'Semana ' + e.semana + ' · ' + rangoSemana(e.plan);
+  $('heroKickerTxt').textContent = fechaKicker(e.fecha) + (pg.bloque ? ' · ' + pg.bloque.nombre.replace(/^Bloque (\d+) · /, 'B$1 · ').toUpperCase() : '');
+  $('heroPill').textContent = e.antesDeEmpezar ? 'Empieza el ' + e.fechaInicio : (pg.bloque ? 'Sesión ' + pg.sesionEnBloque + '/' + pg.sesionesBloque : e.hechasSemana + ' de ' + e.metaSemana + ' sesiones');
+  $('cicloCard').innerHTML = e.cicloTerminado ? '<div class="card"><h2>¡Terminaste ' + esc(pg.nombre || 'el programa') + '!</h2><div class="meta">Puedes repetirlo desde el Bloque 1 con tus cargas actuales (nuevo ciclo) o cambiar de programa en Ajustes. Elige el lunes en que empiezas.</div>' +
+    '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irA(\'ajustes\')">Cambiar programa</button></div></div>' : '';
   $('diaSub').textContent = e.hechasSemana + ' de ' + e.metaSemana + ' sesiones';
   pintarSemana(e.plan, e.nombres);
   pintarCardio(e);
@@ -641,15 +658,18 @@ function pintarHero() {
           '<div class="pct">' + c.pct + '%<small>DE LA SESIÓN</small></div></button>';
   } else if (tipo === 'sesion') {
     titulo = s ? s.nombre : e.nombres[e.sugerida];
-    chips = ['<span class="tag">' + nEj + ' ejercicios</span>', '<span class="tag">~' + min + ' min</span>', '<span class="tag">Sesión ' + (e.hechasSemana + 1) + ' de ' + e.metaSemana + '</span>'];
-    cta = '<button class="cta" onclick="irRutina()"><div><div class="t">Empezar entrenamiento</div><div class="s">Calienta 5 min antes de la primera serie</div></div><div class="ic">' + SVG.play + '</div></button>';
+    chips = ['<span class="tag">' + nEj + ' ejercicios</span>', '<span class="tag">~' + min + ' min</span>', '<span class="tag">' + (e.programa ? 'Sesión ' + e.programa.sesionEnBloque + ' de ' + e.programa.sesionesBloque : 'Sesión ' + (e.hechasSemana + 1) + ' de ' + e.metaSemana) + '</span>'];
+    if (e.programa && e.programa.descargaPuntual) chips.push('<span class="chip warn">' + SVG.bolt + 'Sesión ligera</span>');
+    else if (s && s.bloque && s.bloque.descarga) chips.push('<span class="chip warn">Descarga</span>');
+    cta = '<button class="cta" onclick="irRutina()"><div><div class="t">Empezar entrenamiento</div><div class="s">' + (s && s.bloque && s.bloque.descarga ? 'Vuelta de descarga: mitad de series, carga −10 %' : 'Calienta 5 min antes de la primera serie') + '</div></div><div class="ic">' + SVG.play + '</div></button>';
   } else if (tipo === 'sinregistro') {
     titulo = s ? s.nombre : e.nombres[e.sugerida];
     chips = ['<span class="chip bad">No fuiste</span>', '<span class="tag">' + nEj + ' ejercicios</span>'];
     cta = '<button class="cta bad" onclick="irRutina()"><div><div class="t">Registrar ahora</div><div class="s">Si sí entrenaste, anota las series aquí abajo.</div></div><div class="ic">' + SVG.play + '</div></button>';
   } else if (tipo === 'cardio') {
     titulo = 'Cardio suave';
-    chips = ['<span class="tag">20–30 min</span>', '<span class="tag">Zona 2</span>', '<span class="tag">+ movilidad</span>'];
+    var cd = (e.programa && e.programa.cardio) || { minutos: '20–30', zona: 'Zona 2' };
+    chips = ['<span class="tag">' + esc(cd.minutos) + ' min</span>', '<span class="tag">' + esc(String(cd.zona).split(' (')[0]) + '</span>', '<span class="tag">+ movilidad</span>'];
     cta = '<button class="cta" onclick="abrirCardio()"><div><div class="t">Registrar cardio</div><div class="s">A un ritmo en el que puedas hablar en frases</div></div><div class="ic">' + SVG.play + '</div></button>' +
           '<button class="cta line" style="margin-top:10px" onclick="toggleSelector()"><div><div class="t">Prefiero pesas hoy</div><div class="s">Elige la sesión y la semana se reacomoda</div></div><div class="ic">' + SVG.dumb.replace('<svg', '<svg style="fill:none;stroke:#151208;stroke-width:2.5;stroke-linecap:round"') + '</div></button>';
   } else {
@@ -660,6 +680,8 @@ function pintarHero() {
     chips = prox ? ['<span class="tag">Próxima: ' + esc(prox) + '</span>'] : [];
     cta = '<button class="cta line" onclick="toggleSelector()"><div><div class="t">Quiero entrenar hoy</div><div class="s">Elige la sesión y la semana se reacomoda</div></div><div class="ic">' + SVG.dumb.replace('<svg', '<svg style="fill:none;stroke:#151208;stroke-width:2.5;stroke-linecap:round"') + '</div></button>';
   }
+  var partes = String(titulo || '').split(' · ');
+  if (partes.length > 1 && (tipo === 'sesion' || tipo === 'sinregistro' || c)) { titulo = partes[0]; chips.unshift('<span class="tag">' + esc(partes.slice(1).join(' · ')) + '</span>'); }
   $('heroTitle').textContent = titulo;
   $('heroChips').innerHTML = chips.join('');
   $('ctaBox').innerHTML = (desc ? '<div class="msg" style="margin:6px 0 10px;background:transparent;padding:0;font-size:15px;color:var(--muted)">' + desc + '</div>' : '') + cta;
@@ -710,7 +732,7 @@ function cargarSesion() {
 function pintarSesion(s) {
   sesionActual = s;
   abiertos = {};
-  $('sesionAviso').innerHTML = s.aviso ? '<div class="aviso">' + esc(s.aviso) + '</div>' : '';
+  $('sesionAviso').innerHTML = (s.aviso ? '<div class="aviso">' + esc(s.aviso) + '</div>' : '') + (s.nota ? '<div class="sug" style="margin-top:6px">' + esc(s.nota) + '</div>' : '');
   var primero = s.ejercicios.findIndex(function (e) { return e.estado === 'pendiente'; });
   if (primero >= 0) abiertos[primero] = true;
   $('ejercicios').innerHTML = s.ejercicios.map(tarjeta).join('');
@@ -1079,7 +1101,7 @@ function cargarPanel() {
     var pc = function (v) { return v == null ? '—' : v + ' %'; };
     var html = '';
     html += '<div class="card"><div class="hero-kpi"><div class="v">' + pc(r.eficiencia) + '</div><div><b>Eficiencia global</b>' +
-      '<div class="meta">40 % asistencia + 30 % series completadas + 30 % RIR en objetivo. Semana ' + r.semana + ' de 12.</div></div></div></div>';
+      '<div class="meta">40 % asistencia + 30 % series completadas + 30 % RIR en objetivo. ' + (r.programa ? esc(r.programa.bloque) + ' · sesión ' + r.programa.sesionEnBloque + ' de ' + r.programa.sesionesBloque + '.' : 'Semana ' + r.semana + '.') + '</div></div></div></div>';
     html += '<div class="grid2">' +
       tile(k.semana.hechas + '/' + k.semana.meta, 'Sesiones esta semana') +
       tile(pc(k.adherencia.pct), 'Asistencia total', k.adherencia.hechas + ' de ' + k.adherencia.programadas + ' programadas a la fecha') +
@@ -1206,13 +1228,14 @@ var semanaVista = null;
 function pintarSemana(plan, nombres) {
   var cls = plan.dias.length > 7 ? ' n' + plan.dias.length : '';
   $('semanaStrip').className = 'semana' + cls;
-  var corto = { 'FB-A': 'FB A', 'FB-B': 'FB B', TA: 'Torso A', PA: 'Pierna A', TB: 'Torso B', PB: 'Pierna B', D5: 'Día 5',
-                TA4: 'Torso A', PA4: 'Pierna A', TB4: 'Torso B', PB4: 'Pierna B', FB31: 'FB 1/3', FB32: 'FB 2/3', FB33: 'FB 3/3',
-                FB21: 'FB 1/2', FB22: 'FB 2/2', FB11: 'FB' };
+  var corto = { 'FB-A': 'Día 1', 'FB-B': 'Día 2', TA: 'Torso A', PA: 'Pierna A', TB: 'Torso B', PB: 'Pierna B', D5: 'Día 5',
+                TA4: 'Torso A', PA4: 'Pierna A', TB4: 'Torso B', PB4: 'Pierna B', FB31: 'CC 1', FB32: 'CC 2', FB33: 'CC 3',
+                FB21: 'CC 1', FB22: 'CC 2', FB11: 'CC' };
+  function etiquetaCorta(cod) { if (corto[cod]) return corto[cod]; var m = /^[A-Z]{2}-(.+)$/.exec(cod || ''); return m ? m[1] : (cod || ''); }
   $('semanaStrip').innerHTML = plan.dias.map(function (d) {
     var c = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : 'desc';
     var cu = estado && estado.cumpl && estado.cumpl[d.fecha];
-    var txt = d.estado === 'hecho' ? (cu ? cu.pct + ' %' : '✓') : d.tipo === 'sesion' ? corto[d.sesion] + (d.fijada ? ' •' : '') : d.tipo === 'cardio' ? 'Cardio' : d.tipo === 'sinregistro' ? '✕' : 'Libre';
+    var txt = d.estado === 'hecho' ? (cu ? cu.pct + ' %' : '✓') : d.tipo === 'sesion' ? etiquetaCorta(d.sesion) + (d.fijada ? ' •' : '') : d.tipo === 'cardio' ? 'Cardio' : d.tipo === 'sinregistro' ? '✕' : 'Libre';
     var p = d.etiqueta.split(' ');
     return '<div class="dp ' + c + (d.esHoy ? ' hoy' : '') + '" onclick="irFecha(\'' + d.fecha + '\')" title="' + d.fecha + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i><em>' + esc(txt) + '</em></div>';
   }).join('');
@@ -1232,7 +1255,7 @@ function abrirPlanificador(k) {
     var p = $('planificador'); p.classList.remove('hidden');
     p.innerHTML = '<div class="dayh"><button class="btn sec small" ' + (pl.semana <= 1 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana - 1) + ')">◀</button>' +
       '<b>Semana ' + pl.semana + ' · ' + pl.desde.slice(5) + ' a ' + pl.hasta.slice(5) + '</b>' +
-      '<button class="btn sec small" ' + (pl.semana >= 12 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana + 1) + ')">▶</button></div>' +
+      '<button class="btn sec small" ' + (pl.semana >= 60 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana + 1) + ')">▶</button></div>' +
       '<div class="meta" style="margin-top:6px">Marca los días que irás al gimnasio. La rutina se reparte sola dentro de la semana.</div>' +
       '<div class="dias">' + pl.dias.map(function (d) {
         var bloq = d.estado === 'hecho';
@@ -1309,6 +1332,7 @@ $('btnAjustes').onclick = function () { irA('ajustes'); };
 var DIAS_N = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
 function cargarAjustes() {
   cargarAvisos();
+  cargarProgramas();
   api('getPerfil').then(function (p) {
     $('pEdad').value = p.Edad || ''; $('pSexo').value = p.Sexo || 'M'; $('pEstatura').value = p.EstaturaM || '';
     var sel = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); });
@@ -1319,6 +1343,48 @@ function cargarAjustes() {
     $('pClaveEstado').textContent = p.tieneClave ? 'Clave guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Aún no hay clave: el Coach no funcionará hasta que la agregues.';
   }).catch(err);
 }
+/* ---------- Programas ---------- */
+var programasCache = null;
+function cargarProgramas() {
+  api('getProgramas').then(function (r) { programasCache = r; pintarProgramas(r); }).catch(function (e) { $('progCard').innerHTML = '<h2>Programa</h2><div class="meta">No pude cargar los programas: ' + esc(e.message || e) + '</div>'; });
+}
+function pintarProgramas(r) {
+  var est = r.estado || {};
+  var h = '<h2>Programa</h2>';
+  if (est.bloque) {
+    h += '<div class="meta" style="margin-bottom:10px"><b style="color:var(--ink)">' + esc(est.nombre) + '</b> · ' + esc(est.bloque.nombre) + ' · sesión ' + est.sesionEnBloque + ' de ' + est.sesionesBloque +
+         '<br>' + est.hechas + ' de ' + est.total + ' sesiones del programa' + (est.terminado ? ' · <b style="color:var(--amber)">terminado</b>' : '') + '</div>';
+    h += '<div class="prog-bloques">' + (est.bloques || []).map(function (b, i) {
+      var cls = i < est.bloque.indice ? 'done' : i === est.bloque.indice ? 'now' : '';
+      return '<span class="pb ' + cls + (b.descarga ? ' des' : '') + '" title="' + esc(b.nombre) + '">' + esc(b.nombre.replace(/^Bloque (\d+) · /, 'B$1 · ')) + '<small>' + b.tam + ' ses.</small></span>';
+    }).join('') + '</div>';
+    if (est.bloque.texto) h += '<div class="meta" style="margin-top:8px">' + esc(est.bloque.texto) + '</div>';
+  }
+  h += '<div class="prog-lista">' + (r.programas || []).map(function (p) {
+    var act = p.id === r.actual;
+    return '<label class="prog-op' + (act ? ' act' : '') + '"><input type="radio" name="progSel" value="' + p.id + '"' + (act ? ' checked' : '') + '>' +
+      '<div><div class="t">' + esc(p.nombre) + (act ? ' <span class="chip ok" style="margin-left:6px">Actual</span>' : '') + '</div><div class="s">' + esc(p.lema) + ' · ' + p.semanas + ' semanas</div>' +
+      '<div class="d">' + esc(p.objetivo) + '</div><div class="d dim">' + esc(p.publico) + '</div>' +
+      '<div class="d dim">Cardio: ' + p.cardio.sesiones + ' × ' + esc(p.cardio.minutos) + ' min · ' + esc(p.nutricion.texto) + '</div></div></label>';
+  }).join('') + '</div>';
+  h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progEntrada" style="width:auto"> Empezar con "Vuelta al gimnasio" (2 semanas suaves, si vienes de parar)</label>';
+  h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:6px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progComida" style="width:auto" checked> Ajustar calorías y proteína al objetivo del programa</label>';
+  h += '<div class="acts" style="margin-top:10px"><button class="btn" id="progCambiar">Cambiar de programa</button></div>';
+  h += '<div class="meta" style="margin-top:6px">Al cambiar, el nuevo programa empieza hoy desde su Bloque 1. Tu historial y tus cargas se conservan.</div>';
+  $('progCard').innerHTML = h;
+  $('progCambiar').onclick = cambiarProgramaUI;
+}
+function cambiarProgramaUI() {
+  var sel = document.querySelector('input[name=progSel]:checked'); if (!sel) return;
+  var id = sel.value, p = (programasCache.programas || []).filter(function (x) { return x.id === id; })[0];
+  var mismo = id === programasCache.actual;
+  if (!confirm((mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + ' desde hoy (Bloque 1)?' + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : ''))) return;
+  var b = $('progCambiar'); b.disabled = true; b.textContent = 'Cambiando…';
+  api('cambiarPrograma', id, { entrada: $('progEntrada').checked, ajustarComida: $('progComida').checked })
+    .then(function () { invalidarTodo(); toast('Programa: ' + (p ? p.nombre : id)); cargarAjustes(); cargarEstado(); })
+    .catch(function (e) { b.disabled = false; b.textContent = 'Cambiar de programa'; err(e); });
+}
+
 $('pGuardar').onclick = function () {
   var dias = []; document.querySelectorAll('#pDias input:checked').forEach(function (x) { dias.push(x.value); });
   var p = { Edad: $('pEdad').value, Sexo: $('pSexo').value, EstaturaM: $('pEstatura').value, DiasEntreno: dias.join(','),
