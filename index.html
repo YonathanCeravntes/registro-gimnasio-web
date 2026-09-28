@@ -513,7 +513,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281506', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281515', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -560,7 +560,12 @@ var SVG = {
 function api(fn) {
   var args = Array.prototype.slice.call(arguments, 1);
   if (!CFG) return Promise.reject(new Error('La app no está vinculada: abre el enlace de instalación'));
-  return fetch(CFG.api, { method: 'POST', body: JSON.stringify({ fn: fn, args: args, t: CFG.t }), redirect: 'follow' })
+  var cuerpo = JSON.stringify({ fn: fn, args: args, t: CFG.t });
+  var llamar = function () { return fetch(CFG.api, { method: 'POST', body: cuerpo, redirect: 'follow' }); };
+  // Un fallo de red (en iPhone sale como "Load failed") se reintenta una vez antes de rendirse
+  return llamar().catch(function (e) { return new Promise(function (ok) { setTimeout(ok, 1500); }).then(llamar).catch(function (e2) {
+      throw new Error('Sin conexión con el servidor (' + ((e2 && e2.message) || e2) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
+    }); })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (j) {
       if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true); throw new Error(j.error || 'Error del servidor'); }
@@ -1545,7 +1550,7 @@ function pintarCola() {
   b.style.display = n ? 'block' : 'none';
   b.textContent = n ? '📶 ' + n + ' cambio(s) guardados en tu celular: se enviarán cuando haya conexión.' : '';
 }
-function esErrorDeRed(e) { return !navigator.onLine || /network|conexi|connection|timeout|failed to fetch|http 0/i.test(String(e && e.message || e)); }
+function esErrorDeRed(e) { return !navigator.onLine || /network|conexi|connection|timeout|failed to fetch|load failed|http 0/i.test(String(e && e.message || e)); }
 function enviar(fn, payload) {
   if (!navigator.onLine) { var c = leerCola(); c.push({ fn: fn, p: payload }); guardarCola(c); return Promise.resolve({ enCola: true, ok: true }); }
   return api(fn, payload).catch(function (e) {
