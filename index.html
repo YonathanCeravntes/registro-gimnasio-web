@@ -566,7 +566,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281957', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609282005', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -655,7 +655,7 @@ function porScript(url, fn, args, t) {
 /* Fallo "de red": la petición no llegó o no se pudo leer la respuesta. Incluye HTTP 404/408/429/5xx: Apps Script responde
    con una redirección a script.googleusercontent.com cuya clave es de un solo uso y caduca; en una red lenta el celular
    a veces la pide dos veces y la segunda da 404. Se repite por el otro canal y sale bien. */
-function esFalloDeRed(e) { return e instanceof TypeError || /load failed|failed to fetch|network|tiempo agotado|(script)|^HTTP (404|408|429|5dd)$/i.test(String(e && e.message || e)); }
+function esFalloDeRed(e) { return e instanceof TypeError || /load failed|failed to fetch|network|tiempo agotado|\(script\)|^HTTP (404|408|429|5\d\d)$/i.test(String(e && e.message || e)); }
 /* Máximo 3 llamadas a la vez: en una conexión lenta, muchas peticiones en paralelo se caen ("Load failed") */
 var EN_VUELO = 0, COLA_LLAMADAS = [], MAX_EN_VUELO = 3;
 function conTurno(fn) {
@@ -675,17 +675,40 @@ function cuandoVisible() {
     document.addEventListener('visibilitychange', f);
   });
 }
+/* Proxy en Render: una sola petición que responde directo (sin la redirección de Google). Si no responde, la llamada
+   sigue directo a Apps Script y el proxy se vuelve a probar en 5 minutos. */
+var PROXY_CAIDO_HASTA = 0;
+function usarProxy(url) { return !!API_PROXY && url === API_PUBLICA && Date.now() > PROXY_CAIDO_HASTA; }
+function porProxy(fn, args, t) {
+  var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, LLAMADAS_LENTAS[fn] ? 170000 : 60000) : 0;
+  return fetch(API_PROXY, { method: 'POST', body: JSON.stringify({ fn: fn, args: args, t: t }), signal: ctrl ? ctrl.signal : undefined })
+    .then(function (r) { clearTimeout(timer); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); },
+          function (e) { clearTimeout(timer); throw (e && e.name === 'AbortError') ? new Error('Sin conexión con el servidor (tiempo agotado)') : e; });
+}
 function llamarServidor(url, fn, args, t) { return conTurno(function () { return llamarConReintento(url, fn, args, t, 0); }); }
 function llamarConReintento(url, fn, args, t, intento) {
+  if (!usarProxy(url)) return llamarDirecto(url, fn, args, t, intento);
+  var t0 = Date.now();
+  return porProxy(fn, args, t).catch(function (e) {
+    if (!esFalloDeRed(e)) throw e;
+    // IA: si falló después de unos segundos pudo haber respondido (y costado): no se repite sola
+    if (LLAMADAS_LENTAS[fn] && Date.now() - t0 > 5000) throw new Error('Se cortó la conexión mientras la IA respondía. Revisa tu red y vuelve a intentar.');
+    if (document.visibilityState === 'hidden' && intento < 2) return cuandoVisible().then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
+    PROXY_CAIDO_HASTA = Date.now() + 5 * 60000;
+    return llamarDirecto(url, fn, args, t, intento);
+  });
+}
+function llamarDirecto(url, fn, args, t, intento) {
   var principal = TRANSPORTE === 'jsonp' ? porScript : porFetch, alterno = TRANSPORTE === 'jsonp' ? porFetch : porScript;
   return principal(url, fn, args, t).catch(function (e) {
     if (!esFalloDeRed(e)) throw e;
     // Cayó la app a segundo plano en plena llamada: esperar a que vuelva y repetir
-    if (document.visibilityState === 'hidden' && intento < 2) return cuandoVisible().then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
+    if (document.visibilityState === 'hidden' && intento < 2) return cuandoVisible().then(function () { return llamarDirecto(url, fn, args, t, intento + 1); });
     // El canal principal no pudo leer la respuesta: misma llamada por el otro canal
     return alterno(url, fn, args, t).then(function (j) { fijarTransporte(TRANSPORTE === 'jsonp' ? 'fetch' : 'jsonp'); return j; }).catch(function (e2) {
       if (LLAMADAS_LENTAS[fn]) throw new Error('Se cortó la conexión mientras la IA respondía. Revisa tu red y vuelve a intentar.');
-      if (intento < 1) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
+      if (intento < 1) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return llamarDirecto(url, fn, args, t, intento + 1); });
       throw new Error('Sin conexión con el servidor (' + ((e && e.message) || e) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
     });
   });
@@ -1895,7 +1918,7 @@ $('fSubir').onclick = function () {
     var max = 1080, k = Math.min(1, max / Math.max(img.width, img.height));
     var cv = document.createElement('canvas'); cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
     cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-    api('subirFoto', { fecha: $('dFecha').value || hoyISO(), tipo: $('fTipo').value, dataUrl: cv.toDataURL('image/jpeg', 0.82) })
+    api('subirFoto', { fecha: $('dFecha').value || hoyISO(), tipo: $('fTipo').value, dataUrl: cv.toDataURL('image/jpeg', 0.82), id: 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) })
       .then(function () { b.disabled = false; b.textContent = 'Subir foto'; $('fArchivo').value = ''; toast('Foto guardada en tu Drive'); cargarFotos(); })
       .catch(function (x) { b.disabled = false; b.textContent = 'Subir foto'; err(x); });
   };
@@ -2065,14 +2088,21 @@ function diagnostico() {
   linea('Service worker: ' + (sw ? 'activo (' + (sw.scriptURL || '').split('/').pop() + ')' : 'no'));
   if (typeof CFG === 'undefined' || !CFG) { linea('La app usa google.script.run (no hay pruebas de red aquí).'); return; }
   linea('Servidor: ' + CFG.api.replace(/macros\/s\/[^/]+/, 'macros/s/…'));
-  var pruebas = [
+  var hayProxy = typeof API_PROXY !== 'undefined' && API_PROXY;
+  linea('Canal: ' + (hayProxy ? (usarProxy(CFG.api) ? 'proxy (' + API_PROXY.replace(/^https:\/\//, '').replace(/\/api$/, '') + ')' : 'directo (proxy en pausa)') + ' · respaldo ' : '') + (typeof TRANSPORTE !== 'undefined' ? TRANSPORTE : 'fetch'));
+  var pruebas = hayProxy ? [
+    ['P1 Proxy /salud', function () { return fetch(API_PROXY.replace(/\/api$/, '/salud'), { cache: 'no-store' }); }],
+    ['P2 Proxy ping (hasta Apps Script)', function () { return fetch(API_PROXY + '?api=ping', { cache: 'no-store' }); }],
+    ['P3 Proxy POST getAvisos', function () { return fetch(API_PROXY, { method: 'POST', body: JSON.stringify({ fn: 'getAvisos', args: [], t: CFG.t }) }); }]
+  ] : [];
+  pruebas = pruebas.concat([
     ['1 GET ping', function () { return fetch(CFG.api + '?api=ping', { redirect: 'follow' }); }],
     ['2 GET ping (sin seguir redirección)', function () { return fetch(CFG.api + '?api=ping', { redirect: 'manual' }); }],
     ['3 POST getAvisos', function () { return fetch(CFG.api, { method: 'POST', body: JSON.stringify({ fn: 'getAvisos', args: [], t: CFG.t }), redirect: 'follow' }); }],
     ['4 GET script.googleusercontent.com', function () { return fetch('https://script.googleusercontent.com/macros/echo', { mode: 'no-cors', cache: 'no-store' }); }],
     ['5 GET script.google.com', function () { return fetch('https://script.google.com/', { mode: 'no-cors', cache: 'no-store' }); }],
     ['6 GET www.google.com', function () { return fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-store' }); }]
-  ];
+  ]);
   var i = 0;
   (function siguiente() {
     if (i >= pruebas.length) { linea('— fin —'); return; }
