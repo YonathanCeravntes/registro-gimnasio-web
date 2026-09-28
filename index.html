@@ -155,6 +155,7 @@
   .pk-item{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:var(--card2);border-radius:12px;padding:8px 10px;margin-top:6px;color:var(--ink);font-family:inherit;font-size:14px;cursor:pointer}
   .pk-item b{display:block} .pk-item small{display:block;color:var(--muted);font-size:12px}
   .pk-chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0} .pk-chips .chip{cursor:pointer} .pk-chips .chip.on{background:var(--amber);color:var(--amber-ink)}
+  .c-chips{flex-wrap:nowrap;overflow-x:auto;margin:8px -14px 0;padding:2px 14px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch} .c-chips::-webkit-scrollbar{display:none} .c-chips .chip{flex:0 0 auto;padding:6px 10px}
   .prog-op .t{font-weight:700;color:var(--ink);font-size:15px;display:flex;align-items:center;flex-wrap:wrap}
   .prog-op .s{color:var(--amber);font-size:12.5px;font-weight:700;margin-top:2px}
   .prog-op .d{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.4;font-weight:400} .prog-op .d.dim{color:var(--faint);font-size:12px;margin-top:4px}
@@ -357,7 +358,8 @@
       <div id="cTotales" style="margin-top:12px"></div>
     </div>
     <div class="card"><h2>Agregar</h2>
-      <input id="cBuscar" placeholder="Buscar comida… (ej.: huevo, arroz, pollo)">
+      <input id="cBuscar" placeholder="Buscar comida… (ej.: huevo, atún, kumis, arepa)">
+      <div class="pk-chips c-chips" id="cChips"></div>
       <div class="row" style="margin-top:8px;align-items:center"><div class="meta">Cantidad (porciones)</div>
         <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
       <div id="cLista" style="margin-top:6px"></div>
@@ -557,7 +559,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281608', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281646', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -1757,6 +1759,7 @@ function pintarComida(c) {
   $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, 'kcal') + barra('Proteína', t.prot, o.prot, 'g') +
     barra('Carbohidratos', t.carb, o.carb, 'g') + barra('Grasa', t.grasa, o.grasa, 'g') +
     '<div class="meta">Objetivos ' + esc(o.fuente) + '. Valores de las comidas aproximados.</div>';
+  pintarChipsComida();
   pintarListaComidas();
   $('cRegistros').innerHTML = c.registros.length ? c.momentos.concat(['']).map(function (m) {
     var items = c.registros.filter(function (x) { return (x.momento || '') === m; });
@@ -1766,16 +1769,36 @@ function pintarComida(c) {
     }).join('');
   }).join('') : '<div class="meta">Aún no registras comidas este día.</div>';
 }
+/* Chips de categoría: "Frecuentes" (lo que más registras) o una categoría del catálogo */
+var CATS_COMIDA = ['Proteínas', 'Lácteos', 'Carbohidratos', 'Frutas', 'Verduras', 'Grasas', 'Desayuno', 'Platos', 'Snacks', 'Bebidas', 'Suplementos', 'Mis comidas'];
+var catComida = '';
+function pintarChipsComida() {
+  if (!comidaDatos) return;
+  var hay = {}; comidaDatos.catalogo.forEach(function (c) { hay[c.cat] = true; });
+  var cats = CATS_COMIDA.filter(function (c) { return hay[c]; }).concat(Object.keys(hay).filter(function (c) { return CATS_COMIDA.indexOf(c) < 0; }).sort());
+  if (catComida && !hay[catComida]) catComida = '';
+  $('cChips').innerHTML = [''].concat(cats).map(function (c) {
+    return '<span class="chip' + (c === catComida ? ' on' : '') + '" data-cat="' + esc(c) + '">' + (c ? esc(c) : 'Frecuentes') + '</span>';
+  }).join('');
+}
+$('cChips').onclick = function (ev) {
+  var ch = ev.target.closest('.chip'); if (!ch) return;
+  catComida = ch.dataset.cat === catComida ? '' : ch.dataset.cat;
+  pintarChipsComida(); pintarListaComidas();
+};
 function pintarListaComidas() {
   if (!comidaDatos) return;
   var q = $('cBuscar').value.trim().toLowerCase();
   var norm = function (x) { return x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
-  var lista = comidaDatos.catalogo.filter(function (c) { return !q || norm(c.nombre + ' ' + c.cat).indexOf(norm(q)) >= 0; })
-    .sort(function (a, b) { return b.veces - a.veces; }).slice(0, q ? 30 : 12);
+  var lista = comidaDatos.catalogo.filter(function (c) {
+    if (catComida && c.cat !== catComida) return false;
+    return !q || norm(c.nombre + ' ' + c.cat).indexOf(norm(q)) >= 0;
+  }).sort(function (a, b) { return (b.veces - a.veces) || (catComida && !q ? a.nombre.localeCompare(b.nombre) : 0); })
+    .slice(0, q || catComida ? 60 : 12);
   $('cLista').innerHTML = lista.map(function (c) {
     return '<div class="food"><div>' + esc(c.nombre) + '<div class="meta">' + esc(c.porcion) + ' · ' + n1(c.kcal * cantidad, 0) + ' kcal · ' + n1(c.prot * cantidad, 0) + ' g prot</div></div>' +
       '<button onclick="agregarComidaUI(\'' + esc(c.nombre).replace(/'/g, "\\'") + '\')">+ Agregar</button></div>';
-  }).join('') || '<div class="meta">No hay coincidencias. Créala abajo.</div>';
+  }).join('') || '<div class="meta">' + (catComida === 'Mis comidas' ? 'Todavía no has creado comidas propias: usa "Crear una comida nueva" abajo.' : 'No hay coincidencias. Créala abajo.') + '</div>';
 }
 $('cBuscar').oninput = pintarListaComidas;
 $('cFecha').onchange = cargarComida;
