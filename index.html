@@ -492,7 +492,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281051';
+var INICIAL = null, APP_VERSION = '202609281412';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -509,6 +509,8 @@ var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('./sw.js').catch(function () {});
+    // El celular puede dejar la app abierta días: al volver a ella se revisa si hay versión nueva
+    window.comprobarActualizacion = function () { navigator.serviceWorker.getRegistration().then(function (r) { if (r) r.update(); }).catch(function () {}); };
     var recargado = false;
     navigator.serviceWorker.addEventListener('controllerchange', function () { if (recargado) return; recargado = true; if (navigator.serviceWorker.controller) location.reload(); });
   });
@@ -605,9 +607,11 @@ function conCache(clave, llamada, pintarFn) {
   });
 }
 
+var ultimaCarga = Date.now();
 function cargarEstado(sesionForzada) {
   var f = $('fecha').value, sel = sesionForzada || '';
   var primera = true;
+  ultimaCarga = Date.now();
   if (typeof INICIAL !== 'undefined' && INICIAL && !sel && INICIAL.estado && INICIAL.estado.fecha === f) {
     var ini = INICIAL; INICIAL = null;
     escribirCache('ini:' + f + ':', ini);
@@ -856,7 +860,8 @@ function pintar(i, v) {
   for (var k = 0; k < n; k++) {
     var h = d.hoy[k] || {};
     var carga = h.carga !== undefined ? h.carga : (d.sugerencia.carga != null ? d.sugerencia.carga : '');
-    var rirDef = h.rir !== undefined ? h.rir : '';
+    // RIR: el guardado; si no hay, el prescrito (se puede cambiar). Así la progresión no se queda sin dato.
+    var rirDef = h.rir !== undefined && h.rir !== '' ? h.rir : (p.rir !== undefined && p.rir !== null && p.rir !== '' ? p.rir : '');
     filas += '<tr><td>' + (k + 1) + '</td>' +
       '<td><input type="number" inputmode="decimal" step="2.5" value="' + esc(carga) + '"></td>' +
       '<td><input type="number" inputmode="numeric" placeholder="' + p.rmin + (p.rmin !== p.rmax ? '–' + p.rmax : '') + '" value="' + esc(h.reps !== undefined ? h.reps : '') + '"></td>' +
@@ -1524,6 +1529,30 @@ function vaciarCola() {
 function invalidarTodo() { try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(CACHE_V) === 0) localStorage.removeItem(k); }); } catch (e) {} }
 window.addEventListener('online', vaciarCola);
 setInterval(vaciarCola, 30000);
+
+/* Al volver a la app (el celular la deja abierta días): refresca si cambió el día o pasó un rato,
+   sin pisar series que estés escribiendo. */
+function hayCambiosSinGuardar() {
+  if (!sesionActual) return false;
+  return sesionActual.ejercicios.some(function (e, i) {
+    if (e.estado === 'hecho') return false;
+    var tb = $('exSets' + i); if (!tb) return false;
+    return Array.prototype.some.call(tb.querySelectorAll('tr'), function (tr) { var inp = tr.querySelectorAll('input'); return inp[1] && inp[1].value !== ''; });
+  });
+}
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState !== 'visible') return;
+  vaciarCola();
+  if (typeof comprobarActualizacion === 'function') comprobarActualizacion();
+  var fecha = $('fecha'), hoy = hoyISO();
+  if (!fecha || !fecha.value) return;
+  if (editando() || hayCambiosSinGuardar()) {
+    if (fecha.value < hoy) toast('Ya es otro día: guarda o borra lo que tienes pendiente y toca Hoy para actualizar');
+    return;
+  }
+  if (fecha.value < hoy) { fecha.value = hoy; cargarEstado(); return; }
+  if (Date.now() - ultimaCarga > 10 * 60000) cargarEstado();
+});
 
 function toastPR(msg) { var t = $('toast'); t.classList.add('pr'); toast(msg); setTimeout(function () { t.classList.remove('pr'); }, 4000); if (navigator.vibrate) navigator.vibrate([100, 60, 100, 60, 200]); }
 function proximoLunesISO() { var d = new Date(); d.setDate(d.getDate() + ((8 - d.getDay()) % 7 || 7)); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
