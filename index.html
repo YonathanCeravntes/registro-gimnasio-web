@@ -495,6 +495,8 @@
       <label for="pClave">Clave de Gemini (aistudio.google.com/apikey)</label><input id="pClave" type="password" autocomplete="off" placeholder="Pega aquí tu clave">
       <label for="pModelo">Modelo de Gemini</label><input id="pModelo" placeholder="gemini-3.8-flash">
       <p class="meta">Tus datos de salud y entrenamiento se envían a la IA elegida (Anthropic o Google) solo cuando pides un análisis, haces una pregunta o diseñas un plan. Los invitados usan estas mismas claves con un tope diario.</p>
+      <button class="btn sec" type="button" id="pProbarIA" style="width:100%;margin-top:6px">Probar la IA</button>
+      <div class="meta" id="pProbarIAres" style="margin-top:6px"></div>
     </div>
     <button class="btn" id="pGuardar">Guardar ajustes</button>
     <div class="card" style="margin-top:14px">
@@ -564,7 +566,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281928', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281957', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -636,7 +638,7 @@ function porFetch(url, fn, args, t) {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
 /* Llamadas que tardan (la IA piensa 20–60 s): más tiempo de espera y sin repetirlas solas (repetir = pagar dos veces) */
-var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1 };
+var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1 };
 function porScript(url, fn, args, t) {
   return new Promise(function (ok, ko) {
     var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -1665,8 +1667,18 @@ $('pGuardar').onclick = function () {
   if ($('pClave').value.trim()) p.apiKey = $('pClave').value.trim();
   if ($('pClaveClaude').value.trim()) p.claveClaude = $('pClaveClaude').value.trim();
   var b = $('pGuardar'); b.disabled = true;
-  api('guardarPerfil', p).then(function () { b.disabled = false; toast('Ajustes guardados'); cargarAjustes(); invalidarTodo(); cargarEstado(); }).catch(function (x) { b.disabled = false; err(x); });
+  var claveNueva = !!(p.apiKey || p.claveClaude);
+  api('guardarPerfil', p).then(function () { b.disabled = false; toast('Ajustes guardados'); cargarAjustes(); invalidarTodo(); cargarEstado(); if (claveNueva) probarIAUI(); }).catch(function (x) { b.disabled = false; err(x); });
 };
+/* Prueba la IA con una llamada mínima (solo el dueño): así se sabe al instante si la clave sirve */
+function probarIAUI() {
+  var b = $('pProbarIA'), out = $('pProbarIAres'); b.disabled = true; out.style.color = ''; out.textContent = 'Probando la IA…';
+  return api('probarIAApp').then(function (r) {
+    out.style.color = r.ok ? 'var(--green-ink)' : 'var(--bad)';
+    out.textContent = r.ok ? '✓ ' + r.proveedor + ' responde (' + r.modelo + ', ' + r.segundos + ' s). Ya puedes diseñar tu plan con IA y usar el Coach.' : '✗ ' + r.proveedor + ': ' + r.error;
+  }).catch(function (e) { out.style.color = 'var(--bad)'; out.textContent = '✗ ' + (e.message || e); }).then(function () { b.disabled = false; });
+}
+$('pProbarIA').onclick = probarIAUI;
 
 /* =================== SIN CONEXIÓN: cola de envíos =================== */
 function leerCola() { try { return JSON.parse(localStorage.getItem('cola') || '[]'); } catch (e) { return []; } }
