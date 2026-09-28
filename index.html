@@ -125,6 +125,14 @@
   .dp.sinreg{background:var(--bad-bg)} .dp.sinreg i{background:var(--bad)} .dp.sinreg em{color:var(--bad)}
   .dp.desc{opacity:.7}
   .dp.hoy{border-color:var(--amber)} .dp.hoy small{color:var(--amber)}
+  #bienvenida{position:fixed;inset:0;z-index:19;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+  .bv-wrap{max-width:640px;margin:0 auto;padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px))}
+  .bv-top{display:flex;justify-content:space-between;align-items:center;min-height:36px}
+  .bv-pasos{display:flex;gap:6px;margin:14px 0 18px} .bv-pasos i{flex:1;height:4px;border-radius:99px;background:var(--raise)} .bv-pasos i.on{background:var(--amber)}
+  .bv-h{font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:0 0 10px;color:var(--ink)}
+  .bv-p{color:var(--muted);font-size:15px;line-height:1.5;margin:0 0 16px}
+  .bv-acts{margin-top:18px} .bv-acts .btn{flex:1}
+  .bv-form label{margin-top:12px}
   .prog-bloques{display:flex;flex-wrap:wrap;gap:6px}
   .prog-bloques .pb{display:flex;flex-direction:column;gap:1px;padding:6px 9px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--dim)}
   .prog-bloques .pb small{font-weight:500;font-size:10px;color:var(--faint)}
@@ -465,6 +473,14 @@
 
 <div id="timer"><div><div class="kicker">Descanso</div><b id="tVal">0:00</b></div>
   <div style="display:flex;gap:8px"><button id="tMas">+30 s</button><button id="tStop">Listo</button></div></div>
+<div id="bienvenida" class="hidden">
+  <div class="bv-wrap">
+    <div class="bv-top"><span class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="bv-pasos"><i></i><i></i><i></i></div>
+    <div id="bvCuerpo"></div>
+    <div class="acts bv-acts"><button class="btn sec" id="bvAtras">Atrás</button><button class="btn" id="bvSig">Siguiente</button></div>
+  </div>
+</div>
 <div id="toast"></div>
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
   <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
@@ -476,7 +492,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609280243';
+var INICIAL = null, APP_VERSION = '202609281051';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -609,6 +625,7 @@ function cargarEstado(sesionForzada) {
 function pintarEstado(e, codigo) {
   estado = e;
   var pg = e.programa || {};
+  if (pg.bienvenida && !bvMostrada) mostrarBienvenida(false);
   var bloqueTxt = pg.bloque ? pg.bloque.nombre + ' · sesión ' + pg.sesionEnBloque + ' de ' + pg.sesionesBloque : e.fase;
   var kick = (pg.nombre || 'Mi plan') + (pg.bloque ? ' · ' + pg.bloque.nombre : '');
   document.querySelectorAll('.kick-sem').forEach(function (x) { x.textContent = kick; });
@@ -1343,6 +1360,84 @@ function cargarAjustes() {
     $('pClaveEstado').textContent = p.tieneClave ? 'Clave guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Aún no hay clave: el Coach no funcionará hasta que la agregues.';
   }).catch(err);
 }
+/* ---------- Bienvenida (primera vez) ---------- */
+var bvMostrada = false, bvPaso = 0, bvPreview = false;
+var bvDatos = { programa: '', dias: ['Lu', 'Mi', 'Vi'], entrada: true, edad: '', sexo: 'M', estatura: '', peso: '' };
+function mostrarBienvenida(preview) {
+  bvMostrada = true; bvPreview = !!preview; bvPaso = 0;
+  var v = $('bienvenida'); v.classList.remove('hidden'); window.scrollTo(0, 0);
+  $('bvCerrar').style.display = preview ? '' : 'none';
+  $('bvCerrar').onclick = cerrarBienvenida;
+  $('bvAtras').onclick = function () { if (bvPaso > 0) { guardarPasoBv(); bvPaso--; pintarBienvenida(); } };
+  $('bvSig').onclick = function () {
+    if (!guardarPasoBv(true)) return;
+    if (bvPaso < 2) { bvPaso++; pintarBienvenida(); } else terminarBienvenida();
+  };
+  var listo = function () { pintarBienvenida(); };
+  if (programasCache) listo(); else api('getProgramas').then(function (r) { programasCache = r; listo(); }).catch(function (e) { err(e); listo(); });
+  // Prellenar con el perfil si existe
+  api('getPerfil').then(function (p) {
+    if (p.Edad) bvDatos.edad = p.Edad; if (p.Sexo) bvDatos.sexo = p.Sexo; if (p.EstaturaM) bvDatos.estatura = p.EstaturaM;
+    var d = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean); if (d.length) bvDatos.dias = d;
+    if (bvPaso > 0) pintarBienvenida();
+  }).catch(function () {});
+  pintarBienvenida();
+}
+function cerrarBienvenida() { $('bienvenida').classList.add('hidden'); }
+function pintarBienvenida() {
+  document.querySelectorAll('.bv-pasos i').forEach(function (x, i) { x.classList.toggle('on', i <= bvPaso); });
+  var progs = (programasCache && programasCache.programas) || [];
+  var h = '';
+  if (bvPaso === 0) {
+    if (!bvDatos.programa && progs.length) bvDatos.programa = progs[0].id;
+    h += '<h1 class="bv-h">¿Qué<br>buscas?</h1><p class="bv-p">Elige tu objetivo. La rutina, el cardio y las calorías se ajustan a él, y puedes cambiarlo cuando quieras.</p>';
+    h += '<div class="prog-lista" style="margin-top:0">' + (progs.length ? progs.map(function (p) {
+      return '<label class="prog-op' + (p.id === bvDatos.programa ? ' act' : '') + '"><input type="radio" name="bvProg" value="' + p.id + '"' + (p.id === bvDatos.programa ? ' checked' : '') + ' onchange="bvDatos.programa=this.value;pintarBienvenida()">' +
+        '<div><div class="t">' + esc(p.nombre) + '</div><div class="s">' + esc(p.lema) + ' · ' + p.semanas + ' semanas</div><div class="d">' + esc(p.objetivo) + '</div></div></label>';
+    }).join('') : '<div class="meta">Cargando programas…</div>') + '</div>';
+  } else if (bvPaso === 1) {
+    h += '<h1 class="bv-h">¿Cuándo<br>entrenas?</h1><p class="bv-p">Marca los días que normalmente vas al gimnasio. Con 3 o 4 días progresas muy bien; cada semana los puedes cambiar.</p>';
+    h += '<div class="dias" id="bvDias">' + [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (bvDatos.dias.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('') + '</div>';
+    h += '<label style="display:flex;gap:10px;align-items:flex-start;color:var(--ink);margin-top:18px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.4"><input type="checkbox" id="bvEntrada" style="width:auto;margin-top:3px"' + (bvDatos.entrada ? ' checked' : '') + '> <span><b>Vengo de un tiempo sin entrenar.</b><br><span style="color:var(--muted)">Empiezas con "Vuelta al gimnasio": 2 semanas suaves de cuerpo completo antes del Bloque 1.</span></span></label>';
+  } else {
+    h += '<h1 class="bv-h">Sobre ti</h1><p class="bv-p">Con esto calculamos tus calorías y proteína. Puedes dejarlo vacío y completarlo después en Ajustes.</p>';
+    h += '<div class="bv-form"><div class="row"><div><label for="bvEdad">Edad</label><input id="bvEdad" type="number" inputmode="numeric" value="' + esc(bvDatos.edad) + '"></div>' +
+         '<div><label for="bvSexo">Sexo</label><select id="bvSexo"><option value="M"' + (bvDatos.sexo === 'F' ? '' : ' selected') + '>Hombre</option><option value="F"' + (bvDatos.sexo === 'F' ? ' selected' : '') + '>Mujer</option></select></div></div>' +
+         '<div class="row"><div><label for="bvEst">Estatura (m)</label><input id="bvEst" type="number" inputmode="decimal" step="0.01" placeholder="1.70" value="' + esc(bvDatos.estatura) + '"></div>' +
+         '<div><label for="bvPeso">Peso hoy (kg)</label><input id="bvPeso" type="number" inputmode="decimal" step="0.1" placeholder="72" value="' + esc(bvDatos.peso) + '"></div></div></div>';
+  }
+  $('bvCuerpo').innerHTML = h;
+  $('bvAtras').style.visibility = bvPaso === 0 ? 'hidden' : 'visible';
+  $('bvSig').textContent = bvPaso === 2 ? 'Empezar' : 'Siguiente';
+}
+function guardarPasoBv(validar) {
+  if (bvPaso === 0) {
+    var r = document.querySelector('input[name=bvProg]:checked'); if (r) bvDatos.programa = r.value;
+    if (validar && !bvDatos.programa) { toast('Elige un objetivo'); return false; }
+  } else if (bvPaso === 1) {
+    var d = []; document.querySelectorAll('#bvDias input:checked').forEach(function (x) { d.push(x.value); });
+    bvDatos.dias = d; bvDatos.entrada = $('bvEntrada').checked;
+    if (validar && !d.length) { toast('Marca al menos un día'); return false; }
+  } else {
+    bvDatos.edad = $('bvEdad').value; bvDatos.sexo = $('bvSexo').value; bvDatos.estatura = $('bvEst').value; bvDatos.peso = $('bvPeso').value;
+  }
+  return true;
+}
+function terminarBienvenida() {
+  if (bvPreview && !confirm('Esto cambia tu programa actual a ' + bvDatos.programa + ' desde hoy. ¿Seguir?')) return;
+  var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
+  var perfil = { Edad: bvDatos.edad, Sexo: bvDatos.sexo, EstaturaM: bvDatos.estatura, DiasEntreno: bvDatos.dias.join(',') };
+  api('guardarPerfil', perfil)
+    .then(function () { return bvDatos.peso ? api('guardarDiario', { fecha: hoyISO(), peso: bvDatos.peso }) : null; })
+    .then(function () { return api('cambiarPrograma', bvDatos.programa, { entrada: bvDatos.entrada, dias: bvDatos.dias.join(','), ajustarComida: true }); })
+    .then(function () {
+      invalidarTodo(); programasCache = null; cerrarBienvenida();
+      toast('¡Listo! Tu plan está preparado.');
+      cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
+    })
+    .catch(function (e) { b.disabled = false; b.textContent = 'Empezar'; err(e); });
+}
+
 /* ---------- Programas ---------- */
 var programasCache = null;
 function cargarProgramas() {
@@ -1371,6 +1466,7 @@ function pintarProgramas(r) {
   h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:6px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progComida" style="width:auto" checked> Ajustar calorías y proteína al objetivo del programa</label>';
   h += '<div class="acts" style="margin-top:10px"><button class="btn" id="progCambiar">Cambiar de programa</button></div>';
   h += '<div class="meta" style="margin-top:6px">Al cambiar, el nuevo programa empieza hoy desde su Bloque 1. Tu historial y tus cargas se conservan.</div>';
+  h += '<div style="margin-top:10px"><button class="btn txt" onclick="mostrarBienvenida(true)">Ver la pantalla de bienvenida →</button></div>';
   $('progCard').innerHTML = h;
   $('progCambiar').onclick = cambiarProgramaUI;
 }
