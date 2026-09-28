@@ -519,7 +519,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281521', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281533', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -566,17 +566,47 @@ var SVG = {
 function api(fn) {
   var args = Array.prototype.slice.call(arguments, 1);
   if (!CFG) return Promise.reject(new Error('La app no está vinculada: abre el enlace de instalación'));
-  var cuerpo = JSON.stringify({ fn: fn, args: args, t: CFG.t });
-  var llamar = function () { return fetch(CFG.api, { method: 'POST', body: cuerpo, redirect: 'follow' }); };
-  // Un fallo de red (en iPhone sale como "Load failed") se reintenta una vez antes de rendirse
-  return llamar().catch(function (e) { return new Promise(function (ok) { setTimeout(ok, 1500); }).then(llamar).catch(function (e2) {
-      throw new Error('Sin conexión con el servidor (' + ((e2 && e2.message) || e2) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
-    }); })
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (j) {
-      if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true); throw new Error(j.error || 'Error del servidor'); }
-      return j.r;
+  return llamarServidor(CFG.api, fn, args, CFG.t).then(function (j) {
+    if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true); throw new Error(j.error || 'Error del servidor'); }
+    return j.r;
+  });
+}
+/* Transporte: fetch (POST) y, si la red del celular no deja leer la respuesta (en iPhone sale "Load failed"),
+   la misma llamada por etiqueta <script> (JSONP). Si el <script> funciona, se recuerda para las siguientes. */
+var TRANSPORTE = (function () { try { return localStorage.getItem('transporte') || 'fetch'; } catch (e) { return 'fetch'; } })();
+function fijarTransporte(t) { TRANSPORTE = t; try { localStorage.setItem('transporte', t); } catch (e) {} }
+function porFetch(url, fn, args, t) {
+  var cuerpo = JSON.stringify({ fn: fn, args: args, t: t });
+  return fetch(url, { method: 'POST', body: cuerpo, redirect: 'follow' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+}
+function porScript(url, fn, args, t) {
+  return new Promise(function (ok, ko) {
+    var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
+    var q = url + '?fn=' + encodeURIComponent(fn) + '&a=' + encodeURIComponent(JSON.stringify(args)) + (t ? '&t=' + encodeURIComponent(t) : '') + '&cb=' + cb + '&_=' + Date.now();
+    if (q.length > 7000) { ko(new Error('Petición demasiado grande para el modo alterno')); return; }
+    var s = document.createElement('script'), fin = false, timer;
+    var limpiar = function () { if (fin) return; fin = true; clearTimeout(timer); try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (s.parentNode) s.parentNode.removeChild(s); };
+    timer = setTimeout(function () { limpiar(); ko(new Error('Sin conexión con el servidor (tiempo agotado)')); }, 45000);
+    window[cb] = function (j) { limpiar(); ok(j); };
+    s.onerror = function () { limpiar(); ko(new Error('Sin conexión con el servidor (script)')); };
+    s.src = q; document.head.appendChild(s);
+  });
+}
+function esFalloDeRed(e) { return e instanceof TypeError || /load failed|failed to fetch|network|tiempo agotado|(script)/i.test(String(e && e.message || e)); }
+function llamarServidor(url, fn, args, t) {
+  if (TRANSPORTE === 'jsonp') {
+    return porScript(url, fn, args, t).catch(function (e) {
+      return porFetch(url, fn, args, t).then(function (j) { fijarTransporte('fetch'); return j; }).catch(function () { throw e; });
     });
+  }
+  return porFetch(url, fn, args, t).catch(function (e) {
+    if (!esFalloDeRed(e)) throw e;
+    // fetch no pudo leer la respuesta: misma llamada por <script>
+    return porScript(url, fn, args, t).then(function (j) { fijarTransporte('jsonp'); return j; }).catch(function (e2) {
+      throw new Error('Sin conexión con el servidor (' + ((e && e.message) || e) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
+    });
+  });
 }
 function mostrarVincular(tokenMalo) {
   var v = $('vincular'); v.classList.remove('hidden');
@@ -597,8 +627,7 @@ function registrar() {
   var nombre = ($('regNombre').value || '').trim(), correo = ($('regCorreo').value || '').trim(), codigo = ($('regCodigo').value || '').trim();
   if (!nombre || !correo || !codigo) { toast('Completa nombre, correo y código de invitación'); return; }
   var b = $('regBtn'), msg = $('regMsg'); b.disabled = true; b.textContent = 'Creando tu cuenta…'; msg.textContent = '';
-  fetch(API_PUBLICA, { method: 'POST', body: JSON.stringify({ fn: 'registrarUsuario', args: [{ nombre: nombre, correo: correo, codigo: codigo }] }), redirect: 'follow' })
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  llamarServidor(API_PUBLICA, 'registrarUsuario', [{ nombre: nombre, correo: correo, codigo: codigo }], '')
     .then(function (j) {
       if (!j.ok) throw new Error(j.error || 'No se pudo crear la cuenta');
       if (j.r.existente) { msg.textContent = j.r.mensaje; b.disabled = false; b.textContent = 'Crear mi cuenta'; return; }
