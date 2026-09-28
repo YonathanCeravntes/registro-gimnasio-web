@@ -519,7 +519,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281533', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281549', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -539,7 +539,17 @@ if ('serviceWorker' in navigator) {
     // El celular puede dejar la app abierta días: al volver a ella se revisa si hay versión nueva
     window.comprobarActualizacion = function () { navigator.serviceWorker.getRegistration().then(function (r) { if (r) r.update(); }).catch(function () {}); };
     var recargado = false;
-    navigator.serviceWorker.addEventListener('controllerchange', function () { if (recargado) return; recargado = true; if (navigator.serviceWorker.controller) location.reload(); });
+    // Versión nueva lista: se recarga cuando no haya llamadas en vuelo ni nada a medio escribir (no corta lo que estás haciendo)
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (recargado || !navigator.serviceWorker.controller) return;
+      window.recargaPendiente = true; if (typeof intentarRecarga === 'function') intentarRecarga();
+    });
+    window.intentarRecarga = function () {
+      if (!window.recargaPendiente || recargado) return;
+      var ocupado = (typeof EN_VUELO !== 'undefined' && EN_VUELO > 0) || (typeof editando === 'function' && editando()) || (typeof hayCambiosSinGuardar === 'function' && hayCambiosSinGuardar());
+      if (ocupado) { setTimeout(window.intentarRecarga, 3000); return; }
+      recargado = true; location.reload();
+    };
   });
 }
 </script>
@@ -594,16 +604,35 @@ function porScript(url, fn, args, t) {
   });
 }
 function esFalloDeRed(e) { return e instanceof TypeError || /load failed|failed to fetch|network|tiempo agotado|(script)/i.test(String(e && e.message || e)); }
-function llamarServidor(url, fn, args, t) {
-  if (TRANSPORTE === 'jsonp') {
-    return porScript(url, fn, args, t).catch(function (e) {
-      return porFetch(url, fn, args, t).then(function (j) { fijarTransporte('fetch'); return j; }).catch(function () { throw e; });
-    });
-  }
-  return porFetch(url, fn, args, t).catch(function (e) {
+/* Máximo 3 llamadas a la vez: en una conexión lenta, muchas peticiones en paralelo se caen ("Load failed") */
+var EN_VUELO = 0, COLA_LLAMADAS = [], MAX_EN_VUELO = 3;
+function conTurno(fn) {
+  return new Promise(function (ok, ko) {
+    var correr = function () {
+      EN_VUELO++;
+      fn().then(ok, ko).then(function () { EN_VUELO--; var sig = COLA_LLAMADAS.shift(); if (sig) sig(); if (typeof intentarRecarga === 'function') intentarRecarga(); });
+    };
+    if (EN_VUELO < MAX_EN_VUELO) correr(); else COLA_LLAMADAS.push(correr);
+  });
+}
+/* Si la app está en segundo plano, el iPhone corta las peticiones: se espera a que vuelva y se repite */
+function cuandoVisible() {
+  return new Promise(function (ok) {
+    if (document.visibilityState !== 'hidden') return ok();
+    var f = function () { if (document.visibilityState !== 'hidden') { document.removeEventListener('visibilitychange', f); setTimeout(ok, 300); } };
+    document.addEventListener('visibilitychange', f);
+  });
+}
+function llamarServidor(url, fn, args, t) { return conTurno(function () { return llamarConReintento(url, fn, args, t, 0); }); }
+function llamarConReintento(url, fn, args, t, intento) {
+  var principal = TRANSPORTE === 'jsonp' ? porScript : porFetch, alterno = TRANSPORTE === 'jsonp' ? porFetch : porScript;
+  return principal(url, fn, args, t).catch(function (e) {
     if (!esFalloDeRed(e)) throw e;
-    // fetch no pudo leer la respuesta: misma llamada por <script>
-    return porScript(url, fn, args, t).then(function (j) { fijarTransporte('jsonp'); return j; }).catch(function (e2) {
+    // Cayó la app a segundo plano en plena llamada: esperar a que vuelva y repetir
+    if (document.visibilityState === 'hidden' && intento < 2) return cuandoVisible().then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
+    // El canal principal no pudo leer la respuesta: misma llamada por el otro canal
+    return alterno(url, fn, args, t).then(function (j) { fijarTransporte(TRANSPORTE === 'jsonp' ? 'fetch' : 'jsonp'); return j; }).catch(function (e2) {
+      if (intento < 1) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
       throw new Error('Sin conexión con el servidor (' + ((e && e.message) || e) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
     });
   });
@@ -846,10 +875,11 @@ function pintarSesion(s) {
 var prefetchHecho = false;
 function prefetch() {
   if (prefetchHecho) return; prefetchHecho = true;
+  // En segundo plano y de a una (en conexiones lentas no compite con lo que estás viendo)
   setTimeout(function () {
-    api('getPanel').then(function (r) { escribirCache('panel', r); }).catch(function () {});
-    api('getHistorial', 30).then(function (r) { escribirCache('hist', r); }).catch(function () {});
-  }, 800);
+    api('getPanel').then(function (r) { escribirCache('panel', r); }).catch(function () {})
+      .then(function () { return api('getHistorial', 30).then(function (r) { escribirCache('hist', r); }).catch(function () {}); });
+  }, 2500);
 }
 function invalidarDia() {
   try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(CACHE_V + 'ini:' + sesionActual.fecha) === 0 || k.indexOf(CACHE_V + 'ses:' + sesionActual.fecha) === 0) localStorage.removeItem(k); }); } catch (e) {}
