@@ -44,7 +44,7 @@
   /* Layout */
   main{padding:0 0 110px;max-width:640px;margin:0 auto}
   .wrap{padding:0 16px}
-  .page-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:18px 16px 12px}
+  .page-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 12px}
   .gear{border:0;background:var(--card2);width:42px;height:42px;border-radius:999px;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .gear svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .card{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:10px}
@@ -81,10 +81,10 @@
   .msg{margin:10px 0 0;padding:11px 12px;border-radius:12px;background:var(--card2);color:var(--muted);font-size:14px}
   .msg b{color:var(--ink)}
   /* Héroe de Hoy */
-  .hero{position:relative;height:250px;overflow:hidden;background:var(--card)}
+  .hero{position:relative;height:calc(250px + env(safe-area-inset-top,0px));overflow:hidden;background:var(--card)}
   .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
   .hero .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,14,16,.55) 0%,rgba(14,14,16,.15) 40%,rgba(14,14,16,.92) 82%,#0e0e10 100%)}
-  .hero .top{position:absolute;left:16px;right:16px;top:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .hero .top{position:absolute;left:16px;right:16px;top:calc(14px + env(safe-area-inset-top,0px));display:flex;justify-content:space-between;align-items:center;gap:8px}
   .hero .top .kicker{color:#e9e6df;text-shadow:0 1px 6px rgba(0,0,0,.6);display:flex;align-items:center;gap:8px;cursor:pointer}
   .hero .top .kicker svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
   .hero .bottom{position:absolute;left:16px;right:16px;bottom:12px}
@@ -220,7 +220,7 @@
   .ajuste{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
   .alerta{background:var(--bad-bg);color:var(--bad);border-radius:12px;padding:9px 11px;margin:6px 0;font-size:14px}
   .medico{background:var(--amber-bg);color:var(--amber);border-radius:12px;padding:9px 11px;margin:6px 0;font-size:14px}
-  #cola{display:none;background:var(--amber-bg);color:var(--amber);font-size:13px;padding:7px 16px;text-align:center}
+  #cola{display:none;background:var(--amber-bg);color:var(--amber);font-size:13px;padding:calc(7px + env(safe-area-inset-top,0px)) 16px 7px;text-align:center}
   .qbar{height:10px;border-radius:999px;background:var(--raise2);overflow:hidden;margin:4px 0 10px}
   .qbar i{display:block;height:100%;background:var(--amber);border-radius:999px}
   .qbar.ok i{background:var(--green-ink)}
@@ -278,7 +278,8 @@
             <div><label for="fecha">Día</label><input type="date" id="fecha"></div>
             <div><label for="sesion">Sesión</label><select id="sesion"></select></div>
           </div>
-          <div class="meta" style="margin-top:8px">Si eliges otra sesión para hoy o un día futuro, la semana se reacomoda sola.</div>
+          <div class="meta" style="margin-top:8px">Elige el día y la sesión; al confirmar, la semana se reacomoda sola.</div>
+          <div class="acts" style="margin-top:10px"><button class="btn sec" id="selQuitar" onclick="quitarFijada()" style="display:none">Quitar</button><button class="btn" id="selFijar" onclick="fijarElegida()">Entrenar esta sesión hoy</button></div>
         </div>
       </div>
       <div id="cicloCard"></div>
@@ -460,7 +461,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609272152';
+var INICIAL = null, APP_VERSION = '202609280155';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -544,7 +545,19 @@ function irA(tab) {
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('nav button').forEach(function (b) { b.onclick = function () { irA(b.dataset.tab); }; });
-function toggleSelector() { $('selector').classList.toggle('hidden'); if (!$('selector').classList.contains('hidden')) $('selector').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+function toggleSelector() {
+  var sel = $('selector'); sel.classList.toggle('hidden');
+  if (sel.classList.contains('hidden')) return;
+  // En un día sin pesas, propone la próxima sesión pendiente del plan
+  if (estado && estado.tipoDia !== 'sesion' && estado.plan) {
+    var prox = estado.plan.dias.filter(function (x) { return x.tipo === 'sesion' && x.estado !== 'hecho' && x.fecha > estado.fecha; })[0];
+    if (prox && prox.sesion && $('sesion').value !== prox.sesion && estado.sesiones.some(function (x) { return x.codigo === prox.sesion; })) {
+      $('sesion').value = prox.sesion; cargarSesion(); $('rutina').classList.remove('hidden');
+    }
+  }
+  actualizarSelector();
+  sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
 /* =================== HOY =================== */
 var CACHE_V = 'v4:';
@@ -594,6 +607,7 @@ function pintarEstado(e, codigo) {
   sel.innerHTML = e.sesiones.map(function (s) { return '<option value="' + s.codigo + '">' + esc(s.nombre) + '</option>'; }).join('');
   sel.value = codigo;
   pintarHero();
+  actualizarSelector();
 }
 function rangoSemana(plan) {
   if (!plan || !plan.desde) return '';
@@ -893,16 +907,44 @@ function siguiente(i) {
 
 $('fecha').onchange = function () { cargarEstado(); };
 $('sesion').onchange = function () {
-  var f = $('fecha').value, cod = $('sesion').value;
   cargarSesion();
   $('rutina').classList.remove('hidden');
-  if (f >= hoyISO() && estado && estado.sugerida !== cod) {
-    api('fijarSesion', f, cod).then(function () { invalidarTodo(); refrescarSemana(cod); }).catch(err);
-  }
+  actualizarSelector();
 };
-function refrescarSemana(cod) {
+function diaSeleccionado() {
   var f = $('fecha').value;
-  api('getInicio', f, cod).then(function (r) { escribirCache('ini:' + f + ':' + cod, r); pintarEstado(r.estado, cod); }).catch(function () {});
+  return estado && estado.plan ? estado.plan.dias.filter(function (d) { return d.fecha === f; })[0] : null;
+}
+/** Estado del botón "Entrenar esta sesión": según el día elegido y lo que ya tiene el plan. */
+function actualizarSelector() {
+  var b = $('selFijar'), q = $('selQuitar'); if (!b || !estado) return;
+  var f = $('fecha').value, cod = $('sesion').value, d = diaSeleccionado(), hoy = f === hoyISO();
+  var esaYa = !!(d && d.tipo === 'sesion' && d.sesion === cod);
+  b.disabled = f < hoyISO() || esaYa || !cod;
+  b.textContent = f < hoyISO() ? 'Ese día ya pasó' : esaYa ? (hoy ? 'Ya es la sesión de hoy' : 'Ya está en ese día') : hoy ? 'Entrenar esta sesión hoy' : 'Fijar para ese día';
+  q.style.display = d && d.fijada && d.estado !== 'hecho' ? '' : 'none';
+}
+/** Confirma la sesión elegida para el día elegido: la semana se reacomoda en el servidor. */
+function fijarElegida() {
+  var f = $('fecha').value, cod = $('sesion').value, b = $('selFijar');
+  if (!cod) return;
+  b.disabled = true; b.textContent = 'Guardando…';
+  api('fijarSesion', f, cod).then(function () {
+    invalidarTodo();
+    $('selector').classList.add('hidden');
+    toast((f === hoyISO() ? 'Hoy: ' : 'Fijado: ') + (estado.nombres[cod] || cod) + ' · la semana se reacomodó');
+    cargarEstado(cod);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }).catch(function (e) { b.disabled = false; actualizarSelector(); err(e); });
+}
+/** Deshace una sesión fijada: el día vuelve a lo que diga el plan. */
+function quitarFijada() {
+  var f = $('fecha').value;
+  api('fijarSesion', f, '').then(function () {
+    invalidarTodo(); $('selector').classList.add('hidden');
+    toast('Día liberado: la semana volvió a su plan');
+    cargarEstado();
+  }).catch(err);
 }
 
 /* ---------- Temporizador ---------- */

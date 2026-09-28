@@ -1,5 +1,5 @@
-/* Service worker — Mi plan (versión 202609272152) */
-var V = 'gym-202609272152', MEDIA = 'gym-media';
+/* Service worker — Mi plan (versión 202609280155) */
+var V = 'gym-202609280155', MEDIA = 'gym-media';
 var SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(V).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
