@@ -141,6 +141,20 @@
   .prog-op{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:14px;background:var(--card2);border:1px solid var(--line);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400;font-size:14px}
   .prog-op.act{border-color:var(--amber)}
   .prog-op input{width:auto;margin-top:4px}
+  /* Armar mi plan */
+  #armar,#picker{position:fixed;inset:0;z-index:21;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch} #picker{z-index:22}
+  .mp-dia{margin-top:12px} .mp-dia-h{display:flex;gap:6px;align-items:center;margin-bottom:6px} .mp-dia-h input{flex:1;min-width:0}
+  .mp-ex{padding:10px 0;border-top:1px solid var(--line)} .mp-ex-top{display:flex;gap:10px;align-items:flex-start}
+  .mp-thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--raise);flex-shrink:0}
+  .mp-ex-b{flex:1;min-width:0} .mp-ex-n{font-weight:700;color:var(--ink);line-height:1.3} .mp-ex-a{color:var(--muted);font-size:13px;margin-top:2px;line-height:1.4}
+  .mp-ex .btn.txt{min-height:0;font-size:12px;margin-left:6px}
+  .mp-nums{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;margin:8px 0 0 54px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .mp-nums input{width:46px;padding:6px 2px;text-align:center;font-size:15px;border-radius:9px} .mp-nums select{width:auto;padding:6px 4px;font-size:13px;border-radius:9px}
+  .mp-ico{display:flex;gap:4px;flex-shrink:0} .mp-ico button,.mp-dia-h .mp-b{border:0;background:var(--raise);color:var(--ink);width:32px;height:32px;border-radius:8px;font-size:13px;cursor:pointer;flex-shrink:0;padding:0}
+  .mp-copiar{width:auto;padding:0 16px;font-size:14px;min-height:44px;flex-shrink:0}
+  .pk-item{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:var(--card2);border-radius:12px;padding:8px 10px;margin-top:6px;color:var(--ink);font-family:inherit;font-size:14px;cursor:pointer}
+  .pk-item b{display:block} .pk-item small{display:block;color:var(--muted);font-size:12px}
+  .pk-chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0} .pk-chips .chip{cursor:pointer} .pk-chips .chip.on{background:var(--amber);color:var(--amber-ink)}
   .prog-op .t{font-weight:700;color:var(--ink);font-size:15px;display:flex;align-items:center;flex-wrap:wrap}
   .prog-op .s{color:var(--amber);font-size:12.5px;font-weight:700;margin-top:2px}
   .prog-op .d{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.4;font-weight:400} .prog-op .d.dim{color:var(--faint);font-size:12px;margin-top:4px}
@@ -496,6 +510,30 @@
     <div class="acts bv-acts"><button class="btn sec" id="bvAtras">Atrás</button><button class="btn" id="bvSig">Siguiente</button></div>
   </div>
 </div>
+<div id="armar" class="hidden">
+  <div class="bv-wrap">
+    <div class="bv-top"><span class="kicker" style="color:var(--amber)">MI PLAN</span><button class="gear" onclick="cerrarArmar()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <h1 class="bv-h" style="margin-top:12px">Arma<br>tu plan</h1>
+    <p class="bv-p">Cada día lleva sus ejercicios con principal y alternativa (por si la máquina está ocupada), series, repeticiones y descanso. La progresión por bloques (Base → Carga → Descarga → Volumen) la pone la app.</p>
+    <div id="armarCuerpo"><div class="empty">Cargando…</div></div>
+    <div class="acts bv-acts"><button class="btn sec" id="armarGuardar" onclick="mpGuardar(false)">Guardar</button><button class="btn" id="armarUsar" onclick="mpGuardar(true)">Guardar y usar este plan</button></div>
+  </div>
+</div>
+<div id="picker" class="hidden">
+  <div class="bv-wrap">
+    <div class="bv-top"><span class="kicker" style="color:var(--amber)" id="pkTitulo">ELEGIR EJERCICIO</span><button class="gear" onclick="cerrarPicker()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <input id="pkBuscar" placeholder="Buscar por nombre o músculo…" style="margin-top:12px" oninput="pintarPicker()">
+    <div class="pk-chips" id="pkChips"></div>
+    <div id="pkLista"></div>
+    <div class="card" style="margin-top:14px">
+      <h2>Ejercicio propio</h2>
+      <div class="meta">Si no está en la biblioteca, escríbelo tú (no tendrá foto).</div>
+      <label for="pkNombre">Nombre</label><input id="pkNombre" placeholder="Ej.: Fondos en paralelas">
+      <div class="row"><div><label for="pkGrupo">Músculo</label><select id="pkGrupo"></select></div><div><label for="pkTipo">Tipo</label><select id="pkTipo"><option value="C">Compuesto (varias articulaciones)</option><option value="A" selected>Aislamiento</option></select></div></div>
+      <button class="btn sec" style="width:100%;margin-top:10px" onclick="pkPropio()">Usar este ejercicio</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
   <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
@@ -519,7 +557,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281549', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281608', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -1363,7 +1401,7 @@ function pintarSemana(plan, nombres) {
   var corto = { 'FB-A': 'Día 1', 'FB-B': 'Día 2', TA: 'Torso A', PA: 'Pierna A', TB: 'Torso B', PB: 'Pierna B', D5: 'Día 5',
                 TA4: 'Torso A', PA4: 'Pierna A', TB4: 'Torso B', PB4: 'Pierna B', FB31: 'CC 1', FB32: 'CC 2', FB33: 'CC 3',
                 FB21: 'CC 1', FB22: 'CC 2', FB11: 'CC' };
-  function etiquetaCorta(cod) { if (corto[cod]) return corto[cod]; var m = /^[A-Z]{2}-(.+)$/.exec(cod || ''); return m ? m[1] : (cod || ''); }
+  function etiquetaCorta(cod) { if (corto[cod]) return corto[cod]; var mp = /^MP(\d+)$/.exec(cod || ''); if (mp) { var i = Object.keys(nombres || {}).filter(function (k) { return /^MP\d+$/.test(k); }).indexOf(cod); return 'Día ' + (i >= 0 ? i + 1 : mp[1]); } var m = /^[A-Z]{2}-(.+)$/.exec(cod || ''); return m ? m[1] : (cod || ''); }
   $('semanaStrip').innerHTML = plan.dias.map(function (d) {
     var c = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : 'desc';
     var cu = estado && estado.cumpl && estado.cumpl[d.fecha];
@@ -1543,13 +1581,16 @@ function terminarBienvenida() {
   if (bvPreview && !confirm('Esto cambia tu programa actual a ' + bvDatos.programa + ' desde hoy. ¿Seguir?')) return;
   var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
   var perfil = { Edad: bvDatos.edad, Sexo: bvDatos.sexo, EstaturaM: bvDatos.estatura, DiasEntreno: bvDatos.dias.join(',') };
+  var pMio = (programasCache && programasCache.programas || []).filter(function (x) { return x.id === 'mio'; })[0];
+  var esMio = bvDatos.programa === 'mio';
   api('guardarPerfil', perfil)
     .then(function () { return bvDatos.peso ? api('guardarDiario', { fecha: hoyISO(), peso: bvDatos.peso }) : null; })
+    .then(function () { return esMio && !(pMio && pMio.configurado) ? api('guardarMiPlan', { base: 'hipertrofia' }) : null; })   // Mi plan vacío: arranca con Hipertrofia general de base
     .then(function () { return api('cambiarPrograma', bvDatos.programa, { entrada: bvDatos.entrada, dias: bvDatos.dias.join(','), ajustarComida: true }); })
     .then(function () {
       invalidarTodo(); programasCache = null; cerrarBienvenida();
-      toast('¡Listo! Tu plan está preparado.');
       cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
+      if (esMio) abrirArmar('Te dejamos Hipertrofia general de base: cámbialo a tu gusto'); else toast('¡Listo! Tu plan está preparado.');
     })
     .catch(function (e) { b.disabled = false; b.textContent = 'Empezar'; err(e); });
 }
@@ -1574,9 +1615,10 @@ function pintarProgramas(r) {
   h += '<div class="prog-lista">' + (r.programas || []).map(function (p) {
     var act = p.id === r.actual;
     return '<label class="prog-op' + (act ? ' act' : '') + '"><input type="radio" name="progSel" value="' + p.id + '"' + (act ? ' checked' : '') + '>' +
-      '<div><div class="t">' + esc(p.nombre) + (act ? ' <span class="chip ok" style="margin-left:6px">Actual</span>' : '') + '</div><div class="s">' + esc(p.lema) + ' · ' + p.semanas + ' semanas</div>' +
+      '<div><div class="t">' + esc(p.nombre) + (act ? ' <span class="chip ok" style="margin-left:6px">Actual</span>' : '') + '</div><div class="s">' + esc(p.lema) + (p.mio ? (p.configurado ? ' · ' + p.sesiones + ' día' + (p.sesiones === 1 ? '' : 's') : ' · sin armar') : ' · ' + p.semanas + ' semanas') + '</div>' +
       '<div class="d">' + esc(p.objetivo) + '</div><div class="d dim">' + esc(p.publico) + '</div>' +
-      '<div class="d dim">Cardio: ' + p.cardio.sesiones + ' × ' + esc(p.cardio.minutos) + ' min · ' + esc(p.nutricion.texto) + '</div></div></label>';
+      (p.mio ? '<div style="margin-top:6px"><button type="button" class="btn txt" onclick="event.preventDefault();abrirArmar()">' + (p.configurado ? 'Editar mi plan →' : 'Armar mi plan →') + '</button></div>' :
+      '<div class="d dim">Cardio: ' + p.cardio.sesiones + ' × ' + esc(p.cardio.minutos) + ' min · ' + esc(p.nutricion.texto) + '</div>') + '</div></label>';
   }).join('') + '</div>';
   h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progEntrada" style="width:auto"> Empezar con "Vuelta al gimnasio" (2 semanas suaves, si vienes de parar)</label>';
   h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:6px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progComida" style="width:auto" checked> Ajustar calorías y proteína al objetivo del programa</label>';
@@ -1589,6 +1631,7 @@ function pintarProgramas(r) {
 function cambiarProgramaUI() {
   var sel = document.querySelector('input[name=progSel]:checked'); if (!sel) return;
   var id = sel.value, p = (programasCache.programas || []).filter(function (x) { return x.id === id; })[0];
+  if (p && p.mio && !p.configurado) { abrirArmar('Primero arma tu plan: agrega días y ejercicios'); return; }
   var mismo = id === programasCache.actual;
   if (!confirm((mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + ' desde hoy (Bloque 1)?' + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : ''))) return;
   var b = $('progCambiar'); b.disabled = true; b.textContent = 'Cambiando…';
@@ -1807,6 +1850,121 @@ $('fSubir').onclick = function () {
   };
   rd.readAsDataURL(file);
 };
+
+/* =================== ARMAR MI PLAN =================== */
+var mp = null, mpBib = {}, pkModo = null, pkLista = [], pkGrupo = '';
+function abrirArmar(msg) {
+  var v = $('armar'); v.classList.remove('hidden'); window.scrollTo(0, 0);
+  $('armarCuerpo').innerHTML = '<div class="empty">Cargando…</div>';
+  api('getMiPlan').then(function (r) {
+    mp = r; mpBib = {}; r.biblioteca.forEach(function (b) { mpBib[b.nombre] = b; });
+    pintarArmar(); if (msg) toast(msg);
+  }).catch(function (e) { err(e); cerrarArmar(); });
+}
+function cerrarArmar() { $('armar').classList.add('hidden'); cerrarPicker(); }
+function pintarArmar() {
+  if (!mp) return;
+  var h = '<div class="card"><label for="mpObj">Objetivo (solo cambia cardio y comida)</label><select id="mpObj" onchange="mp.objetivo=this.value">' +
+    mp.objetivos.map(function (o) { return '<option value="' + o.id + '"' + (o.id === mp.objetivo ? ' selected' : '') + '>' + esc(o.nombre) + '</option>'; }).join('') + '</select>' +
+    '<label for="mpBase" style="margin-top:12px">Empezar desde un programa</label><div style="display:flex;gap:8px"><select id="mpBase" style="flex:1;min-width:0">' + mp.bases.map(function (b) { return '<option value="' + b.id + '">' + esc(b.nombre) + '</option>'; }).join('') + '</select><button class="btn sec mp-copiar" onclick="mpCopiarBase()">Copiar</button></div>' +
+    '<div class="meta" style="margin-top:6px">' + (mp.sesiones.length ? 'Copiar reemplaza los días que tienes ahora (según tus días por semana).' : 'Copia un programa y edítalo, o empieza en blanco agregando un día.') + '</div></div>';
+  mp.sesiones.forEach(function (s, i) {
+    h += '<div class="card mp-dia"><div class="mp-dia-h"><span class="kicker">Día ' + (i + 1) + '</span>' +
+      '<input value="' + esc(s.nombre) + '" placeholder="Nombre (p. ej. Pierna)" onchange="mp.sesiones[' + i + '].nombre=this.value">' +
+      '<button class="mp-b" title="Subir" onclick="mpMoverDia(' + i + ',-1)">▲</button><button class="mp-b" title="Bajar" onclick="mpMoverDia(' + i + ',1)">▼</button><button class="mp-b" title="Quitar día" onclick="mpQuitarDia(' + i + ')">✕</button></div>';
+    if (!s.ejercicios.length) h += '<div class="meta">Sin ejercicios todavía.</div>';
+    s.ejercicios.forEach(function (e, j) {
+      var img = e.img || (mpBib[e.ejercicio] && mpBib[e.ejercicio].img) || '';
+      h += '<div class="mp-ex"><div class="mp-ex-top">' + (img ? '<img class="mp-thumb" loading="lazy" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
+        '<div class="mp-ex-b"><div class="mp-ex-n">' + (j + 1) + ' · ' + esc(e.ejercicio) + '<button class="btn txt" onclick="abrirPicker(\'principal\',' + i + ',' + j + ')">Cambiar</button></div>' +
+        '<div class="mp-ex-a">' + (e.alternativa ? 'Alternativa: ' + esc(e.alternativa) + '<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Cambiar</button><button class="btn txt" onclick="mpQuitarAlt(' + i + ',' + j + ')">Quitar</button>' : 'Sin alternativa<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Agregar</button>') + '</div></div>' +
+        '<div class="mp-ico"><button title="Subir" onclick="mpMoverEj(' + i + ',' + j + ',-1)">▲</button><button title="Bajar" onclick="mpMoverEj(' + i + ',' + j + ',1)">▼</button><button title="Quitar" onclick="mpQuitarEj(' + i + ',' + j + ')">✕</button></div></div>' +
+        '<div class="mp-nums"><input type="number" inputmode="numeric" min="1" max="6" value="' + e.series + '" onchange="mpNum(' + i + ',' + j + ',\'series\',this.value)">×' +
+        '<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmin + '" onchange="mpNum(' + i + ',' + j + ',\'rmin\',this.value)">–<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmax + '" onchange="mpNum(' + i + ',' + j + ',\'rmax\',this.value)">' + (e.unidad === 'seg' ? 's' : 'reps') +
+        ' · <select onchange="mpNum(' + i + ',' + j + ',\'descanso\',this.value)">' + mp.descansos.map(function (d) { return '<option value="' + d + '"' + (d === Number(e.descanso) ? ' selected' : '') + '>' + fmtSeg(d) + '</option>'; }).join('') + '</select></div></div>';
+    });
+    if (s.ejercicios.length < mp.maxEjercicios) h += '<button class="btn sec" style="width:100%;margin-top:10px" onclick="abrirPicker(\'agregar\',' + i + ')">+ Agregar ejercicio</button>';
+    h += '</div>';
+  });
+  if (mp.sesiones.length < mp.maxSesiones) h += '<button class="btn sec" style="width:100%;margin-top:12px" onclick="mpAgregarDia()">+ Agregar día</button>';
+  $('armarCuerpo').innerHTML = h;
+}
+function mpNum(i, j, k, v) { var e = mp.sesiones[i].ejercicios[j]; e[k] = Number(v) || e[k]; if (k === 'rmin' && e.rmax < e.rmin) e.rmax = e.rmin; if (k === 'rmax' && e.rmax < e.rmin) e.rmin = e.rmax; }
+function mpAgregarDia() { mp.sesiones.push({ codigo: '', nombre: 'Día ' + (mp.sesiones.length + 1), ejercicios: [] }); pintarArmar(); }
+function mpQuitarDia(i) { var s = mp.sesiones[i]; if (s.ejercicios.length && !confirm('¿Quitar "' + s.nombre + '" con sus ' + s.ejercicios.length + ' ejercicios?')) return; mp.sesiones.splice(i, 1); pintarArmar(); }
+function mpMoverDia(i, d) { var k = i + d; if (k < 0 || k >= mp.sesiones.length) return; var t = mp.sesiones[i]; mp.sesiones[i] = mp.sesiones[k]; mp.sesiones[k] = t; pintarArmar(); }
+function mpQuitarEj(i, j) { mp.sesiones[i].ejercicios.splice(j, 1); pintarArmar(); }
+function mpMoverEj(i, j, d) { var l = mp.sesiones[i].ejercicios, k = j + d; if (k < 0 || k >= l.length) return; var t = l[j]; l[j] = l[k]; l[k] = t; pintarArmar(); }
+function mpQuitarAlt(i, j) { mp.sesiones[i].ejercicios[j].alternativa = ''; pintarArmar(); }
+function mpCopiarBase() {
+  var id = $('mpBase').value, nombre = (mp.bases.filter(function (b) { return b.id === id; })[0] || {}).nombre || id;
+  if (mp.sesiones.length && !confirm('Esto reemplaza tus días actuales por los de ' + nombre + ' (según tus días por semana). ¿Seguir?')) return;
+  $('armarCuerpo').innerHTML = '<div class="empty">Copiando ' + esc(nombre) + '…</div>';
+  api('guardarMiPlan', { base: id, objetivo: mp.objetivo }).then(function () { invalidarTodo(); programasCache = null; abrirArmar('Listo: ahora edítalo a tu gusto'); }).catch(function (e) { err(e); pintarArmar(); });
+}
+function mpGuardar(usar) {
+  if (!mp) return;
+  if (!mp.sesiones.length) { toast('Agrega al menos un día con ejercicios'); return; }
+  for (var i = 0; i < mp.sesiones.length; i++) if (!mp.sesiones[i].ejercicios.length) { toast('El día "' + mp.sesiones[i].nombre + '" no tiene ejercicios'); return; }
+  var plan = { objetivo: mp.objetivo, sesiones: mp.sesiones.map(function (s) { return { codigo: s.codigo || '', nombre: s.nombre, ejercicios: s.ejercicios.map(function (e) {
+    return { ejercicio: e.ejercicio, alternativa: e.alternativa || '', series: e.series, rmin: e.rmin, rmax: e.rmax, descanso: e.descanso, grupo: e.grupo || '', tipo: e.tipo || 'A' }; }) }; }) };
+  if (usar && !confirm(mp.activo ? '¿Guardar los cambios y seguir con Mi plan? El avance de bloques se conserva.' : '¿Usar Mi plan desde hoy (Bloque 1)? Tu historial se conserva.')) return;
+  var b1 = $('armarGuardar'), b2 = $('armarUsar'); b1.disabled = b2.disabled = true; b2.textContent = 'Guardando…';
+  api('guardarMiPlan', plan).then(function (r) {
+    invalidarTodo(); programasCache = null;
+    if (!usar || mp.activo) { toast('Mi plan guardado: ' + r.sesiones + ' días · ' + r.ejercicios + ' ejercicios'); if (usar) { cerrarArmar(); cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes(); } else abrirArmar(); return; }
+    return api('cambiarPrograma', 'mio', { entrada: false, ajustarComida: true }).then(function () {
+      cerrarArmar(); toast('Ya entrenas con Mi plan'); cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
+    });
+  }).catch(err).then(function () { b1.disabled = b2.disabled = false; b2.textContent = 'Guardar y usar este plan'; });
+}
+/* --- Selector de ejercicios (biblioteca + propios) --- */
+function abrirPicker(modo, i, j) {
+  pkModo = { modo: modo, i: i, j: j }; pkGrupo = '';
+  $('pkTitulo').textContent = modo === 'agregar' ? 'AGREGAR EJERCICIO' : modo === 'principal' ? 'CAMBIAR EL PRINCIPAL' : 'ELEGIR ALTERNATIVA';
+  $('pkBuscar').value = ''; $('pkNombre').value = '';
+  $('pkGrupo').innerHTML = mp.grupos.map(function (g) { return '<option>' + esc(g) + '</option>'; }).join('');
+  $('picker').classList.remove('hidden'); $('picker').scrollTop = 0;
+  pintarPicker();
+}
+function cerrarPicker() { $('picker').classList.add('hidden'); pkModo = null; }
+function sinAcentos(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+function pintarPicker() {
+  if (!mp) return;
+  var q = sinAcentos($('pkBuscar').value.trim()), g = sinAcentos(pkGrupo);
+  var enUso = pkModo && pkModo.modo !== 'alternativa' ? mp.sesiones[pkModo.i].ejercicios.map(function (e) { return e.ejercicio; }) : [];
+  pkLista = mp.biblioteca.filter(function (b) {
+    if (g && sinAcentos(b.grupo).indexOf(g) < 0) return false;
+    if (q && sinAcentos(b.nombre).indexOf(q) < 0 && sinAcentos(b.grupo).indexOf(q) < 0) return false;
+    return true;
+  });
+  $('pkChips').innerHTML = ['Todos'].concat(mp.grupos).map(function (x) { var on = (x === 'Todos' && !pkGrupo) || x === pkGrupo; return '<span class="chip' + (on ? ' on' : '') + '" onclick="pkGrupo=\'' + (x === 'Todos' ? '' : esc(x)) + '\';pintarPicker()">' + esc(x) + '</span>'; }).join('');
+  $('pkLista').innerHTML = pkLista.length ? pkLista.map(function (b, k) {
+    var usado = enUso.indexOf(b.nombre) >= 0;
+    return '<button class="pk-item" onclick="pkElegir(' + k + ')"' + (usado ? ' disabled style="opacity:.45"' : '') + '>' + (b.img ? '<img class="mp-thumb" loading="lazy" alt="" src="' + esc(b.img) + '">' : '<div class="mp-thumb"></div>') +
+      '<div><b>' + esc(b.nombre) + '</b><small>' + esc(b.grupo) + ' · ' + (b.tipo === 'C' ? 'compuesto' : 'aislamiento') + (usado ? ' · ya está en este día' : '') + '</small></div></button>';
+  }).join('') : '<div class="meta" style="margin-top:8px">Nada con ese nombre en la biblioteca: puedes agregarlo abajo como ejercicio propio.</div>';
+}
+function pkAplicar(nombre, datos) {
+  var s = mp.sesiones[pkModo.i], j = pkModo.j;
+  if (pkModo.modo === 'agregar') {
+    var c = datos.tipo === 'C';
+    s.ejercicios.push({ ejercicio: nombre, alternativa: datos.alt || '', series: 3, rmin: c ? 6 : 10, rmax: c ? 10 : 15, descanso: c ? 120 : 75, grupo: datos.grupo, tipo: datos.tipo, unidad: datos.unidad || 'reps', img: datos.img || '', propio: !!datos.propio });
+  } else if (pkModo.modo === 'principal') {
+    var e = s.ejercicios[j]; e.ejercicio = nombre; e.grupo = datos.grupo; e.tipo = datos.tipo; e.unidad = datos.unidad || 'reps'; e.img = datos.img || ''; e.propio = !!datos.propio;
+    if (e.alternativa === nombre) e.alternativa = '';
+  } else {
+    var e2 = s.ejercicios[j]; if (nombre !== e2.ejercicio) e2.alternativa = nombre;
+  }
+  cerrarPicker(); pintarArmar();
+}
+function pkElegir(k) { var b = pkLista[k]; if (b) pkAplicar(b.nombre, b); }
+function pkPropio() {
+  var nombre = $('pkNombre').value.replace(/\s+/g, ' ').trim();
+  if (nombre.length < 2) { toast('Escribe el nombre del ejercicio'); return; }
+  if (mpBib[nombre]) { pkAplicar(nombre, mpBib[nombre]); return; }
+  pkAplicar(nombre, { grupo: $('pkGrupo').value, tipo: $('pkTipo').value, unidad: 'reps', img: '', propio: true });
+}
 
 /* =================== DIAGNÓSTICO DE CONEXIÓN (en Ajustes) =================== */
 function diagnostico() {
