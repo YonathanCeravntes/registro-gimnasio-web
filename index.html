@@ -476,6 +476,12 @@
       <p class="meta">Tus datos de salud y entrenamiento se envían a Google Gemini solo cuando pides un análisis o haces una pregunta. En el nivel gratuito, Google puede usar ese contenido para mejorar sus productos.</p>
     </div>
     <button class="btn" id="pGuardar">Guardar ajustes</button>
+    <div class="card" style="margin-top:14px">
+      <h2>Conexión</h2>
+      <div class="meta">Si ves errores de "Load failed" o "Sin conexión", esta prueba muestra qué parte falla.</div>
+      <div class="acts" style="margin-top:10px"><button class="btn sec" onclick="diagnostico()">Probar conexión</button><button class="btn txt" onclick="copiarDiag()">Copiar resultado</button></div>
+      <pre id="diagTxt" style="white-space:pre-wrap;word-break:break-word;font-size:12px;line-height:1.5;color:var(--muted);margin:10px 0 0"></pre>
+    </div>
     </div>
   </section>
 </main>
@@ -513,7 +519,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281515', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281521', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -1742,6 +1748,43 @@ $('fSubir').onclick = function () {
   };
   rd.readAsDataURL(file);
 };
+
+/* =================== DIAGNÓSTICO DE CONEXIÓN (en Ajustes) =================== */
+function diagnostico() {
+  var out = [];
+  var linea = function (t) { out.push(t); $('diagTxt').textContent = out.join('\n'); };
+  var ahora = new Date();
+  linea('Hora: ' + ahora.toLocaleTimeString() + ' · app ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'servidor') + ' · online: ' + navigator.onLine);
+  linea('Navegador: ' + navigator.userAgent.replace(/^Mozilla\/5\.0 \(/, '').slice(0, 110));
+  var sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+  linea('Service worker: ' + (sw ? 'activo (' + (sw.scriptURL || '').split('/').pop() + ')' : 'no'));
+  if (typeof CFG === 'undefined' || !CFG) { linea('La app usa google.script.run (no hay pruebas de red aquí).'); return; }
+  linea('Servidor: ' + CFG.api.replace(/macros\/s\/[^/]+/, 'macros/s/…'));
+  var pruebas = [
+    ['1 GET ping', function () { return fetch(CFG.api + '?api=ping', { redirect: 'follow' }); }],
+    ['2 GET ping (sin seguir redirección)', function () { return fetch(CFG.api + '?api=ping', { redirect: 'manual' }); }],
+    ['3 POST getAvisos', function () { return fetch(CFG.api, { method: 'POST', body: JSON.stringify({ fn: 'getAvisos', args: [], t: CFG.t }), redirect: 'follow' }); }],
+    ['4 GET script.googleusercontent.com', function () { return fetch('https://script.googleusercontent.com/macros/echo', { mode: 'no-cors', cache: 'no-store' }); }],
+    ['5 GET script.google.com', function () { return fetch('https://script.google.com/', { mode: 'no-cors', cache: 'no-store' }); }],
+    ['6 GET www.google.com', function () { return fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-store' }); }]
+  ];
+  var i = 0;
+  (function siguiente() {
+    if (i >= pruebas.length) { linea('— fin —'); return; }
+    var p = pruebas[i++], t0 = Date.now();
+    p[1]().then(function (r) {
+      return r.text().catch(function () { return ''; }).then(function (b) {
+        linea(p[0] + ': ' + r.status + ' ' + r.type + ' · ' + (Date.now() - t0) + ' ms' + (b ? ' · ' + b.replace(/\s+/g, ' ').slice(0, 60) : ''));
+      });
+    }).catch(function (e) { linea(p[0] + ': ERROR ' + ((e && (e.name + ': ' + e.message)) || e) + ' · ' + (Date.now() - t0) + ' ms'); })
+      .then(siguiente);
+  })();
+}
+function copiarDiag() {
+  var t = $('diagTxt').textContent; if (!t) { toast('Primero toca "Probar conexión"'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { toast('Resultado copiado'); }).catch(function () { prompt('Copia este texto:', t); });
+  else prompt('Copia este texto:', t);
+}
 
 /* =================== CUENTA E INVITADOS (en Ajustes) =================== */
 function cargarCuenta() {
