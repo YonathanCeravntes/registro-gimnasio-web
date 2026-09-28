@@ -486,10 +486,15 @@
     </div>
     <div class="card" id="iaCard">
       <h2>Inteligencia artificial</h2>
-      <div class="meta" id="pClaveEstado"></div>
-      <label for="pClave">Clave de Gemini (aistudio.google.com/apikey)</label><input id="pClave" type="password" placeholder="Pega aquí tu clave">
-      <label for="pModelo">Modelo</label><input id="pModelo" placeholder="gemini-3.8-flash">
-      <p class="meta">Tus datos de salud y entrenamiento se envían a Google Gemini solo cuando pides un análisis o haces una pregunta. En el nivel gratuito, Google puede usar ese contenido para mejorar sus productos.</p>
+      <div class="meta">Para el Coach y para diseñar planes con IA. Las claves quedan guardadas en el servidor: nunca se muestran en la app.</div>
+      <label for="pProv">Usar</label><select id="pProv"><option value="">Automático (Claude si tiene clave; si no, Gemini)</option><option value="claude">Claude (Anthropic)</option><option value="gemini">Gemini (Google)</option></select>
+      <div class="meta" id="pClaveClaudeEstado" style="margin-top:10px"></div>
+      <label for="pClaveClaude">Clave de Claude (console.anthropic.com → API keys)</label><input id="pClaveClaude" type="password" autocomplete="off" placeholder="sk-ant-…">
+      <label for="pModeloClaude">Modelo de Claude</label><input id="pModeloClaude" placeholder="claude-sonnet-5-5">
+      <div class="meta" id="pClaveEstado" style="margin-top:10px"></div>
+      <label for="pClave">Clave de Gemini (aistudio.google.com/apikey)</label><input id="pClave" type="password" autocomplete="off" placeholder="Pega aquí tu clave">
+      <label for="pModelo">Modelo de Gemini</label><input id="pModelo" placeholder="gemini-3.8-flash">
+      <p class="meta">Tus datos de salud y entrenamiento se envían a la IA elegida (Anthropic o Google) solo cuando pides un análisis, haces una pregunta o diseñas un plan. Los invitados usan estas mismas claves con un tope diario.</p>
     </div>
     <button class="btn" id="pGuardar">Guardar ajustes</button>
     <div class="card" style="margin-top:14px">
@@ -559,7 +564,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609281646', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
+var INICIAL = null, APP_VERSION = '202609281928', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -630,6 +635,8 @@ function porFetch(url, fn, args, t) {
   return fetch(url, { method: 'POST', body: cuerpo, redirect: 'follow' })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
+/* Llamadas que tardan (la IA piensa 20–60 s): más tiempo de espera y sin repetirlas solas (repetir = pagar dos veces) */
+var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1 };
 function porScript(url, fn, args, t) {
   return new Promise(function (ok, ko) {
     var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -637,13 +644,16 @@ function porScript(url, fn, args, t) {
     if (q.length > 7000) { ko(new Error('Petición demasiado grande para el modo alterno')); return; }
     var s = document.createElement('script'), fin = false, timer;
     var limpiar = function () { if (fin) return; fin = true; clearTimeout(timer); try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (s.parentNode) s.parentNode.removeChild(s); };
-    timer = setTimeout(function () { limpiar(); ko(new Error('Sin conexión con el servidor (tiempo agotado)')); }, 45000);
+    timer = setTimeout(function () { limpiar(); ko(new Error('Sin conexión con el servidor (tiempo agotado)')); }, LLAMADAS_LENTAS[fn] ? 150000 : 45000);
     window[cb] = function (j) { limpiar(); ok(j); };
     s.onerror = function () { limpiar(); ko(new Error('Sin conexión con el servidor (script)')); };
     s.src = q; document.head.appendChild(s);
   });
 }
-function esFalloDeRed(e) { return e instanceof TypeError || /load failed|failed to fetch|network|tiempo agotado|(script)/i.test(String(e && e.message || e)); }
+/* Fallo "de red": la petición no llegó o no se pudo leer la respuesta. Incluye HTTP 404/408/429/5xx: Apps Script responde
+   con una redirección a script.googleusercontent.com cuya clave es de un solo uso y caduca; en una red lenta el celular
+   a veces la pide dos veces y la segunda da 404. Se repite por el otro canal y sale bien. */
+function esFalloDeRed(e) { return e instanceof TypeError || /load failed|failed to fetch|network|tiempo agotado|(script)|^HTTP (404|408|429|5dd)$/i.test(String(e && e.message || e)); }
 /* Máximo 3 llamadas a la vez: en una conexión lenta, muchas peticiones en paralelo se caen ("Load failed") */
 var EN_VUELO = 0, COLA_LLAMADAS = [], MAX_EN_VUELO = 3;
 function conTurno(fn) {
@@ -672,6 +682,7 @@ function llamarConReintento(url, fn, args, t, intento) {
     if (document.visibilityState === 'hidden' && intento < 2) return cuandoVisible().then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
     // El canal principal no pudo leer la respuesta: misma llamada por el otro canal
     return alterno(url, fn, args, t).then(function (j) { fijarTransporte(TRANSPORTE === 'jsonp' ? 'fetch' : 'jsonp'); return j; }).catch(function (e2) {
+      if (LLAMADAS_LENTAS[fn]) throw new Error('Se cortó la conexión mientras la IA respondía. Revisa tu red y vuelve a intentar.');
       if (intento < 1) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return llamarConReintento(url, fn, args, t, intento + 1); });
       throw new Error('Sin conexión con el servidor (' + ((e && e.message) || e) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
     });
@@ -1459,8 +1470,8 @@ function cargarCoach() {
   $('coach').innerHTML = '<div class="empty">Cargando…</div>';
   api('getCoach').then(function (c) {
     var h = '';
-    if (!c.tieneClave) h += '<div class="card"><b>Falta conectar la IA.</b><div class="meta" style="margin-top:6px">Entra a aistudio.google.com/apikey con tu cuenta de Google, crea una clave y pégala en Ajustes.</div><button class="btn" style="margin-top:10px" onclick="irA(\'ajustes\')">Ir a Ajustes</button></div>';
-    h += '<div class="card"><h2>Tu entrenador</h2><div class="meta">Analiza tus últimas 2 semanas (series, RIR, lo que no hiciste y por qué, peso, grasa, sueño, notas, condiciones y medicamentos) y propone ajustes.</div>' +
+    if (!c.tieneClave) h += '<div class="card"><b>Falta conectar la IA.</b><div class="meta" style="margin-top:6px">' + (c.esDueno ? 'Pega tu clave de Claude (console.anthropic.com) o de Gemini (aistudio.google.com/apikey) en Ajustes → Inteligencia artificial.' : 'Pídele al dueño de la app que conecte la IA en sus Ajustes.') + '</div>' + (c.esDueno ? '<button class="btn" style="margin-top:10px" onclick="irA(\'ajustes\')">Ir a Ajustes</button>' : '') + '</div>';
+    h += '<div class="card"><h2>Tu entrenador' + (c.ia && c.tieneClave ? ' <span class="chip">' + esc(c.ia.nombre) + '</span>' : '') + '</h2><div class="meta">Analiza tus últimas 2 semanas (series, RIR, lo que no hiciste y por qué, peso, grasa, sueño, notas, condiciones y medicamentos) y propone ajustes. Para armar tu rutina con IA ve a Ajustes → Programa → Mi plan.</div>' +
       '<button class="btn" style="margin-top:10px" id="btnAnalizar" onclick="analizar()"' + (c.tieneClave ? '' : ' disabled') + '>Analizar mis últimas 2 semanas</button>' +
       '<label for="pregunta" style="margin-top:12px">O pregúntale algo</label><textarea id="pregunta" rows="3" placeholder="Ej.: hoy me duele la rodilla derecha al bajar, ¿qué hago con la prensa?"></textarea>' +
       '<button class="btn sec" style="margin-top:8px" id="btnPreguntar" onclick="preguntar()"' + (c.tieneClave ? '' : ' disabled') + '>Preguntar</button>' +
@@ -1471,7 +1482,7 @@ function cargarCoach() {
         '<button class="btn ghost small" style="margin-top:6px" onclick="quitar(' + a.fila + ')">Quitar ajuste</button></div>';
     }).join('') + '</div>';
     if (c.historial.length) h += '<div class="card"><h2>Historial</h2>' + c.historial.map(function (x) {
-      return '<details style="margin-top:8px"><summary>' + esc(x.fecha) + ' · ' + esc(x.tipo === 'pregunta' ? x.pregunta : 'Análisis') + '</summary>' + respuestaHTML(x.respuesta, false) + '</details>';
+      return '<details style="margin-top:8px"><summary>' + esc(x.fecha) + ' · ' + esc(x.tipo === 'pregunta' ? x.pregunta : x.tipo === 'plan' ? 'Plan con IA: ' + x.pregunta : 'Análisis') + '</summary>' + respuestaHTML(x.respuesta, false) + '</details>';
     }).join('') + '</div>';
     $('coach').innerHTML = h;
   }).catch(err);
@@ -1512,8 +1523,12 @@ function cargarAjustes() {
     $('pDias').innerHTML = [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (sel.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('');
     $('pInicio').textContent = 'El plan empezó el ' + p.fechaInicio + ' (se cambia en la hoja Config).';
     $('pCond').value = p.Condiciones || ''; $('pMed').value = p.Medicamentos || ''; $('pLes').value = p.Lesiones || ''; $('pOtros').value = p.OtrosSalud || '';
+    var ia = p.ia || {};
+    $('pProv').value = ia.eleccion || ''; $('pModeloClaude').value = ia.modeloClaude || ''; $('pClaveClaude').value = '';
     $('pModelo').value = p.ModeloIA || ''; $('pClave').value = '';
-    $('pClaveEstado').textContent = p.tieneClave ? 'Clave guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Aún no hay clave: el Coach no funcionará hasta que la agregues.';
+    $('pClaveClaudeEstado').textContent = ia.tieneClaveClaude ? 'Clave de Claude guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Claude todavía.';
+    $('pClaveEstado').textContent = ia.tieneClaveGemini ? 'Clave de Gemini guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Gemini.';
+    if (!ia.tieneClave) $('pClaveClaudeEstado').textContent += ' El Coach y el diseño con IA no funcionarán hasta que pegues una clave.';
   }).catch(err);
 }
 /* ---------- Bienvenida (primera vez) ---------- */
@@ -1592,7 +1607,7 @@ function terminarBienvenida() {
     .then(function () {
       invalidarTodo(); programasCache = null; cerrarBienvenida();
       cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
-      if (esMio) abrirArmar('Te dejamos Hipertrofia general de base: cámbialo a tu gusto'); else toast('¡Listo! Tu plan está preparado.');
+      if (esMio) abrirArmar('Te dejamos Hipertrofia general de base: cámbialo a tu gusto o pídele a la IA que lo diseñe'); else toast('¡Listo! Tu plan está preparado.');
     })
     .catch(function (e) { b.disabled = false; b.textContent = 'Empezar'; err(e); });
 }
@@ -1646,8 +1661,9 @@ $('pGuardar').onclick = function () {
   var dias = []; document.querySelectorAll('#pDias input:checked').forEach(function (x) { dias.push(x.value); });
   var p = { Edad: $('pEdad').value, Sexo: $('pSexo').value, EstaturaM: $('pEstatura').value, DiasEntreno: dias.join(','),
             Condiciones: $('pCond').value, Medicamentos: $('pMed').value, Lesiones: $('pLes').value, OtrosSalud: $('pOtros').value,
-            ModeloIA: $('pModelo').value || 'gemini-3.8-flash' };
+            ModeloIA: $('pModelo').value || 'gemini-3.8-flash', ProveedorIA: $('pProv').value || '', ModeloClaude: $('pModeloClaude').value || 'claude-sonnet-5-5' };
   if ($('pClave').value.trim()) p.apiKey = $('pClave').value.trim();
+  if ($('pClaveClaude').value.trim()) p.claveClaude = $('pClaveClaude').value.trim();
   var b = $('pGuardar'); b.disabled = true;
   api('guardarPerfil', p).then(function () { b.disabled = false; toast('Ajustes guardados'); cargarAjustes(); invalidarTodo(); cargarEstado(); }).catch(function (x) { b.disabled = false; err(x); });
 };
@@ -1881,13 +1897,50 @@ function abrirArmar(msg) {
   $('armarCuerpo').innerHTML = '<div class="empty">Cargando…</div>';
   api('getMiPlan').then(function (r) {
     mp = r; mpBib = {}; r.biblioteca.forEach(function (b) { mpBib[b.nombre] = b; });
+    mpIa.resp = null; mpIa.ocupado = false;
     pintarArmar(); if (msg) toast(msg);
   }).catch(function (e) { err(e); cerrarArmar(); });
 }
 function cerrarArmar() { $('armar').classList.add('hidden'); cerrarPicker(); }
+/* --- Diseñar el plan con IA: la persona lo describe en texto, la IA propone y aquí se revisa --- */
+var mpIa = { texto: '', resp: null, ocupado: false };
+function tarjetaIA() {
+  var ia = mp.ia || {};
+  var h = '<div class="card mp-ia"><h2>Diséñalo con IA' + (ia.tieneClave ? ' <span class="chip">' + esc(ia.nombre || 'IA') + '</span>' : '') + '</h2>';
+  if (!ia.tieneClave) {
+    return h + '<div class="meta">' + (ia.esDueno ? 'Pega tu clave de Claude (o de Gemini) en Ajustes → Inteligencia artificial y aquí podrás describir tu plan en texto para que la IA lo arme.' : 'El dueño de la app aún no ha conectado la IA. Mientras tanto puedes copiar un programa y editarlo.') + '</div></div>';
+  }
+  h += '<div class="meta">Cuéntale al entrenador cuántos días y minutos tienes, con qué equipo (gimnasio completo, mancuernas en casa…), tu experiencia, qué quieres priorizar y si tienes molestias. Arma los días con ejercicios de la biblioteca, series, repeticiones y descansos; tú revisas y guardas.</div>' +
+    '<textarea id="mpIaTxt" rows="4" placeholder="Ej.: 4 días de 60 min en gimnasio completo, llevo un año entrenando, quiero priorizar espalda y glúteo, me molesta el hombro derecho en el press militar" oninput="mpIa.texto=this.value">' + esc(mpIa.texto) + '</textarea>' +
+    '<div class="acts" style="margin-top:8px"><button class="btn" id="mpIaBtn" onclick="mpDisenarIA(false)"' + (mpIa.ocupado ? ' disabled' : '') + '>' + (mpIa.ocupado ? 'Diseñando… (30–60 s)' : 'Diseñar mi plan') + '</button>' +
+    (mp.sesiones.length ? '<button class="btn sec" id="mpIaAjustar" onclick="mpDisenarIA(true)"' + (mpIa.ocupado ? ' disabled' : '') + '>Ajustar el actual</button>' : '') + '</div>' +
+    '<div class="meta" style="margin-top:6px">' + (mp.sesiones.length ? '"Diseñar" empieza de cero; "Ajustar" cambia solo lo que pidas del plan que tienes. ' : '') + 'Hoy: ' + (ia.usados || 0) + ' de ' + (ia.maximo || 0) + ' diseños.</div>';
+  var r = mpIa.resp;
+  if (r) {
+    h += '<div class="ia" style="margin-top:10px"><p><b>' + esc(r.resumen) + '</b></p>' +
+      (r.notas.length ? '<ul>' + r.notas.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') +
+      (r.propios.length ? '<div class="meta">Sin foto (no están en la biblioteca): ' + esc(r.propios.join(', ')) + '. Puedes cambiarlos con "Cambiar".</div>' : '') +
+      '<div class="meta" style="margin-top:6px">Revisa los días de abajo y, si te gusta, toca <b>Guardar y usar este plan</b>. Si no, ajústalo a mano o pide cambios.</div></div>';
+  }
+  return h + '</div>';
+}
+function mpDisenarIA(ajustar) {
+  if (!mp || mpIa.ocupado) return;
+  var texto = String(mpIa.texto || '').trim();
+  if (texto.length < 8) { toast('Cuéntale a la IA qué quieres: días, minutos, equipo, prioridades…'); var t = $('mpIaTxt'); if (t) t.focus(); return; }
+  if (!ajustar && mp.sesiones.length && !confirm('Diseñar de cero reemplaza en pantalla los días que tienes (no se guarda nada hasta que toques Guardar). ¿Seguir?')) return;
+  var sesiones = ajustar ? mp.sesiones.map(function (s) { return { codigo: s.codigo || '', nombre: s.nombre, ejercicios: s.ejercicios.map(function (e) {
+    return { ejercicio: e.ejercicio, alternativa: e.alternativa || '', series: e.series, rmin: e.rmin, rmax: e.rmax, descanso: e.descanso }; }) }; }) : [];
+  mpIa.ocupado = true; mpIa.resp = null; pintarArmar();
+  api('disenarPlanIA', { texto: texto, sesiones: sesiones, objetivo: mp.objetivo }).then(function (r) {
+    mp.sesiones = r.sesiones; mp.objetivo = r.objetivo; mpIa.resp = r;
+    if (mp.ia) { mp.ia.usados = r.usados; mp.ia.maximo = r.maximo; }
+    toast('Propuesta lista: ' + r.sesiones.length + ' día' + (r.sesiones.length === 1 ? '' : 's') + '. Revísala y guarda.');
+  }).catch(err).then(function () { mpIa.ocupado = false; pintarArmar(); });
+}
 function pintarArmar() {
   if (!mp) return;
-  var h = '<div class="card"><label for="mpObj">Objetivo (solo cambia cardio y comida)</label><select id="mpObj" onchange="mp.objetivo=this.value">' +
+  var h = tarjetaIA() + '<div class="card"><label for="mpObj">Objetivo (solo cambia cardio y comida)</label><select id="mpObj" onchange="mp.objetivo=this.value">' +
     mp.objetivos.map(function (o) { return '<option value="' + o.id + '"' + (o.id === mp.objetivo ? ' selected' : '') + '>' + esc(o.nombre) + '</option>'; }).join('') + '</select>' +
     '<label for="mpBase" style="margin-top:12px">Empezar desde un programa</label><div style="display:flex;gap:8px"><select id="mpBase" style="flex:1;min-width:0">' + mp.bases.map(function (b) { return '<option value="' + b.id + '">' + esc(b.nombre) + '</option>'; }).join('') + '</select><button class="btn sec mp-copiar" onclick="mpCopiarBase()">Copiar</button></div>' +
     '<div class="meta" style="margin-top:6px">' + (mp.sesiones.length ? 'Copiar reemplaza los días que tienes ahora (según tus días por semana).' : 'Copia un programa y edítalo, o empieza en blanco agregando un día.') + '</div></div>';
