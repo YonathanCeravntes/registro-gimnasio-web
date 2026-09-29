@@ -1,5 +1,5 @@
-/* Service worker — Mi plan (versión 202609290018) */
-var V = 'gym-202609290018', MEDIA = 'gym-media';
+/* Service worker — Mi plan (versión 202609290030) */
+var V = 'gym-202609290030', MEDIA = 'gym-media';
 var SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(V).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
@@ -32,4 +32,18 @@ self.addEventListener('fetch', function (e) {
       });
     }));
   }
+});
+// Avisos en el celular (Push.gs → proxy → Apple/Google): se muestran aunque la app esté cerrada o el celular bloqueado
+self.addEventListener('push', function (e) {
+  var d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { texto: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.titulo || 'Mi plan', { body: d.texto || '', icon: './icon-192.png', badge: './icon-192.png',
+    tag: d.tag || undefined, renotify: !!d.tag, data: { url: d.url || './' } }));
+});
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (ws) {
+    for (var i = 0; i < ws.length; i++) { if ('focus' in ws[i]) return ws[i].focus(); }
+    return self.clients.openWindow((e.notification.data && e.notification.data.url) || './');
+  }));
 });
