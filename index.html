@@ -246,6 +246,32 @@
   label.chk{display:flex;gap:10px;align-items:center;color:var(--ink);text-transform:none;letter-spacing:0;font-size:14px;margin-top:12px}
   label.chk input{width:auto;accent-color:var(--amber)}
   .oculto{position:absolute!important;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
+  /* Modo entrenador y Pro */
+  .foto-mini.bloq{opacity:.4}
+  .ent-card{border-left:4px solid var(--amber)}
+  .ent-txt{margin:8px 0 10px;font-size:16px;line-height:1.45;white-space:normal;overflow-wrap:anywhere}
+  .ent-card .btn.small{width:auto;min-width:110px}
+  .alumno{border-top:1px solid var(--line)} .alumno:first-child{border-top:0}
+  .alumno-h{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:var(--ink);text-align:left;padding:12px 2px;font-family:var(--body);cursor:pointer}
+  .alumno .av{width:40px;height:40px;border-radius:999px;background:var(--amber-bg);color:var(--amber);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;font-size:20px;flex-shrink:0}
+  .alumno-n{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--muted)} .alumno-n b{font-size:16px;color:var(--ink)}
+  .alumno-c{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+  .alumno.abierto .alumno-h{padding-bottom:6px}
+  .alumno-b{padding:0 2px 14px}
+  .ok-t{color:var(--green-ink)} .warn-t{color:var(--amber)} .bad-t{color:var(--bad)}
+  .stats4{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+  .stats4 .st{background:var(--card2);border-radius:12px;padding:10px}
+  .stats4 .st b{display:block;font-size:26px;margin:4px 0 2px}
+  .stats4 .st .meta{font-size:12px}
+  .plan-dia{background:var(--card2);border-radius:12px;padding:10px;margin-top:8px}
+  .plan-dia .meta{margin-top:3px}
+  .tabla-pro{width:100%;border-collapse:collapse;margin:10px 0 4px;font-size:13.5px}
+  .tabla-pro th{text-align:left;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);padding:6px 4px}
+  .tabla-pro td{padding:7px 4px;border-top:1px solid var(--line);color:var(--muted)} .tabla-pro td+td{color:var(--ink);font-weight:700;text-align:center;width:22%}
+  .tabla-pro th+th{text-align:center}
+  .pro-box{margin-top:12px;padding:12px;border-radius:12px;background:var(--amber-bg)}
+  .pro-box b{color:var(--amber);font-family:var(--disp);font-size:20px;text-transform:uppercase} .pro-box ul{margin:6px 0;padding-left:18px;color:var(--ink);font-size:14px}
+  .nivel-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px} .nivel-h .num{font-size:26px}
   .chips-mom{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px}
   .chips-mom::-webkit-scrollbar{display:none}
   .chips-mom .chip{flex-shrink:0;cursor:pointer;border:0;font-family:var(--body);font-size:13px;padding:8px 12px}
@@ -364,6 +390,7 @@
     </div>
     <div class="wrap">
       <div id="ctaBox"></div>
+      <div id="entrenadorBox"></div>
       <div id="selector" class="hidden">
         <div class="card">
           <div class="row">
@@ -418,7 +445,7 @@
     <div class="card" id="cIaCard"><h2>Con IA</h2>
       <div class="meta">Cuéntale qué comiste o tómale una foto al plato. Tú revisas antes de guardar.</div>
       <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
-        <label class="btn sec foto-mini" for="cIaFoto" aria-label="Foto del plato">📷</label></div>
+        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato">📷</label></div>
       <input id="cIaFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoComidaElegida(this)">
       <div class="meta" id="cIaFotoTxt"></div>
       <button class="btn" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular</button>
@@ -518,6 +545,7 @@
     <div class="wrap">
     <div class="card aj-menu" id="ajMenu">
       <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span class="ic">👤</span><span><b>Cuenta e invitados</b><small>Quién eres y a quién invitaste</small></span></button>
+      <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span class="ic">🧑‍🏫</span><span><b>Alumnos y Pro</b><small>Modo entrenador: sus semanas, notas y planes</small></span></button>
       <button onclick="ajSeccion('programa')"><span class="ic">🏋️</span><span><b>Programa</b><small>Tu programa, bloques y Mi plan</small></span></button>
       <button onclick="ajSeccion('perfil')"><span class="ic">📏</span><span><b>Perfil y gimnasio</b><small>Edad, días de entreno y pesos de tu gimnasio</small></span></button>
       <button onclick="ajSeccion('salud')"><span class="ic">❤️</span><span><b>Salud</b><small>Condiciones, medicamentos y molestias (las lee el Coach)</small></span></button>
@@ -529,6 +557,23 @@
     <div class="card" id="cuentaCard" data-sec="cuenta" style="display:none">
       <h2>Cuenta</h2>
       <div class="meta" id="cuentaTxt"></div>
+    </div>
+    <div class="card" id="entCard" data-sec="cuenta" style="display:none">
+      <h2>Tu entrenador</h2>
+      <div id="entBody" class="meta">Cargando…</div>
+    </div>
+    <div class="card" id="nivelCard" data-sec="cuenta" style="display:none">
+      <h2>Tu plan</h2>
+      <div id="nivelBody"><div class="meta">Cargando…</div></div>
+    </div>
+    <div class="card" data-sec="alumnos" id="alumnosCard">
+      <h2>Tus alumnos</h2>
+      <div class="meta">Ves a quien activó "Compartir mi progreso" en su app. Toca un nombre para ver su semana, dejarle una nota o prepararle un plan con IA.</div>
+      <div id="alumnosBody" style="margin-top:6px"><div class="meta">Cargando…</div></div>
+    </div>
+    <div class="card" data-sec="alumnos" id="proCard">
+      <h2>Mi plan Pro</h2>
+      <div id="proBody"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="invCard" data-sec="cuenta" style="display:none">
       <h2>Invitados</h2>
@@ -661,7 +706,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609290030', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
+var INICIAL = null, APP_VERSION = '202609291551', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -733,7 +778,7 @@ function porFetch(url, fn, args, t) {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
 /* Llamadas que tardan (la IA piensa 20–60 s): más tiempo de espera y sin repetirlas solas (repetir = pagar dos veces) */
-var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1, comidaConIA: 1 };
+var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1, comidaConIA: 1, planParaAlumno: 1, getAlumnos: 1 };
 function porScript(url, fn, args, t) {
   return new Promise(function (ok, ko) {
     var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -854,6 +899,7 @@ function ajSeccion(sec) {
   $('ajMenu').classList.toggle('aj-fuera', !!ajSec);
   $('ajVolver').classList.toggle('aj-fuera', !ajSec);
   document.querySelectorAll('#tab-ajustes [data-sec]').forEach(function (el) { el.classList.toggle('aj-fuera', !ajSec || el.dataset.sec.split(' ').indexOf(ajSec) < 0); });
+  if (ajSec === 'alumnos') cargarAlumnos();
   window.scrollTo(0, 0);
 }
 function irAjustes(sec) { irA('ajustes'); ajSeccion(sec || ''); }
@@ -931,6 +977,7 @@ function pintarEstado(e, codigo) {
     '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
   $('diaSub').textContent = e.hechasSemana + ' de ' + e.metaSemana + ' sesiones';
   pintarSemana(e.plan, e.nombres);
+  pintarEntrenador(e.entrenador);
   pintarCardio(e);
   var sel = $('sesion');
   sel.innerHTML = e.sesiones.map(function (s) { return '<option value="' + s.codigo + '">' + esc(s.nombre) + '</option>'; }).join('');
@@ -1768,7 +1815,9 @@ function cargarCoach() {
       '<div class="chat-in"><textarea id="pregunta" rows="2" placeholder="Escríbele a tu entrenador…"' + (c.tieneClave ? '' : ' disabled') + '></textarea>' +
       '<button class="btn" id="btnPreguntar" onclick="preguntar()"' + (c.tieneClave ? '' : ' disabled') + ' aria-label="Enviar">Enviar</button></div>' +
       '<button class="btn sec" style="margin-top:10px" id="btnAnalizar" onclick="analizar()"' + (c.tieneClave ? '' : ' disabled') + '>Analizar mis últimas 2 semanas</button>' +
-      '<div class="meta" style="margin-top:8px">Orientación de entrenamiento, no consejo médico. No cambia tus medicamentos.</div></div>';
+      (c.uso && c.uso.nivel === 'gratis' ? '<div class="meta" style="margin-top:8px">Hoy: ' + c.uso.usados + ' de ' + c.uso.maximo + ' preguntas del plan gratis. <a href="#" onclick="irAjustes(\'cuenta\');return false">Ver Pro</a></div>' : '') +
+      '<div class="meta" style="margin-top:8px">Orientación de entrenamiento, no consejo médico. No cambia tus medicamentos.</div>' +
+      (c.esDueno ? '<button class="btn txt" onclick="irAjustes(\'alumnos\')">🧑‍🏫 Modo entrenador: tus alumnos →</button>' : '') + '</div>';
     if (c.ajustes.length) h += '<div class="card"><h2>Ajustes activos</h2>' + c.ajustes.map(function (a) {
       return '<div class="ajuste"><b>' + esc(a.ejercicio) + '</b><div class="meta">' + descAjuste(a) + (a.motivo ? ' · ' + esc(a.motivo) : '') + ' · desde ' + esc(a.desde) + '</div>' +
         '<button class="btn ghost small" style="margin-top:6px" onclick="quitar(' + a.fila + ')">Quitar ajuste</button></div>';
@@ -2169,6 +2218,8 @@ function elegirMomento(b) { $('cMomento').value = b.textContent; document.queryS
 function momentoPorHora() { var h = new Date().getHours(); return h < 10 ? 'Desayuno' : h < 12 ? 'Media mañana' : h < 15 ? 'Almuerzo' : h < 18 ? 'Algo' : h < 21 ? 'Cena' : 'Antes de dormir'; }
 function pintarComida(c) {
   comidaDatos = c;
+  var fotoOk = !c.ia || c.ia.foto !== false, fb = $('cIaFotoBtn');
+  if (fb) { fb.classList.toggle('bloq', !fotoOk); fb.onclick = fotoOk ? null : function (ev) { ev.preventDefault(); toast('La comida por foto es de Mi plan Pro (Ajustes → Cuenta)'); }; }
   var sel = $('cMomento'), prev = sel.value;
   sel.innerHTML = c.momentos.map(function (m) { return '<option>' + m + '</option>'; }).join('');
   sel.value = prev || momentoPorHora();
@@ -2398,15 +2449,22 @@ function abrirArmarConPropuesta(r) {
     mp = m; mpBib = {}; m.biblioteca.forEach(function (b) { mpBib[b.nombre] = b; });
     mp.sesiones = r.sesiones; if (r.objetivo) mp.objetivo = r.objetivo;
     mpIa.resp = r; mpIa.ocupado = false;
-    if (mp.ia) { mp.ia.usados = r.usados; mp.ia.maximo = r.maximo; }
-    pintarArmar(); toast('Plan listo: revísalo y toca "Guardar y usar este plan"');
+    if (mp.ia && !r.deEntrenador) { mp.ia.usados = r.usados; mp.ia.maximo = r.maximo; }
+    pintarArmar(); toast(r.deEntrenador ? 'Plan de ' + r.deEntrenador.nombre + ': revísalo y toca "Guardar y usar este plan"' : 'Plan listo: revísalo y toca "Guardar y usar este plan"');
   }).catch(function (e) { err(e); cerrarArmar(); });
 }
 /* --- Diseñar el plan con IA: la persona lo describe en texto, la IA propone y aquí se revisa --- */
 var mpIa = { texto: '', resp: null, ocupado: false };
+function tarjetaEntrenadorPlan() {
+  var r = mpIa.resp, de = r && r.deEntrenador;
+  if (!de) return '';
+  return '<div class="card ent-card"><div class="kicker">📋 Plan de ' + esc(de.nombre) + '</div>' + (de.mensaje ? '<p class="ent-txt">' + esc(de.mensaje).replace(/\n/g, '<br>') + '</p>' : '') +
+    '<div class="meta"><b style="color:var(--ink)">' + esc(r.resumen) + '</b></div>' + (r.notas.length ? '<ul class="meta" style="margin:6px 0;padding-left:18px">' + r.notas.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') +
+    '<div class="meta" style="margin-top:6px">Revisa los días de abajo; cambia lo que quieras y toca <b>Guardar y usar este plan</b>.</div></div>';
+}
 function tarjetaIA() {
   var ia = mp.ia || {};
-  var h = '<div class="card mp-ia"><h2>Diséñalo con IA' + (ia.tieneClave ? ' <span class="chip">' + esc(ia.nombre || 'IA') + '</span>' : '') + '</h2>';
+  var h = tarjetaEntrenadorPlan() + '<div class="card mp-ia"><h2>Diséñalo con IA' + (ia.tieneClave ? ' <span class="chip">' + esc(ia.nombre || 'IA') + '</span>' : '') + '</h2>';
   if (!ia.tieneClave) {
     return h + '<div class="meta">' + (ia.esDueno ? 'Pega tu clave de Claude (o de Gemini) en Ajustes → Inteligencia artificial y aquí podrás describir tu plan en texto para que la IA lo arme.' : 'El dueño de la app aún no ha conectado la IA. Mientras tanto puedes copiar un programa y editarlo.') + '</div></div>';
   }
@@ -2416,7 +2474,7 @@ function tarjetaIA() {
     (mp.sesiones.length ? '<button class="btn sec" id="mpIaAjustar" onclick="mpDisenarIA(true)"' + (mpIa.ocupado ? ' disabled' : '') + '>Ajustar el actual</button>' : '') + '</div>' +
     '<div class="meta" style="margin-top:6px">' + (mp.sesiones.length ? '"Diseñar" empieza de cero; "Ajustar" cambia solo lo que pidas del plan que tienes. ' : '') + 'Hoy: ' + (ia.usados || 0) + ' de ' + (ia.maximo || 0) + ' diseños.</div>';
   var r = mpIa.resp;
-  if (r) {
+  if (r && !r.deEntrenador) {
     h += '<div class="ia" style="margin-top:10px"><p><b>' + esc(r.resumen) + '</b></p>' +
       (r.notas.length ? '<ul>' + r.notas.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') +
       (r.propios.length ? '<div class="meta">Sin foto (no están en la biblioteca): ' + esc(r.propios.join(', ')) + '. Puedes cambiarlos con "Cambiar".</div>' : '') +
@@ -2489,6 +2547,8 @@ function mpGuardar(usar) {
   var b1 = $('armarGuardar'), b2 = $('armarUsar'); b1.disabled = b2.disabled = true; b2.textContent = 'Guardando…';
   api('guardarMiPlan', plan).then(function (r) {
     invalidarTodo(); programasCache = null;
+    var de = mpIa.resp && mpIa.resp.deEntrenador;   // era el plan de tu entrenador: le avisa que lo usas
+    if (de) { mpIa.resp.deEntrenador = null; api('responderEntrenador', { id: de.id, estado: 'aceptado' }).catch(function () {}); }
     if (!usar || mp.activo) { toast('Mi plan guardado: ' + r.sesiones + ' días · ' + r.ejercicios + ' ejercicios'); if (usar) { cerrarArmar(); cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes(); } else abrirArmar(); return; }
     return api('cambiarPrograma', 'mio', { entrada: false, ajustarComida: true }).then(function () {
       cerrarArmar(); toast('Ya entrenas con Mi plan'); cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
@@ -2595,7 +2655,11 @@ function cargarCuenta() {
   $('cuentaCard').style.display = '';
   $('cuentaTxt').textContent = (u.nombre ? u.nombre + ' · ' : '') + (u.esDueno ? 'dueño de la app' : 'invitado (tus datos van en tu propia hoja)');
   $('iaCard').style.display = u.esDueno ? '' : 'none';   // la clave de Gemini es del dueño
-  if (!u.esDueno) { $('invCard').style.display = 'none'; return; }
+  $('ajMenuAlumnos').style.display = u.esDueno ? '' : 'none';
+  var mc = $('ajMenuCuenta');
+  mc.querySelector('b').textContent = u.esDueno ? 'Cuenta e invitados' : 'Cuenta y entrenador';
+  mc.querySelector('small').textContent = u.esDueno ? 'Quién eres y a quién invitaste' : 'Tu entrenador y tu plan';
+  if (!u.esDueno) { $('invCard').style.display = 'none'; cargarCuentaAlumno(); return; }
   $('invCard').style.display = '';
   api('getInvitacion').then(pintarInvitacion).catch(function (e) { $('invBody').textContent = 'No pude cargar la invitación: ' + (e.message || e); });
 }
@@ -2622,6 +2686,210 @@ function copiarInvitacion() {
 function nuevoCodigo() {
   if (!confirm('¿Generar un código nuevo? El anterior dejará de servir para registrarse (quienes ya se registraron no se ven afectados).')) return;
   api('nuevoCodigoInvitacion').then(pintarInvitacion).catch(err);
+}
+
+/* =================== TU ENTRENADOR (invitados): nota y plan en Hoy =================== */
+function idSeguro(x) { return String(x || '').replace(/[^\w-]/g, ''); }
+function pintarEntrenador(t) {
+  var box = $('entrenadorBox'); if (!box) return;
+  if (!t || (!t.nota && !t.plan)) { box.innerHTML = ''; return; }
+  var h = '';
+  if (t.nota) h += '<div class="card ent-card"><div class="kicker">💬 ' + esc(t.nombre) + ' · ' + fechaCortaIso(t.nota.fecha) + '</div>' +
+    '<p class="ent-txt">' + esc(t.nota.texto).replace(/\n/g, '<br>') + '</p><button class="btn sec small" onclick="notaLeida(\'' + idSeguro(t.nota.id) + '\', this)">Listo</button></div>';
+  if (t.plan) h += '<div class="card ent-card"><div class="kicker">📋 ' + esc(t.nombre) + ' te preparó un plan</div>' +
+    (t.plan.texto ? '<p class="ent-txt">' + esc(t.plan.texto).replace(/\n/g, '<br>') + '</p>' : '') +
+    (t.plan.dias.length ? '<div class="meta">' + t.plan.dias.length + ' día' + (t.plan.dias.length === 1 ? '' : 's') + ': ' + esc(t.plan.dias.join(' · ')) + '</div>' : '') +
+    '<div class="acts" style="margin-top:10px"><button class="btn" onclick="abrirPlanEntrenador(\'' + idSeguro(t.plan.id) + '\', this)">Ver plan</button>' +
+    '<button class="btn ghost" onclick="planEntrenadorDespues(\'' + idSeguro(t.plan.id) + '\', this)">Ahora no</button></div></div>';
+  box.innerHTML = h;
+}
+function notaLeida(id, b) {
+  b.disabled = true;
+  api('responderEntrenador', { id: id, estado: 'leida' }).then(function () {
+    if (estado && estado.entrenador) estado.entrenador.nota = null;
+    invalidarTodo(); pintarEntrenador(estado && estado.entrenador);
+  }).catch(function (e) { b.disabled = false; err(e); });
+}
+function abrirPlanEntrenador(id, b) {
+  b.disabled = true; var t = b.textContent; b.textContent = 'Abriendo…';
+  api('verPlanEntrenador', { id: id }).then(function (r) { abrirArmarConPropuesta(r); }).catch(err).then(function () { b.disabled = false; b.textContent = t; });
+}
+function planEntrenadorDespues(id, b) {
+  if (!confirm('¿Dejar este plan para después? Tu entrenador verá que por ahora no lo usas.')) return;
+  b.disabled = true;
+  api('responderEntrenador', { id: id, estado: 'descartado' }).then(function () {
+    if (estado && estado.entrenador) estado.entrenador.plan = null;
+    invalidarTodo(); pintarEntrenador(estado && estado.entrenador);
+  }).catch(function (e) { b.disabled = false; err(e); });
+}
+
+/* ---------- Ajustes → Cuenta (invitados): compartir con el entrenador y su plan (gratis / Pro) ---------- */
+function cargarCuentaAlumno() {
+  $('entCard').style.display = '';
+  api('getCuentaAlumno').then(pintarCuentaAlumno).catch(function (e) { $('entBody').textContent = 'No pude cargar: ' + (e.message || e); });
+}
+function quienEntrena(n) { return n && n !== 'Tu entrenador' ? n : 'el dueño de la app'; }
+function pintarCuentaAlumno(c) {
+  $('entCard').style.display = '';
+  $('entBody').innerHTML = '<label class="chk" style="margin-top:0"><input type="checkbox" id="entComparte"' + (c.comparte ? ' checked' : '') + ' onchange="compartirUI(this)"> Compartir mi progreso con ' + esc(quienEntrena(c.entrenador)) + '</label>' +
+    '<div class="meta" style="margin-top:6px">Si lo activas, verá tus entrenos, tu peso, tus récords, tus molestias y tu promedio de calorías y proteína, y podrá dejarte notas y prepararte planes (la IA usa tu perfil para que sean seguros). No ve tus medicamentos ni tus fotos. Lo apagas cuando quieras.</div>';
+  var nc = $('nivelCard');
+  if (!c.cobro) { nc.style.display = 'none'; return; }
+  nc.style.display = '';
+  var L = c.limites, U = c.usos;
+  var barra = function (t, u, m) { return '<div class="dayh"><span style="font-size:14px">' + t + '</span><span class="meta">' + u + ' de ' + m + ' hoy</span></div><div class="qbar"><i style="width:' + Math.min(100, m ? u / m * 100 : 0) + '%"></i></div>'; };
+  var h = '<div class="nivel-h"><b class="num' + (c.nivel === 'pro' ? ' amber' : '') + '">' + (c.nivel === 'pro' ? 'PRO' : 'GRATIS') + '</b>' + (c.nivel === 'pro' && c.hasta ? '<span class="chip ok">Hasta el ' + fechaCortaIso(c.hasta) + '</span>' : '') + '</div>' +
+    barra('Preguntas al Coach', U.coach, L.coach) + barra('Planes con IA', U.plan, L.plan) + barra('Comidas con IA', U.comida, L.comida) +
+    '<div class="meta">Comida por foto: ' + (L.foto ? 'incluida' : 'solo en Pro') + '</div>';
+  if (c.nivel !== 'pro') {
+    h += '<div class="pro-box"><b>Con Pro</b><ul><li>' + c.pro.coach + ' preguntas al Coach por día</li><li>' + c.pro.plan + ' planes con IA por día</li><li>' + c.pro.comida + ' comidas con IA por día, también por foto</li></ul>' +
+      (c.precio ? '<div class="meta">Precio: <b style="color:var(--ink);font-family:var(--body);font-size:14px;text-transform:none">' + esc(c.precio) + '</b></div>' : '') +
+      (c.pedido ? '<div class="meta" style="margin-top:6px">Lo pediste el ' + fechaCortaIso(c.pedido) + '.' + (c.comoPagar ? ' Cómo pagar: ' + esc(c.comoPagar) : ' Te va a escribir ' + esc(quienEntrena(c.entrenador)) + '.') + '</div>' : '') +
+      '<button class="btn" style="margin-top:10px" onclick="pedirProUI(this)">' + (c.pedido ? 'Volver a avisar' : 'Quiero Pro') + '</button></div>';
+  }
+  $('nivelBody').innerHTML = h;
+}
+function compartirUI(chk) {
+  chk.disabled = true;
+  api('compartirConEntrenador', { activo: chk.checked }).then(function (c) { pintarCuentaAlumno(c); toast(c.comparte ? 'Listo: compartes tu progreso' : 'Dejaste de compartir tu progreso'); })
+    .catch(function (e) { chk.checked = !chk.checked; chk.disabled = false; err(e); });
+}
+function pedirProUI(b) {
+  b.disabled = true;
+  api('pedirPro').then(function (r) {
+    if (r.incluido) { toast('Por ahora tienes todo incluido'); return; }
+    toast('Listo: le avisamos a ' + quienEntrena(r.entrenador)); cargarCuentaAlumno();
+  }).catch(err).then(function () { b.disabled = false; });
+}
+
+/* =================== MODO ENTRENADOR Y PRO (Ajustes → Alumnos y Pro, solo el dueño) =================== */
+var alumnosDatos = null, alumnoAbierto = '', borradores = {};
+function cargarAlumnos() {
+  if (!alumnosDatos) $('alumnosBody').innerHTML = '<div class="meta">Cargando alumnos…</div>';
+  api('getAlumnos').then(function (r) { alumnosDatos = r; pintarAlumnos(); pintarPro(); })
+    .catch(function (e) { $('alumnosBody').innerHTML = '<div class="meta">No pude cargar: ' + esc(e.message || e) + '</div>'; });
+}
+function borradorDe(id) { return borradores[id] = borradores[id] || { texto: '', plan: null, mensaje: '', nota: '', ocupado: false }; }
+function pintarAlumnos() {
+  var r = alumnosDatos; if (!r) return;
+  if (!r.alumnos.length) { $('alumnosBody').innerHTML = '<div class="meta" style="margin-top:8px">Todavía no tienes invitados. Compárteles el código de Ajustes → Cuenta e invitados.</div>'; return; }
+  var orden = r.alumnos.slice().sort(function (a, b) { return (b.comparte ? 1 : 0) - (a.comparte ? 1 : 0) || a.nombre.localeCompare(b.nombre, 'es'); });
+  $('alumnosBody').innerHTML = orden.map(alumnoHTML).join('');
+}
+function alumnoHTML(a) {
+  var d = a.datos, abierto = alumnoAbierto === a.id, chips = [], est;
+  if (a.pro.vigente) chips.push('<span class="chip ok">Pro</span>');
+  else if (alumnosDatos.pro.activo) chips.push('<span class="chip">Gratis</span>');
+  if (a.pro.pedido && !a.pro.vigente) chips.push('<span class="chip warn">Pidió Pro</span>');
+  if (a.error) est = esc(a.error);
+  else if (!a.comparte) est = 'No comparte su progreso';
+  else if (!d || !d.ultima) est = 'Aún no registra entrenos';
+  else est = '<span class="' + (d.ultima.dias >= 7 ? 'bad-t' : d.ultima.dias >= 4 ? 'warn-t' : 'ok-t') + '">' + (d.ultima.dias === 0 ? 'Entrenó hoy' : d.ultima.dias === 1 ? 'Entrenó ayer' : d.ultima.dias < 4 ? 'Entrenó hace ' + d.ultima.dias + ' días' : d.ultima.dias + ' días sin entrenar') + '</span> · ' + d.sesiones + ' de ' + d.meta + ' esta semana';
+  return '<div class="alumno' + (abierto ? ' abierto' : '') + '"><button class="alumno-h" onclick="abrirAlumno(\'' + idSeguro(a.id) + '\')"><span class="av">' + esc(a.nombre.charAt(0).toUpperCase()) + '</span>' +
+    '<span class="alumno-n"><b>' + esc(a.nombre) + '</b><span>' + est + '</span></span><span class="alumno-c">' + chips.join('') + '</span></button>' + (abierto ? alumnoDetalleHTML(a) : '') + '</div>';
+}
+function statAl(t, v, s) { return '<div class="st"><div class="kicker">' + t + '</div><b class="num">' + v + '</b><div class="meta">' + s + '</div></div>'; }
+function usdTxt(x) { x = Number(x || 0); return 'US$' + x.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: x > 0 && x < 0.1 ? 3 : 2 }); }
+var MES_LARGO = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function alumnoDetalleHTML(a) {
+  var d = a.datos, id = idSeguro(a.id), b = borradorDe(a.id), h = '<div class="alumno-b">';
+  if (a.comparte && d) {
+    h += '<div class="stats4">' +
+      statAl('Semana', d.sesiones + '/' + d.meta, d.series + ' series') +
+      statAl('Constancia', d.constancia.pct == null ? '—' : d.constancia.pct + '%', d.constancia.hechas + ' de ' + d.constancia.esperadas + ' en 4 semanas') +
+      statAl('Peso', d.peso == null ? '—' : n1(d.peso), d.peso == null ? 'sin pesajes' : 'kg' + (d.cambioPeso == null ? '' : ' · ' + signo(d.cambioPeso, 1) + ' en 7 días')) +
+      statAl('Comida', d.comida.dias ? n1(d.comida.kcal, 0) : '—', d.comida.dias ? 'kcal · ' + n1(d.comida.prot, 0) + ' g prot (meta ' + n1(d.comida.metaKcal, 0) + ')' : 'no la registra') + '</div>';
+    if (d.programa) h += '<div class="meta" style="margin-top:8px">' + esc(d.programa) + (d.bloque ? ' · ' + esc(d.bloque) : '') + '</div>';
+    if (d.molestias) h += '<div class="alerta" style="margin-top:8px">Molestias: ' + esc(d.molestias) + '</div>';
+    if (d.records.length) h += '<div class="kicker" style="margin-top:12px">Récords de la semana</div>' + d.records.map(function (x) { return '<div class="meta">🏆 ' + esc(x.ejercicio) + ': ' + esc(x.txt) + ' (+' + n1(x.mejora) + ' %)</div>'; }).join('');
+    if (d.ultimas.length) h += '<div class="kicker" style="margin-top:12px">Últimas sesiones</div>' + d.ultimas.map(function (x) { return '<div class="meta">' + fechaCortaIso(x.fecha) + ' · ' + esc(x.nombre) + ' · ' + x.series + ' series</div>'; }).join('');
+    h += '<label for="alNota' + id + '" style="margin-top:14px">Nota para ' + esc(a.nombre) + '</label>' +
+      (d.nota ? '<div class="meta" style="margin-bottom:6px">Última (' + fechaCortaIso(d.nota.fecha) + '): "' + esc(d.nota.texto) + '" · ' + (d.nota.estado === 'leida' ? 'leída ✓' : 'sin leer') + '</div>' : '') +
+      '<textarea id="alNota' + id + '" rows="2" placeholder="Ej.: ¡Buena semana! El lunes súbele 2,5 kg a la sentadilla." oninput="borradorDe(\'' + id + '\').nota=this.value">' + esc(b.nota) + '</textarea>' +
+      '<button class="btn sec" style="margin-top:6px" onclick="enviarNotaAlumno(\'' + id + '\', this)">Enviar nota</button>';
+    h += '<label for="alPlan' + id + '" style="margin-top:14px">Plan para ' + esc(a.nombre) + '</label>' +
+      (d.plan ? '<div class="meta" style="margin-bottom:6px">Último plan (' + fechaCortaIso(d.plan.fecha) + '): ' + ({ pendiente: 'todavía no lo abre', aceptado: 'lo está usando ✓', descartado: 'lo dejó para después', reemplazado: 'reemplazado' }[d.plan.estado] || esc(d.plan.estado)) + '</div>' : '') +
+      '<textarea id="alPlan' + id + '" rows="3" placeholder="Ej.: 3 días de 50 min, quiere bajar grasa y reforzar glúteo; cuida su rodilla" oninput="borradorDe(\'' + id + '\').texto=this.value">' + esc(b.texto) + '</textarea>' +
+      '<button class="btn" style="margin-top:6px" onclick="armarPlanAlumno(\'' + id + '\')"' + (b.ocupado ? ' disabled' : '') + '>' + (b.ocupado ? 'Armando… (30–60 s)' : b.plan ? 'Otra versión con IA' : 'Armar con IA') + '</button>';
+    if (b.plan) h += planBorradorHTML(a, b);
+  } else if (!a.error) {
+    h += '<div class="meta">' + esc(a.nombre) + ' no comparte su progreso. Si quiere que lo acompañes, lo activa en su app: Ajustes → Cuenta y entrenador.</div>';
+  }
+  h += '<label style="margin-top:14px">Mi plan Pro</label><div class="meta">' + (a.pro.vigente ? 'Pro hasta el ' + fechaCortaIso(a.pro.hasta) + '.' : 'Plan gratis' + (alumnosDatos.pro.activo ? '.' : ' (el cobro está apagado: por ahora tiene todo).')) +
+    (a.pro.pedido && !a.pro.vigente ? ' Pidió Pro el ' + fechaCortaIso(a.pro.pedido) + '.' : '') + '</div>' +
+    '<div class="acts" style="margin-top:6px"><select aria-label="Meses de Pro"><option value="1">1 mes</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option></select>' +
+    '<button class="btn sec" onclick="darPro(\'' + id + '\', this)">' + (a.pro.vigente ? 'Sumar' : 'Darle Pro') + '</button></div>' +
+    (a.pro.vigente ? '<button class="btn txt" onclick="quitarPro(\'' + id + '\')">Quitarle Pro</button>' : '') +
+    '<div class="meta" style="margin-top:6px">IA en ' + MES_LARGO[Number(String(a.ia.mes).slice(5, 7)) - 1] + ': ' + a.ia.n + ' uso' + (a.ia.n === 1 ? '' : 's') + ' · ' + usdTxt(a.ia.usd) + '</div>';
+  return h + '</div>';
+}
+function planBorradorHTML(a, b) {
+  var p = b.plan, id = idSeguro(a.id);
+  var h = '<div class="ia" style="margin-top:10px"><p><b>' + esc(p.resumen) + '</b></p>' + (p.notas.length ? '<ul>' + p.notas.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+  h += p.sesiones.map(function (s, i) {
+    return '<div class="plan-dia"><div class="kicker">Día ' + (i + 1) + ' · ' + esc(s.nombre) + '</div>' + s.ejercicios.map(function (e) {
+      return '<div class="meta"><b style="color:var(--ink)">' + esc(e.ejercicio) + '</b> · ' + e.series + '×' + e.rmin + (e.rmax !== e.rmin ? '–' + e.rmax : '') + (e.alternativa ? '<br>Alternativa: ' + esc(e.alternativa) : '') + '</div>';
+    }).join('') + '</div>';
+  }).join('');
+  return h + '<label for="alMsg' + id + '">Mensaje para ' + esc(a.nombre) + ' (opcional)</label><textarea id="alMsg' + id + '" rows="2" placeholder="Ej.: Empieza el lunes; en la prensa baja despacio." oninput="borradorDe(\'' + id + '\').mensaje=this.value">' + esc(b.mensaje) + '</textarea>' +
+    '<button class="btn" style="margin-top:8px" onclick="enviarPlanUI(\'' + id + '\', this)">Enviar a ' + esc(a.nombre) + '</button>' +
+    '<div class="meta" style="margin-top:6px">Le llega a su app: lo revisa en su editor y decide si lo usa. Hoy llevas ' + p.usados + ' de ' + p.maximo + ' diseños con IA.</div>';
+}
+function abrirAlumno(id) { alumnoAbierto = alumnoAbierto === id ? '' : id; pintarAlumnos(); }
+function reemplazarAlumno(a) { alumnosDatos.alumnos = alumnosDatos.alumnos.map(function (x) { return x.id === a.id ? a : x; }); pintarAlumnos(); }
+function enviarNotaAlumno(id, btn) {
+  var b = borradorDe(id), t = String(b.nota || '').trim();
+  if (t.length < 2) { toast('Escribe la nota'); return; }
+  btn.disabled = true; b.idNota = b.idNota || ('n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
+  api('notaAlumno', { id: id, texto: t, idNota: b.idNota }).then(function (a) { b.nota = ''; b.idNota = ''; toast('Nota enviada'); reemplazarAlumno(a); })
+    .catch(function (e) { btn.disabled = false; err(e); });
+}
+function armarPlanAlumno(id) {
+  var b = borradorDe(id), t = String(b.texto || '').trim();
+  if (t.length < 8) { toast('Cuéntale a la IA qué plan quieres: días, minutos, enfoque…'); return; }
+  b.ocupado = true; pintarAlumnos();
+  api('planParaAlumno', { id: id, texto: t }).then(function (p) { b.plan = p; b.idPlan = ''; }).catch(err).then(function () { b.ocupado = false; pintarAlumnos(); });
+}
+function enviarPlanUI(id, btn) {
+  var b = borradorDe(id); if (!b.plan) return;
+  btn.disabled = true; b.idPlan = b.idPlan || ('p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
+  api('enviarPlanAlumno', { id: id, plan: b.plan, mensaje: b.mensaje || '', idPlan: b.idPlan }).then(function (a) {
+    borradores[id] = null; toast('Plan enviado'); reemplazarAlumno(a);
+  }).catch(function (e) { btn.disabled = false; err(e); });
+}
+function darPro(id, btn) {
+  var meses = Number(btn.parentNode.querySelector('select').value);
+  btn.disabled = true;
+  api('marcarPro', { id: id, meses: meses }).then(function (a) { toast('Pro hasta el ' + fechaCortaIso(a.pro.hasta)); reemplazarAlumno(a); })
+    .catch(function (e) { btn.disabled = false; err(e); });
+}
+function quitarPro(id) { if (!confirm('¿Quitarle Pro? Vuelve al plan gratis.')) return; api('marcarPro', { id: id, meses: 0 }).then(function (a) { toast('Pro quitado'); reemplazarAlumno(a); }).catch(err); }
+function pintarPro() {
+  var r = alumnosDatos; if (!r) return;
+  var p = r.pro, L = p.limites, c = r.costo;
+  var fila = function (t, g, pr) { return '<tr><td>' + t + '</td><td>' + g + '</td><td>' + pr + '</td></tr>'; };
+  $('proBody').innerHTML =
+    '<label class="chk" style="margin-top:0"><input type="checkbox" id="proActivo"' + (p.activo ? ' checked' : '') + '> Cobrar Pro</label>' +
+    '<div class="meta" style="margin-top:4px">' + (p.activo ? 'Encendido: quien no tenga Pro usa el plan gratis.' : 'Apagado: todos tus invitados usan la IA con los topes de Pro. Actívalo cuando tengas cómo cobrar.') + '</div>' +
+    '<table class="tabla-pro"><tr><th></th><th>Gratis</th><th>Pro</th></tr>' +
+      fila('Preguntas al Coach por día', L.gratis.coach, L.pro.coach) + fila('Planes con IA por día', L.gratis.plan, L.pro.plan) +
+      fila('Comidas con IA por día', L.gratis.comida, L.pro.comida) + fila('Comida por foto', L.gratis.foto ? 'Sí' : 'No', L.pro.foto ? 'Sí' : 'No') + '</table>' +
+    '<div class="row"><div><label for="proPrecio">Precio</label><input id="proPrecio" placeholder="Ej.: 14.900 al mes" value="' + esc(p.precio) + '"></div>' +
+      '<div><label for="proNombre">Te ven como</label><input id="proNombre" placeholder="Tu nombre" value="' + esc(r.nombrePropio ? r.entrenador : '') + '"></div></div>' +
+    '<label for="proPago">Cómo te pagan</label><textarea id="proPago" rows="3" placeholder="Ej.: por Nequi al 300…; mándame el comprobante por WhatsApp">' + esc(p.comoPagar) + '</textarea>' +
+    '<button class="btn" style="margin-top:10px" onclick="guardarPro(this)">Guardar</button>' +
+    '<div class="kicker" style="margin-top:16px">Costo de la IA en ' + MES_LARGO[Number(String(c.mes).slice(5, 7)) - 1] + '</div>' +
+    '<div class="meta" style="margin-top:4px">Tú: ' + usdTxt(c.dueno) + ' (' + c.duenoUsos + ' uso' + (c.duenoUsos === 1 ? '' : 's') + '). Invitados: ' + usdTxt(c.invitados) +
+      (c.personas ? ' entre ' + c.personas + ' persona' + (c.personas === 1 ? '' : 's') + ': <b style="color:var(--ink)">' + usdTxt(c.promedio) + ' por persona</b>' : '') +
+      (c.promedioAnterior != null ? '. Mes pasado: ' + usdTxt(c.promedioAnterior) + ' por persona' : '') + '.</div>' +
+    '<div class="meta" style="margin-top:6px">Estimado con los precios de Anthropic y Google; te sirve para poner un precio que cubra la IA. Para cobrar con tarjeta dentro de la app falta elegir una pasarela de pago; mientras tanto cobras por fuera y activas Pro en cada alumno.</div>';
+}
+function guardarPro(btn) {
+  btn.disabled = true;
+  api('guardarConfigPro', { activo: $('proActivo').checked, precio: $('proPrecio').value, comoPagar: $('proPago').value, nombre: $('proNombre').value }).then(function (r) {
+    alumnosDatos.pro = r.pro; alumnosDatos.entrenador = r.entrenador; alumnosDatos.nombrePropio = !!$('proNombre').value.trim();
+    pintarPro(); pintarAlumnos(); toast(r.pro.activo ? 'Guardado: el cobro de Pro está encendido' : 'Guardado');
+  }).catch(err).then(function () { btn.disabled = false; });
 }
 
 /* =================== AVISOS (en Ajustes) =================== */
