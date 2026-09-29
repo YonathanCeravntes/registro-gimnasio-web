@@ -214,6 +214,33 @@
   .toggle{display:flex;background:var(--card2);border-radius:12px;padding:3px;margin:8px 0}
   .toggle button{flex:1;border:0;background:none;padding:9px;border-radius:9px;font-family:var(--body);font-size:13px;font-weight:700;color:var(--dim);cursor:pointer}
   .toggle button.on{background:var(--raise);color:var(--ink)}
+  .toggle.var2 button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;gap:3px;padding:9px 10px;line-height:1.2;min-height:52px}
+  .toggle.var2 button small{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);font-weight:800}
+  .toggle.var2 button.on small{color:var(--amber)}
+  .ex-alt{margin-top:1px}
+  .ex-swap{border:0;background:none;padding:3px 0;font-family:var(--body);font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;text-align:left;line-height:1.25}
+  .ex-swap b{color:var(--ink);font-weight:700}
+  .ref{font-size:13px;padding:8px 12px;border-radius:12px;background:var(--card2);color:var(--muted);margin:6px 0}
+  .ref b{color:var(--ink)}
+  .chat{display:flex;flex-direction:column;gap:10px;margin-top:4px;max-height:62vh;overflow-y:auto;padding:2px 2px 4px;overscroll-behavior:contain}
+  .msg{max-width:90%;padding:10px 12px;border-radius:16px;font-size:14.5px;line-height:1.42;word-wrap:break-word}
+  .msg.yo{align-self:flex-end;background:var(--amber);color:var(--amber-ink);border-bottom-right-radius:5px;font-weight:600}
+  .msg.coach{align-self:flex-start;background:var(--card2);color:var(--ink);border-bottom-left-radius:5px}
+  .msg.coach .ia p{margin:0 0 6px} .msg.coach .ia p:last-child{margin-bottom:0}
+  .msg.pensando{color:var(--dim);font-style:italic}
+  .msg .hora{display:block;font-size:10.5px;font-weight:500;opacity:.65;margin-top:3px}
+  .chat-ideas{display:flex;gap:6px;overflow-x:auto;margin:12px -2px 8px;padding:0 2px 2px;scrollbar-width:none}
+  .chat-ideas::-webkit-scrollbar{display:none}
+  .chat-ideas button{flex-shrink:0;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600;font-family:var(--body);cursor:pointer;white-space:nowrap}
+  .chat-in{display:flex;gap:8px;align-items:stretch}
+  .chat-in textarea{flex:1;min-height:52px;resize:none}
+  .chat-in .btn{width:auto;min-width:92px;font-size:18px;padding:10px 14px}
+  .opc{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:var(--card)}
+  .opc h3{font-family:var(--disp);font-size:21px;font-weight:800;text-transform:uppercase;line-height:1.05;margin:2px 0 4px}
+  .opc-dia{margin-top:9px} .opc-dia b{font-size:13.5px}
+  .opc-ej{font-size:13px;color:var(--ink);margin-top:4px;padding-left:10px;border-left:2px solid var(--raise2)}
+  .opc-ej span{display:block;color:var(--dim);font-size:12px}
+  .opc .acts{display:flex;gap:8px;flex-wrap:wrap} .opc .acts .btn{flex:1;min-width:140px}
   .sug{font-size:14px;padding:10px 12px;border-radius:12px;background:var(--card2);color:var(--muted);margin:6px 0;border-left:3px solid var(--amber)}
   .sug b{color:var(--ink)}
   .aviso{font-size:14px;padding:10px 12px;border-radius:12px;background:var(--amber-bg);color:var(--amber);margin:6px 0}
@@ -222,7 +249,8 @@
   .sets td{padding:0}
   .sets td:first-child{width:28px;font-family:var(--disp);font-size:18px;font-weight:800;color:var(--dim);text-align:center}
   .sets input,.sets select{padding:8px 4px;text-align:center;font-family:var(--disp);font-size:24px;font-weight:800;background:var(--card2);border-radius:12px;height:50px}
-  .sets select{font-size:22px}
+  .sets select{font-size:22px;-webkit-appearance:none;appearance:none;text-align:center;text-align-last:center;padding:8px 2px}
+  .sets td:last-child{width:62px}
   .omit{display:none;margin-top:8px;padding:10px;border-radius:12px;background:var(--card2)}
   .clave{font-size:12px;color:var(--faint);margin-top:8px}
   #timer{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:7;background:var(--amber);color:var(--amber-ink);display:none;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
@@ -566,7 +594,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609282306', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
+var INICIAL = null, APP_VERSION = '202609290003', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -638,7 +666,7 @@ function porFetch(url, fn, args, t) {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
 /* Llamadas que tardan (la IA piensa 20–60 s): más tiempo de espera y sin repetirlas solas (repetir = pagar dos veces) */
-var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1 };
+var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1 };
 function porScript(url, fn, args, t) {
   return new Promise(function (ok, ko) {
     var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -682,7 +710,8 @@ function usarProxy(url) { return !!API_PROXY && url === API_PUBLICA && Date.now(
 function porProxy(fn, args, t) {
   var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
   var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, LLAMADAS_LENTAS[fn] ? 170000 : 60000) : 0;
-  return fetch(API_PROXY, { method: 'POST', body: JSON.stringify({ fn: fn, args: args, t: t }), signal: ctrl ? ctrl.signal : undefined })
+  // "lenta": el proxy le da más tiempo y no la repite (IA: cada intento cuesta)
+  return fetch(API_PROXY, { method: 'POST', body: JSON.stringify({ fn: fn, args: args, t: t, lenta: LLAMADAS_LENTAS[fn] ? 1 : undefined }), signal: ctrl ? ctrl.signal : undefined })
     .then(function (r) { clearTimeout(timer); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); },
           function (e) { clearTimeout(timer); throw (e && e.name === 'AbortError') ? new Error('Sin conexión con el servidor (tiempo agotado)') : e; });
 }
@@ -989,13 +1018,14 @@ function tarjeta(e, i) {
   return '<div class="ex st-' + e.estado + '" id="ex' + i + '">' +
     '<div class="ex-row" onclick="alternar(' + i + ')">' +
       '<img class="thumb" id="exThumb' + i + '" alt="" loading="lazy">' +
-      '<div class="ex-info"><div class="ex-name" id="exNom' + i + '"></div>' +
+      '<div class="ex-info"><div class="ex-name" id="exNom' + i + '"></div><div class="ex-alt" id="exAlt' + i + '"></div>' +
       '<div class="ex-meta"><b>' + prescCorta(e.prescripcion, e.unidad) + '</b></div>' +
       '<div class="ex-sug" id="exRes' + i + '"></div></div>' +
       '<div id="exChip' + i + '">' + btnEstado(e) + '</div></div>' +
     (e.ajuste ? '<div class="badge">Ajuste del Coach: ' + esc(e.ajuste.accion === 'sustituir' ? 'reemplaza a ' + e.original : e.ajuste.accion === 'reducir_series' ? '−' + e.ajuste.valor + ' serie(s)' : 'evitar por ahora') + (e.ajuste.motivo ? ' · ' + esc(e.ajuste.motivo) : '') + '</div>' : '') +
     '<div id="exBody' + i + '" class="ex-body' + (abierto ? ' open' : '') + '">' +
-      (e.tieneAlternativa ? '<div class="toggle"><button data-i="' + i + '" data-v="principal">Principal</button><button data-i="' + i + '" data-v="alternativa">Con mancuernas</button></div>' : '') +
+      (e.tieneAlternativa ? '<div class="toggle var2"><button data-i="' + i + '" data-v="principal"><small>Principal</small>' + esc(e.variantes.principal.nombre) + '</button>' +
+        '<button data-i="' + i + '" data-v="alternativa"><small>Alternativa</small>' + esc(e.variantes.alternativa.nombre) + '</button></div>' : '') +
       '<div class="imgs" id="exImg' + i + '"></div>' +
       '<div class="presc">Haz: ' + esc(e.prescripcion.texto) + '<small>' + esc(e.grupo) + ' · RIR ' + esc(e.prescripcion.rir) + ' · descanso ' + fmtSeg(e.prescripcion.descanso) + '</small></div>' +
       '<div id="exSug' + i + '"></div>' +
@@ -1010,10 +1040,15 @@ function tarjeta(e, i) {
         '<button class="btn" onclick="omitir(' + i + ')">Confirmar</button></div></div>' +
       (e.ultimaNota ? '<div class="meta" style="margin-top:8px">📝 Última vez anotaste: ' + esc(e.ultimaNota) + '</div>' : '') +
       '<input id="exNota' + i + '" style="margin-top:8px;font-size:14px" placeholder="Nota o molestia (opcional, la lee el Coach)" value="' + esc(e.nota || '') + '">' +
-      '<div class="clave">Técnica: ' + esc(e.clave) + '</div>' +
+      '<div class="clave" id="exClave' + i + '"></div>' +
     '</div></div>';
 }
 
+/** Un toque en "⇄ Alternativa: …" abre el ejercicio y cambia de variante. */
+function cambiarVariante(i, v) {
+  if (!abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); }
+  pintar(i, v);
+}
 function alternar(i) {
   abiertos[i] = !abiertos[i];
   $('exBody' + i).classList.toggle('open', abiertos[i]);
@@ -1030,10 +1065,13 @@ function pintar(i, v) {
   e._var = v;
   document.querySelectorAll('#ex' + i + ' .toggle button').forEach(function (b) { b.classList.toggle('on', b.dataset.v === v); });
   $('exNom' + i).textContent = d.nombre;
+  // Siempre a la vista el otro ejercicio (principal o alternativa): un toque y cambias
+  var otraV = v === 'principal' ? 'alternativa' : 'principal', o = e.variantes[otraV];
+  $('exAlt' + i).innerHTML = o ? '<button class="ex-swap" onclick="event.stopPropagation();cambiarVariante(' + i + ',\'' + otraV + '\')">⇄ ' + (v === 'principal' ? 'Alternativa' : 'Principal') + ': <b>' + esc(o.nombre) + '</b></button>' : '';
   $('exChip' + i).innerHTML = btnEstado(e);
   $('ex' + i).className = 'ex st-' + e.estado;
   var res = $('exRes' + i);
-  if (e.estado === 'hecho') { res.className = 'ex-sug ok'; res.textContent = 'Hoy: ' + d.hoy.map(function (s) { return (s.carga !== '' && s.carga != null ? s.carga + '×' : '') + s.reps + (s.rir !== '' && s.rir != null ? ' @' + s.rir : ''); }).join(' · '); }
+  if (e.estado === 'hecho') { res.className = 'ex-sug ok'; res.textContent = d.hoy.length ? 'Hoy: ' + d.hoy.map(function (s) { return (s.carga !== '' && s.carga != null ? s.carga + '×' : '') + s.reps + (s.rir !== '' && s.rir != null ? ' @' + s.rir : ''); }).join(' · ') : 'Hoy lo hiciste con ' + (o ? o.nombre : 'la otra variante'); }
   else if (e.estado === 'omitido') { res.className = 'ex-sug dim'; res.textContent = 'No hecho · ' + e.motivo; }
   else { res.className = 'ex-sug'; res.textContent = d.sugerencia.texto; }
   $('exNo' + i).textContent = e.estado === 'omitido' ? 'Reabrir (volver a pendiente)' : 'No lo hice';
@@ -1041,7 +1079,11 @@ function pintar(i, v) {
   if (d.imagenes.length) { th.src = d.imagenes[0]; th.className = 'thumb'; } else th.className = 'thumb none';
   $('exImg' + i).innerHTML = d.imagenes.map(function (u) { return '<img loading="lazy" alt="" src="' + esc(u) + '">'; }).join('');
   $('exImg' + i).style.display = d.imagenes.length ? 'flex' : 'none';
-  $('exSug' + i).innerHTML = '<div class="sug">' + esc(d.sugerencia.texto) + '</div>' + (d.sugerencia.aviso ? '<div class="aviso">' + esc(d.sugerencia.aviso) + '</div>' : '');
+  var sg = d.sugerencia, ref = sg.ref;
+  $('exSug' + i).innerHTML = '<div class="sug">' + esc(sg.texto) + '</div>' +
+    (ref ? '<div class="ref">↺ Tu última vez con ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + '): <b>' + esc(ref.resumen) + '</b></div>' : '') +
+    (sg.aviso ? '<div class="aviso">' + esc(sg.aviso) + '</div>' : '');
+  var cl = $('exClave' + i); cl.textContent = d.clave ? 'Técnica: ' + d.clave : ''; cl.style.display = d.clave ? '' : 'none';
   var p = e.prescripcion, filas = '', n = Math.max(p.series, d.hoy.length, 1);
   for (var k = 0; k < n; k++) {
     var h = d.hoy[k] || {};
@@ -1490,28 +1532,38 @@ function cargarEstadoYSemana() {
   api('getInicio', f, '').then(function (r) { escribirCache('ini:' + f + ':', r); pintarEstado(r.estado, r.sesion.codigo); pintarSesion(r.sesion); pintarSemanaTab(); }).catch(err);
 }
 
-/* =================== COACH =================== */
+/* =================== COACH (chat) =================== */
+/* Un chat: le escribes, te responde con el contexto de tus últimas 2 semanas y, si le pides un plan, te da 2 o 3 opciones.
+   "Ver plan completo" arma la opción con series, reps y descansos y la abre en el editor de Mi plan para revisarla y guardarla. */
+var IDEAS_COACH = ['Quiero un plan de 3 días', 'Plan de 4 días con prioridad en glúteo', 'Solo tengo 40 minutos hoy', 'Me molesta la rodilla en la prensa', '¿Cómo voy?'];
+var opcionesCoach = [], coachOcupado = false;
 function cargarCoach() {
   $('coach').innerHTML = '<div class="empty">Cargando…</div>';
   api('getCoach').then(function (c) {
     var h = '';
     if (!c.tieneClave) h += '<div class="card"><b>Falta conectar la IA.</b><div class="meta" style="margin-top:6px">' + (c.esDueno ? 'Pega tu clave de Claude (console.anthropic.com) o de Gemini (aistudio.google.com/apikey) en Ajustes → Inteligencia artificial.' : 'Pídele al dueño de la app que conecte la IA en sus Ajustes.') + '</div>' + (c.esDueno ? '<button class="btn" style="margin-top:10px" onclick="irA(\'ajustes\')">Ir a Ajustes</button>' : '') + '</div>';
-    h += '<div class="card"><h2>Tu entrenador' + (c.ia && c.tieneClave ? ' <span class="chip">' + esc(c.ia.nombre) + '</span>' : '') + '</h2><div class="meta">Analiza tus últimas 2 semanas (series, RIR, lo que no hiciste y por qué, peso, grasa, sueño, notas, condiciones y medicamentos) y propone ajustes. Para armar tu rutina con IA ve a Ajustes → Programa → Mi plan.</div>' +
-      '<button class="btn" style="margin-top:10px" id="btnAnalizar" onclick="analizar()"' + (c.tieneClave ? '' : ' disabled') + '>Analizar mis últimas 2 semanas</button>' +
-      '<label for="pregunta" style="margin-top:12px">O pregúntale algo</label><textarea id="pregunta" rows="3" placeholder="Ej.: hoy me duele la rodilla derecha al bajar, ¿qué hago con la prensa?"></textarea>' +
-      '<button class="btn sec" style="margin-top:8px" id="btnPreguntar" onclick="preguntar()"' + (c.tieneClave ? '' : ' disabled') + '>Preguntar</button>' +
+    var hilo = c.historial.slice().reverse();   // de la más vieja a la más nueva
+    h += '<div class="card"><h2>Tu entrenador' + (c.ia && c.tieneClave ? ' <span class="chip">' + esc(c.ia.nombre) + '</span>' : '') + '</h2>' +
+      '<div class="chat" id="chat">' +
+        '<div class="msg coach">Hola. Conozco tus últimas 2 semanas: series, RIR, comida, peso y notas. Pídeme un plan (“quiero 4 días para glúteo”), cuéntame una molestia o pregúntame cómo vas.</div>' +
+        hilo.map(function (x) { return burbujaYo(x.tipo === 'pregunta' ? x.pregunta : x.tipo === 'plan' ? 'Diseña mi plan: ' + x.pregunta : 'Analiza mis últimas 2 semanas', x.fecha) + '<div class="msg coach">' + respuestaChatHTML(x.respuesta, x.tipo === 'pregunta' ? x.pregunta : '', false) + '</div>'; }).join('') +
+      '</div>' +
+      '<div class="chat-ideas">' + IDEAS_COACH.map(function (t) { return '<button onclick="usarIdea(this)">' + esc(t) + '</button>'; }).join('') + '</div>' +
+      '<div class="chat-in"><textarea id="pregunta" rows="2" placeholder="Escríbele a tu entrenador…"' + (c.tieneClave ? '' : ' disabled') + '></textarea>' +
+      '<button class="btn" id="btnPreguntar" onclick="preguntar()"' + (c.tieneClave ? '' : ' disabled') + ' aria-label="Enviar">Enviar</button></div>' +
+      '<button class="btn sec" style="margin-top:10px" id="btnAnalizar" onclick="analizar()"' + (c.tieneClave ? '' : ' disabled') + '>Analizar mis últimas 2 semanas</button>' +
       '<div class="meta" style="margin-top:8px">Orientación de entrenamiento, no consejo médico. No cambia tus medicamentos.</div></div>';
-    h += '<div id="coachResp"></div>';
     if (c.ajustes.length) h += '<div class="card"><h2>Ajustes activos</h2>' + c.ajustes.map(function (a) {
       return '<div class="ajuste"><b>' + esc(a.ejercicio) + '</b><div class="meta">' + descAjuste(a) + (a.motivo ? ' · ' + esc(a.motivo) : '') + ' · desde ' + esc(a.desde) + '</div>' +
         '<button class="btn ghost small" style="margin-top:6px" onclick="quitar(' + a.fila + ')">Quitar ajuste</button></div>';
     }).join('') + '</div>';
-    if (c.historial.length) h += '<div class="card"><h2>Historial</h2>' + c.historial.map(function (x) {
-      return '<details style="margin-top:8px"><summary>' + esc(x.fecha) + ' · ' + esc(x.tipo === 'pregunta' ? x.pregunta : x.tipo === 'plan' ? 'Plan con IA: ' + x.pregunta : 'Análisis') + '</summary>' + respuestaHTML(x.respuesta, false) + '</details>';
-    }).join('') + '</div>';
     $('coach').innerHTML = h;
+    bajarChat();
   }).catch(err);
 }
+function burbujaYo(t, fecha) { return '<div class="msg yo">' + esc(t) + (fecha ? '<span class="hora">' + esc(String(fecha).slice(5, 16).replace('-', '/')) + '</span>' : '') + '</div>'; }
+function bajarChat() { var c = $('chat'); if (c) c.scrollTop = c.scrollHeight; }
+function usarIdea(b) { var t = $('pregunta'); if (!t || t.disabled) return; t.value = b.textContent; t.focus(); }
 function descAjuste(a) { return a.accion === 'sustituir' ? 'Sustituir por ' + esc(a.valor) : a.accion === 'reducir_series' ? 'Quitar ' + esc(a.valor || 1) + ' serie(s)' : 'Evitar por ahora'; }
 var ultimosAjustes = [];
 function respuestaHTML(r, conBotones) {
@@ -1529,10 +1581,67 @@ function respuestaHTML(r, conBotones) {
   });
   return h + '</div>';
 }
-function mostrarResp(r) { $('coachResp').innerHTML = '<div class="card"><h2>Respuesta</h2>' + respuestaHTML(r, true) + '</div>'; $('coachResp').scrollIntoView({ behavior: 'smooth' }); }
-function analizar() { var b = $('btnAnalizar'); b.disabled = true; b.textContent = 'Analizando…'; api('coachAnalizar').then(function (r) { b.disabled = false; b.textContent = 'Analizar mis últimas 2 semanas'; mostrarResp(r); }).catch(function (x) { b.disabled = false; b.textContent = 'Analizar mis últimas 2 semanas'; err(x); }); }
-function preguntar() { var t = $('pregunta').value, b = $('btnPreguntar'); if (!t.trim()) return; b.disabled = true; b.textContent = 'Pensando…'; api('coachPreguntar', t).then(function (r) { b.disabled = false; b.textContent = 'Preguntar'; mostrarResp(r); }).catch(function (x) { b.disabled = false; b.textContent = 'Preguntar'; err(x); }); }
+/** Respuesta del Coach en el chat: el texto, los ajustes y, si pediste un plan, las opciones (tarjetas). */
+function respuestaChatHTML(r, pedido, conBotones) {
+  var h = respuestaHTML(r, conBotones);
+  (r && r.opciones_plan || []).forEach(function (o, k) {
+    var idx = opcionesCoach.push({ opcion: o, pedido: pedido || '' }) - 1;
+    h += '<div class="opc"><div class="kicker">Opción ' + (k + 1) + ' · ' + o.dias + ' día' + (o.dias === 1 ? '' : 's') + ' · ~' + o.minutos + ' min</div>' +
+      '<h3>' + esc(o.titulo) + '</h3>' + (o.enfoque ? '<div class="meta">' + esc(o.enfoque) + '</div>' : '') +
+      o.sesiones.map(function (s, i) {
+        return '<div class="opc-dia"><b>Día ' + (i + 1) + ' · ' + esc(s.nombre) + '</b>' + s.ejercicios.map(function (e) {
+          return '<div class="opc-ej">' + esc(e.principal) + (e.alternativa ? '<span>alternativa: ' + esc(e.alternativa) + '</span>' : '') + '</div>';
+        }).join('') + '</div>';
+      }).join('') +
+      (o.porQue ? '<div class="meta" style="margin-top:8px">' + esc(o.porQue) + '</div>' : '') +
+      '<div class="acts" style="margin-top:10px">' + (o.sesiones.length ? '<button class="btn small" onclick="verOpcion(' + idx + ', this)">Ver plan completo</button>' : '') +
+      (o.programa ? '<button class="btn sec small" onclick="usarProgramaApp(\'' + esc(o.programa) + '\')">Programa de la app</button>' : '') + '</div></div>';
+  });
+  return h;
+}
+function enviarAlCoach(yo, llamada, pedido) {
+  if (coachOcupado) return;
+  var chat = $('chat'); if (!chat) return;
+  coachOcupado = true;
+  ['btnPreguntar', 'btnAnalizar'].forEach(function (id) { if ($(id)) $(id).disabled = true; });
+  chat.insertAdjacentHTML('beforeend', burbujaYo(yo, '') + '<div class="msg coach pensando" id="coachPensando">Pensando… (hasta 40 s si pides un plan)</div>');
+  bajarChat();
+  llamada().then(function (r) {
+    var p = $('coachPensando'); p.classList.remove('pensando'); p.removeAttribute('id');
+    p.innerHTML = respuestaChatHTML(r, pedido, true);
+    bajarChat();
+  }).catch(function (x) {
+    var p = $('coachPensando'); if (p) { p.classList.remove('pensando'); p.removeAttribute('id'); p.textContent = 'No pude responder: ' + (x && x.message || x); }
+    err(x);
+  }).then(function () { coachOcupado = false; ['btnPreguntar', 'btnAnalizar'].forEach(function (id) { if ($(id)) $(id).disabled = false; }); });
+}
+function preguntar() {
+  var t = $('pregunta'); if (!t || !t.value.trim()) { if (t) t.focus(); return; }
+  var txt = t.value.trim(); t.value = '';
+  enviarAlCoach(txt, function () { return api('coachPreguntar', txt); }, txt);
+}
+function analizar() { enviarAlCoach('Analiza mis últimas 2 semanas', function () { return api('coachAnalizar'); }, ''); }
 function aplicar(i, btn) { btn.disabled = true; api('aplicarAjuste', ultimosAjustes[i]).then(function () { btn.textContent = 'Aplicado ✓'; toast('Ajuste aplicado: lo verás en Hoy'); }).catch(function (x) { btn.disabled = false; err(x); }); }
+/** "Ver plan completo": la IA arma la opción (series, reps, descansos) y se abre en el editor de Mi plan. */
+function verOpcion(idx, btn) {
+  var x = opcionesCoach[idx]; if (!x || coachOcupado) return;
+  coachOcupado = true; btn.disabled = true; var antes = btn.textContent; btn.textContent = 'Armando… (20–40 s)';
+  api('planDesdeOpcionCoach', { opcion: x.opcion, pedido: x.pedido }).then(function (r) {
+    btn.textContent = 'Abierto en el editor ✓';
+    abrirArmarConPropuesta(r);
+  }).catch(function (e) { btn.disabled = false; btn.textContent = antes; err(e); }).then(function () { coachOcupado = false; });
+}
+/** Programa de la app sugerido por el Coach: te lleva a Ajustes con ese programa marcado; tú confirmas el cambio. */
+function usarProgramaApp(id) {
+  irA('ajustes');
+  var n = 0, t = setInterval(function () {
+    var r = document.querySelector('input[name=progSel][value="' + id + '"]');
+    if (r || ++n > 40) {
+      clearInterval(t);
+      if (r) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); (r.closest('.prog-op') || r).scrollIntoView({ behavior: 'smooth', block: 'center' }); toast('Revisa el programa y toca "Cambiar de programa"'); }
+    }
+  }, 150);
+}
 function quitar(f) { api('quitarAjuste', f).then(function () { toast('Ajuste quitado'); cargarCoach(); }).catch(err); }
 
 /* =================== AJUSTES =================== */
@@ -1937,6 +2046,18 @@ function abrirArmar(msg) {
   }).catch(function (e) { err(e); cerrarArmar(); });
 }
 function cerrarArmar() { $('armar').classList.add('hidden'); cerrarPicker(); }
+/** Plan que armó la IA desde el chat del Coach: se abre en el editor como propuesta (nada se guarda hasta tocar Guardar). */
+function abrirArmarConPropuesta(r) {
+  var v = $('armar'); v.classList.remove('hidden'); window.scrollTo(0, 0);
+  $('armarCuerpo').innerHTML = '<div class="empty">Cargando…</div>';
+  api('getMiPlan').then(function (m) {
+    mp = m; mpBib = {}; m.biblioteca.forEach(function (b) { mpBib[b.nombre] = b; });
+    mp.sesiones = r.sesiones; if (r.objetivo) mp.objetivo = r.objetivo;
+    mpIa.resp = r; mpIa.ocupado = false;
+    if (mp.ia) { mp.ia.usados = r.usados; mp.ia.maximo = r.maximo; }
+    pintarArmar(); toast('Plan listo: revísalo y toca "Guardar y usar este plan"');
+  }).catch(function (e) { err(e); cerrarArmar(); });
+}
 /* --- Diseñar el plan con IA: la persona lo describe en texto, la IA propone y aquí se revisa --- */
 var mpIa = { texto: '', resp: null, ocupado: false };
 function tarjetaIA() {
@@ -1988,7 +2109,7 @@ function pintarArmar() {
       var img = e.img || (mpBib[e.ejercicio] && mpBib[e.ejercicio].img) || '';
       h += '<div class="mp-ex"><div class="mp-ex-top">' + (img ? '<img class="mp-thumb" loading="lazy" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
         '<div class="mp-ex-b"><div class="mp-ex-n">' + (j + 1) + ' · ' + esc(e.ejercicio) + '<button class="btn txt" onclick="abrirPicker(\'principal\',' + i + ',' + j + ')">Cambiar</button></div>' +
-        '<div class="mp-ex-a">' + (e.alternativa ? 'Alternativa: ' + esc(e.alternativa) + '<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Cambiar</button><button class="btn txt" onclick="mpQuitarAlt(' + i + ',' + j + ')">Quitar</button>' : 'Sin alternativa<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Agregar</button>') + '</div></div>' +
+        '<div class="mp-ex-a">' + (e.alternativa ? 'Alternativa: ' + esc(e.alternativa) + '<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Cambiar</button>' : '<span class="amber">Falta la alternativa</span><button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Elegir</button>') + '</div></div>' +
         '<div class="mp-ico"><button title="Subir" onclick="mpMoverEj(' + i + ',' + j + ',-1)">▲</button><button title="Bajar" onclick="mpMoverEj(' + i + ',' + j + ',1)">▼</button><button title="Quitar" onclick="mpQuitarEj(' + i + ',' + j + ')">✕</button></div></div>' +
         '<div class="mp-nums"><input type="number" inputmode="numeric" min="1" max="6" value="' + e.series + '" onchange="mpNum(' + i + ',' + j + ',\'series\',this.value)">×' +
         '<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmin + '" onchange="mpNum(' + i + ',' + j + ',\'rmin\',this.value)">–<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmax + '" onchange="mpNum(' + i + ',' + j + ',\'rmax\',this.value)">' + (e.unidad === 'seg' ? 's' : 'reps') +
@@ -2006,7 +2127,6 @@ function mpQuitarDia(i) { var s = mp.sesiones[i]; if (s.ejercicios.length && !co
 function mpMoverDia(i, d) { var k = i + d; if (k < 0 || k >= mp.sesiones.length) return; var t = mp.sesiones[i]; mp.sesiones[i] = mp.sesiones[k]; mp.sesiones[k] = t; pintarArmar(); }
 function mpQuitarEj(i, j) { mp.sesiones[i].ejercicios.splice(j, 1); pintarArmar(); }
 function mpMoverEj(i, j, d) { var l = mp.sesiones[i].ejercicios, k = j + d; if (k < 0 || k >= l.length) return; var t = l[j]; l[j] = l[k]; l[k] = t; pintarArmar(); }
-function mpQuitarAlt(i, j) { mp.sesiones[i].ejercicios[j].alternativa = ''; pintarArmar(); }
 function mpCopiarBase() {
   var id = $('mpBase').value, nombre = (mp.bases.filter(function (b) { return b.id === id; })[0] || {}).nombre || id;
   if (mp.sesiones.length && !confirm('Esto reemplaza tus días actuales por los de ' + nombre + ' (según tus días por semana). ¿Seguir?')) return;
@@ -2063,7 +2183,8 @@ function pkAplicar(nombre, datos) {
     s.ejercicios.push({ ejercicio: nombre, alternativa: datos.alt || '', series: 3, rmin: c ? 6 : 10, rmax: c ? 10 : 15, descanso: c ? 120 : 75, grupo: datos.grupo, tipo: datos.tipo, unidad: datos.unidad || 'reps', img: datos.img || '', propio: !!datos.propio });
   } else if (pkModo.modo === 'principal') {
     var e = s.ejercicios[j]; e.ejercicio = nombre; e.grupo = datos.grupo; e.tipo = datos.tipo; e.unidad = datos.unidad || 'reps'; e.img = datos.img || ''; e.propio = !!datos.propio;
-    if (e.alternativa === nombre) e.alternativa = '';
+    // nuevo principal → su alternativa de la biblioteca (todas tienen una); si no la hay, se conserva la que estaba
+    if (datos.alt && datos.alt !== nombre) e.alternativa = datos.alt; else if (e.alternativa === nombre) e.alternativa = '';
   } else {
     var e2 = s.ejercicios[j]; if (nombre !== e2.ejercicio) e2.alternativa = nombre;
   }
