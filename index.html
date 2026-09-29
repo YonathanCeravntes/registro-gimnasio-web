@@ -227,6 +227,10 @@
   .hist-ej{margin-top:6px} .hist-btn{margin-top:4px}
   .badge.ss{background:var(--raise);color:var(--ink)}
   .ss-btn{color:var(--dim)!important;min-height:36px!important} .ss-btn.on{color:var(--amber)!important}
+  .foto-mini{width:58px;min-width:58px;display:flex!important;align-items:center;justify-content:center;font-size:24px;padding:0}
+  label.ia-item{cursor:pointer;gap:12px;justify-content:flex-start;display:flex;align-items:center;text-transform:none;letter-spacing:0;font-size:15px;font-weight:500;color:var(--ink);margin:0}
+  .ia-item input{width:22px;height:22px;accent-color:var(--amber);flex-shrink:0}
+  .adapt{margin-top:12px;padding:12px;border-radius:12px;background:var(--card2)}
   .oculto{position:absolute!important;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
   .chips-mom{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px}
   .chips-mom::-webkit-scrollbar{display:none}
@@ -396,6 +400,15 @@
       <div><label for="cFecha">Día</label><input type="date" id="cFecha"></div>
       <label style="margin-top:10px">Momento</label><div class="chips-mom" id="cMomChips"></div><select id="cMomento" class="oculto" aria-hidden="true" tabindex="-1"></select>
       <div id="cTotales" style="margin-top:12px"></div>
+    </div>
+    <div class="card" id="cIaCard"><h2>Con IA</h2>
+      <div class="meta">Cuéntale qué comiste o tómale una foto al plato. Tú revisas antes de guardar.</div>
+      <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
+        <label class="btn sec foto-mini" for="cIaFoto" aria-label="Foto del plato">📷</label></div>
+      <input id="cIaFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoComidaElegida(this)">
+      <div class="meta" id="cIaFotoTxt"></div>
+      <button class="btn" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular</button>
+      <div id="cIaRes"></div>
     </div>
     <div class="card"><h2>Agregar</h2>
       <input id="cBuscar" placeholder="Buscar comida… (ej.: huevo, atún, kumis, arepa)">
@@ -614,7 +627,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609290012', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
+var INICIAL = null, APP_VERSION = '202609290018', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
@@ -686,7 +699,7 @@ function porFetch(url, fn, args, t) {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
 /* Llamadas que tardan (la IA piensa 20–60 s): más tiempo de espera y sin repetirlas solas (repetir = pagar dos veces) */
-var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1 };
+var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1, comidaConIA: 1 };
 function porScript(url, fn, args, t) {
   return new Promise(function (ok, ko) {
     var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -2010,7 +2023,7 @@ function pintarComida(c) {
   };
   $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, 'kcal') + barra('Proteína', t.prot, o.prot, 'g') +
     barra('Carbohidratos', t.carb, o.carb, 'g') + barra('Grasa', t.grasa, o.grasa, 'g') +
-    '<div class="meta">Objetivos ' + esc(o.fuente) + '. Valores de las comidas aproximados.</div>';
+    '<div class="meta">Meta ' + esc(o.fuente) + '. Valores de las comidas aproximados.</div>' + metaAdaptHTML(c.adaptativa);
   pintarChipsComida();
   pintarListaComidas();
   $('cRegistros').innerHTML = c.registros.length ? c.momentos.concat(['']).map(function (m) {
@@ -2021,6 +2034,81 @@ function pintarComida(c) {
     }).join('');
   }).join('') : '<div class="meta">Aún no registras comidas este día.</div>';
 }
+/* Meta con tu gasto real (ingesta promedio + tendencia del peso): se ve en Comida y se activa con un toque */
+function metaAdaptHTML(ad) {
+  if (!ad) return '';
+  if (!ad.listo) return '<div class="meta" style="margin-top:8px">📈 ' + esc(ad.texto) + '</div>';
+  return '<div class="adapt"><b>Tu gasto real: ' + n1(ad.gasto, 0) + ' kcal/día</b><div class="meta" style="margin-top:4px">Últimas 3 semanas: comiste ' + n1(ad.ingesta, 0) + ' kcal en promedio y tu peso ' +
+    (ad.kgSemana >= 0 ? 'subió ' : 'bajó ') + n1(Math.abs(ad.kgSemana), 2) + ' kg por semana. ' +
+    (ad.activa ? 'Tu meta ya usa este cálculo y se ajusta cada domingo.' : 'Meta sugerida para tu objetivo: <b style="color:var(--ink)">' + n1(ad.meta, 0) + ' kcal</b>.') + '</div>' +
+    (ad.activa ? '<button class="btn txt" onclick="metaAdaptUI(true)">Volver a la meta estimada</button>' : '<button class="btn sec" style="margin-top:8px" onclick="metaAdaptUI(false)">Usar mi gasto real</button>') + '</div>';
+}
+function metaAdaptUI(apagar) {
+  api('usarMetaAdaptativa', { apagar: !!apagar }).then(function (r) {
+    toast(r.activa ? 'Meta nueva: ' + n1(r.meta, 0) + ' kcal (se ajusta cada domingo)' : 'Volviste a la meta estimada');
+    invalidarTodo(); cargarComida();
+  }).catch(err);
+}
+/* Comida con IA: texto y/o foto → alimentos estimados que la persona confirma */
+var comidaIAres = null, fotoComida = null;
+function fotoComidaElegida(inp) {
+  var f = inp.files && inp.files[0]; fotoComida = null; $('cIaFotoTxt').textContent = '';
+  if (!f) return;
+  var img = new Image(), rd = new FileReader();
+  rd.onload = function () { img.src = rd.result; };
+  img.onload = function () {
+    var max = 1024, k = Math.min(1, max / Math.max(img.width, img.height));
+    var cv = document.createElement('canvas'); cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    fotoComida = cv.toDataURL('image/jpeg', 0.8); $('cIaFotoTxt').textContent = '📷 Foto lista para calcular';
+  };
+  rd.readAsDataURL(f);
+}
+function comidaIA() {
+  var t = $('cIaTxt').value.trim();
+  if (!t && !fotoComida) { toast('Escribe qué comiste o toma una foto'); $('cIaTxt').focus(); return; }
+  var b = $('cIaBtn'); b.disabled = true; b.textContent = 'Calculando… (10–20 s)';
+  api('comidaConIA', { texto: t, foto: fotoComida || '', momento: $('cMomento').value }).then(function (r) { comidaIAres = r; pintarComidaIA(); })
+    .catch(err).then(function () { b.disabled = false; b.textContent = 'Calcular'; });
+}
+function pintarComidaIA() {
+  var r = comidaIAres, box = $('cIaRes'); if (!box) return;
+  if (!r) { box.innerHTML = ''; return; }
+  if (!r.items.length) { box.innerHTML = '<div class="msg" style="margin-top:10px">' + esc(r.nota || 'No encontré comida para registrar.') + '</div>'; return; }
+  var tot = { kcal: 0, prot: 0 };
+  box.innerHTML = '<div style="margin-top:10px">' + r.items.map(function (x, k) {
+    if (x.on !== false) { tot.kcal += x.kcal; tot.prot += x.prot; }
+    return '<label class="food ia-item"><input type="checkbox"' + (x.on !== false ? ' checked' : '') + ' onchange="comidaIAres.items[' + k + '].on=this.checked;pintarComidaIA()"><div>' + esc(x.nombre) +
+      '<div class="meta">' + esc(x.porcion) + ' · ' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot · ' + n1(x.carb, 0) + ' C · ' + n1(x.grasa, 0) + ' G</div></div></label>';
+  }).join('') + '</div>' +
+  (r.nota ? '<div class="meta" style="margin-top:6px">' + esc(r.nota) + '</div>' : '') +
+  '<div class="dayh" style="margin-top:8px"><b>Total</b><span class="meta"><b style="color:var(--ink)">' + n1(tot.kcal, 0) + ' kcal</b> · ' + n1(tot.prot, 0) + ' g prot</span></div>' +
+  '<div class="acts" style="margin-top:8px"><button class="btn" onclick="guardarComidaIA()">Agregar a ' + esc($('cMomento').value) + '</button><button class="btn ghost" onclick="comidaIAres=null;pintarComidaIA()">Descartar</button></div>' +
+  '<div class="meta" style="margin-top:6px">Valores aproximados. Hoy: ' + r.usados + ' de ' + r.maximo + ' con IA.</div>';
+}
+function guardarComidaIA() {
+  var r = comidaIAres; if (!r) return;
+  var items = r.items.filter(function (x) { return x.on !== false; });
+  if (!items.length) { toast('Marca al menos un alimento'); return; }
+  agregarLibresUI(items.map(function (x) { return { nombre: x.nombre, kcal: x.kcal, prot: x.prot, carb: x.carb, grasa: x.grasa, cantidad: 1 }; }));
+  comidaIAres = null; fotoComida = null; $('cIaTxt').value = ''; $('cIaFoto').value = ''; $('cIaFotoTxt').textContent = ''; pintarComidaIA();
+}
+/** Agrega comidas con sus valores (IA o "lo de ayer"): se ven al instante y se envían (con cola si no hay señal). */
+function agregarLibresUI(items) {
+  var fecha = $('cFecha').value, momento = $('cMomento').value;
+  items = items.map(function (x) { var y = {}; for (var k in x) y[k] = x[k]; y.id = 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); return y; });
+  items.forEach(function (x) {
+    var reg = { fecha: fecha, momento: momento, comida: x.nombre, cantidad: x.cantidad || 1, kcal: Math.round(x.kcal), prot: x.prot, carb: x.carb, grasa: x.grasa, id: x.id };
+    comidaDatos.registros.push(reg); ['kcal', 'prot', 'carb', 'grasa'].forEach(function (k) { comidaDatos.totales[k] += Number(reg[k]) || 0; });
+  });
+  pintarComida(comidaDatos);
+  toast(items.length === 1 ? 'Agregado: ' + items[0].nombre : items.length + ' alimentos agregados');
+  enviar('agregarComidaLibre', { fecha: fecha, momento: momento, items: items }).then(function (r) { if (!r.enCola) escribirCache('com:' + fecha, r); }).catch(err);
+}
+function repetirAyer(k) {
+  var a = comidaDatos && comidaDatos.ayer || []; var lista = k === undefined ? a : [a[k]];
+  agregarLibresUI(lista.filter(Boolean).map(function (x) { return { nombre: x.comida, kcal: x.kcal, prot: x.prot, carb: x.carb, grasa: x.grasa, cantidad: x.cantidad }; }));
+}
 /* Chips de categoría: "Frecuentes" (lo que más registras) o una categoría del catálogo */
 var CATS_COMIDA = ['Proteínas', 'Lácteos', 'Carbohidratos', 'Frutas', 'Verduras', 'Grasas', 'Desayuno', 'Platos', 'Snacks', 'Bebidas', 'Suplementos', 'Mis comidas'];
 var catComida = '';
@@ -2028,9 +2116,10 @@ function pintarChipsComida() {
   if (!comidaDatos) return;
   var hay = {}; comidaDatos.catalogo.forEach(function (c) { hay[c.cat] = true; });
   var cats = CATS_COMIDA.filter(function (c) { return hay[c]; }).concat(Object.keys(hay).filter(function (c) { return CATS_COMIDA.indexOf(c) < 0; }).sort());
-  if (catComida && !hay[catComida]) catComida = '';
-  $('cChips').innerHTML = [''].concat(cats).map(function (c) {
-    return '<span class="chip' + (c === catComida ? ' on' : '') + '" data-cat="' + esc(c) + '">' + (c ? esc(c) : 'Frecuentes') + '</span>';
+  var hayAyer = !!(comidaDatos.ayer && comidaDatos.ayer.length);
+  if (catComida && !hay[catComida] && !(catComida === '__ayer' && hayAyer)) catComida = '';
+  $('cChips').innerHTML = [''].concat(hayAyer ? ['__ayer'] : []).concat(cats).map(function (c) {
+    return '<span class="chip' + (c === catComida ? ' on' : '') + '" data-cat="' + esc(c) + '">' + (c === '__ayer' ? 'Lo de ayer' : c ? esc(c) : 'Frecuentes') + '</span>';
   }).join('');
 }
 $('cChips').onclick = function (ev) {
@@ -2041,6 +2130,12 @@ $('cChips').onclick = function (ev) {
 function pintarListaComidas() {
   if (!comidaDatos) return;
   var q = $('cBuscar').value.trim().toLowerCase();
+  if (catComida === '__ayer' && !q) {
+    var ay = comidaDatos.ayer || [];
+    $('cLista').innerHTML = '<div class="food"><div><b>Repetir todo lo de ayer</b><div class="meta">' + ay.length + ' comidas · ' + n1(ay.reduce(function (t, x) { return t + x.kcal; }, 0), 0) + ' kcal</div></div><button onclick="repetirAyer()">+ Todo</button></div>' +
+      ay.map(function (x, k) { return '<div class="food"><div>' + esc(x.comida) + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : '') + '<div class="meta">' + esc(x.momento || '') + ' · ' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot</div></div><button onclick="repetirAyer(' + k + ')">+ Agregar</button></div>'; }).join('');
+    return;
+  }
   var norm = function (x) { return x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
   var lista = comidaDatos.catalogo.filter(function (c) {
     if (catComida && c.cat !== catComida) return false;
