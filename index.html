@@ -865,7 +865,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301936', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609302245', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1186,7 +1186,8 @@ function toggleSelector() {
 }
 
 /* =================== HOY =================== */
-var CACHE_V = 'v4:';
+// La caché del celular va por persona: si otra cuenta entra en el mismo teléfono, no ve datos ajenos
+var CACHE_V = 'v5:' + (function () { try { var c = JSON.parse(localStorage.getItem('cfg') || 'null'), t = c && c.t ? String(c.t) : '', h = 0; for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0; return t ? h.toString(36) + ':' : ''; } catch (e) { return ''; } })();
 function leerCache(k) { try { var v = localStorage.getItem(CACHE_V + k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
 function escribirCache(k, v) { try { localStorage.setItem(CACHE_V + k, JSON.stringify(v)); } catch (e) {} }
 function editando() { var a = document.activeElement; return a && /INPUT|SELECT|TEXTAREA/.test(a.tagName) && a.id !== 'fecha' && a.id !== 'sesion'; }
@@ -1262,7 +1263,7 @@ function pintarHero() {
     proxPedida = true;
     api('getSesion', e.proxima.codigo, e.proxima.fecha).then(function (r) { r.etiqueta = e.proxima.etiqueta; proximaSes = r; pintarHero(); }).catch(function () {});
   }
-  var prox = hoyListo && !verHoy && proximaSes ? proximaSes : null;
+  var prox = hoyListo && !verHoy && proximaSes && Array.isArray(proximaSes.ejercicios) ? proximaSes : null;
   var img = '';
   var sImg = prox || s;
   if (pesas && sImg && sImg.ejercicios.length) { var v0 = sImg.ejercicios[0].variantes; img = (v0.principal.imagenes || [])[0] || (v0.alternativa && v0.alternativa.imagenes[0]) || ''; }
@@ -1332,6 +1333,7 @@ function diaLargoEtiqueta(et) { var p = String(et || '').split(' '); return (DIA
 function verLoDeHoy(si) { verHoy = !!si; pintarHero(); if (si) irRutina(); else window.scrollTo({ top: 0, behavior: 'smooth' }); }
 /** Vista previa (solo lectura) de la sesión que sigue: ejercicios, papel, músculos y lo que te tocará. */
 function proximaHTML(p) {
+  if (!p || !Array.isArray(p.ejercicios)) return '';
   return '<div class="sec-h"><b>Lo que viene · ' + esc(diaLargoEtiqueta(p.etiqueta)) + '</b><span>' + p.ejercicios.length + ' ejercicios</span></div>' +
     p.ejercicios.map(function (x) {
       var v = x.variantes.principal || {}, img = (v.imagenes || [])[0] || '';
@@ -1430,7 +1432,7 @@ function btnEstado(e) {
 
 /* Músculos del ejercicio: el principal resaltado y los secundarios (trabajan de apoyo, cuentan media serie) */
 function musculosHTML(m) {
-  if (!m || (!m.principal.length && !m.secundario.length)) return '';
+  if (!m || !Array.isArray(m.principal) || !Array.isArray(m.secundario) || (!m.principal.length && !m.secundario.length)) return '';
   return '<span class="mp">' + esc(m.principal.join(' y ')) + '</span>' +
     (m.secundario.length ? '<span class="ms"> · apoyo: ' + esc(m.secundario.join(', ').toLowerCase()) + '</span>' : '');
 }
@@ -1798,12 +1800,13 @@ function pintarSemanaTab() {
     var p = d.etiqueta.split(' '), dow = DIA_3[p[0]] || p[0], num = p[1];
     var c = e.cumpl && e.cumpl[d.fecha];
     var cls = 'dia-row', nombre, sub, der;
+    var nomHecho = (d.sesiones && d.sesiones.length > 1 ? d.sesiones : [d.sesion]).map(function (s) { return nombres[s] || s; }).join(' + ');
     if (d.estado === 'hecho' && c) {
-      cls += ' hecho'; nombre = esc(nombres[d.sesion] || d.sesion) + '<span class="chip ok">' + SVG.check + 'Fuiste</span>';
+      cls += ' hecho'; nombre = esc(nomHecho) + '<span class="chip ok">' + SVG.check + 'Fuiste</span>';
       sub = c.hechas + ' de ' + c.presc + ' series · ' + c.ejHechos + ' de ' + c.ej + ' ejercicios';
       der = '<div class="pct">' + c.pct + '%<small>de la sesión</small></div>';
     } else if (d.estado === 'hecho') {
-      cls += ' hecho'; nombre = esc(nombres[d.sesion] || d.sesion) + '<span class="chip ok">' + SVG.check + 'Fuiste</span>'; sub = 'Sesión registrada'; der = '';
+      cls += ' hecho'; nombre = esc(nomHecho) + '<span class="chip ok">' + SVG.check + 'Fuiste</span>'; sub = 'Sesión registrada'; der = '';
     } else if (d.tipo === 'sesion') {
       nombre = esc(nombres[d.sesion] || d.sesion); sub = 'Pesas' + (d.fijada ? ' · elegida por ti' : ''); der = '<div class="ico' + (d.esHoy ? ' on' : '') + '">' + SVG.dumb + '</div>';
     } else if (d.tipo === 'cardio') {
@@ -2424,8 +2427,12 @@ function cambiarProgramaUI() {
   var nAntes = Math.max(3, Math.min(5, Number(programasCache.estado && programasCache.estado.nDias) || 3));
   var opts = { entrada: $('progEntrada').checked, ajustarComida: $('progComida').checked };
   if (n && n !== nAntes) opts.dias = DIAS_POR_N[n];   // si no cambias los días, se quedan los tuyos
-  if (!confirm((mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + (n ? ' con ' + n + ' días por semana' : '') + ' desde hoy (Bloque 1)?' +
-      (opts.dias ? ' Tus días de entreno quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).' : '') + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : ''))) return;
+  var soloDias = mismo && !!opts.dias;
+  if (mismo && !opts.dias) opts.reiniciar = true;
+  var msg = soloDias ? 'Pasar ' + (p ? p.nombre : id) + ' a ' + n + ' días por semana? Sigues donde vas; tus días quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).'
+    : (mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + (n ? ' con ' + n + ' días por semana' : '') + ' desde hoy (Bloque 1)?' +
+      (opts.dias ? ' Tus días de entreno quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).' : '') + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : '');
+  if (!confirm(msg)) return;
   var b = $('progCambiar'); b.disabled = true; b.textContent = 'Cambiando…';
   api('cambiarPrograma', id, opts)
     .then(function () { invalidarTodo(); toast('Programa: ' + (p ? p.nombre : id)); cargarAjustes(); cargarEstado(); })
