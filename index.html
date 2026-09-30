@@ -356,6 +356,9 @@
   .pc-merc{font-size:13px} .pc-merc .food{font-size:13px}
   .badge.salud{background:var(--bad-bg);color:var(--bad)}
   .ex-mus{font-size:12px;margin-top:2px;line-height:1.3} .ex-mus .mp{color:var(--amber);font-weight:700} .ex-mus .ms{color:var(--dim)}
+  .pc-prot{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--card2)}
+  .pc-prot .pc-sel .chip{cursor:default;font-size:12px}
+  .pc-prot .chip.ok{background:var(--green-bg);color:var(--green-ink)} .pc-prot .chip.no{background:var(--bad-bg);color:var(--bad)}
   .food{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
   .food:first-child{border-top:0}
   .food button{border:0;background:var(--raise);color:var(--amber);border-radius:10px;padding:8px 12px;font-weight:700;white-space:nowrap;cursor:pointer;font-family:var(--body)}
@@ -750,7 +753,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301343', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609301424', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2418,6 +2421,7 @@ function pintarPlan(r) {
   if (r.falta) { $('pcRes').innerHTML = '<div class="sug" style="margin-top:10px">' + esc(r.falta) + '</div>'; return; }
   var m = r.metas;
   h += '<div class="adapt" style="margin-top:10px"><b>' + esc(m.nombre) + ': ' + n1(m.kcal, 0) + ' kcal al día</b><div class="meta" style="margin-top:4px">Proteína ' + n1(m.prot, 0) + ' g · carbohidratos ' + n1(m.carb, 0) + ' g · grasa ' + n1(m.grasa, 0) + ' g · sodio máx. ' + n1(m.sodioMg, 0) + ' mg · fibra ' + n1(m.fibraG, 0) + ' g.<br>Tu gasto estimado: ' + n1(m.gasto, 0) + ' kcal (' + esc(m.metodo) + '). ' + esc(m.ritmo) + '</div></div>';
+  if (r.proteina) h += pcProteinaHTML(r.proteina);
   if (r.notas && r.notas.length) h += r.notas.map(function (n) { return '<div class="sug">' + esc(n) + '</div>'; }).join('');
   h += '<div class="dayh" style="margin-top:10px"><span class="meta">El menú suma ' + n1(r.total.kcal, 0) + ' kcal y ' + n1(r.total.prot, 0) + ' g de proteína.</span><button class="btn txt" onclick="pcOtroMenu()">Otro menú ↻</button></div>';
   r.comidas.forEach(function (c, i) {
@@ -2435,6 +2439,17 @@ function pintarPlan(r) {
   h += bloqueSalud();
   h += '<div class="meta" style="margin-top:10px">' + esc(r.aviso) + '</div>';
   $('pcRes').innerHTML = h;
+}
+/* Tu proteína: cuánta y qué fuentes convienen por tu salud (con la razón a un toque) */
+function pcProteinaHTML(p) {
+  var corto = function (n) { return n.replace(/ a la plancha| asado| \(.*\)| sin piel/g, ''); };
+  var h = '<div class="pc-prot"><div class="dayh"><b>Tu proteína</b><span class="meta">' + n1(p.gramos, 0) + ' g al día · ' + String(p.gkg).replace('.', ',') + ' g/kg</span></div>';
+  if (p.preferidas.length) h += '<div class="meta" style="margin-top:6px">Mejor para ti</div><div class="pc-sel">' + p.preferidas.slice(0, 6).map(function (x) { return '<span class="chip ok">' + esc(corto(x.nombre)) + '</span>'; }).join('') + '</div>';
+  if (p.limitadas.length) h += '<div class="meta" style="margin-top:6px">Menos o nada</div><div class="pc-sel">' + p.limitadas.slice(0, 6).map(function (x) { return '<span class="chip no">' + esc(corto(x.nombre)) + '</span>'; }).join('') + '</div>';
+  if (p.notas.length || p.limitadas.length) h += '<details style="margin-top:4px"><summary class="meta">¿Por qué?</summary>' +
+    p.notas.map(function (n) { return '<div class="pc-av"><b>' + esc(n.de) + '.</b> ' + esc(n.texto) + '</div>'; }).join('') +
+    (p.limitadas.length ? '<div class="meta" style="margin-top:6px">' + p.limitadas.map(function (x) { return esc(corto(x.nombre)) + ': ' + esc(x.por); }).join(' · ') + '</div>' : '') + '</details>';
+  return h + '</div>';
 }
 function pcOpcion(i, o) { pcOpc[i] = o; pintarPlan(pcDatos); }
 function pcRegistrar(i) {
