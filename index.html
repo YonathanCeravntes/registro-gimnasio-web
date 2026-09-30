@@ -687,6 +687,7 @@
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
   <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
   <h1 style="font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:6px 0 14px">Empieza<br>aquí</h1>
+  
   <div class="card" style="margin:0 0 14px">
     <h2>Soy nuevo · Crear mi cuenta</h2>
     <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Necesitas el código de invitación que te dio quien te compartió la app.</p>
@@ -697,17 +698,21 @@
     <p id="regMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
   </div>
   <div class="card" style="margin:0">
-    <h2>Ya tengo mi enlace</h2>
+    <h2>Tengo un enlace privado</h2>
     <p id="vincMsg" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px"></p>
     <textarea id="vincTxt" rows="3" placeholder="https://…/#api=…&t=…" style="width:100%;box-sizing:border-box;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px"></textarea>
     <button class="btn sec" style="width:100%;margin-top:12px" onclick="vincular()">Usar mi enlace</button>
   </div>
-  <p style="color:var(--faint);font-size:12px;margin-top:18px">Tu enlace lleva tu token privado y se guarda solo en este celular. Cada persona tiene su propia hoja de datos.</p>
+  <p style="color:var(--faint);font-size:12px;margin-top:18px">Tu sesión se guarda solo en este celular. Cada persona ve únicamente sus datos.</p>
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609291551', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
+var INICIAL = null, APP_VERSION = '202609300333', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
+// La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
+if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
+  CFG.api = API_PUBLICA; try { localStorage.setItem('cfg', JSON.stringify(CFG)); } catch (e) {}
+}
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
   var h = location.hash || '';
@@ -764,6 +769,13 @@ function api(fn) {
   var args = Array.prototype.slice.call(arguments, 1);
   if (!CFG) return Promise.reject(new Error('La app no está vinculada: abre el enlace de instalación'));
   return llamarServidor(CFG.api, fn, args, CFG.t).then(function (j) {
+    // Apps Script avisa que la app se mudó: se cambia de servidor y se repite una vez
+    if (!j.ok && j.codigo === 'mudado' && j.api && j.api !== CFG.api) {
+      CFG.api = j.api; try { localStorage.setItem('cfg', JSON.stringify(CFG)); } catch (e) {}
+      return llamarServidor(CFG.api, fn, args, CFG.t);
+    }
+    return j;
+  }).then(function (j) {
     if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true); throw new Error(j.error || 'Error del servidor'); }
     return j.r;
   });
@@ -850,13 +862,36 @@ function llamarDirecto(url, fn, args, t, intento) {
     return alterno(url, fn, args, t).then(function (j) { fijarTransporte(TRANSPORTE === 'jsonp' ? 'fetch' : 'jsonp'); return j; }).catch(function (e2) {
       if (LLAMADAS_LENTAS[fn]) throw new Error('Se cortó la conexión mientras la IA respondía. Revisa tu red y vuelve a intentar.');
       if (intento < 1) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return llamarDirecto(url, fn, args, t, intento + 1); });
-      throw new Error('Sin conexión con el servidor (' + ((e && e.message) || e) + '). Revisa tu red; si usas bloqueador de anuncios o DNS privado, permite script.google.com y script.googleusercontent.com');
+      throw new Error('Sin conexión con el servidor (' + ((e && e.message) || e) + '). Revisa tu red e intenta de nuevo.');
     });
   });
 }
 function mostrarVincular(tokenMalo) {
   var v = $('vincular'); v.classList.remove('hidden');
-  $('vincMsg').textContent = tokenMalo ? 'Tu token cambió o no es válido. Abre de nuevo tu enlace de instalación o pégalo aquí.' : 'Si ya tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
+  $('vincMsg').textContent = tokenMalo ? 'Tu sesión venció o no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
+  if (tokenMalo && $('accMsg')) $('accMsg').textContent = 'Tu sesión venció: entra de nuevo con tu correo.';
+}
+/* Entrar con correo + código de 6 dígitos (servidor nuevo) */
+function baseServidor() { return API_PUBLICA.replace(/\/api$/, ''); }
+function pedirCodigo() {
+  var correo = ($('accCorreo').value || '').trim(), b = $('accBtn'), msg = $('accMsg');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { toast('Escribe tu correo'); return; }
+  b.disabled = true; b.textContent = 'Enviando…'; msg.textContent = '';
+  fetch(baseServidor() + '/acceso/pedir', { method: 'POST', body: JSON.stringify({ correo: correo }) }).then(function (r) { return r.json(); }).then(function (j) {
+    if (j.ok === false) throw new Error(j.error || 'No se pudo enviar el código');
+    msg.textContent = j.mensaje || 'Revisa tu correo.';
+    $('accPaso2').style.display = ''; $('accCodigo').focus();
+  }).catch(function (e) { toast(e.message || e); }).then(function () { b.disabled = false; b.textContent = 'Enviarme el código'; });
+}
+function entrarConCodigo() {
+  var correo = ($('accCorreo').value || '').trim(), codigo = ($('accCodigo').value || '').replace(/\D/g, ''), b = $('accEntrar');
+  if (codigo.length !== 6) { toast('El código tiene 6 dígitos'); return; }
+  b.disabled = true; b.textContent = 'Entrando…';
+  fetch(baseServidor() + '/acceso/entrar', { method: 'POST', body: JSON.stringify({ correo: correo, codigo: codigo }) }).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j.ok || !j.t) throw new Error(j.error || 'No se pudo entrar');
+    try { localStorage.setItem('cfg', JSON.stringify({ api: j.api || API_PUBLICA, t: j.t })); } catch (e) {}
+    location.href = location.pathname;
+  }).catch(function (e) { toast(e.message || e); b.disabled = false; b.textContent = 'Entrar'; });
 }
 function guardarCfgDesdeEnlace(txt) {
   var a = /[#&?]api=([^&\s]+)/.exec(txt), t = /[#&?]t=([^&\s]+)/.exec(txt);
