@@ -687,7 +687,17 @@
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
   <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
   <h1 style="font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:6px 0 14px">Empieza<br>aquí</h1>
-  
+  <!--acceso--><div class="card" style="margin:0 0 14px">
+    <h2>Ya tengo cuenta · Entrar</h2>
+    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Te mandamos un código de 6 dígitos a tu correo.</p>
+    <label for="accCorreo">Tu correo</label><input id="accCorreo" type="email" autocomplete="email" inputmode="email" placeholder="tucorreo@gmail.com">
+    <button class="btn" id="accBtn" style="width:100%;margin-top:12px" onclick="pedirCodigo()">Enviarme el código</button>
+    <div id="accPaso2" style="display:none">
+      <label for="accCodigo">Código</label><input id="accCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px;font-size:24px;text-align:center">
+      <button class="btn" id="accEntrar" style="width:100%;margin-top:12px" onclick="entrarConCodigo()">Entrar</button>
+    </div>
+    <p id="accMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
+  </div><!--/acceso-->
   <div class="card" style="margin:0 0 14px">
     <h2>Soy nuevo · Crear mi cuenta</h2>
     <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Necesitas el código de invitación que te dio quien te compartió la app.</p>
@@ -707,7 +717,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609300333', API_PUBLICA = 'https://script.google.com/macros/s/AKfycbxpNYt8b4tM8Bzk0I1tC2EoZplQqsqtm0iK2kgqpOO4-hcrTp_tzuGN0nhSKD42o8tD/exec', API_PROXY = 'https://registro-gimnasio-proxy.onrender.com/api';
+var INICIAL = null, APP_VERSION = '202609301051', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2649,22 +2659,14 @@ function diagnostico() {
   var sw = navigator.serviceWorker && navigator.serviceWorker.controller;
   linea('Service worker: ' + (sw ? 'activo (' + (sw.scriptURL || '').split('/').pop() + ')' : 'no'));
   if (typeof CFG === 'undefined' || !CFG) { linea('La app usa google.script.run (no hay pruebas de red aquí).'); return; }
-  linea('Servidor: ' + CFG.api.replace(/macros\/s\/[^/]+/, 'macros/s/…'));
-  var hayProxy = typeof API_PROXY !== 'undefined' && API_PROXY;
-  linea('Canal: ' + (hayProxy ? (usarProxy(CFG.api) ? 'proxy (' + API_PROXY.replace(/^https:\/\//, '').replace(/\/api$/, '') + ')' : 'directo (proxy en pausa)') + ' · respaldo ' : '') + (typeof TRANSPORTE !== 'undefined' ? TRANSPORTE : 'fetch'));
-  var pruebas = hayProxy ? [
-    ['P1 Proxy /salud', function () { return fetch(API_PROXY.replace(/\/api$/, '/salud'), { cache: 'no-store' }); }],
-    ['P2 Proxy ping (hasta Apps Script)', function () { return fetch(API_PROXY + '?api=ping', { cache: 'no-store' }); }],
-    ['P3 Proxy POST getAvisos', function () { return fetch(API_PROXY, { method: 'POST', body: JSON.stringify({ fn: 'getAvisos', args: [], t: CFG.t }) }); }]
-  ] : [];
-  pruebas = pruebas.concat([
-    ['1 GET ping', function () { return fetch(CFG.api + '?api=ping', { redirect: 'follow' }); }],
-    ['2 GET ping (sin seguir redirección)', function () { return fetch(CFG.api + '?api=ping', { redirect: 'manual' }); }],
-    ['3 POST getAvisos', function () { return fetch(CFG.api, { method: 'POST', body: JSON.stringify({ fn: 'getAvisos', args: [], t: CFG.t }), redirect: 'follow' }); }],
-    ['4 GET script.googleusercontent.com', function () { return fetch('https://script.googleusercontent.com/macros/echo', { mode: 'no-cors', cache: 'no-store' }); }],
-    ['5 GET script.google.com', function () { return fetch('https://script.google.com/', { mode: 'no-cors', cache: 'no-store' }); }],
-    ['6 GET www.google.com', function () { return fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-store' }); }]
-  ]);
+  linea('Servidor: ' + CFG.api);
+  var base = CFG.api.replace(/\/api$/, '');
+  linea('Canal: ' + (typeof TRANSPORTE !== 'undefined' ? TRANSPORTE : 'fetch'));
+  var pruebas = [
+    ['1 GET /salud', function () { return fetch(base + '/salud', { cache: 'no-store' }); }],
+    ['2 POST getAvisos', function () { return fetch(CFG.api, { method: 'POST', body: JSON.stringify({ fn: 'getAvisos', args: [], t: CFG.t }) }); }],
+    ['3 GET internet (google.com)', function () { return fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-store' }); }]
+  ];
   var i = 0;
   (function siguiente() {
     if (i >= pruebas.length) { linea('— fin —'); return; }
