@@ -445,6 +445,9 @@
   .bm-con{margin-top:12px;background:var(--card2);border-radius:16px;padding:12px 14px}
   .bm-con b{display:block;font-size:15px} .bm-con div{font-size:13px;color:var(--muted);margin-top:4px}
   .bm-48{margin-top:10px;background:var(--amber-bg);border-radius:14px;padding:10px 12px;font-size:13px;color:var(--amber)}
+  .rol{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;border-radius:999px;padding:2px 7px;margin-bottom:3px}
+  .rol-F{background:var(--amber);color:var(--amber-ink)} .rol-S{background:var(--raise);color:var(--ink)} .rol-P{background:var(--green-bg);color:var(--green-ink)}
+  .porque{font-size:13px;color:var(--muted);margin:8px 0 4px;line-height:1.4} .porque b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -861,7 +864,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301717', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609301847', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1400,7 +1403,7 @@ function tarjeta(e, i) {
   return '<div class="ex st-' + e.estado + '" id="ex' + i + '">' +
     '<div class="ex-row" onclick="alternar(' + i + ')">' +
       '<img class="thumb" id="exThumb' + i + '" alt="" loading="lazy">' +
-      '<div class="ex-info"><div class="ex-name" id="exNom' + i + '"></div><div class="ex-mus" id="exMus' + i + '"></div><div class="ex-alt" id="exAlt' + i + '"></div>' +
+      '<div class="ex-info">' + (e.rol ? '<span class="rol rol-' + esc(e.rol) + '">' + esc(e.rolTexto) + '</span>' : '') + '<div class="ex-name" id="exNom' + i + '"></div><div class="ex-mus" id="exMus' + i + '"></div><div class="ex-alt" id="exAlt' + i + '"></div>' +
       '<div class="ex-meta"><b>' + prescCorta(e.prescripcion, e.unidad) + '</b></div>' +
       '<div class="ex-sug" id="exRes' + i + '"></div></div>' +
       '<div id="exChip' + i + '">' + btnEstado(e) + '</div></div>' +
@@ -1410,6 +1413,7 @@ function tarjeta(e, i) {
     '<div id="exBody' + i + '" class="ex-body' + (abierto ? ' open' : '') + '">' +
       (e.tieneAlternativa ? '<div class="toggle var2"><button data-i="' + i + '" data-v="principal"><small>Principal</small>' + esc(e.variantes.principal.nombre) + '</button>' +
         '<button data-i="' + i + '" data-v="alternativa"><small>Alternativa</small>' + esc(e.variantes.alternativa.nombre) + '</button></div>' : '') +
+      (e.porque ? '<div class="porque"><b>Por qué:</b> ' + esc(e.porque) + '</div>' : '') +
       '<div class="imgs" id="exImg' + i + '"></div>' +
       '<div class="presc">Haz: ' + esc(e.prescripcion.texto) + '<small>' + esc(e.grupo) + ' · RIR ' + esc(e.prescripcion.rir) + ' · descanso ' + fmtSeg(e.prescripcion.descanso) + '</small></div>' +
       '<div id="exSug' + i + '"></div>' +
@@ -1739,7 +1743,7 @@ function pintarBalance(b) {
     h += '<div class="bm-row ' + (b.entrada ? 'suave' : m.estado) + '"><div class="m">' + esc(m.nombre) + '</div><div class="bm-tr" role="img" aria-label="' + esc(m.nombre) + ': ' + n1(m.series) + ' series"><div class="band" style="' + band + '"></div><i style="width:' + Math.min(100, m.series / tope * 100) + '%"></i></div><div class="v">' + n1(m.series) + '</div></div>';
   });
   h += '<div class="bm-leg"><span>Directas + ½ de las de apoyo</span><span>Meta ' + b.meta.min + '–' + b.meta.max + '</span></div>';
-  var bajos = b.consejos.filter(function (c) { return c.tipo === 'bajo'; }), otros = b.consejos.filter(function (c) { return c.tipo === 'alto' || c.tipo === 'entrada'; }), d48 = b.consejos.filter(function (c) { return c.tipo === '48h'; })[0];
+  var bajos = b.consejos.filter(function (c) { return c.tipo === 'bajo'; }), otros = b.consejos.filter(function (c) { return c.tipo === 'alto' || c.tipo === 'entrada' || c.tipo === 'parcial'; }), d48 = b.consejos.filter(function (c) { return c.tipo === '48h'; })[0];
   if (bajos.length) h += '<div class="bm-con"><b>' + esc(bajos.map(function (c) { return c.musculo; }).join(' y ')) + (bajos.length > 1 ? ' van cortos' : ' va corto') + '</b>' + bajos.map(function (c) { return '<div>' + esc(c.texto) + '</div>'; }).join('') +
     '<button class="btn" style="margin-top:10px" onclick="irAjustes(\'programa\')">' + (b.esMio ? 'Ajustar mi plan' : 'Ver mi programa') + '</button></div>';
   otros.forEach(function (c) { h += '<div class="bm-con"><div style="margin:0">' + esc(c.texto) + '</div></div>'; });
@@ -2360,22 +2364,34 @@ function pintarProgramas(r) {
       (p.mio ? '<div style="margin-top:6px"><button type="button" class="btn txt" onclick="event.preventDefault();abrirArmar()">' + (p.configurado ? 'Editar mi plan →' : 'Armar mi plan →') + '</button></div>' :
       '<div class="d dim">Cardio: ' + p.cardio.sesiones + ' × ' + esc(p.cardio.minutos) + ' min · ' + esc(p.nutricion.texto) + '</div>') + '</div></label>';
   }).join('') + '</div>';
+  var nAct = Math.max(3, Math.min(5, Number(est.nDias) || 3));
+  h += '<label style="margin-top:12px">Días de pesas por semana</label><div class="toggle" id="progDias">' + [3, 4, 5].map(function (n) {
+    return '<button type="button" data-n="' + n + '" class="' + (n === nAct ? 'on' : '') + '">' + n + ' días</button>'; }).join('') + '</div>';
   h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progEntrada" style="width:auto"> Empezar con "Vuelta al gimnasio" (2 semanas suaves, si vienes de parar)</label>';
   h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:6px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progComida" style="width:auto" checked> Ajustar calorías y proteína al objetivo del programa</label>';
   h += '<div class="acts" style="margin-top:10px"><button class="btn" id="progCambiar">Cambiar de programa</button></div>';
-  h += '<div class="meta" style="margin-top:6px">Al cambiar, el nuevo programa empieza hoy desde su Bloque 1. Tu historial y tus cargas se conservan.</div>';
+  h += '<div class="meta" style="margin-top:6px"><b style="color:var(--green-ink)">Nada se pierde.</b> El nuevo programa empieza hoy desde su Bloque 1; tu historial y tus cargas se quedan y arranca con tus últimos pesos.</div>';
   h += '<div style="margin-top:10px"><button class="btn txt" onclick="mostrarBienvenida(true)">Ver la pantalla de bienvenida →</button></div>';
   $('progCard').innerHTML = h;
   $('progCambiar').onclick = cambiarProgramaUI;
+  document.querySelectorAll('#progDias button').forEach(function (b) {
+    b.onclick = function () { document.querySelectorAll('#progDias button').forEach(function (x) { x.classList.toggle('on', x === b); }); };
+  });
 }
+var DIAS_POR_N = { 3: 'Lu,Mi,Vi', 4: 'Lu,Ma,Ju,Vi', 5: 'Lu,Ma,Mi,Ju,Vi' };
 function cambiarProgramaUI() {
   var sel = document.querySelector('input[name=progSel]:checked'); if (!sel) return;
   var id = sel.value, p = (programasCache.programas || []).filter(function (x) { return x.id === id; })[0];
   if (p && p.mio && !p.configurado) { abrirArmar('Primero arma tu plan: agrega días y ejercicios'); return; }
   var mismo = id === programasCache.actual;
-  if (!confirm((mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + ' desde hoy (Bloque 1)?' + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : ''))) return;
+  var bn = document.querySelector('#progDias button.on'), n = bn ? Number(bn.getAttribute('data-n')) : 0;
+  var nAntes = Math.max(3, Math.min(5, Number(programasCache.estado && programasCache.estado.nDias) || 3));
+  var opts = { entrada: $('progEntrada').checked, ajustarComida: $('progComida').checked };
+  if (n && n !== nAntes) opts.dias = DIAS_POR_N[n];   // si no cambias los días, se quedan los tuyos
+  if (!confirm((mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + (n ? ' con ' + n + ' días por semana' : '') + ' desde hoy (Bloque 1)?' +
+      (opts.dias ? ' Tus días de entreno quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).' : '') + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : ''))) return;
   var b = $('progCambiar'); b.disabled = true; b.textContent = 'Cambiando…';
-  api('cambiarPrograma', id, { entrada: $('progEntrada').checked, ajustarComida: $('progComida').checked })
+  api('cambiarPrograma', id, opts)
     .then(function () { invalidarTodo(); toast('Programa: ' + (p ? p.nombre : id)); cargarAjustes(); cargarEstado(); })
     .catch(function (e) { b.disabled = false; b.textContent = 'Cambiar de programa'; err(e); });
 }
