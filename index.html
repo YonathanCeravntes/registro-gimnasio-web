@@ -492,6 +492,7 @@
       </div>
       <div id="cicloCard"></div>
       <div id="descansoBox"></div>
+      <div id="proximaBox"></div>
       <div class="card" style="margin-top:12px">
         <div class="dayh"><span class="kicker">Esta semana</span><span class="meta" id="diaSub"></span></div>
         <div class="semana" id="semanaStrip"></div>
@@ -864,7 +865,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301847', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609301919', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -904,6 +905,7 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 var estado = null, sesionActual = null, abiertos = {};
+var proximaSes = null, proxPedida = false, verHoy = false;   // si hoy ya entrenaste, la portada muestra la sesión que sigue
 var $ = function (id) { return document.getElementById(id); };
 var IMG_DIA = { cardio: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Walking_Treadmill/0.jpg',
                 descanso: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Trail_Running_Walking/0.jpg' };
@@ -1206,12 +1208,14 @@ function cargarEstado(sesionForzada) {
   if (typeof INICIAL !== 'undefined' && INICIAL && !sel && INICIAL.estado && INICIAL.estado.fecha === f) {
     var ini = INICIAL; INICIAL = null;
     escribirCache('ini:' + f + ':', ini);
+    proximaSes = ini.proxima || null; proxPedida = false; verHoy = false;
     pintarEstado(ini.estado, ini.sesion.codigo); pintarSesion(ini.sesion); prefetch();
     return;
   }
   conCache('ini:' + f + ':' + sel, function () { return api('getInicio', f, sel); }, function (r, deCache) {
     if (!deCache && !primera && editando()) return;
     primera = false;
+    proximaSes = r.proxima || null; proxPedida = false; verHoy = false;
     pintarEstado(r.estado, r.sesion.codigo);
     pintarSesion(r.sesion);
   }).then(prefetch).catch(err);
@@ -1251,14 +1255,27 @@ function pintarHero() {
   var e = estado, s = sesionActual, tipo = e.tipoDia;
   var c = e.cumpl && e.cumpl[e.fecha];
   var pesas = tipo === 'sesion' || tipo === 'sinregistro' || !!c;
+  var pendientes = s ? s.ejercicios.filter(function (x) { return x.estado === 'pendiente'; }) : [];
+  // Hoy ya entrenaste (nada pendiente): la portada muestra la sesión que sigue; lo de hoy queda a un toque
+  var hoyListo = c && e.fecha === hoyISO() && !pendientes.length && s && s.codigo === e.sugerida;
+  if (hoyListo && !proximaSes && !proxPedida && e.proxima) {
+    proxPedida = true;
+    api('getSesion', e.proxima.codigo, e.proxima.fecha).then(function (r) { r.etiqueta = e.proxima.etiqueta; proximaSes = r; pintarHero(); }).catch(function () {});
+  }
+  var prox = hoyListo && !verHoy && proximaSes ? proximaSes : null;
   var img = '';
-  if (pesas && s && s.ejercicios.length) { var v0 = s.ejercicios[0].variantes; img = (v0.principal.imagenes || [])[0] || (v0.alternativa && v0.alternativa.imagenes[0]) || ''; }
+  var sImg = prox || s;
+  if (pesas && sImg && sImg.ejercicios.length) { var v0 = sImg.ejercicios[0].variantes; img = (v0.principal.imagenes || [])[0] || (v0.alternativa && v0.alternativa.imagenes[0]) || ''; }
   if (!img) img = IMG_DIA[tipo === 'cardio' ? 'cardio' : 'descanso'];
   if ($('heroImg').getAttribute('src') !== img) $('heroImg').src = img;
   var titulo, chips = [], cta = '', desc = '';
   var nEj = s ? s.ejercicios.length : 0, min = s ? minutosSesion(s) : 0;
-  var pendientes = s ? s.ejercicios.filter(function (x) { return x.estado === 'pendiente'; }) : [];
-  if (c && e.fecha === hoyISO() && pendientes.length) {
+  if (prox) {
+    titulo = prox.nombre;
+    chips = ['<span class="chip ok">' + SVG.check + 'Hoy: fuiste · ' + c.pct + '%</span>', '<span class="tag">Próxima: ' + esc(diaLargoEtiqueta(prox.etiqueta)) + '</span>', '<span class="tag">~' + minutosSesion(prox) + ' min</span>'];
+    cta = '<button class="cta ok" onclick="verLoDeHoy(true)"><div><div class="t">Ver lo de hoy</div><div class="s">' + c.hechas + ' de ' + c.presc + ' series · completa o corrige lo que falte</div></div>' +
+          '<div class="pct">' + c.pct + '%<small>DE HOY</small></div></button>';
+  } else if (c && e.fecha === hoyISO() && pendientes.length) {
     // Sesión de hoy en curso: ya hay series guardadas pero faltan ejercicios
     titulo = s ? s.nombre : e.nombres[e.sugerida] || 'Sesión';
     chips = ['<span class="chip warn">' + SVG.bolt + 'En curso</span>', '<span class="tag">' + c.hechas + ' de ' + c.presc + ' series</span>', '<span class="tag">' + pendientes.length + ' por hacer</span>'];
@@ -1268,7 +1285,8 @@ function pintarHero() {
     titulo = s ? s.nombre : e.nombres[e.sugerida] || 'Sesión';
     chips = ['<span class="chip ok">' + SVG.check + 'Fuiste</span>', '<span class="tag">' + c.hechas + ' de ' + c.presc + ' series</span>', '<span class="tag">' + c.ejHechos + ' de ' + c.ej + ' ejercicios</span>'];
     cta = '<button class="cta ok" onclick="irRutina()"><div><div class="t">' + (c.pct >= 90 ? '¡Sesión completa!' : c.pct >= 60 ? 'Buena sesión' : 'Te faltó parte') + '</div><div class="s">' + (c.pct >= 90 ? 'Registrado. Descansa y come bien.' : 'Toca para completar lo que faltó o marcar lo que no hiciste.') + '</div></div>' +
-          '<div class="pct">' + c.pct + '%<small>DE LA SESIÓN</small></div></button>';
+          '<div class="pct">' + c.pct + '%<small>DE LA SESIÓN</small></div></button>' +
+          (hoyListo && proximaSes ? '<button class="cta line" style="margin-top:10px" onclick="verLoDeHoy(false)"><div><div class="t">Ver lo que viene</div><div class="s">' + esc(diaLargoEtiqueta(proximaSes.etiqueta)) + ' · ' + esc(proximaSes.nombre) + '</div></div><div class="ic">' + SVG.play + '</div></button>' : '');
   } else if (tipo === 'sesion') {
     titulo = s ? s.nombre : e.nombres[e.sugerida];
     chips = ['<span class="tag">' + nEj + ' ejercicios</span>', '<span class="tag">~' + min + ' min</span>', '<span class="tag">' + (e.programa ? 'Sesión ' + e.programa.sesionEnBloque + ' de ' + e.programa.sesionesBloque : 'Sesión ' + (e.hechasSemana + 1) + ' de ' + e.metaSemana) + '</span>'];
@@ -1294,7 +1312,7 @@ function pintarHero() {
     cta = '<button class="cta line" onclick="toggleSelector()"><div><div class="t">Quiero entrenar hoy</div><div class="s">Elige la sesión y la semana se reacomoda</div></div><div class="ic">' + SVG.dumb.replace('<svg', '<svg style="fill:none;stroke:#151208;stroke-width:2.5;stroke-linecap:round"') + '</div></button>';
   }
   var partes = String(titulo || '').split(' · ');
-  if (partes.length > 1 && (tipo === 'sesion' || tipo === 'sinregistro' || c)) { titulo = partes[0]; chips.unshift('<span class="tag">' + esc(partes.slice(1).join(' · ')) + '</span>'); }
+  if (partes.length > 1 && (tipo === 'sesion' || tipo === 'sinregistro' || c) && !prox) { titulo = partes[0]; chips.unshift('<span class="tag">' + esc(partes.slice(1).join(' · ')) + '</span>'); }
   $('heroTitle').textContent = titulo;
   $('heroChips').innerHTML = chips.join('');
   $('ctaBox').innerHTML = (desc ? '<div class="msg" style="margin:6px 0 10px;background:transparent;padding:0;font-size:15px;color:var(--muted)">' + desc + '</div>' : '') + cta;
@@ -1305,8 +1323,25 @@ function pintarHero() {
     '<div class="tip-row" onclick="abrirCardio()"><div class="ic">' + SVG.heart + '</div><div><div class="t">Cardio suave 20–30 min</div><div class="s">Zona 2: puedes hablar sin ahogarte</div></div></div>' +
     '<div class="tip-row"><div class="ic">' + SVG.stretch + '</div><div><div class="t">Movilidad 10 min</div><div class="s">Cadera, hombros y espalda alta</div></div></div>' +
     '<div class="tip-row" onclick="irA(\'comida\')"><div class="ic">' + SVG.food + '</div><div><div class="t">Registra peso y comida</div><div class="s">La proteína también cuenta hoy</div></div></div>' : '';
-  // La rutina solo se muestra si el día es de pesas (o si eliges entrenar)
-  $('rutina').classList.toggle('hidden', !pesas && $('selector').classList.contains('hidden'));
+  $('proximaBox').innerHTML = prox ? proximaHTML(prox) : '';
+  // La rutina solo se muestra si el día es de pesas (o si eliges entrenar); con la próxima a la vista, lo de hoy se oculta
+  $('rutina').classList.toggle('hidden', (!pesas || !!prox) && $('selector').classList.contains('hidden'));
+  $('sesionAviso').classList.toggle('hidden', !!prox);
+}
+function diaLargoEtiqueta(et) { var p = String(et || '').split(' '); return (DIA_LARGO[p[0]] || p[0] || '') + (p[1] ? ' ' + p[1] : ''); }
+function verLoDeHoy(si) { verHoy = !!si; pintarHero(); if (si) irRutina(); else window.scrollTo({ top: 0, behavior: 'smooth' }); }
+/** Vista previa (solo lectura) de la sesión que sigue: ejercicios, papel, músculos y lo que te tocará. */
+function proximaHTML(p) {
+  return '<div class="sec-h"><b>Lo que viene · ' + esc(diaLargoEtiqueta(p.etiqueta)) + '</b><span>' + p.ejercicios.length + ' ejercicios</span></div>' +
+    p.ejercicios.map(function (x) {
+      var v = x.variantes.principal || {}, img = (v.imagenes || [])[0] || '';
+      return '<div class="ex prox"><div class="ex-row" style="cursor:default">' + (img ? '<img class="thumb" alt="" loading="lazy" src="' + esc(img) + '">' : '<div class="thumb"></div>') +
+        '<div class="ex-info">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') +
+        '<div class="ex-name">' + esc(v.nombre || x.nombres[0]) + '</div><div class="ex-mus">' + musculosHTML(v.musculos) + '</div>' +
+        '<div class="ex-meta"><b>' + prescCorta(x.prescripcion, x.unidad) + '</b></div>' +
+        (x.tieneAlternativa ? '<div class="ex-alt">o ' + esc(x.alternativa) + '</div>' : '') + '</div></div></div>';
+    }).join('') +
+    '<div class="meta" style="margin:2px 2px 12px">Se registra ese día. ¿Quieres adelantarla? Toca la fecha de arriba y elígela.</div>';
 }
 function minutosSesion(s) {
   var seg = 0;
