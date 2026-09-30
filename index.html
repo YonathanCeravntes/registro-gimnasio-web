@@ -861,7 +861,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301702', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609301717', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1041,6 +1041,22 @@ function abrirSesion(j) {
 }
 function ocupado(b, txt) { b.dataset.t = b.dataset.t || b.textContent; b.disabled = !!txt; b.textContent = txt || b.dataset.t; }
 function accMsg(id, txt, bien) { var m = $(id); m.textContent = txt || ''; m.style.color = bien ? 'var(--green-ink)' : 'var(--amber)'; }
+/* Error con el paso que sigue: correo ya registrado → entrar; no registrado → crear cuenta; sin contraseña → crearla */
+function accError(id, e, correo) {
+  var txt = (e && e.message) || String(e), m = $(id);
+  accMsg(id, txt);
+  var ir = /ya está registrado/.test(txt) ? ['entrar', 'Entrar con este correo'] : /no está registrado/.test(txt) ? ['crear', 'Crear cuenta con este correo']
+    : /aún no tiene contraseña|la olvidaste/.test(txt) ? ['olvide', 'Crear o cambiar mi contraseña'] : null;
+  if (!ir) return;
+  var b = document.createElement('button'); b.type = 'button'; b.className = 'btn sec'; b.style.cssText = 'width:100%;margin-top:10px'; b.textContent = ir[1];
+  b.onclick = function () {
+    accVista(ir[0]);
+    var campo = { entrar: 'enCorreo', crear: 'crCorreo', olvide: 'olCorreo' }[ir[0]];
+    if (correo) $(campo).value = correo;
+    if (ir[0] === 'crear') { crearOtraVez(); $('crNombre').focus(); } else if (ir[0] === 'entrar') $('enClave').focus();
+  };
+  m.appendChild(document.createElement('br')); m.appendChild(b);
+}
 function accVista(v) {
   ['entrar', 'crear', 'olvide'].forEach(function (x) { $('acc-' + x).style.display = x === v ? '' : 'none'; });
   document.querySelectorAll('#accTabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === v); });
@@ -1052,7 +1068,7 @@ function entrarClave() {
   if (!correoOk(correo)) { accMsg('enMsg', 'Escribe tu correo.'); return false; }
   if (!clave) { accMsg('enMsg', 'Escribe tu contraseña.'); return false; }
   ocupado(b, 'Entrando…'); accMsg('enMsg', '');
-  postCuenta('entrar', { correo: correo, clave: clave }).then(abrirSesion).catch(function (e) { ocupado(b); accMsg('enMsg', e.message || e); });
+  postCuenta('entrar', { correo: correo, clave: clave }).then(abrirSesion).catch(function (e) { ocupado(b); accError('enMsg', e, correo); });
   return false;
 }
 function crearCuenta() {
@@ -1065,7 +1081,7 @@ function crearCuenta() {
   postCuenta('crear', d).then(function (j) {
     ocupado(b); $('crPaso1').style.display = 'none'; $('crPaso2').style.display = '';
     accMsg('crMsg', j.mensaje || 'Revisa tu correo.', true); $('crCodigo').focus();
-  }).catch(function (e) { ocupado(b); accMsg('crMsg', e.message || e); });
+  }).catch(function (e) { ocupado(b); accError('crMsg', e, d.correo); });
   return false;
 }
 function verificarCuenta() {
@@ -1082,7 +1098,7 @@ function olvidePedir() {
   ocupado(b, 'Enviando…'); accMsg('olMsg', '');
   postCuenta('olvide', { correo: correo }).then(function (j) {
     ocupado(b); $('olPaso2').style.display = ''; accMsg('olMsg', j.mensaje || 'Revisa tu correo.', true); $('olCodigo').focus();
-  }).catch(function (e) { ocupado(b); accMsg('olMsg', e.message || e); });
+  }).catch(function (e) { ocupado(b); accError('olMsg', e, correo); });
   return false;
 }
 function olvideGuardar() {
