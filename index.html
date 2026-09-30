@@ -865,7 +865,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301919', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609301936', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1339,6 +1339,7 @@ function proximaHTML(p) {
         '<div class="ex-info">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') +
         '<div class="ex-name">' + esc(v.nombre || x.nombres[0]) + '</div><div class="ex-mus">' + musculosHTML(v.musculos) + '</div>' +
         '<div class="ex-meta"><b>' + prescCorta(x.prescripcion, x.unidad) + '</b></div>' +
+        (v.sugerencia && v.sugerencia.carga ? '<div class="ex-sug">Empieza con ≈ ' + fmtNum(v.sugerencia.carga) + ' kg</div>' : '') +
         (x.tieneAlternativa ? '<div class="ex-alt">o ' + esc(x.alternativa) + '</div>' : '') + '</div></div></div>';
     }).join('') +
     '<div class="meta" style="margin:2px 2px 12px">Se registra ese día. ¿Quieres adelantarla? Toca la fecha de arriba y elígela.</div>';
@@ -1559,7 +1560,7 @@ function pintar(i, v) {
   $('exImg' + i).style.display = d.imagenes.length ? 'flex' : 'none';
   var sg = d.sugerencia, ref = sg.ref;
   $('exSug' + i).innerHTML = '<div class="sug">' + esc(sg.texto) + '</div>' +
-    (ref ? '<div class="ref">↺ Tu última vez con ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + '): <b>' + esc(ref.resumen) + '</b></div>' : '') +
+    (ref ? '<div class="ref">↺ ' + (ref.parecido ? 'Lo más parecido que has hecho: ' : 'Tu última vez con ') + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + '): <b>' + esc(ref.resumen) + '</b></div>' : '') +
     (sg.aviso ? '<div class="aviso">' + esc(sg.aviso) + '</div>' : '');
   var cl = $('exClave' + i); cl.textContent = d.clave ? 'Técnica: ' + d.clave : ''; cl.style.display = d.clave ? '' : 'none';
   var p = e.prescripcion, filas = '', n = Math.max(p.series, d.hoy.length, 1);
