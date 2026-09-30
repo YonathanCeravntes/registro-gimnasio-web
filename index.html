@@ -807,37 +807,61 @@
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
   <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
   <h1 style="font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:6px 0 14px">Empieza<br>aquí</h1>
-  <!--acceso--><div class="card" style="margin:0 0 14px">
-    <h2>Ya tengo cuenta · Entrar</h2>
-    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Te mandamos un código de 6 dígitos a tu correo.</p>
-    <label for="accCorreo">Tu correo</label><input id="accCorreo" type="email" autocomplete="email" inputmode="email" placeholder="tucorreo@gmail.com">
-    <button class="btn" id="accBtn" style="width:100%;margin-top:12px" onclick="pedirCodigo()">Enviarme el código</button>
-    <div id="accPaso2" style="display:none">
-      <label for="accCodigo">Código</label><input id="accCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px;font-size:24px;text-align:center">
-      <button class="btn" id="accEntrar" style="width:100%;margin-top:12px" onclick="entrarConCodigo()">Entrar</button>
-    </div>
-    <p id="accMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
-  </div><!--/acceso-->
-  <div class="card" style="margin:0 0 14px">
-    <h2>Soy nuevo · Crear mi cuenta</h2>
-    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Necesitas el código de invitación que te dio quien te compartió la app.</p>
-    <label for="regNombre">Tu nombre</label><input id="regNombre" autocomplete="name" placeholder="Ej.: Carlos">
-    <label for="regCorreo">Tu correo</label><input id="regCorreo" type="email" autocomplete="email" inputmode="email" placeholder="tucorreo@gmail.com">
-    <label for="regCodigo">Código de invitación</label><input id="regCodigo" autocapitalize="characters" placeholder="GYM-XXXXXX" style="text-transform:uppercase">
-    <button class="btn" id="regBtn" style="width:100%;margin-top:12px" onclick="registrar()">Crear mi cuenta</button>
-    <p id="regMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
+  <!--acceso--><div class="toggle" id="accTabs" style="margin:0 0 12px"><button type="button" class="on" data-v="entrar" onclick="accVista('entrar')">Entrar</button><button type="button" data-v="crear" onclick="accVista('crear')">Crear cuenta</button></div>
+  <form class="card" id="acc-entrar" style="margin:0 0 14px" onsubmit="return entrarClave()">
+    <h2>Entrar</h2>
+    <label for="enCorreo">Tu correo</label><input id="enCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tucorreo@gmail.com">
+    <label for="enClave">Contraseña</label><div style="display:flex;gap:8px;align-items:center"><input id="enClave" name="password" type="password" autocomplete="current-password" placeholder="Tu contraseña"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('enClave', this)">Ver</button></div>
+    <button class="btn" id="enBtn" type="submit" style="width:100%;margin-top:12px">Entrar</button>
+    <p id="enMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
+    <button type="button" class="btn txt" style="width:100%" onclick="accVista('olvide')">¿Olvidaste tu contraseña o nunca la creaste?</button>
+  </form>
+  <div class="card" id="acc-crear" style="margin:0 0 14px;display:none">
+    <h2>Crear cuenta</h2>
+    <form id="crPaso1" onsubmit="return crearCuenta()">
+      <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Necesitas el código de invitación que te dio quien te compartió la app. Te mandamos un código a tu correo para confirmar que es tuyo.</p>
+      <label for="crNombre">Tu nombre</label><input id="crNombre" name="name" autocomplete="name" placeholder="Ej.: Carlos">
+      <label for="crCorreo">Tu correo</label><input id="crCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tucorreo@gmail.com">
+      <label for="crClave">Contraseña (mínimo 8 caracteres)</label><div style="display:flex;gap:8px;align-items:center"><input id="crClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('crClave', this)">Ver</button></div>
+      <label for="crInv">Código de invitación</label><input id="crInv" autocapitalize="characters" autocomplete="off" placeholder="GYM-XXXXXX" style="text-transform:uppercase">
+      <button class="btn" id="crBtn" type="submit" style="width:100%;margin-top:12px">Crear cuenta</button>
+    </form>
+    <form id="crPaso2" style="display:none" onsubmit="return verificarCuenta()">
+      <label for="crCodigo">Código de 6 dígitos</label><input id="crCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px;font-size:24px;text-align:center">
+      <button class="btn" id="crVerBtn" type="submit" style="width:100%;margin-top:12px">Verificar y entrar</button>
+      <button type="button" class="btn txt" style="width:100%" onclick="crearOtraVez()">¿No te llegó? Revisa spam o vuelve a intentarlo</button>
+    </form>
+    <p id="crMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
   </div>
-  <div class="card" style="margin:0">
+  <div class="card" id="acc-olvide" style="margin:0 0 14px;display:none">
+    <h2>Crear o cambiar tu contraseña</h2>
+    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Te mandamos un código a tu correo para confirmar que eres tú. Sirve también si tu cuenta es de antes y nunca creaste contraseña.</p>
+    <form onsubmit="return olvidePedir()">
+      <label for="olCorreo">Tu correo</label><input id="olCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tucorreo@gmail.com">
+      <button class="btn sec" id="olBtn" type="submit" style="width:100%;margin-top:12px">Enviarme el código</button>
+    </form>
+    <form id="olPaso2" style="display:none" onsubmit="return olvideGuardar()">
+      <label for="olCodigo">Código de 6 dígitos</label><input id="olCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px;font-size:24px;text-align:center">
+      <label for="olClave">Contraseña nueva (mínimo 8 caracteres)</label><div style="display:flex;gap:8px;align-items:center"><input id="olClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('olClave', this)">Ver</button></div>
+      <button class="btn" id="olGuardar" type="submit" style="width:100%;margin-top:12px">Guardar y entrar</button>
+    </form>
+    <p id="olMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
+    <button type="button" class="btn txt" style="width:100%" onclick="accVista('entrar')">Volver a entrar</button>
+  </div><!--/acceso-->
+  
+  <details style="margin:4px 0 0"><summary style="color:var(--muted);font-size:14px">Tengo un enlace privado</summary>
+  <div class="card" style="margin:10px 0 0">
     <h2>Tengo un enlace privado</h2>
     <p id="vincMsg" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px"></p>
     <textarea id="vincTxt" rows="3" placeholder="https://…/#api=…&t=…" style="width:100%;box-sizing:border-box;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px"></textarea>
     <button class="btn sec" style="width:100%;margin-top:12px" onclick="vincular()">Usar mi enlace</button>
   </div>
+  </details>
   <p style="color:var(--faint);font-size:12px;margin-top:18px">Tu sesión se guarda solo en este celular. Cada persona ve únicamente sus datos.</p>
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609301455', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202609301702', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -999,29 +1023,75 @@ function llamarDirecto(url, fn, args, t, intento) {
 function mostrarVincular(tokenMalo) {
   var v = $('vincular'); v.classList.remove('hidden');
   $('vincMsg').textContent = tokenMalo ? 'Tu sesión venció o no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
-  if (tokenMalo && $('accMsg')) $('accMsg').textContent = 'Tu sesión venció: entra de nuevo con tu correo.';
+  if (tokenMalo && $('enMsg')) accMsg('enMsg', 'Tu sesión venció: entra de nuevo con tu correo y tu contraseña.');
 }
-/* Entrar con correo + código de 6 dígitos (servidor nuevo) */
-function baseServidor() { return API_PUBLICA.replace(/\/api$/, ''); }
-function pedirCodigo() {
-  var correo = ($('accCorreo').value || '').trim(), b = $('accBtn'), msg = $('accMsg');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { toast('Escribe tu correo'); return; }
-  b.disabled = true; b.textContent = 'Enviando…'; msg.textContent = '';
-  fetch(baseServidor() + '/acceso/pedir', { method: 'POST', body: JSON.stringify({ correo: correo }) }).then(function (r) { return r.json(); }).then(function (j) {
-    if (j.ok === false) throw new Error(j.error || 'No se pudo enviar el código');
-    msg.textContent = j.mensaje || 'Revisa tu correo.';
-    $('accPaso2').style.display = ''; $('accCodigo').focus();
-  }).catch(function (e) { toast(e.message || e); }).then(function () { b.disabled = false; b.textContent = 'Enviarme el código'; });
+/* Cuentas con correo y contraseña (servidor nuevo): entrar, crear cuenta con código al correo, crear o cambiar la contraseña */
+function baseServidor() { return API_PUBLICA.replace(/[/]api$/, ''); }
+function correoOk(c) { var i = c.indexOf('@'); return i > 0 && c.lastIndexOf('.') > i + 1 && c.indexOf(' ') < 0; }
+function soloDigitos(v) { return String(v || '').replace(/[^0-9]/g, ''); }
+function postCuenta(ruta, datos) {
+  return fetch(baseServidor() + '/cuenta/' + ruta, { method: 'POST', body: JSON.stringify(datos) })
+    .then(function (r) { return r.json(); })
+    .then(function (j) { if (!j || j.ok === false) throw new Error((j && j.error) || 'No se pudo. Intenta de nuevo.'); return j; });
 }
-function entrarConCodigo() {
-  var correo = ($('accCorreo').value || '').trim(), codigo = ($('accCodigo').value || '').replace(/\D/g, ''), b = $('accEntrar');
-  if (codigo.length !== 6) { toast('El código tiene 6 dígitos'); return; }
-  b.disabled = true; b.textContent = 'Entrando…';
-  fetch(baseServidor() + '/acceso/entrar', { method: 'POST', body: JSON.stringify({ correo: correo, codigo: codigo }) }).then(function (r) { return r.json(); }).then(function (j) {
-    if (!j.ok || !j.t) throw new Error(j.error || 'No se pudo entrar');
-    try { localStorage.setItem('cfg', JSON.stringify({ api: j.api || API_PUBLICA, t: j.t })); } catch (e) {}
-    location.href = location.pathname;
-  }).catch(function (e) { toast(e.message || e); b.disabled = false; b.textContent = 'Entrar'; });
+function abrirSesion(j) {
+  if (!j.t) throw new Error('El servidor no devolvió la sesión');
+  try { localStorage.setItem('cfg', JSON.stringify({ api: j.api || API_PUBLICA, t: j.t })); } catch (e) {}
+  location.href = location.pathname;
+}
+function ocupado(b, txt) { b.dataset.t = b.dataset.t || b.textContent; b.disabled = !!txt; b.textContent = txt || b.dataset.t; }
+function accMsg(id, txt, bien) { var m = $(id); m.textContent = txt || ''; m.style.color = bien ? 'var(--green-ink)' : 'var(--amber)'; }
+function accVista(v) {
+  ['entrar', 'crear', 'olvide'].forEach(function (x) { $('acc-' + x).style.display = x === v ? '' : 'none'; });
+  document.querySelectorAll('#accTabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === v); });
+  if (v === 'olvide' && !$('olCorreo').value) $('olCorreo').value = $('enCorreo').value;
+}
+function verClave(id, b) { var i = $(id); i.type = i.type === 'password' ? 'text' : 'password'; b.textContent = i.type === 'password' ? 'Ver' : 'Ocultar'; }
+function entrarClave() {
+  var correo = $('enCorreo').value.trim(), clave = $('enClave').value, b = $('enBtn');
+  if (!correoOk(correo)) { accMsg('enMsg', 'Escribe tu correo.'); return false; }
+  if (!clave) { accMsg('enMsg', 'Escribe tu contraseña.'); return false; }
+  ocupado(b, 'Entrando…'); accMsg('enMsg', '');
+  postCuenta('entrar', { correo: correo, clave: clave }).then(abrirSesion).catch(function (e) { ocupado(b); accMsg('enMsg', e.message || e); });
+  return false;
+}
+function crearCuenta() {
+  var d = { nombre: $('crNombre').value.trim(), correo: $('crCorreo').value.trim(), clave: $('crClave').value, invitacion: $('crInv').value.trim().toUpperCase() }, b = $('crBtn');
+  if (d.nombre.length < 2) { accMsg('crMsg', 'Escribe tu nombre.'); return false; }
+  if (!correoOk(d.correo)) { accMsg('crMsg', 'Escribe un correo válido.'); return false; }
+  if (d.clave.length < 8) { accMsg('crMsg', 'La contraseña debe tener al menos 8 caracteres.'); return false; }
+  if (!d.invitacion) { accMsg('crMsg', 'Escribe el código de invitación.'); return false; }
+  ocupado(b, 'Enviando código…'); accMsg('crMsg', '');
+  postCuenta('crear', d).then(function (j) {
+    ocupado(b); $('crPaso1').style.display = 'none'; $('crPaso2').style.display = '';
+    accMsg('crMsg', j.mensaje || 'Revisa tu correo.', true); $('crCodigo').focus();
+  }).catch(function (e) { ocupado(b); accMsg('crMsg', e.message || e); });
+  return false;
+}
+function verificarCuenta() {
+  var codigo = soloDigitos($('crCodigo').value), b = $('crVerBtn');
+  if (codigo.length !== 6) { accMsg('crMsg', 'El código tiene 6 dígitos.'); return false; }
+  ocupado(b, 'Verificando…');
+  postCuenta('verificar', { correo: $('crCorreo').value.trim(), codigo: codigo }).then(abrirSesion).catch(function (e) { ocupado(b); accMsg('crMsg', e.message || e); });
+  return false;
+}
+function crearOtraVez() { $('crPaso2').style.display = 'none'; $('crPaso1').style.display = ''; $('crCodigo').value = ''; accMsg('crMsg', ''); }
+function olvidePedir() {
+  var correo = $('olCorreo').value.trim(), b = $('olBtn');
+  if (!correoOk(correo)) { accMsg('olMsg', 'Escribe tu correo.'); return false; }
+  ocupado(b, 'Enviando…'); accMsg('olMsg', '');
+  postCuenta('olvide', { correo: correo }).then(function (j) {
+    ocupado(b); $('olPaso2').style.display = ''; accMsg('olMsg', j.mensaje || 'Revisa tu correo.', true); $('olCodigo').focus();
+  }).catch(function (e) { ocupado(b); accMsg('olMsg', e.message || e); });
+  return false;
+}
+function olvideGuardar() {
+  var codigo = soloDigitos($('olCodigo').value), clave = $('olClave').value, b = $('olGuardar');
+  if (codigo.length !== 6) { accMsg('olMsg', 'El código tiene 6 dígitos.'); return false; }
+  if (clave.length < 8) { accMsg('olMsg', 'La contraseña debe tener al menos 8 caracteres.'); return false; }
+  ocupado(b, 'Guardando…');
+  postCuenta('nueva-clave', { correo: $('olCorreo').value.trim(), codigo: codigo, clave: clave }).then(abrirSesion).catch(function (e) { ocupado(b); accMsg('olMsg', e.message || e); });
+  return false;
 }
 function guardarCfgDesdeEnlace(txt) {
   var a = /[#&?]api=([^&\s]+)/.exec(txt), t = /[#&?]t=([^&\s]+)/.exec(txt);
@@ -1407,7 +1477,7 @@ function alternar(i) {
 }
 
 document.addEventListener('click', function (ev) {
-  var b = ev.target.closest('.toggle button'); if (!b || !b.dataset.v) return;
+  var b = ev.target.closest('.toggle button'); if (!b || !b.dataset.v || b.dataset.i === undefined || !sesionActual) return;   // solo principal / alternativa de un ejercicio
   pintar(Number(b.dataset.i), b.dataset.v);
 });
 
