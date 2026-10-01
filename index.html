@@ -536,6 +536,7 @@
       <label style="margin-top:10px">Momento</label><div class="chips-mom" id="cMomChips"></div><select id="cMomento" class="oculto" aria-hidden="true" tabindex="-1"></select>
       <div id="cTotales" style="margin-top:12px"></div>
     </div>
+    <div class="card" id="cBasicos" style="display:none"></div>
     <div class="card" id="pcCard">
       <div class="pa-h"><div class="kicker" id="pcKick">Tu plan · D1 y Ara</div><button class="pa-obj" id="pcObjBtn" onclick="pcConfig()" style="display:none"></button></div>
       <div id="pcConf">
@@ -876,7 +877,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610010337', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610010339', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1304,7 +1305,9 @@ function pintarHero() {
     chips = ['<span class="tag">' + nEj + ' ejercicios</span>', '<span class="tag">~' + min + ' min</span>', '<span class="tag">' + (e.programa ? 'Sesión ' + e.programa.sesionEnBloque + ' de ' + e.programa.sesionesBloque : 'Sesión ' + (e.hechasSemana + 1) + ' de ' + e.metaSemana) + '</span>'];
     if (e.programa && e.programa.descargaPuntual) chips.push('<span class="chip warn">' + SVG.bolt + 'Sesión ligera</span>');
     else if (s && s.bloque && s.bloque.descarga) chips.push('<span class="chip warn">Descarga</span>');
-    cta = '<button class="cta" onclick="irRutina()"><div><div class="t">Empezar entrenamiento</div><div class="s">' + (s && s.bloque && s.bloque.descarga ? 'Vuelta de descarga: mitad de series, carga −10 %' : 'Calienta 5 min antes de la primera serie') + '</div></div><div class="ic">' + SVG.play + '</div></button>';
+    cta = '<button class="cta" onclick="irRutina()"><div><div class="t">Empezar entrenamiento</div><div class="s">' + (s && s.bloque && s.bloque.descarga ? 'Vuelta de descarga: mitad de series, carga −10 %' : 'Calienta 5 min antes de la primera serie') + '</div></div><div class="ic">' + SVG.play + '</div></button>' +
+          // Descarga programada (no la de fatiga): se puede saltar si te sientes bien (Coleman 2024)
+          (s && s.bloque && s.bloque.programada && !(e.programa && e.programa.descargaPuntual) ? '<button class="cta line" style="margin-top:10px" onclick="saltarDescargaUI()"><div><div class="t">Me siento bien: saltar la descarga</div><div class="s">Pasas al siguiente bloque desde hoy</div></div><div class="ic">' + SVG.play + '</div></button>' : '');
   } else if (tipo === 'sinregistro') {
     titulo = s ? s.nombre : e.nombres[e.sugerida];
     chips = ['<span class="chip bad">No fuiste</span>', '<span class="tag">' + nEj + ' ejercicios</span>'];
@@ -1341,6 +1344,14 @@ function pintarHero() {
   $('sesionAviso').classList.toggle('hidden', !!prox);
 }
 function diaLargoEtiqueta(et) { var p = String(et || '').split(' '); return (DIA_LARGO[p[0]] || p[0] || '') + (p[1] ? ' ' + p[1] : ''); }
+/** Descarga programada opcional: si te sientes bien, la saltas y sigues con el bloque que viene (la descarga por fatiga sigue saliendo sola). */
+function saltarDescargaUI() {
+  if (!confirm('¿Saltar la descarga? Pasas al siguiente bloque desde hoy con cargas normales. Si el rendimiento cae, la app te vuelve a poner una sesión ligera.')) return;
+  api('saltarDescarga').then(function (r) {
+    if (!r || !r.ok) { toast((r && r.motivo) || 'No se pudo saltar la descarga'); return; }
+    invalidarTodo(); toast('Descarga saltada: sigues con ' + (r.bloque || 'el siguiente bloque')); cargarEstado();
+  }).catch(err);
+}
 function verLoDeHoy(si) { verHoy = !!si; pintarHero(); if (si) irRutina(); else window.scrollTo({ top: 0, behavior: 'smooth' }); }
 /** Vista previa (solo lectura) de la sesión que sigue: ejercicios, papel, músculos y lo que te tocará. */
 function proximaHTML(p) {
@@ -1394,7 +1405,9 @@ function cargarSesion() {
 function pintarSesion(s) {
   sesionActual = s;
   abiertos = {};
-  $('sesionAviso').innerHTML = (s.aviso ? '<div class="aviso">' + esc(s.aviso) + '</div>' : '') + (s.nota ? '<div class="sug" style="margin-top:6px">' + esc(s.nota) + '</div>' : '') +
+  $('sesionAviso').innerHTML = (s.aviso ? '<div class="aviso">' + esc(s.aviso) + '</div>' : '') +
+    (s.suave ? '<div class="sug" style="margin-top:6px">😴 ' + esc(s.suave.texto) + '</div>' : '') +
+    (s.nota ? '<div class="sug" style="margin-top:6px">' + esc(s.nota) + '</div>' : '') +
     (s.salud && s.salud.length ? '<details class="pc-av precaucion" style="margin-top:6px"><summary><b>Por tu salud (' + s.salud.length + ')</b></summary>' + s.salud.map(function (x) { return '<div style="margin-top:6px">' + esc(x) + '</div>'; }).join('') + '</details>' : '');
   var primero = s.ejercicios.findIndex(function (e) { return e.estado === 'pendiente'; });
   if (primero >= 0) abiertos[primero] = true;
@@ -1470,6 +1483,7 @@ function tarjeta(e, i) {
       '<div id="exSug' + i + '"></div>' +
       '<table class="sets"><thead><tr><th>#</th><th>' + (e.unidad === 'seg' ? 'Lastre kg' : 'Carga kg') + '</th><th>' + (e.unidad === 'seg' ? 'Seg' : 'Reps') + '</th><th>RIR</th></tr></thead><tbody id="exSets' + i + '"></tbody></table>' +
       '<div class="cal" id="exCal' + i + '"></div>' +
+      '<div class="sug" id="exAj' + i + '" style="display:none"></div>' +
       '<div class="meta" style="font-size:12px">RIR = cuántas repeticiones más podías hacer (0 = ni una más).</div>' +
       '<div class="acts">' + (e.ss && e.ss.pos === 1 ? '<button class="btn sec" onclick="siguienteSuperserie(' + i + ')">Sigue con ' + e.ss.grupo + '2 →</button>' : '<button class="btn sec" onclick="descanso(' + e.prescripcion.descanso + ')">⏱ ' + fmtSeg(e.prescripcion.descanso) + '</button>') +
       '<button class="btn" id="exBtn' + i + '" onclick="guardar(' + i + ')">Guardar</button></div>' +
@@ -1592,8 +1606,35 @@ function pintar(i, v) {
   $('exSets' + i).innerHTML = filas;
   var c0 = document.querySelector('#exSets' + i + ' tr input'); if (c0) c0.addEventListener('input', function () { pintarCal(i); });
   pintarCal(i);
+  // Carga estimada (sin historial propio): el RIR real de la serie 1 corrige las series que siguen
+  var aj = $('exAj' + i); if (aj) { aj.style.display = 'none'; aj.textContent = ''; }
+  e._ajustada = null;
+  var sel1 = document.querySelector('#exSets' + i + ' tr select');
+  if (sel1 && e.estado !== 'hecho' && (sg.estimada || sg.inicial) && sg.carga != null) sel1.addEventListener('change', function () { ajustarPorRir(i, sg.carga); });
   if (e._histAbierto) pintarHistEj(i);
   $('exBtn' + i).textContent = e.estado === 'hecho' ? 'Actualizar ✓' : 'Guardar';
+}
+
+/**
+ * Primera serie con carga estimada (tabla por peso o calculada de otro ejercicio): según el RIR que anotas en la serie 1 se recalculan
+ * las series siguientes que aún traen la carga sugerida. RIR ≥ 5 → +10 %, 3–4 → igual, 2 → −5 %, ≤ 1 → −10 %; redondeado al paso de la
+ * variante y nunca menos que la barra. Así el error de la estimación se corrige en la misma sesión (regla de autorregulación por RIR).
+ */
+function ajustarPorRir(i, sugerida) {
+  var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], filas = document.querySelectorAll('#exSets' + i + ' tr'), aj = $('exAj' + i);
+  if (!filas.length || !aj || !d) return;
+  var rirTxt = filas[0].querySelector('select').value; if (rirTxt === '') return;
+  var base = Number(String(filas[0].querySelector('input').value).replace(',', '.')) || Number(sugerida) || 0; if (!base) return;
+  var r = Number(rirTxt), f = r >= 5 ? 1.10 : r >= 3 ? 1 : r === 2 ? 0.95 : 0.90;
+  var paso = d.paso || 2.5, nueva = Math.max(d.barra || 0, Math.round(base * f / paso) * paso); nueva = Math.round(nueva * 100) / 100;
+  for (var k = 1; k < filas.length; k++) {
+    var inp = filas[k].querySelector('input'), v = Number(String(inp.value).replace(',', '.'));
+    if (inp.value === '' || v === Number(sugerida) || v === e._ajustada || v === base) inp.value = nueva;   // solo las que no tocaste a mano
+  }
+  e._ajustada = nueva;
+  aj.style.display = '';
+  aj.textContent = nueva === base ? 'Carga bien elegida: las siguientes series siguen con ' + fmtNum(base) + ' kg.'
+    : 'Ajusté las siguientes series: ' + fmtNum(nueva) + ' kg' + (r >= 5 ? ' (te sobraron repeticiones)' : r === 2 ? ' (iba un poco pesado)' : ' (iba muy pesado)') + '.';
 }
 
 function payloadBase(e) { return { fecha: sesionActual.fecha, sesion: sesionActual.codigo, nombres: e.nombres }; }
@@ -1787,11 +1828,15 @@ function cargarBalance() { conCache('bal', function () { return api('getBalanceM
 function pintarBalance(b) {
   var box = $('balanceMus'); if (!box || !b) return;
   if (!b.sesiones) { box.innerHTML = ''; return; }
-  var tope = 22, band = 'left:' + (b.meta.min / tope * 100) + '%;width:' + ((b.meta.max - b.meta.min) / tope * 100) + '%';
+  // El piso depende del bloque (8 base, 10 carga, 12 volumen) y el músculo prioritario del programa aguanta hasta 24
+  var prios = b.musculos.filter(function (m) { return m.prioritario; });
+  var tope = prios.length ? 26 : 22;
+  var bandDe = function (max) { return 'left:' + (b.meta.min / tope * 100) + '%;width:' + ((max - b.meta.min) / tope * 100) + '%'; };
   var h = '<div class="card"><div class="kicker">Semana ' + b.semana + (b.programa ? ' · ' + esc(b.programa) : '') + '</div><h2 style="margin-top:4px">Balance muscular</h2>' +
-    '<div class="meta">Series por músculo esta semana. La franja es la meta: ' + b.meta.min + ' a ' + b.meta.max + '.</div>';
+    '<div class="meta">Series por músculo esta semana. La franja es la meta' + (b.meta.bloqueNombre ? ' en ' + esc(b.meta.bloqueNombre.toLowerCase()) : '') + ': ' + b.meta.min + ' a ' + b.meta.max +
+    (prios.length ? ' (hasta ' + b.meta.maxPrioritario + ' en ' + esc(prios.map(function (m) { return m.nombre.toLowerCase(); }).join(' y ')) + ', lo que prioriza tu programa)' : '') + '.</div>';
   b.musculos.forEach(function (m) {
-    h += '<div class="bm-row ' + (b.entrada ? 'suave' : m.estado) + '"><div class="m">' + esc(m.nombre) + '</div><div class="bm-tr" role="img" aria-label="' + esc(m.nombre) + ': ' + n1(m.series) + ' series"><div class="band" style="' + band + '"></div><i style="width:' + Math.min(100, m.series / tope * 100) + '%"></i></div><div class="v">' + n1(m.series) + '</div></div>';
+    h += '<div class="bm-row ' + (b.entrada ? 'suave' : m.estado) + '"><div class="m">' + esc(m.nombre) + '</div><div class="bm-tr" role="img" aria-label="' + esc(m.nombre) + ': ' + n1(m.series) + ' series"><div class="band" style="' + bandDe(m.max || b.meta.max) + '"></div><i style="width:' + Math.min(100, m.series / tope * 100) + '%"></i></div><div class="v">' + n1(m.series) + '</div></div>';
   });
   h += '<div class="bm-leg"><span>Directas + ½ de las de apoyo</span><span>Meta ' + b.meta.min + '–' + b.meta.max + '</span></div>';
   var bajos = b.consejos.filter(function (c) { return c.tipo === 'bajo'; }), otros = b.consejos.filter(function (c) { return c.tipo === 'alto' || c.tipo === 'entrada' || c.tipo === 'parcial'; }), d48 = b.consejos.filter(function (c) { return c.tipo === '48h'; })[0];
@@ -2603,6 +2648,8 @@ function pintarComida(c) {
   $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, 'kcal') + barra('Proteína', t.prot, o.prot, 'g') +
     barra('Carbohidratos', t.carb, o.carb, 'g') + barra('Grasa', t.grasa, o.grasa, 'g') +
     '<div class="meta">Meta ' + esc(o.fuente) + '. Valores de las comidas aproximados.</div>' + metaAdaptHTML(c.adaptativa);
+  var bb = $('cBasicos');
+  if (bb) { var hayB = c.basicos && c.basicos.items && c.basicos.items.length; bb.style.display = hayB ? '' : 'none'; bb.innerHTML = hayB ? basicosHTML(c.basicos) : ''; }
   pintarChipsComida();
   pintarListaComidas();
   $('cRegistros').innerHTML = c.registros.length ? c.momentos.concat(['']).map(function (m) {
@@ -2898,6 +2945,12 @@ function pcRegistrar(i, b) {
     toast(r.agregadas ? c.momento + ' registrado (' + r.agregadas + ' alimentos)' : 'Ya estaba registrado'); invalidarTodo(); cargarComida();
   }).catch(err).then(function () { if (b) { b.disabled = false; b.textContent = txt0; } });
 }
+/* Lo básico de comida y descanso, con tus números (plegado por defecto) */
+function basicosHTML(b) {
+  return '<details><summary><b>Lo básico</b> · proteína por comida, agua, sueño' + (b.creatina ? ', creatina' : '') + '</summary>' +
+    b.items.map(function (x) { return '<div class="porque"><b>' + esc(x.titulo) + ':</b> ' + esc(x.texto) + '</div>'; }).join('') +
+    (b.peso ? '' : '<div class="meta">Registra tu peso en Cuerpo para ver tus números.</div>') + '</details>';
+}
 /* Meta con tu gasto real (ingesta promedio + tendencia del peso): se ve en Comida y se activa con un toque */
 function metaAdaptHTML(ad) {
   if (!ad) return '';
@@ -2905,6 +2958,7 @@ function metaAdaptHTML(ad) {
   return '<div class="adapt"><b>Tu gasto real: ' + n1(ad.gasto, 0) + ' kcal/día</b><div class="meta" style="margin-top:4px">Últimas 3 semanas: comiste ' + n1(ad.ingesta, 0) + ' kcal en promedio y tu peso ' +
     (ad.kgSemana >= 0 ? 'subió ' : 'bajó ') + n1(Math.abs(ad.kgSemana), 2) + ' kg por semana. ' +
     (ad.activa ? 'Tu meta ya usa este cálculo y se ajusta cada domingo.' : 'Meta sugerida para tu objetivo: <b style="color:var(--ink)">' + n1(ad.meta, 0) + ' kcal</b>.') + '</div>' +
+    (ad.fiable === false && ad.aviso ? '<div class="aviso" style="margin-top:6px">' + esc(ad.aviso) + '</div>' : '') +
     (ad.activa ? '<button class="btn txt" onclick="metaAdaptUI(true)">Volver a la meta estimada</button>' : '<button class="btn sec" style="margin-top:8px" onclick="metaAdaptUI(false)">Usar mi gasto real</button>') + '</div>';
 }
 function metaAdaptUI(apagar) {
