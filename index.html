@@ -519,7 +519,7 @@
   .g-foot{margin-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim)} .g-foot b{color:var(--ink)}
   .g-err{color:var(--bad);font-size:13px;font-weight:700;margin-top:6px}
   #toast.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
-  #cierre{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+  #cierre,#gdCierre{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
   .g-cierre{min-height:100%;display:flex;flex-direction:column;padding-top:calc(44px + env(safe-area-inset-top,0px))}
   .g-tiles{margin-top:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
   .g-tiles div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;min-width:0}
@@ -690,6 +690,51 @@
   #coachChat .ch-nota{font-size:11px;color:var(--faint);margin-top:6px;text-align:center}
   #coachChat .ch-nota .btn.txt{min-height:0;font-size:11px;display:inline}
   @media (min-width:700px){#coachChat{left:50%;transform:translateX(-50%);width:640px;right:auto}}
+  /* ===== G-D: Cierre del día, proteína lista, Telegram ===== */
+  .gd-card{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px}
+  .gd-card.reco{border-color:var(--amber);background:var(--card)}
+  .gd-h{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--ink);font-family:var(--body);text-align:left;cursor:pointer;padding:0;min-height:44px}
+  .gd-h .n{flex:1;min-width:0} .gd-h .chev{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--amber);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+  .gd-h[aria-expanded=true] .chev{transform:rotate(90deg)}
+  .gd-eye{display:block;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
+  .gd-t{display:block;font-family:var(--disp);font-weight:800;font-size:24px;line-height:1;text-transform:uppercase;margin-top:3px}
+  .gd-res{font-size:12px;color:var(--muted);margin-top:4px;display:none} .gd-h[aria-expanded=false]~.gd-res{display:block}
+  .gd-it{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.4}
+  .gd-it:first-child{border-top:0}
+  .gd-it .dot{width:10px;height:10px;border-radius:999px;flex-shrink:0;margin-top:6px;background:var(--muted)}
+  .gd-it.proteina .dot,.gd-it.calorias .dot{background:var(--amber)} .gd-it.salud .dot{background:var(--bad)} .gd-it.habito .dot{background:var(--muted)} .gd-it.bien .dot{background:var(--green-ink)} .gd-it.suplemento .dot{background:var(--blue)}
+  .gd-it .n{flex:1;min-width:0} .gd-it .g-q{flex-shrink:0;margin:0}
+  .gd-sub{font-size:12px;color:var(--dim);margin:-2px 0 6px 76px}
+  .gd-cerrar{margin-top:10px}
+  .gd-cerrado{margin-top:10px;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--green-bg);border:1px solid var(--green-line);font-size:14px}
+  .gd-cerrado .n{flex:1;min-width:0} .gd-cerrado b{display:block;color:var(--green-ink)} .gd-cerrado .s{font-size:12px;color:var(--muted)}
+  .gd-cerrado button{border:0;background:none;color:var(--amber);font:700 13px var(--body);cursor:pointer;min-height:44px;padding:0 4px;flex-shrink:0}
+  .gd-bars{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+  .gd-bar{margin-top:10px} .gd-bar:first-child{margin-top:0}
+  .gd-bar .l{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--muted)} .gd-bar .l b{font-family:var(--disp);font-weight:800;font-size:26px;color:var(--ink);line-height:1} .gd-bar .l b small{font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted)}
+  .gd-bar .tr{height:10px;border-radius:999px;background:var(--raise2);overflow:hidden;margin-top:6px} .gd-bar .tr i{display:block;height:100%;border-radius:999px;background:var(--amber)}
+  .gd-bar.ok .tr i{background:var(--green-ink)} .gd-bar.alto .tr i{background:var(--bad)}
+  .gd-bar .st{font-size:12px;font-weight:700;margin-top:4px;color:var(--amber)} .gd-bar.ok .st{color:var(--green-ink)} .gd-bar.alto .st{color:var(--bad)}
+  .gd-bar .de{font-size:12px;color:var(--dim);margin-top:3px}
+  .gd-sup{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)} .gd-sup:first-child{border-top:0}
+  .gd-sup b{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .gd-sup b .faint{font-weight:500}
+  .gd-sup .s{font-size:12px;color:var(--muted);line-height:1.35;min-width:0} .gd-sup .s .hoy{color:var(--green-ink);font-weight:700}
+  .gd-sup .tomar{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:var(--amber);color:var(--amber-ink);font:800 13px var(--body);cursor:pointer;white-space:nowrap}
+  .gd-sup .tomar:disabled{opacity:.6}
+  .gd-sup .mas{width:44px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--body);justify-self:end}
+  .gd-vacio{font-size:14px;color:var(--muted);line-height:1.45;padding:4px 0}
+  .gd-add{margin-top:10px;width:100%;min-height:46px;border-radius:14px;border:2px solid var(--amber);background:transparent;color:var(--amber);font-family:var(--disp);font-size:17px;font-weight:800;text-transform:uppercase;cursor:pointer}
+  .gd-form{margin-top:10px;border-top:1px solid var(--line);padding-top:4px}
+  .gd-form .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end} .gd-form .grid3 input{padding:11px 8px} .gd-form .row{align-items:flex-end}
+  .gd-form .ayuda{font-size:12px;color:var(--dim);margin-top:6px}
+  .gd-form label.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;font-size:16px;margin-top:10px} .gd-form label.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .gd-form .acts{margin-top:12px}
+  .gd-tg{font-size:14px;color:var(--muted);line-height:1.45} .gd-tg b{color:var(--ink)}
+  .gd-code{font-family:var(--disp);font-weight:800;font-size:38px;letter-spacing:3px;color:var(--amber);line-height:1;margin:10px 0 4px;text-align:center;white-space:nowrap;user-select:all;-webkit-user-select:all}
+  .gd-code-l{text-align:center;font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
+  a.btn.gd-abrir{display:flex;align-items:center;justify-content:center;text-decoration:none;margin-top:12px}
+  .gd-ok{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--green-bg);border:1px solid var(--green-line)} .gd-ok .n{flex:1;min-width:0} .gd-ok b{display:block;color:var(--green-ink);font-size:15px} .gd-ok .s{font-size:12px;color:var(--muted)}
+  .gd-ok svg{width:22px;height:22px;fill:none;stroke:var(--green-ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -766,6 +811,7 @@
     <div class="wrap">
     <input type="date" id="cFecha" class="oculto" aria-hidden="true" tabindex="-1">
     <select id="cMomento" class="oculto" aria-hidden="true" tabindex="-1"></select>
+    <div id="cReco"></div>
     <div id="pcAhora"></div>
     <div class="card" id="cHoyCard" style="margin-top:10px">
       <div class="dayh"><b id="cHoyTit">Hoy</b><span class="meta" id="cHoyMeta"></span></div>
@@ -799,6 +845,9 @@
         <div class="meta" style="margin-top:6px">Los valores de la etiqueta del producto o de una app de calorías.</div>
       </details>
     </div>
+    <div id="cCierreBox"></div>
+    <button class="g-row" id="supRow" aria-expanded="false" onclick="gcToggle('supCard', this)"><span class="n"><b>Proteína lista</b><span class="s" id="supSub">Batidos y proteína en polvo, aparte de la comida</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="supCard"></div>
     <button class="g-row" id="pcRow" aria-expanded="false" onclick="gcToggle('pcCard', this)"><span class="n"><b>Plan de la semana y mercado</b><span class="s" id="pcRowSub">Menú del D1 y el Ara para tu objetivo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="pcCard">
       <div class="pa-h"><div class="kicker" id="pcKick">Tu plan · D1 y Ara</div><button class="pa-obj" id="pcObjBtn" onclick="pcConfig()" style="display:none"></button></div>
@@ -900,6 +949,7 @@
       <div class="aj-grupo">Tu cuenta</div>
       <div class="card aj-menu">
         <button onclick="ajSeccion('perfil')"><span><b>Perfil, avisos y contraseña</b><small id="ajSubPerfil">Edad, estatura, días y recordatorios</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="ajSeccion('telegram')" id="ajMenuTelegram" style="display:none"><span><b>Telegram</b><small id="ajSubTelegram">Anota lo que comes con un mensaje</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Invitaciones y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
@@ -1021,6 +1071,10 @@
       <label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aSemanal" style="width:auto"> Informe del Coach los domingos 7 p. m.</label>
       <div class="acts" style="margin-top:10px"><button class="btn sec" id="aProbar">Enviarme una prueba</button><button class="btn" id="aGuardar">Guardar avisos</button></div>
     </div>
+    <div class="card" id="tgCard" data-sec="perfil telegram">
+      <h2>Telegram</h2>
+      <div id="tgBody"><div class="meta">Cargando…</div></div>
+    </div>
     <div class="card" id="iaCard" data-sec="ia">
       <h2>Inteligencia artificial</h2>
       <div class="meta">Para el Coach y para diseñar planes con IA. Las claves quedan guardadas en el servidor: nunca se muestran en la app.</div>
@@ -1082,6 +1136,7 @@
   </div>
 </div>
 <div id="cierre" class="hidden"></div>
+<div id="gdCierre" class="hidden"></div>
 <div id="toast"></div>
 <style>
   /* Entrada (G-A): la app se presenta antes de pedir datos */
@@ -1155,7 +1210,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610010420', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610011543', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1244,7 +1299,7 @@ function porFetch(url, fn, args, t) {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
 /* Llamadas que tardan (la IA piensa 20–60 s): más tiempo de espera y sin repetirlas solas (repetir = pagar dos veces) */
-var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1, comidaConIA: 1, planParaAlumno: 1, getAlumnos: 1 };
+var LLAMADAS_LENTAS = { disenarPlanIA: 1, coachAnalizar: 1, coachPreguntar: 1, probarIAApp: 1, planDesdeOpcionCoach: 1, comidaConIA: 1, etiquetaConIA: 1, planParaAlumno: 1, getAlumnos: 1 };
 function porScript(url, fn, args, t) {
   return new Promise(function (ok, ko) {
     var cb = '__gymCb' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -3008,8 +3063,9 @@ function cargarAjustes() {
     parte('perfil').then(pintarPerfil).catch(err);
     parte('comida').then(pintarComidaAjustes).catch(function () {});
     parte('avisos').then(function (av) { ajData.avisos = av; pintarResumenAjustes(); }).catch(function () {});
+    cargarTelegram();
   }).catch(function () {
-    cargarPushUI(); cargarSaludUI(); cargarCuenta(); cargarAvisos(); cargarProgramas();
+    cargarPushUI(); cargarSaludUI(); cargarCuenta(); cargarAvisos(); cargarProgramas(); cargarTelegram();
     api('getPerfil').then(pintarPerfil).catch(err);
   });
 }
@@ -3096,6 +3152,7 @@ setInterval(vaciarCola, 30000);
 /* Al volver a la app (el celular la deja abierta días): refresca si cambió el día o pasó un rato,
    sin pisar series que estés escribiendo. */
 function hayCambiosSinGuardar() {
+  if (typeof gdFormSucio === 'function' && gdFormSucio()) return true;
   if (!sesionActual) return false;
   return sesionActual.ejercicios.some(function (e, i) {
     if (e.estado === 'hecho') return false;
@@ -3188,7 +3245,9 @@ function pintarComida(c) {
     var p = obj ? Math.min(100, v / obj * 100) : 0;
     return '<div class="g-bar ' + cls + (p >= 95 ? ' ok' : '') + '"><span>' + nom + '</span><div class="tr"><i style="width:' + p + '%"></i></div><b>' + n1(v, 0) + (u ? ' ' + u : '') + '</b></div>';
   };
-  $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, '', '') + barra('Proteína', t.prot, o.prot, 'g', 'prot');
+  var protSup = Number(t.protSuplemento) || 0;
+  $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, '', '') + barra('Proteína', t.prot, o.prot, 'g', 'prot') +
+    (protSup > 0 ? '<div class="gd-sub">de comida ' + n1(Math.max(0, t.prot - protSup), 0) + ' g · proteína lista ' + n1(protSup, 0) + ' g</div>' : '');
   $('cMetaInfo').innerHTML = 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.<div id="cMetaCalc"></div>' + metaAdaptHTML(c.adaptativa);
   // Los momentos del día: lo registrado y "+ Agregar" en cada uno
   var esHoy = c.fecha === hoyISO(), momAhora = esHoy ? momentoPorHora() : '';
@@ -3207,6 +3266,7 @@ function pintarComida(c) {
   pintarChipsComida();
   pintarListaComidas();
   gcAgRegs();
+  gdPintarComida(c);
   if (pcDatos) pintarPlan(pcDatos);
 }
 /* Hoja "Agregar": se despliega bajo el día con el momento fijado y visible, buscador, "Lo de ayer" e IA/foto */
@@ -4433,6 +4493,7 @@ function pintarResumenAjustes() {
     $('ajSubSalud').textContent = (nombres.length ? nombres.slice(0, 2).join(', ') + (nombres.length > 2 ? ' +' + (nombres.length - 2) : '') : 'Sin condiciones') + ' · ' + (med ? med + ' medicamento' + (med === 1 ? '' : 's') : 'sin medicamentos');
   }
   if (c) $('ajSubComida').textContent = (c.nombre || 'Sin objetivo') + ' · ' + miles(c.kcal) + ' kcal · ' + c.prot + ' g' + (c.adaptativa ? ' · se ajusta con tu peso real' : '');
+  if (typeof gdResumenTelegram === 'function') gdResumenTelegram();
 }
 function pintarComidaAjustes(c) {
   ajData.comida = c; pintarResumenAjustes();
@@ -4552,6 +4613,236 @@ function gcEjeX(x) { var m = /^(\d{2})-(\d{2})$/.exec(String(x)); return m ? Num
 function gcFechaLarga(iso) { var p = iso.split('-'), meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']; return Number(p[2]) + ' de ' + (meses[Number(p[1]) - 1] || ''); }
 /* Explicación corta (6 s) para los "?" de la jerga: IMC, FFMI, músculos… */
 function gcInfo(txt) { var t = $('toast'); t.textContent = txt; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function () { t.style.display = 'none'; }, 6000); }
+/* ===== G-D: Cierre del día, proteína lista, Telegram ===== */
+/* Comida: "Hoy te recomiendo" (con lo de ayer), "Cerrar el día" con su resumen a pantalla completa, "Proteína lista"
+   (batidos y proteína en polvo aparte de la comida) y, en Ajustes → Tu cuenta, la vinculación con Telegram. */
+var gdRecoAbierta = null, gdSupForm = null, gdCerrando = false;
+function gdUuid() { try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {} return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+function gdLS(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+/* Texto como literal de JS para un onclick (luego va por esc() dentro del atributo) */
+function gdArg(t) { return "'" + String(t == null ? '' : t).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, ' ') + "'"; }
+/* Un ítem de recomendación: punto de color por tipo (proteína ámbar, salud rojo, hábito gris, bien verde) y "?" con el detalle y la fuente */
+function gdItemsHTML(items, max) {
+  return (items || []).slice(0, max || 4).map(function (it) {
+    var info = [it.detalle, it.fuente ? 'Fuente: ' + it.fuente : ''].filter(Boolean).join(' · ');
+    return '<div class="gd-it ' + esc(it.tipo || 'habito') + '"><span class="dot"></span><div class="n">' + esc(it.texto) + '</div>' +
+      (info ? '<button type="button" class="g-q" aria-label="Por qué" onclick="gcInfo(' + esc(gdArg(info)) + ')">?</button>' : '') + '</div>';
+  }).join('');
+}
+function gdPintarComida(c) {
+  var reco = $('cReco'); if (reco) reco.innerHTML = c.fecha === hoyISO() ? gdRecoHTML(c) : '';
+  var cb = $('cCierreBox'); if (cb) cb.innerHTML = gdCierreBoxHTML(c);
+  gdPintarSup(c);
+}
+/* 1) Hoy te recomiendo: arriba de todo, solo en un día nuevo (sin cierre) y con ítems; abierta si hay proteína o salud */
+function gdRecoHTML(c) {
+  var r = c.recomendaciones, items = (r && r.items) || [];
+  if (!items.length || c.cierre) return '';
+  var eye = r.base === 'dos_dias' ? 'Con lo que comiste los últimos dos días' : r.base === 'ayer' ? 'Con lo que comiste ayer' : 'Para hoy';
+  var abierta = gdRecoAbierta != null ? gdRecoAbierta : items.some(function (it) { return it.tipo === 'proteina' || it.tipo === 'salud'; });
+  return '<div class="gd-card reco"><button type="button" class="gd-h" id="recoRow" aria-expanded="' + abierta + '" onclick="gdRecoToggle(this)"><span class="n"><span class="gd-eye">' + esc(eye) + '</span><span class="gd-t">Hoy te recomiendo</span></span>' + CHEV + '</button>' +
+    (r.resumen ? '<div class="gd-res">' + esc(r.resumen) + '</div>' : '') +
+    '<div class="g-fold' + (abierta ? ' open' : '') + '" id="recoFold">' + gdItemsHTML(items, 4) + '</div></div>';
+}
+function gdRecoToggle(btn) { gcToggle('recoFold', btn); gdRecoAbierta = btn.getAttribute('aria-expanded') === 'true'; }
+/* 2) Cerrar el día: botón grande con ≥ 1 registro; si ya está cerrado, la línea verde con "Volver a cerrar" */
+var GD_EST_KCAL = { ok: 'calorías en la meta', bajo: 'te faltaron calorías', alto: 'te pasaste de calorías' };
+var GD_EST_PROT = { ok: 'proteína cumplida', bajo: 'te faltó proteína', alto: 'proteína de sobra' };
+function gdCierreBoxHTML(c) {
+  var ci = c.cierre;
+  if (ci && ci.totales) {
+    var st = ci.estado || {}, det = [GD_EST_KCAL[st.kcal], GD_EST_PROT[st.prot]].filter(Boolean).join(' · ');
+    return '<div class="gd-cerrado"><svg class="g-ic" viewBox="0 0 24 24" style="stroke:var(--green-ink)"><path d="M5 12l5 5L20 7"/></svg><div class="n"><b>Día cerrado</b><div class="s">' + n1(ci.totales.kcal, 0) + ' kcal · ' + n1(ci.totales.prot, 0) + ' g prot' + (det ? ' · ' + det : '') + '</div></div><button type="button" onclick="gdCerrarDia(true)">Volver a cerrar</button></div>';
+  }
+  if (!(c.registros && c.registros.length)) return '';
+  return '<button type="button" class="gcta gd-cerrar" id="gdCerrarBtn" onclick="gdCerrarDia()"><span class="t">Cerrar el día</span><span class="s">Cómo te fue hoy</span></button>';
+}
+/* Idempotente: el id del cierre se guarda por fecha en el celular; un reintento (señal mala) manda el mismo id. "Volver a cerrar" estrena uno. */
+function gdCerrarDia(otraVez) {
+  if (!comidaDatos || gdCerrando) return;
+  var f = comidaDatos.fecha, k = 'gd:cierre:' + f, id = otraVez ? '' : gdLS(k);
+  if (!id) { id = gdUuid(); gdLS(k, id); }
+  gdCerrando = true;
+  var b = $('gdCerrarBtn'); if (b) { b.disabled = true; b.querySelector('.s').textContent = 'Cerrando…'; }
+  api('cerrarDiaComida', { fecha: f, id: id }).then(function (r) {
+    if (r && r.comida && r.comida.registros) { comidaDatos = r.comida; escribirCache('com:' + f, r.comida); pintarComida(r.comida); }
+    gdMostrarCierre(r || {}, f);
+  }).catch(function (e) { errG(e); var b2 = $('gdCerrarBtn'); if (b2) { b2.disabled = false; b2.querySelector('.s').textContent = 'Cómo te fue hoy'; } })
+    .then(function () { gdCerrando = false; });
+}
+/* "Así te fue hoy": calorías y proteína contra la meta, de dónde salió la proteína y "Mañana te recomiendo" */
+function gdMostrarCierre(r, f) {
+  var ci = r.cierre || {}, t = ci.totales || {}, o = ci.objetivos || {}, st = ci.estado || {}, man = r.manana || {};
+  var kcal = Number(t.kcal) || 0, prot = Number(t.prot) || 0, ps = Number(t.protSuplemento) || 0, pc = Math.max(0, prot - ps);
+  var kcalTxt = { ok: 'En la meta', bajo: 'Te faltaron ' + n1((o.kcal || 0) - kcal, 0) + ' kcal', alto: 'Te pasaste ' + n1(kcal - (o.kcal || 0), 0) + ' kcal' };
+  var protTxt = { ok: 'Meta cumplida', bajo: 'Te faltaron ' + n1((o.prot || 0) - prot, 0) + ' g', alto: 'Más de la meta: está bien' };
+  var bar = function (nom, v, obj, u, estado, txts, extra) {
+    var p = obj ? Math.min(100, Math.round(v / obj * 100)) : 0;
+    return '<div class="gd-bar ' + esc(estado || '') + '"><div class="l"><span>' + nom + '</span><b>' + n1(v, 0) + (u ? ' ' + u : '') + ' <small>de ' + n1(obj, 0) + '</small></b></div><div class="tr"><i style="width:' + p + '%"></i></div>' +
+      (txts[estado] ? '<div class="st">' + esc(txts[estado]) + '</div>' : '') + (extra || '') + '</div>';
+  };
+  var bien = st.kcal === 'ok' && st.prot === 'ok', box = $('gdCierre');
+  box.innerHTML = '<div class="bv-wrap g-cierre">' +
+    '<div class="g-eye"><span>' + esc(fechaEyebrow(f)) + ' · Comida</span></div>' +
+    '<div class="g-title big">Así te <span class="' + (bien ? 'ok' : 'amber') + '">fue</span> hoy</div>' +
+    '<div class="gd-bars">' + bar('Calorías', kcal, o.kcal, '', st.kcal, kcalTxt) +
+      bar('Proteína', prot, o.prot, 'g', st.prot, protTxt, ps > 0 ? '<div class="de">de comida ' + n1(pc, 0) + ' g + proteína lista ' + n1(ps, 0) + ' g</div>' : '') + '</div>' +
+    (man.items && man.items.length ? '<div class="g-box"><div class="t">Mañana te recomiendo</div><div style="margin-top:4px">' + gdItemsHTML(man.items, 4) + '</div>' + (man.resumen ? '<div class="meta" style="margin-top:6px">' + esc(man.resumen) + '</div>' : '') + '</div>'
+      : (man.resumen ? '<div class="g-box green"><b>Mañana.</b> ' + esc(man.resumen) + '</div>' : '')) +
+    '<div class="g-grow"></div>' +
+    '<button type="button" class="btn" onclick="gdCerrarOverlay()">Listo</button></div>';
+  box.classList.remove('hidden'); box.scrollTop = 0;
+}
+function gdCerrarOverlay() { $('gdCierre').classList.add('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+/* 3) Proteína lista: tus productos con "Tomé 1 scoop", "+ Agregar" (formulario corto, foto de la etiqueta con IA) y "···" → Editar / Quitar */
+function gdPintarSup(c) {
+  c = c || comidaDatos; if (!c || !$('supCard')) return;
+  var sups = c.suplementos || [], ps = Number(c.totales && c.totales.protSuplemento) || 0;
+  $('supCard').innerHTML = gdSupHTML(c);
+  $('supSub').textContent = sups.length ? sups.length + (sups.length === 1 ? ' producto' : ' productos') + (ps ? ' · ' + (c.fecha === hoyISO() ? 'hoy ' : '') + n1(ps, 0) + ' g de proteína' : '') : 'Batidos y proteína en polvo, aparte de la comida';
+}
+function gdSupHTML(c) {
+  var sups = c.suplementos || [], esHoy = c.fecha === hoyISO(), h = '';
+  if (!sups.length && !gdSupForm) h += '<div class="gd-vacio">Si tomas proteína en polvo o batido listo, agrégala aquí para contarla aparte de la comida.</div>';
+  h += sups.map(function (s, k) {
+    var n = Number(s.hoy) || 0;
+    return '<div class="gd-sup"><b>' + esc(s.nombre) + '</b>' +
+      '<button type="button" class="mas" aria-label="Opciones de ' + esc(s.nombre) + '" onclick="gdSupMenu(' + k + ')">···</button>' +
+      '<div class="s">' + (s.marca ? esc(s.marca) + ' · ' : '') + n1(s.gramos, 0) + ' g por scoop · ' + n1(s.kcal, 0) + ' kcal · ' + n1(s.prot, 0) + ' g prot' + (n ? ' · <span class="hoy">' + (esHoy ? 'hoy: ' : 'ese día: ') + n + '</span>' : '') + '</div>' +
+      '<button type="button" class="tomar" onclick="gdTomar(' + k + ', this)">Tomé 1 scoop</button></div>';
+  }).join('');
+  h += gdSupForm ? gdSupFormHTML(c) : '<button type="button" class="gd-add" onclick="gdSupNuevo()">+ Agregar</button>';
+  return h;
+}
+var GD_SUP_NUM = ['gramos', 'kcal', 'prot', 'carb', 'azucar', 'grasa', 'sodio'];
+function gdSupFormHTML(c) {
+  var d = gdSupForm || {}, ia = !!(c.ia && c.ia.tieneClave);
+  var inp = function (k, lab, tipo, ph) { return '<div><label for="gds_' + k + '">' + lab + '</label><input id="gds_' + k + '" type="' + tipo + '"' + (tipo === 'number' ? ' inputmode="decimal" step="any" min="0"' : '') + ' placeholder="' + esc(ph) + '" value="' + esc(d[k] == null ? '' : d[k]) + '"></div>'; };
+  return '<div class="gd-form" id="gdSupForm"><div class="dayh" style="margin-top:8px"><b>' + (d.id ? 'Editar' : 'Agregar proteína lista') + '</b><span class="meta">por scoop o porción</span></div>' +
+    '<div class="ayuda">Copia lo que dice la tabla nutricional por porción.</div>' +
+    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="gdEtiquetaFoto(this)">' : '') +
+    '<div class="row">' + inp('nombre', 'Nombre', 'text', 'Ej.: Whey Gold Standard') + inp('marca', 'Marca', 'text', 'Opcional') + '</div>' +
+    '<div class="grid3">' + inp('gramos', 'Gramos', 'number', '30') + inp('kcal', 'Kcal', 'number', '120') + inp('prot', 'Proteína g', 'number', '24') + '</div>' +
+    '<div class="grid3">' + inp('carb', 'Carbohidratos g', 'number', '3') + inp('azucar', 'Azúcar g', 'number', '1') + inp('grasa', 'Grasa g', 'number', '1,5') + '</div>' +
+    '<div class="row">' + inp('sodio', 'Sodio mg', 'number', '130') + '<div><label for="gds_nota">Nota</label><input id="gds_nota" placeholder="Opcional" value="' + esc(d.nota || '') + '"></div></div>' +
+    '<div class="acts"><button type="button" class="btn sec" onclick="gdSupCancelar()">Cancelar</button><button type="button" class="btn" id="gdsGuardar" onclick="gdSupGuardar()">Guardar</button></div></div>';
+}
+function gdSupNuevo() { gdSupForm = {}; gdPintarSup(); var i = $('gds_nombre'); if (i) { i.focus(); i.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+function gdSupCancelar() { gdSupForm = null; gdPintarSup(); }
+function gdSupEditar(k) { var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return; gdSupForm = {}; for (var x in s) gdSupForm[x] = s[x]; gdPintarSup(); }
+function gdSupLeer() {
+  var d = { id: (gdSupForm && gdSupForm.id) || '', nombre: ($('gds_nombre').value || '').trim(), marca: ($('gds_marca').value || '').trim(), nota: ($('gds_nota').value || '').trim() };
+  GD_SUP_NUM.forEach(function (k) { var v = String($('gds_' + k).value || '').replace(',', '.').trim(); d[k] = v === '' ? 0 : Number(v); });
+  return d;
+}
+/* El formulario a medio llenar cuenta como cambio sin guardar (la app no se recarga sola encima) */
+function gdFormSucio() {
+  if (!gdSupForm || !$('gdSupForm')) return false;
+  return ['nombre', 'marca', 'nota'].concat(GD_SUP_NUM).some(function (k) { var el = $('gds_' + k); return !!(el && String(el.value || '').trim() !== '' && String(el.value) !== String(gdSupForm[k] == null ? '' : gdSupForm[k])); });
+}
+function gdSupGuardar() {
+  var d = gdSupLeer();
+  if (!d.nombre) { toastBad('Escribe el nombre del producto'); $('gds_nombre').focus(); return; }
+  if (!(d.gramos > 0)) { toastBad('Escribe los gramos por scoop'); $('gds_gramos').focus(); return; }
+  if (GD_SUP_NUM.some(function (k) { return isNaN(d[k]) || d[k] < 0; })) { toastBad('Revisa los números: solo valores de 0 en adelante'); return; }
+  if (!d.id) d.id = gdUuid();
+  var b = $('gdsGuardar'); b.disabled = true; b.textContent = 'Guardando…';
+  api('guardarSuplemento', d).then(function (r) {
+    gdSupForm = null; gdSupAplicar(r); toast('Guardado: ' + d.nombre);
+  }).catch(function (e) { errG(e); var b2 = $('gdsGuardar'); if (b2) { b2.disabled = false; b2.textContent = 'Guardar'; } });
+}
+function gdSupMenu(k) {
+  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
+  hojaAcciones(s.nombre, [['Editar los valores', 'gdSupEditar(' + k + ')'], ['Quitar', 'gdSupQuitar(' + k + ')', 'bad']]);
+}
+function gdSupQuitar(k) {
+  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
+  if (!confirm('¿Quitar "' + s.nombre + '"? Lo que ya anotaste se conserva.')) return;
+  api('quitarSuplemento', { id: s.id }).then(function (r) { gdSupAplicar(r); toast('Quitado: ' + s.nombre); }).catch(errG);
+}
+/* La lista de productos sale en el getComida de todos los días: se actualiza la del día y se olvidan las cachés de los otros */
+function gdSupAplicar(r) {
+  if (!comidaDatos) return;
+  if (r && Array.isArray(r.suplementos)) comidaDatos.suplementos = r.suplementos;
+  gdInvalidarComida(comidaDatos.fecha);
+  escribirCache('com:' + comidaDatos.fecha, comidaDatos);
+  gdPintarSup(comidaDatos);
+}
+function gdInvalidarComida(salvo) { try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(CACHE_V + 'com:') === 0 && k !== CACHE_V + 'com:' + salvo) localStorage.removeItem(k); }); } catch (e) {} }
+/* Tomé 1 scoop: se anota en el momento de ahora (hoy) o en el elegido (otro día); idempotente por regId y con cola si no hay señal */
+function gdTomar(k, b) {
+  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
+  var f = comidaDatos.fecha, mom = f === hoyISO() ? momentoPorHora() : ($('cMomento').value || 'Algo');
+  if (b) { b.disabled = true; b.textContent = 'Anotando…'; }
+  enviar('tomarSuplemento', { id: s.id, fecha: f, momento: mom, porciones: 1, regId: gdUuid() }).then(function (r) {
+    if (r && r.enCola) { toast('Sin conexión: se anotará cuando vuelva la señal'); return; }
+    if (r && r.registros) { comidaDatos = r; escribirCache('com:' + f, r); pintarComida(r); }
+    toast(s.nombre + ': +' + n1(s.prot, 0) + ' g de proteína en ' + mom.toLowerCase());
+  }).catch(errG).then(function () { if (b && b.isConnected) { b.disabled = false; b.textContent = 'Tomé 1 scoop'; } });
+}
+/* Leer la etiqueta con una foto (IA): llena el formulario; la persona revisa antes de guardar */
+function gdReducirFoto(f, max) {
+  return new Promise(function (ok, ko) {
+    var img = new Image(), rd = new FileReader();
+    rd.onerror = function () { ko(new Error('No pude leer la foto')); }; img.onerror = rd.onerror;
+    rd.onload = function () { img.src = rd.result; };
+    img.onload = function () {
+      var k = Math.min(1, max / Math.max(img.width, img.height)), cv = document.createElement('canvas');
+      cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      ok(cv.toDataURL('image/jpeg', 0.85));
+    };
+    rd.readAsDataURL(f);
+  });
+}
+function gdEtiquetaFoto(inp) {
+  var f = inp.files && inp.files[0]; if (!f) return;
+  var txt = $('gdsFotoTxt'); if (txt) txt.textContent = 'Leyendo la etiqueta… (10–20 s)';
+  gdReducirFoto(f, 1280).then(function (data) { return api('etiquetaConIA', { foto: data, texto: $('gds_nombre') ? $('gds_nombre').value.trim() : '' }); }).then(function (r) {
+    if (!r || typeof r !== 'object') throw new Error('No pude leer la etiqueta. Prueba con más luz y la tabla completa.');
+    var m = { nombre: r.nombre, marca: r.marca, gramos: r.porcion_g, kcal: r.kcal, prot: r.proteina, carb: r.carbohidratos, azucar: r.azucares, grasa: r.grasa, sodio: r.sodio_mg, nota: r.nota };
+    Object.keys(m).forEach(function (k) { var el = $('gds_' + k); if (el && m[k] != null && m[k] !== '') el.value = m[k]; });
+    toast('Etiqueta leída: revisa los números antes de guardar');
+  }).catch(errG).then(function () { var t2 = $('gdsFotoTxt'); if (t2) t2.textContent = 'Leer la etiqueta con una foto'; inp.value = ''; });
+}
+/* 5) Telegram (Ajustes → Tu cuenta): vincular con un código, abrir el bot, ver con quién quedó vinculado y desvincular */
+var tgEstado = null, tgCodigo = null;
+function cargarTelegram() {
+  if (!$('tgBody')) return;
+  api('estadoTelegram').then(function (r) { tgEstado = r || {}; tgCodigo = null; pintarTelegram(); })
+    .catch(function (e) { tgEstado = null; $('tgBody').innerHTML = '<div class="meta">No pude consultar Telegram: ' + esc(e && e.message || e) + '</div>'; gdResumenTelegram(); });
+}
+function pintarTelegram() {
+  var b = $('tgBody'), t = tgEstado; if (!b || !t) return;
+  var h;
+  if (!t.bot) h = '<div class="gd-tg">El dueño aún no activó el bot de Telegram. Cuando lo haga, aquí podrás vincular tu cuenta y anotar lo que comes con un mensaje.</div>';
+  else if (t.vinculado) h = '<div class="gd-ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><div class="n"><b>Vinculado como ' + esc(t.nombre || 'tú') + '</b><div class="s">' + (t.desde ? 'Desde el ' + esc(fechaCortaIso(String(t.desde).slice(0, 10))) + ' · ' : '') + '@' + esc(t.bot) + '</div></div></div>' +
+    '<div class="gd-tg" style="margin-top:10px">Escríbele al bot lo que comiste o mándale la foto de la tabla nutricional: queda anotado en tu día.</div>' +
+    '<button type="button" class="btn txt" onclick="gdTgDesvincular()">Desvincular</button>';
+  else if (tgCodigo) h = '<div class="gd-tg">Tu código:</div><div class="gd-code">' + esc(tgCodigo.codigo) + '</div><div class="gd-code-l">Mándaselo al bot</div>' +
+    (tgCodigo.enlace ? '<a class="btn gd-abrir" href="' + esc(tgCodigo.enlace) + '" target="_blank" rel="noopener">Abrir Telegram</a>' : '') +
+    '<div class="gd-tg" style="margin-top:10px">Si no abre, escríbele a <b>@' + esc(tgCodigo.bot || t.bot) + '</b> y mándale <b>/start ' + esc(tgCodigo.codigo) + '</b>.</div>' +
+    '<div class="acts" style="align-items:center"><button type="button" class="btn sec" style="flex:2" onclick="cargarTelegram()">Ya lo mandé</button><button type="button" class="btn txt" style="flex:1" onclick="gdTgCodigo(this)">Otro código</button></div>';
+  else h = '<div class="gd-tg">Registra lo que comes mandándole un mensaje o la foto de la tabla nutricional.</div>' +
+    '<button type="button" class="btn" style="margin-top:12px" onclick="gdTgCodigo(this)">Vincular</button>';
+  b.innerHTML = h; gdResumenTelegram();
+}
+function gdTgCodigo(b) {
+  if (b) b.disabled = true;
+  api('codigoTelegram').then(function (r) { tgCodigo = r || {}; pintarTelegram(); }).catch(function (e) { if (b) b.disabled = false; errG(e); });
+}
+function gdTgDesvincular() {
+  if (!confirm('¿Desvincular Telegram? Lo que ya anotaste se conserva.')) return;
+  api('desvincularTelegram').then(function () { if (tgEstado) { tgEstado.vinculado = false; tgEstado.nombre = ''; } tgCodigo = null; pintarTelegram(); toast('Telegram desvinculado'); }).catch(errG);
+}
+/* Línea del menú de Ajustes: solo si el dueño activó el bot */
+function gdResumenTelegram() {
+  var m = $('ajMenuTelegram'), s = $('ajSubTelegram'); if (!m) return;
+  var t = tgEstado;
+  m.style.display = t && t.bot ? '' : 'none';
+  if (s && t) s.textContent = t.vinculado ? 'Vinculado' + (t.nombre ? ' como ' + t.nombre : '') : 'Sin vincular · anota lo que comes con un mensaje';
+}
+/* ===== fin G-D ===== */
 </script>
 </body>
 </html>
