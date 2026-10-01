@@ -1235,7 +1235,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610011825', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610012035', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1543,6 +1543,7 @@ function irAjustes(sec) { irA('ajustes'); ajSeccion(sec || ''); }
 function irA(tab) {
   document.querySelectorAll('nav button').forEach(function (x) { x.classList.toggle('on', x.dataset.tab === tab); });
   ['hoy','semana','comida','cuerpo','panel','coach','ajustes'].forEach(function (t) { $('tab-' + t).classList.toggle('hidden', t !== tab); });
+  tVisible(tab === 'hoy');   // el descanso solo se ve en Hoy (sigue contando por detrás)
   if (tab === 'semana') { pintarSemanaTab(); cargarHistorial(); cargarBalance(); }
   if (tab === 'panel') cargarPanel();
   if (tab === 'coach') cargarCoach();
@@ -2290,7 +2291,7 @@ function mostrarCierre() {
   var cc = leerCache('com:' + s.fecha); if (cc) pintarCome(cc);
   api('getComida', s.fecha).then(function (c) { escribirCache('com:' + s.fecha, c); pintarCome(c); }).catch(function () { var b = $('cierreCome'); if (b && !cc) b.innerHTML = '<b>Ahora come.</b> Proteína en la siguiente comida: pechuga, huevos, atún o lentejas.'; });
 }
-function cerrarCierre() {
+function cerrarCierre() { tOcultar();
   $('cierre').classList.add('hidden');
   verHoy = false;
   cargarEstado();
@@ -2341,20 +2342,28 @@ function quitarFijada() {
 
 /* ---------- Temporizador ---------- */
 var tFin = 0, tInt = null;
-function descanso(seg) { tFin = Date.now() + seg * 1000; $('timer').style.display = 'flex'; clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(seg); }
+function descanso(seg) { tFin = Date.now() + seg * 1000; clearTimeout(tCierre); $('timer').style.display = 'flex'; clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(seg); }
 /* Con avisos activos: el servidor manda un aviso al terminar el descanso (sirve con el celular bloqueado) */
 function avisoDescanso(seg, cancelar) {
   var on = false; try { on = localStorage.getItem('pushDescanso') === '1'; } catch (e) {}
   if (!on || !navigator.onLine) return;
   api('pushDescanso', cancelar ? { cancelar: true } : { segundos: seg }).catch(function () {});
 }
+var tCierre = null;
 function tick() {
   var r = Math.max(0, Math.round((tFin - Date.now()) / 1000));
   $('tVal').textContent = fmtSeg(r);
-  if (r === 0) { clearInterval(tInt); if (navigator.vibrate) navigator.vibrate([300, 150, 300]); $('tVal').textContent = '¡Serie!'; }
+  if (r === 0) {
+    clearInterval(tInt); tInt = null; if (navigator.vibrate) navigator.vibrate([300, 150, 300]); $('tVal').textContent = '¡Serie!';
+    // Antes "¡Serie!" se quedaba para siempre encima de todas las pestañas: ahora se va solo a los 8 s
+    clearTimeout(tCierre); tCierre = setTimeout(tOcultar, 8000);
+  }
 }
+function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); $('timer').style.display = 'none'; }
+/** Fuera de Hoy el descanso no se muestra (sigue contando); al volver a Hoy reaparece si aún corre. */
+function tVisible(enHoy) { var t = $('timer'); if (!t) return; t.style.display = enHoy && tInt && tFin > Date.now() ? 'flex' : 'none'; }
 $('tMas').onclick = function () { tFin = Math.max(tFin, Date.now()) + 30000; clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(Math.round((tFin - Date.now()) / 1000)); };
-$('tStop').onclick = function () { clearInterval(tInt); $('timer').style.display = 'none'; if (tFin > Date.now() + 2000) avisoDescanso(0, true); };
+$('tStop').onclick = function () { var corria = tFin > Date.now() + 2000; tOcultar(); if (corria) avisoDescanso(0, true); };
 function fmtSeg(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
 
 /* =================== CUERPO (boceto G: el peso primero) =================== */
