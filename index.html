@@ -312,10 +312,15 @@
   .sets td:last-child{width:62px}
   .omit{display:none;margin-top:8px;padding:10px;border-radius:12px;background:var(--card2)}
   .clave{font-size:12px;color:var(--faint);margin-top:8px}
-  #timer{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:7;background:var(--amber);color:var(--amber-ink);display:none;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
-  #timer b{font-family:var(--disp);font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
-  #timer .kicker{color:var(--amber-ink);opacity:.7}
-  #timer button{border:0;border-radius:10px;padding:9px 12px;font-weight:700;background:var(--amber-ink);color:var(--amber);font-family:var(--body)}
+  /* Descanso como píldora global (Tanda visual 2): 36 px arriba, "1:58 · Prensa 45°", +30 s y Listo; tocarla vuelve a la tarjeta */
+  #timer{position:fixed;left:12px;right:12px;top:calc(6px + env(safe-area-inset-top,0px));z-index:12;height:36px;border-radius:999px;padding:0 4px 0 14px;background:var(--amber);color:var(--amber-ink);display:none;align-items:center;justify-content:space-between;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+  @media (min-width:700px){#timer{left:50%;right:auto;width:616px;transform:translateX(-50%)}}
+  #timer .t-ir{flex:1;min-width:0;display:flex;align-items:center;gap:8px;border:0;background:none;color:inherit;font-family:var(--body);padding:0;height:36px;text-align:left;cursor:pointer}
+  #timer b{font-family:var(--disp);font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;flex-shrink:0}
+  #timer #tEj{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85;min-width:0}
+  #timer .t-acts{display:flex;gap:4px;flex-shrink:0}
+  #timer .t-acts button{border:0;border-radius:999px;height:28px;padding:0 10px;font:700 12px var(--body);background:var(--amber-ink);color:var(--amber);cursor:pointer}
+  body.t-on main{padding-top:48px} body.t-on .g-ex,body.t-on #pesoCard,body.t-on #cardioCard{scroll-margin-top:52px}
   #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom));background:var(--card2);color:var(--ink);border:1px solid var(--line);padding:11px 15px;border-radius:12px;font-size:14px;display:none;z-index:9;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.4)}
   #toast.pr{background:linear-gradient(90deg,#f5b700,#eb6834);color:#151208;border-color:transparent}
   table.res{width:100%;border-collapse:collapse;font-size:13px}
@@ -630,7 +635,6 @@
   .g-det{padding:4px 12px 10px;background:var(--card2);border-radius:0 0 12px 12px;margin-top:-6px}
   .g-linea{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding:0 4px;font-size:13px;color:var(--muted)}
   #balanceMus .bm-row .m{width:126px;font-size:13px}
-  #planificador .dias{grid-template-columns:repeat(4,1fr)}
   /* Comida */
   .g-ahora{margin-top:12px;background:var(--card2);border-radius:18px;padding:14px}
   .g-ahora .plato{font-size:17px;font-weight:700;line-height:1.3;margin-top:6px} .g-ahora .meta{margin-top:4px}
@@ -643,10 +647,6 @@
   .g-mom .n{flex:1;min-width:0} .g-mom .t{font-size:14px;font-weight:700} .g-mom .t small{font-weight:500;color:var(--dim);font-size:12px} .g-mom .s{font-size:12px;color:var(--muted);line-height:1.35}
   .g-mom button{min-height:40px;padding:0 12px;border-radius:10px;border:0;font:800 13px var(--body);cursor:pointer;flex-shrink:0;background:var(--raise);color:var(--ink)} .g-mom button.add{background:var(--amber);color:var(--amber-ink)}
   .g-reg{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;padding:4px 0;border-top:1px solid var(--line)} .g-reg:first-child{border-top:0} .g-reg .meta{font-size:12px} .g-reg button{min-width:44px;min-height:40px;border:0;background:none;color:var(--dim);font-size:18px;cursor:pointer}
-  #cAgregar{margin-top:10px;border:2px solid var(--amber);border-radius:18px;padding:14px;background:var(--card)}
-  #cAgregar .c-chips{flex-wrap:wrap;overflow:visible;margin:8px 0 0;padding:0}
-  #cAgregar .chips-mom{flex-wrap:wrap;overflow:visible}
-  #cAgregar .chips-mom .chip{font-size:12px;padding:7px 10px;min-height:34px}
   .g-ia-acts{display:flex;gap:8px;margin-top:8px} .g-ia-acts button{flex:1;min-height:46px;border-radius:12px;border:0;font:800 15px var(--body);cursor:pointer;white-space:nowrap} .g-ia-acts .ok{background:var(--amber);color:var(--amber-ink)} .g-ia-acts .no{background:var(--raise);color:var(--ink)}
   .g-merc-h{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card);font-size:13px;color:var(--muted)} .g-merc-h b{color:var(--ink);font-size:15px;display:block}
   .g-meta-info{margin-top:8px;font-size:12px;color:var(--dim)}
@@ -774,7 +774,6 @@
   .g-mom .plan .toggle{margin:6px 0 0;background:var(--card)}
   .gd-card.reco{border-color:var(--line)}
   .gcta.gd-cerrar{background:var(--raise);color:var(--ink)} .gcta.gd-cerrar .s{color:var(--muted)}
-  #cAgregar{border-color:var(--line)}
   .g-3 b{color:var(--ink)} .g-h1 .pc{color:var(--ink)} .dia-row .r .pct{color:var(--muted)} .kpi .v{color:var(--ink)} .hero-kpi .v{color:var(--ink)}
   .g-fila .r{color:var(--muted)} .g-fila.hoy .r{color:var(--amber)} .g-fila.hecho .r{color:var(--green-ink)} .g-fila.sinreg .r{color:var(--bad)}
   .pa-fila em{color:var(--muted)}
@@ -797,6 +796,55 @@
   .pa-com.ahora{border-color:#4a4850}
   .aj-h2-oculto{display:none}
   .c-meta-btn{margin-top:8px}
+  /* ===== Tanda visual 2 (02/10/2026): hoja inferior, tarjeta en dos capas, 5 pestañas, Ajustes en pila, timer global ===== */
+  /* Hoja inferior reutilizable (.hoja): asa, título, cuerpo con scroll propio; se cierra al tocar fuera, con "Cerrar" o arrastrando el asa */
+  .hoja{width:100%;max-width:640px;background:var(--card);border-radius:20px 20px 0 0;max-height:calc(100vh - 36px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(0);transition:transform .22s ease-out;box-shadow:0 -8px 30px rgba(0,0,0,.45)}
+  .ha-ov.abriendo .hoja{transform:translateY(100%)}
+  .hoja-grip{width:40px;height:4px;border-radius:99px;background:var(--raise2);margin:8px auto 0;flex-shrink:0}
+  .hoja-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 16px 8px;flex-shrink:0;touch-action:none}
+  .hoja-h .n{min-width:0;flex:1} .hoja-h .k{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
+  .hoja-h b{display:block;font-family:var(--disp);font-size:26px;font-weight:800;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hoja-b{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 16px 16px;flex:1;min-height:0}
+  body.hoja-abierta{overflow:hidden}
+  .hoja .ha-it{display:block;width:100%;min-height:50px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:600 16px var(--body);cursor:pointer}
+  .hoja .ha-it:first-child{border-top:0} .hoja .ha-it.bad{color:var(--bad)}
+  .hoja .ha-cancel{display:block;width:100%;min-height:50px;margin-top:8px;border:0;border-radius:14px;background:var(--raise);color:var(--ink);font:800 16px var(--body);cursor:pointer}
+  /* Agregar comida dentro de la hoja: buscador arriba, chips en UNA fila, momento como segmento */
+  #cAgregar{border:0;border-radius:0;padding:0;background:transparent;margin-top:0}
+  .hoja #cAgregar .c-chips{flex-wrap:nowrap;overflow-x:auto;margin:8px -16px 0;padding:2px 16px 4px}
+  .c-seg{margin:10px 0 0} .c-seg button{white-space:nowrap;padding:9px 4px;font-size:13px}
+  .c-seg button.mas{flex:0 0 auto;color:var(--muted);padding:9px 10px}
+  .c-seg2{margin-top:6px}
+  .hoja .food button{width:44px;height:44px;border-radius:999px;padding:0;font-size:24px;font-weight:600;display:flex;align-items:center;justify-content:center;border:1px solid var(--raise2);background:transparent;color:var(--ink);flex-shrink:0}
+  .hoja .food button.txt-b{width:auto;border-radius:12px;padding:0 12px;font-size:14px;font-weight:700}
+  .hoja #cLista .food:first-child{border-top:1px solid var(--line)}
+  #planificador .dias{grid-template-columns:repeat(4,1fr)}
+  #planificador .dayh .btn.small{min-width:44px;width:44px;padding:0}
+  /* Tarjeta de ejercicio en dos capas: simple (dosis · Hoy · series · Listo) y "Más" plegada (músculos, aviso completo, alternativa, técnica…) */
+  .g-pl{margin-top:8px;display:flex;align-items:center;gap:8px} .g-pl .n{flex:1;min-width:0} .g-pl b{font-size:16px;font-weight:700;display:block;line-height:1.3} .g-pl .s{font-size:12px;color:var(--muted);margin-top:1px}
+  .g-hoy{margin-top:8px;font-size:14px;color:var(--ink);line-height:1.4} .g-hoy b{color:var(--amber)} .g-hoy .warn{display:block;font-size:12px;color:var(--amber);margin-top:2px}
+  .g-salud{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--ink);min-height:28px}
+  .g-salud svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--bad);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .g-salud span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .g-salud .g-q{margin:0}
+  .g-mas{border-top:1px solid var(--line);padding-top:8px}
+  .g-mas .g-k{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);margin:10px 0 2px} .g-mas .g-k:first-child{margin-top:0}
+  .g-alt-row{font-size:14px;color:var(--muted)} .g-alt-row .g-alt{font-size:14px;color:var(--ink)}
+  .g-sugfull{font-size:13px;color:var(--muted);line-height:1.45} .g-sugfull b{color:var(--ink)} .g-sugfull .warn{color:var(--amber)}
+  .g-mas .g-foot{margin-top:10px}
+  .g-mas-btn{margin-top:10px;color:var(--muted)}
+  /* Progreso: la tarjeta del peso arriba, los pliegues debajo */
+  .pr-peso{margin-top:0;padding:14px 14px 12px} .pr-peso .dayh b{font-size:16px}
+  .pr-peso .g-peso{margin-top:10px} .pr-peso .g-chips{margin-top:10px} .pr-peso .g-frase{margin-top:10px;color:var(--muted)} .pr-peso .g-frase:empty{display:none}
+  #panel .g-3{margin-top:10px}
+  #fotoBox .g-foto .n b{font-size:15px}
+  #shareRow .g-ic{width:20px;height:20px}
+  /* Ajustes en pila: "‹ Avanzado" en las subsecciones; opciones técnicas plegadas */
+  .aj-tec summary{color:var(--ink)} .aj-tec[open] summary{margin-bottom:4px}
+  /* Estado vacío (plantilla única) */
+  .g-vacio{margin-top:10px;padding:18px 16px;border-radius:16px;background:var(--card);border:1px dashed var(--raise2);text-align:center}
+  .g-vacio b{display:block;font-size:16px} .g-vacio .s{margin-top:6px;font-size:14px;color:var(--muted);line-height:1.45}
+  .g-vacio .btn{margin:12px auto 0;width:auto;padding:0 20px;min-height:44px;font-size:17px}
+  #cMomentos .g-vacio{margin:10px 0 8px}
 </style>
 </head>
 <body>
@@ -804,7 +852,6 @@
   <button data-tab="hoy" class="on"><svg viewBox="0 0 24 24"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>Hoy</button>
   <button data-tab="semana"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Semana</button>
   <button data-tab="comida"><svg viewBox="0 0 24 24"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10"/></svg>Comida</button>
-  <button data-tab="cuerpo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Cuerpo</button>
   <button data-tab="panel"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l4-5 3 3 5-6"/></svg>Progreso</button>
   <button data-tab="coach"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9.5l-4.2 1.9L12 16l-1.8-4.6L6 9.5l4.2-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>Coach</button>
 </nav>
@@ -862,7 +909,6 @@
       <button class="g-row" id="histRow" aria-expanded="false" onclick="gcToggle('historial', this)"><span class="n"><b>Días anteriores</b><span class="s" id="histSub">Cargando…</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <div id="historial" class="g-fold"></div>
       <div class="g-linea"><span>¿Cambian tus días esta semana?</span><button class="btn txt" id="btnPlanificar">Ajustar días</button></div>
-      <div id="planificador" class="hidden card"></div>
     </div>
   </section>
 
@@ -880,12 +926,11 @@
       <div id="cMomentos"></div>
     </div>
     <div id="cAgregar" class="hidden">
-      <div class="dayh"><div><div class="kicker">Agregar a</div><div class="pa-t" style="font-size:30px" id="cAgTit">Comida</div></div><button type="button" class="c-cerrar" onclick="cerrarAgregar()" aria-label="Cerrar">Cerrar ✕</button></div>
-      <div class="chips-mom" id="cMomChips" style="margin-top:8px"></div>
-      <div id="cAgRegs"></div>
-      <input id="cBuscar" placeholder="Buscar comida… (ej.: huevo, atún, arepa)" style="margin-top:10px">
+      <input id="cBuscar" placeholder="Buscar comida… (huevo, atún, arepa)" autocomplete="off" aria-label="Buscar comida">
       <div class="pk-chips c-chips" id="cChips"></div>
-      <div class="row" style="margin-top:8px;align-items:center"><div class="meta">Cantidad (porciones)</div>
+      <div id="cMomChips"></div>
+      <div id="cAgRegs"></div>
+      <div class="row" style="margin-top:10px;align-items:center"><div class="meta">Cantidad (porciones)</div>
         <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
       <div id="cLista" style="margin-top:6px"></div>
       <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto o foto</span></div>
@@ -933,19 +978,26 @@
     </div>
   </section>
 
-  <!-- CUERPO (boceto G: el peso primero) -->
-  <section id="tab-cuerpo" class="hidden">
-    <div class="page-h"><div><div class="kicker" id="cuKick">Hoy · en ayunas</div><div class="h-big sm">Tu peso</div></div>
-      <span style="display:flex;gap:6px;align-items:center"><span class="g-fecha"><button onclick="cuDia(-1)" aria-label="Día anterior">‹</button><button onclick="cuDia(1)" aria-label="Día siguiente">›</button></span><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></span></div>
+  <!-- PROGRESO (Tanda visual 2: el peso de hoy arriba, las tres cifras y, plegado, cuerpo, fotos, récords y semana a semana) -->
+  <section id="tab-panel" class="hidden">
+    <div class="page-h"><div><div class="kicker" id="kPanel">Tu progreso</div><div class="h-big sm">Tu progreso</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
     <div class="wrap">
     <input type="date" id="dFecha" class="oculto" aria-hidden="true" tabindex="-1">
-    <div class="g-peso"><input id="dPeso" type="number" inputmode="decimal" step="0.1" placeholder="0,0" aria-label="Peso de hoy en kg"><button class="btn" id="dGuardar">Guardar</button></div>
-    <div class="g-chips" id="cuChips"></div>
-    <div class="g-trend" id="cuTrend"></div>
-    <div class="g-foto"><div class="n"><b>Foto de progreso</b><span class="s" id="fEstado">Cada 4 semanas: frente, perfil y espalda.</span></div>
-      <select id="fTipo" aria-label="Tipo de foto"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select>
-      <label class="btn" for="fArchivo" id="fTomar"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="fArchivoTxt">Tomar</span></label></div>
-    <input id="fArchivo" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoProgresoElegida(this)">
+    <div class="card pr-peso" id="pesoCard">
+      <div class="dayh"><b id="cuKick">Tu peso de hoy</b><span class="g-fecha"><button onclick="cuDia(-1)" aria-label="Día anterior">‹</button><button onclick="cuDia(1)" aria-label="Día siguiente">›</button></span></div>
+      <div class="g-peso"><input id="dPeso" type="number" inputmode="decimal" step="0.1" placeholder="0,0" aria-label="Peso en kg"><button class="btn" id="dGuardar">Guardar</button></div>
+      <div class="g-chips" id="cuChips"></div>
+      <div class="g-frase" id="cuFrase"></div>
+    </div>
+    <div id="panel"><div class="empty">Cargando…</div></div>
+    <button class="g-row" id="fotoRow" aria-expanded="false" onclick="gcToggle('fotoBox', this)"><span class="n"><b>Foto de progreso</b><span class="s" id="fEstado">Cada 4 semanas: frente, perfil y espalda.</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="fotoBox">
+      <div class="g-foto" style="margin-top:0;padding:0;background:none"><div class="n"><b>Tomar una foto</b><span class="s">Misma luz y misma pose cada vez.</span></div>
+        <select id="fTipo" aria-label="Tipo de foto"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select>
+        <label class="btn" for="fArchivo" id="fTomar"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="fArchivoTxt">Tomar</span></label></div>
+      <input id="fArchivo" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoProgresoElegida(this)">
+      <div id="fComparar" style="margin-top:10px"></div>
+    </div>
     <button class="g-row" aria-expanded="false" onclick="gcToggle('cuMas', this)"><span class="n"><b>Más datos de la báscula</b><span class="s" id="cuMasSub">grasa, músculo, agua, visceral, ósea, metabolismo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="cuMas">
       <div class="row">
@@ -968,7 +1020,7 @@
       <div id="estimaciones" class="meta" style="margin-top:8px"></div>
       <button class="btn sec" style="margin-top:10px" onclick="$('dGuardar').click()">Guardar</button>
     </div>
-    <button class="g-row" aria-expanded="false" onclick="gcToggle('cuHab', this)"><span class="n"><b>Sueño, pasos y energía de hoy</b><span class="s" id="cuHabSub">si dormiste poco, la sesión de hoy va más suave</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="g-row" aria-expanded="false" onclick="gcToggle('cuHab', this)"><span class="n"><b>Sueño, pasos y energía</b><span class="s" id="cuHabSub">si dormiste poco, la sesión de hoy va más suave</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="cuHab">
       <div class="row">
         <div><label for="dSueno">Sueño (h)</label><input id="dSueno" type="number" inputmode="decimal" step="0.5"></div>
@@ -979,16 +1031,15 @@
       <label for="dNota">Nota (agujetas, estrés, molestias…)</label><textarea id="dNota" rows="2"></textarea>
       <button class="btn sec" style="margin-top:10px" onclick="$('dGuardar').click()">Guardar</button>
     </div>
-    <button class="g-row" id="fRow" aria-expanded="false" onclick="gcToggle('fCompararBox', this)" style="display:none"><span class="n"><b>Comparar fotos</b><span class="s" id="fRowSub"></span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-    <div class="card g-fold" id="fCompararBox"><div id="fComparar"></div></div>
+    <button class="g-row" id="recRow" aria-expanded="false" onclick="gcToggle('recBox', this)"><span class="n"><b>Récords por ejercicio</b><span class="s" id="recSub">cuánto subió cada uno y su mejor serie</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="recBox"></div>
+    <button class="g-row" id="semRow" aria-expanded="false" onclick="gcToggle('semBox', this)"><span class="n"><b>Semana a semana</b><span class="s" id="semSub">peso, sesiones, series, sueño y pasos</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="semBox"></div>
+    <button class="g-row" id="masRow" aria-expanded="false" onclick="gcToggle('masBox', this)"><span class="n"><b>Más gráficas</b><span class="s" id="masSub">grasa, masa magra, kilos movidos, comida y cardio</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="masBox"></div>
+    <button class="g-row" id="shareRow" onclick="compartirSemana(this)"><span class="n"><b>Compartir mi semana</b><span class="s">Una tarjeta con tus sesiones y récords</span></span><svg class="g-ic" viewBox="0 0 24 24" style="stroke:var(--muted)"><path d="M12 3v12M7 8l5-5 5 5M5 15v4h14v-4"/></svg></button>
     <div class="meta" style="margin:14px 4px 0;font-size:12px">Pésate en ayunas, después del baño, con la misma báscula. Un día raro no importa: mira el promedio.</div>
     </div>
-  </section>
-
-  <!-- PANEL / PROGRESO (boceto G: tres cifras llanas) -->
-  <section id="tab-panel" class="hidden">
-    <div class="page-h"><div><div class="kicker" id="kPanel">Tu progreso</div><div class="h-big sm">Tu progreso</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
-    <div class="wrap"><div id="panel"><div class="empty">Cargando…</div></div></div>
   </section>
   <!-- COACH (boceto G: consejos sin IA + chat a pantalla completa) -->
   <section id="tab-coach" class="hidden">
@@ -1015,16 +1066,16 @@
       <div class="card aj-menu">
         <button onclick="ajSeccion('perfil')"><span><b>Perfil, avisos y contraseña</b><small id="ajSubPerfil">Edad, estatura y recordatorios</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('telegram')" id="ajMenuTelegram" style="display:none"><span><b>Telegram</b><small id="ajSubTelegram">Anota lo que comes con un mensaje</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-        <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Invitaciones y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Personas, alumnos, IA y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
     <div class="card aj-menu" data-sec="avanzado">
-      <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span><b>Invitados</b><small>Tu código y quién se registró</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-      <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span><b>Alumnos y Pro</b><small>Modo entrenador: sus semanas, notas y planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-      <button onclick="ajSeccion('ia')" id="ajMenuIA" style="display:none"><span><b>Inteligencia artificial</b><small id="ajSubIA">Claude o Gemini para el Coach y los planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span><b>Personas e invitaciones</b><small>Tu código, quién se registró y su IA</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span><b>Alumnos</b><small>Modo entrenador: sus semanas, notas, planes y Pro</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('ia')" id="ajMenuIA" style="display:none"><span><b>IA</b><small id="ajSubIA">Claude o Gemini para el Coach y los planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <button onclick="ajSeccion('conexion')"><span><b>Conexión</b><small>Si algo no carga, prueba aquí</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
-    <div class="card" id="cuentaCard" data-sec="cuenta perfil" style="display:none">
+    <div class="card" id="cuentaCard" data-sec="perfil" style="display:none">
       <h2>Cuenta</h2>
       <div class="meta" id="cuentaTxt"></div>
       <button class="btn sec" id="cuentaClave" style="margin-top:10px;display:none" onclick="cambiarClaveUI()">Cambiar mi contraseña</button>
@@ -1048,7 +1099,7 @@
       <div id="proBody"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="invCard" data-sec="cuenta" style="display:none">
-      <h2>Invitados</h2>
+      <h2>Tu código de invitación</h2>
       <div class="meta">Comparte el enlace por WhatsApp: abre la app en <b>Crear cuenta</b> con tu código ya puesto. Cada persona ve solo sus datos.</div>
       <div id="invBody" class="meta" style="margin-top:8px">Cargando…</div>
     </div>
@@ -1065,12 +1116,12 @@
       <h2>Perfil</h2>
       <div class="row">
         <div><label for="pEdad">Edad</label><input id="pEdad" type="number" inputmode="numeric"></div>
-        <div><label for="pSexo">Sexo</label><select id="pSexo"><option value="M">Hombre</option><option value="F">Mujer</option></select></div>
+        <div><label for="pSexo">Sexo</label><select id="pSexo" onchange="ajAuto({ Sexo: this.value })"><option value="M">Hombre</option><option value="F">Mujer</option></select></div>
         <div><label for="pEstatura">Estatura (m)</label><input id="pEstatura" type="number" inputmode="decimal" step="0.01"></div>
       </div>
       <div class="meta" style="margin-top:8px">Tus días de entreno viven en <button type="button" class="btn txt" style="min-height:0;display:inline" onclick="ajSeccion('programa')">Programa y días</button>; los de una sola semana, en Semana → Ajustar días.</div>
       <div class="row" style="margin-top:12px">
-        <div><label for="pNivel">Experiencia con pesas</label><select id="pNivel"><option value="">Sin dato</option><option value="nuevo">Empiezo (menos de 3 meses)</option><option value="3-12m">De 3 a 12 meses</option><option value="1a+">Más de 1 año</option></select></div>
+        <div><label for="pNivel">Experiencia con pesas</label><select id="pNivel" onchange="ajAuto({ Nivel: this.value })"><option value="">Sin dato</option><option value="nuevo">Empiezo (menos de 3 meses)</option><option value="3-12m">De 3 a 12 meses</option><option value="1a+">Más de 1 año</option></select></div>
         <div><label for="pMin">Minutos por sesión</label><input id="pMin" type="number" inputmode="numeric" min="15" max="180" placeholder="60"></div>
       </div>
     </div>
@@ -1078,11 +1129,11 @@
       <h2>Mi gimnasio</h2>
       <div class="meta">Así la app solo te sugiere pesos que existen en tu gimnasio.</div>
       <div class="row">
-        <div><label for="pPasoM">Mancuernas</label><select id="pPasoM"><option value="1">De 1 en 1 kg</option><option value="2">De 2 en 2 kg</option><option value="2.5">De 2,5 en 2,5 kg</option></select></div>
-        <div><label for="pDisco">Disco más pequeño</label><select id="pDisco"><option value="0.5">0,5 kg</option><option value="1.25">1,25 kg</option><option value="2.5">2,5 kg</option></select></div>
+        <div><label for="pPasoM">Mancuernas</label><select id="pPasoM" onchange="ajAuto({ PasoMancuernas: this.value })"><option value="1">De 1 en 1 kg</option><option value="2">De 2 en 2 kg</option><option value="2.5">De 2,5 en 2,5 kg</option></select></div>
+        <div><label for="pDisco">Disco más pequeño</label><select id="pDisco" onchange="ajAuto({ DiscoMinimo: this.value })"><option value="0.5">0,5 kg</option><option value="1.25">1,25 kg</option><option value="2.5">2,5 kg</option></select></div>
       </div>
-      <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa">
-      <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer.</div>
+      <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa" onchange="ajAuto({ Equipo: this.value })">
+      <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer. Se guarda solo.</div>
     </div>
     <div class="card" data-sec="comida">
       <h2>Objetivo y meta</h2>
@@ -1133,9 +1184,9 @@
     </div>
     <div class="card" data-sec="avisos perfil">
       <h2>Avisos por correo</h2>
-      <label style="display:flex;gap:8px;align-items:center;color:var(--ink);text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aDiario" style="width:auto"> Recordatorio los días de entreno</label>
-      <div class="row"><div><label for="aHora">Hora</label><select id="aHora"></select></div><div><label for="aEmail">Correo</label><input id="aEmail" type="email"></div></div>
-      <label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aSemanal" style="width:auto"> Informe del Coach los domingos 7 p. m.</label>
+      <label style="display:flex;gap:8px;align-items:center;color:var(--ink);text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aDiario" style="width:auto" onchange="guardarAvisosUI()"> Recordatorio los días de entreno</label>
+      <div class="row"><div><label for="aHora">Hora</label><select id="aHora" onchange="guardarAvisosUI()"></select></div><div><label for="aEmail">Correo</label><input id="aEmail" type="email" onchange="guardarAvisosUI()"></div></div>
+      <label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aSemanal" style="width:auto" onchange="guardarAvisosUI()"> Informe del Coach los domingos 7 p. m.</label>
       <button class="btn sec" style="margin-top:10px" id="aProbar">Enviarme una prueba</button>
     </div>
     <div class="card" id="tgCard" data-sec="perfil telegram">
@@ -1146,17 +1197,20 @@
       <h2>Inteligencia artificial</h2>
       <div class="ia-estado" id="pIaEstado"><i></i><span><b>Cargando…</b><small></small></span></div>
       <div class="meta">Para el Coach, los planes y la comida con IA. Las claves se ponen en <b>Render → registro-gimnasio-servidor → Environment</b> (<code>GEMINI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>): la app no las pide ni las guarda.</div>
-      <label for="pProv">Usar</label><select id="pProv"><option value="">Automático (Claude si tiene clave; si no, Gemini)</option><option value="claude">Claude (Anthropic)</option><option value="gemini">Gemini (Google)</option></select>
-      <div class="row">
-        <div><label for="pModeloClaude">Modelo de Claude</label><input id="pModeloClaude" placeholder="claude-sonnet-5-5"></div>
-        <div><label for="pModelo">Modelo de Gemini</label><input id="pModelo" placeholder="gemini-3.8-flash"></div>
-      </div>
       <div class="meta" id="pIaUso" style="margin-top:10px"></div>
-      <p class="meta">Tus datos de salud y entrenamiento se envían a la IA elegida (Anthropic o Google) solo cuando pides un análisis, haces una pregunta o diseñas un plan. Cada persona usa la IA solo si la activas en Avanzado → Invitados → Personas registradas.</p>
+      <details class="aj-tec" style="margin-top:10px"><summary>Opciones técnicas</summary>
+        <label for="pProv">Usar</label><select id="pProv" onchange="ajAuto({ ProveedorIA: this.value })"><option value="">Automático (Claude si tiene clave; si no, Gemini)</option><option value="claude">Claude (Anthropic)</option><option value="gemini">Gemini (Google)</option></select>
+        <div class="row">
+          <div><label for="pModeloClaude">Modelo de Claude</label><input id="pModeloClaude" placeholder="claude-sonnet-5-5" onchange="ajAuto({ ModeloClaude: this.value || 'claude-sonnet-5-5' })"></div>
+          <div><label for="pModelo">Modelo de Gemini</label><input id="pModelo" placeholder="gemini-3.8-flash" onchange="ajAuto({ ModeloIA: this.value || 'gemini-3.8-flash' })"></div>
+        </div>
+        <div class="meta" style="margin-top:6px">Se guardan solos al cambiarlos.</div>
+      </details>
+      <p class="meta">Tus datos de salud y entrenamiento se envían a la IA elegida (Anthropic o Google) solo cuando pides un análisis, haces una pregunta o diseñas un plan. Cada persona usa la IA solo si la activas en Avanzado → Personas e invitaciones.</p>
       <button class="btn sec" type="button" id="pProbarIA" style="width:100%;margin-top:6px">Probar la IA</button>
       <div class="meta" id="pProbarIAres" style="margin-top:6px"></div>
     </div>
-    <button class="btn" id="pGuardar" data-sec="perfil salud ia gimnasio">Guardar</button>
+    <button class="btn" id="pGuardar" data-sec="perfil salud">Guardar</button>
     <div class="card" data-sec="conexion" style="margin-top:14px">
       <h2>Conexión</h2>
       <div class="meta">Si ves errores de "Load failed" o "Sin conexión", esta prueba muestra qué parte falla.</div>
@@ -1167,8 +1221,8 @@
   </section>
 </main>
 
-<div id="timer"><div><div class="kicker">Descanso</div><b id="tVal">0:00</b></div>
-  <div style="display:flex;gap:8px"><button id="tMas">+30 s</button><button id="tStop">Listo</button></div></div>
+<div id="timer" role="status" aria-live="off"><button type="button" class="t-ir" id="tIr" aria-label="Volver al ejercicio"><b id="tVal">0:00</b><span id="tEj"></span></button>
+  <div class="t-acts"><button type="button" id="tMas">+30 s</button><button type="button" id="tStop">Listo</button></div></div>
 <div id="bienvenida" class="hidden">
   <div class="bv-wrap">
     <div class="bv-top"><span class="kicker" style="color:var(--amber)">ENFOQUE</span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -1277,7 +1331,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610012138', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610012148', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1575,15 +1629,20 @@ function fechaKicker(iso) { var p = iso.split('-'); var d = new Date(Number(p[0]
 var ajSec = '';
 /* Nombre de cada sección (dentro de una, el título es la sección y "‹ Ajustes" vuelve al menú; la salida a Hoy solo está en el menú) */
 var AJ_NOMBRES = { programa: 'Programa y días', gimnasio: 'Mi gimnasio', salud: 'Tu salud', comida: 'Objetivo y meta', perfil: 'Perfil y avisos', telegram: 'Telegram',
-  avanzado: 'Avanzado', cuenta: 'Invitados', alumnos: 'Alumnos y Pro', ia: 'Inteligencia artificial', conexion: 'Conexión' };
+  avanzado: 'Avanzado', cuenta: 'Personas e invitaciones', alumnos: 'Alumnos', ia: 'IA', conexion: 'Conexión' };
+/* Pila tipo iOS: cada subsección sabe de dónde viene y "‹" vuelve ahí (Avanzado → Personas e invitaciones / Alumnos / IA / Conexión) */
+var AJ_PADRE = { cuenta: 'avanzado', alumnos: 'avanzado', ia: 'avanzado', conexion: 'avanzado' };
+function ajVolver() { ajSeccion(AJ_PADRE[ajSec] || ''); }
 function ajSeccion(sec) {
   ajSec = sec || '';
   $('ajMenu').classList.toggle('aj-fuera', !!ajSec);
   document.querySelectorAll('#tab-ajustes [data-sec]').forEach(function (el) { el.classList.toggle('aj-fuera', !ajSec || el.dataset.sec.split(' ').indexOf(ajSec) < 0); });
   var kick = $('ajKick'), salir = $('ajSalir'), res = $('ajResumen');
   if (ajSec) {
-    if (kick) kick.innerHTML = '<button type="button" class="aj-back" onclick="ajSeccion(\'\')"><span>‹</span> Ajustes</button>';
-    if ($('ajNombre')) $('ajNombre').textContent = AJ_NOMBRES[ajSec] || 'Ajustes';
+    var padre = AJ_PADRE[ajSec] || '';
+    if (kick) kick.innerHTML = '<button type="button" class="aj-back" onclick="ajVolver()"><span>‹</span> ' + esc(padre ? AJ_NOMBRES[padre] : 'Ajustes') + '</button>';
+    var u = estado && estado.usuario, nombreSec = ajSec === 'cuenta' && u && !u.esDueno ? 'Tu entrenador y tu plan' : AJ_NOMBRES[ajSec];
+    if ($('ajNombre')) $('ajNombre').textContent = nombreSec || 'Ajustes';
     if (res) res.style.display = 'none'; if (salir) salir.style.display = 'none';
   } else {
     if (kick) kick.textContent = 'Ajustes';
@@ -1605,15 +1664,15 @@ var NOMBRE_PROG = { hipertrofia: 'Ganar músculo (Hipertrofia)', definicion: 'Ba
 function nombreProg(id, nombre) { return NOMBRE_PROG[id] || nombre || id || ''; }
 function irAjustes(sec) { irA('ajustes'); ajSeccion(sec || ''); }
 function irA(tab) {
+  if (tab === 'cuerpo') { irA('panel'); var pc = $('pesoCard'); if (pc) setTimeout(function () { pc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); return; }   // enlaces viejos: el peso vive en Progreso
   document.querySelectorAll('nav button').forEach(function (x) { x.classList.toggle('on', x.dataset.tab === tab); });
-  ['hoy','semana','comida','cuerpo','panel','coach','ajustes'].forEach(function (t) { $('tab-' + t).classList.toggle('hidden', t !== tab); });
-  tVisible(tab === 'hoy');   // el descanso solo se ve en Hoy (sigue contando por detrás)
+  ['hoy','semana','comida','panel','coach','ajustes'].forEach(function (t) { $('tab-' + t).classList.toggle('hidden', t !== tab); });
+  tVisible();   // la píldora del descanso se ve en todas las pestañas mientras corre
   if (tab === 'semana') { pintarSemanaTab(); cargarHistorial(); cargarBalance(); }
   if (tab === 'panel') cargarPanel();
   if (tab === 'coach') cargarCoach();
   if (tab === 'comida') cargarComida();
   if (tab === 'ajustes') { cargarAjustes(); ajSeccion(''); }
-  if (tab === 'cuerpo') { cargarDiario(); cargarFotos(); }
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('nav button').forEach(function (b) { b.onclick = function () { irA(b.dataset.tab); }; });
@@ -1806,7 +1865,7 @@ function pintarChipsHoy() {
 }
 function abrirSalud() {
   var d = $('saludDet'), r = $('saludRow'); if (d) { if (!d.classList.contains('open')) gcToggle('saludDet', r); d.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-  var b = document.querySelector('.g-line.bad'); if (b) { var i = Number(b.dataset.i); if (!isNaN(i) && !abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); } b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  var b = document.querySelector('.g-salud'); if (b) { var i = Number(b.dataset.i); if (!isNaN(i) && !abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); } b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 }
 /** Día pasado sin registro: lo dejas como "no fuiste" y vuelves a hoy. */
 function noFui() { $('fecha').value = hoyISO(); cargarEstado(); toast('Ese día queda como no fuiste'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -1888,9 +1947,10 @@ function pintarSesion(s) {
   // La primera tarjeta pendiente se abre sola solo si ya entrenaste antes (o hoy vas a medias); la persona nueva la abre con EMPEZAR
   var primero = s.ejercicios.findIndex(function (e) { return e.estado === 'pendiente'; });
   var yaEntreno = !!(pg.hechas > 0) || !!(estado && estado.cumpl && estado.cumpl[s.fecha]) || !!gGet('inicio');
-  if (primero >= 0 && yaEntreno) abiertos[primero] = true;
+  if (primero >= 0 && (yaEntreno || bvAbrirPrimera)) abiertos[primero] = true;
   $('ejercicios').innerHTML = s.ejercicios.map(tarjeta).join('');
   s.ejercicios.forEach(function (e, i) { pintar(i, e.varianteHoy || 'principal'); });
+  if (bvAbrirPrimera && primero >= 0) { bvAbrirPrimera = false; setTimeout(function () { var el = $('ex' + primero); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 400); }
   $('rutinaTit').textContent = 'Tu rutina';
   progreso();
   pintarHero();
@@ -1984,11 +2044,10 @@ function tarjeta(e, i) {
         '<div class="ex-sug" id="exRes' + i + '"></div></div>' +
       '<div id="exChip' + i + '">' + btnEstado(e) + '</div></div>' +
     '<div id="exBody' + i + '" class="ex-body' + (abierto ? ' open' : '') + '">' +
-      '<div class="ex-mus g-mus" id="exMus' + i + '"></div>' +
+      // Capa simple: superserie, salud en una línea (ícono + "?"), dosis en una línea, "Hoy: …", series con Listo y el RIR por palabras
       (e.ss ? '<div class="g-line">' + (e.ss.pos === 1 ? 'Sin descanso: sigue con ' + esc(e.ss.con) : 'Con ' + esc(e.ss.con) + '; descansa después de esta') + '</div>' : '') +
-      (e.salud ? '<div class="g-line bad" data-i="' + i + '">' + esc(e.salud.texto) + (e.salud.usarAlt ? ' Usa: ' + esc(e.alternativa) + '.' : '') + '</div>' : '') +
-      (e.ajuste ? '<div class="g-line">Ajuste del Coach: ' + esc(e.ajuste.accion === 'sustituir' ? 'reemplaza a ' + e.original : e.ajuste.accion === 'reducir_series' ? '−' + e.ajuste.valor + ' serie(s)' : 'evitar por ahora') + (e.ajuste.motivo ? ' · ' + esc(e.ajuste.motivo) : '') + '</div>' : '') +
-      '<div class="g-presc"><div><b id="exPresc' + i + '"></b><div class="s" id="exPrescS' + i + '"></div></div><button type="button" class="g-q" aria-label="Qué significa" onclick="explicarRir(' + i + ')">?</button></div>' +
+      (e.salud ? '<div class="g-salud" data-i="' + i + '">' + SVG_ALERTA + '<span>' + esc(saludCorto(e.salud.texto)) + '</span><button type="button" class="g-q" aria-label="Ver el aviso completo" onclick="gcInfo(' + esc(gdArg(saludCompleto(e))) + ')">?</button></div>' : '') +
+      '<div class="g-pl"><div class="n"><b id="exPresc' + i + '"></b><div class="s" id="exPrescS' + i + '"></div></div><button type="button" class="g-q" aria-label="Qué significa" onclick="explicarRir(' + i + ')">?</button></div>' +
       '<div class="g-expl" id="exExpl' + i + '" style="display:none"></div>' +
       '<div id="exSug' + i + '"></div>' +
       '<table class="g-sets"><tbody id="exSets' + i + '"></tbody></table>' +
@@ -1996,23 +2055,53 @@ function tarjeta(e, i) {
       '<div class="g-rir" id="exRir' + i + '">' + RIR_OPC.map(function (r) { return '<button type="button" data-rir="' + r.rir + '" onclick="elegirRir(' + i + ',' + r.rir + ')">' + r.t + '</button>'; }).join('') + '</div>' +
       '<div class="g-ayuda" id="exAj' + i + '"></div>' +
       '<div id="exFin' + i + '"></div>' +
-      '<button type="button" class="g-mas-btn" id="exMasBtn' + i + '" onclick="toggleMas(' + i + ')">Más: técnica · calentamiento · historial</button>' +
+      '<button type="button" class="g-mas-btn" id="exMasBtn' + i + '" aria-expanded="false" onclick="toggleMas(' + i + ')">Más ›</button>' +
+      // Capa "Más" (plegada): músculos, aviso completo, ajuste del Coach, alternativa, por qué, sugerencia completa, técnica, calentamiento, nota, historial y "No lo hice"
       '<div class="g-mas" id="exMas' + i + '" style="display:none">' +
+        '<div class="ex-mus g-mus" id="exMus' + i + '"></div>' +
+        (e.salud ? '<div class="g-line bad" data-i="' + i + '">' + esc(saludCompleto(e)) + '</div>' : '') +
+        (e.ajuste ? '<div class="g-line">Ajuste del Coach: ' + esc(e.ajuste.accion === 'sustituir' ? 'reemplaza a ' + e.original : e.ajuste.accion === 'reducir_series' ? '−' + e.ajuste.valor + ' serie(s)' : 'evitar por ahora') + (e.ajuste.motivo ? ' · ' + esc(e.ajuste.motivo) : '') + '</div>' : '') +
+        '<div class="g-alt-row" id="exAlt' + i + '"></div>' +
         (e.porque ? '<div class="porque"><b>Por qué:</b> ' + esc(e.porque) + '</div>' : '') +
+        '<div class="g-sugfull" id="exSugFull' + i + '"></div>' +
         '<div class="imgs" id="exImg' + i + '"></div>' +
         '<div class="clave" id="exClave' + i + '"></div>' +
         '<div class="cal" id="exCal' + i + '"></div>' +
         (e.ultimaNota ? '<div class="meta" style="margin-top:8px">Última vez anotaste: ' + esc(e.ultimaNota) + '</div>' : '') +
         '<input id="exNota' + i + '" style="margin-top:8px;font-size:14px" placeholder="Nota o molestia (opcional, la lee el Coach)" value="' + esc(e.nota || '') + '" onchange="guardarNota(' + i + ')">' +
         '<button type="button" class="btn txt hist-btn" onclick="verHistEj(' + i + ')">Historial y récords</button><div id="exHist' + i + '"></div>' +
+        '<div class="g-foot"><span>Descanso <b>' + fmtSeg(p.descanso) + '</b></span><button type="button" class="g-no" id="exNo' + i + '" onclick="mostrarOmitir(' + i + ')">No lo hice ›</button></div>' +
+        '<div class="omit" id="exOmit' + i + '"><label>¿Por qué no lo hiciste?</label><select id="exMot' + i + '" onchange="$(\'exOmitErr' + i + '\').textContent=\'\'"><option value="">Elige un motivo</option>' +
+          estado.motivos.map(function (m) { return '<option>' + esc(m) + '</option>'; }).join('') + '</select>' +
+          '<div class="g-err" id="exOmitErr' + i + '"></div>' +
+          '<div class="acts" style="margin-top:8px"><button class="btn sec" onclick="$(\'exOmit' + i + '\').style.display=\'none\'">Cancelar</button>' +
+          '<button class="btn" onclick="omitir(' + i + ')">Confirmar</button></div></div>' +
       '</div>' +
-      '<div class="g-foot"><span>Descanso <b>' + fmtSeg(p.descanso) + '</b></span><button type="button" class="g-no" id="exNo' + i + '" onclick="mostrarOmitir(' + i + ')">No lo hice ›</button></div>' +
-      '<div class="omit" id="exOmit' + i + '"><label>¿Por qué no lo hiciste?</label><select id="exMot' + i + '" onchange="$(\'exOmitErr' + i + '\').textContent=\'\'"><option value="">Elige un motivo</option>' +
-        estado.motivos.map(function (m) { return '<option>' + esc(m) + '</option>'; }).join('') + '</select>' +
-        '<div class="g-err" id="exOmitErr' + i + '"></div>' +
-        '<div class="acts" style="margin-top:8px"><button class="btn sec" onclick="$(\'exOmit' + i + '\').style.display=\'none\'">Cancelar</button>' +
-        '<button class="btn" onclick="omitir(' + i + ')">Confirmar</button></div></div>' +
     '</div></div>';
+}
+var SVG_ALERTA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>';
+/** Aviso de salud en una línea: "Por la presión: deja 2–3…" → "Por la presión" (el texto completo va en el "?" y en Más). */
+function saludCorto(t) { t = String(t || ''); var m = /^([^:]{3,44}):/.exec(t); return m ? m[1] : (t.length > 58 ? t.slice(0, 56) + '…' : t); }
+function saludCompleto(e) { return String(e.salud.texto || '') + (e.salud.usarAlt ? ' Usa: ' + e.alternativa + '.' : ''); }
+/**
+ * La sugerencia del motor en UNA línea de acción: "Hoy: 80 kg, busca 12 reps" / "Hoy: 22 kg, vuelve a 8 reps" / "Hoy: ≈ 30 kg para empezar".
+ * El texto completo (con "La última vez hiciste…") queda en la capa Más.
+ */
+function sugLinea(sg, p, unidad) {
+  var t = String(sg && sg.texto || ''), c = sg && sg.carga != null ? fmtNum(sg.carga) + ' kg' : '', u = unidad === 'seg' ? ' s' : ' reps';
+  var ref = sg && sg.ref, maxRep = 0;
+  var r = /Última vez: (?:[\d.,]+ kg × )?([\d/]+)/.exec(t) || (ref && ref.resumen && !ref.parecido ? /×\s*([\d/]+)/.exec(ref.resumen) : null);
+  if (r) maxRep = Math.max.apply(null, r[1].split('/').map(Number));
+  if (/^Descarga:/.test(t)) return (c || 'La misma variante') + ', suave: semana de descarga';
+  if (/^¡Sube!/.test(t)) return c + ', vuelve a ' + p.rmin + u;
+  if (/^Baja un poco/.test(t)) return c + ', un poco menos que la última vez';
+  if (/^Mantén/.test(t)) { var obj = maxRep ? Math.min(p.rmax, maxRep + 1) : 0; return (c || 'La misma variante') + ', busca ' + (obj && obj > maxRep ? obj + u : '1 más en alguna serie'); }
+  if (/^Completaste el rango\. Añade/.test(t)) return 'Añade 5–10 s por serie';
+  if (/^Completaste el rango:/.test(t)) return 'Más lento o con una mancuerna ligera';
+  if (/empieza con ≈/.test(t)) { var por = /calculado de (?:tu última vez con |lo que alzas en )?([^.(]+)/.exec(t); return '≈ ' + c + (por ? ', calculado de ' + por[1].trim() : ' para empezar') + ' · ajusta en la primera serie'; }
+  if (/te sobren 3–4 reps/.test(t)) return 'Elige una carga con la que te sobren 3 o 4 reps';
+  if (/RIR objetivo/.test(t)) { var rr = /\((\d+)\)/.exec(t); return 'Elige una carga que te deje ' + (rr ? rr[1] : p.rir) + ' reps de sobra'; }
+  return cortaSug(sg);
 }
 
 function fechaCortaIso(iso) { var p = String(iso || '').split('-'); return p.length === 3 ? Number(p[2]) + ' ' + String(MES_3[Number(p[1]) - 1] || '').toLowerCase() : String(iso || ''); }
@@ -2111,16 +2200,16 @@ function pintar(i, v) {
   if (d.imagenes.length) { th.src = d.imagenes[0]; th.className = 'thumb g-th'; } else th.className = 'thumb g-th none';
   $('exImg' + i).innerHTML = d.imagenes.map(function (u) { return '<img loading="lazy" decoding="async" alt="" src="' + esc(u) + '">'; }).join('');
   $('exImg' + i).style.display = d.imagenes.length ? 'flex' : 'none';
-  // UNA línea de prescripción en lenguaje llano: "3 series · 10 a 12 reps · descansa 2:00" y, debajo, "o <alternativa> · para con 2 de sobra"
+  // Capa simple: UNA línea de dosis "3 series · 10 a 12 reps · 2:00" (+ "para con 2 de sobra") y UNA línea "Hoy: 80 kg, busca 12 reps"
   var rirN = Number(p.rir), rirTxt = p.rir === '' || p.rir == null || isNaN(rirN) ? '' : rirN === 0 ? 'hasta el fallo' : 'para con ' + rirN + ' de sobra';
-  $('exPresc' + i).textContent = prescLlana(p, e.unidad);
-  $('exPrescS' + i).innerHTML = ['descansa ' + fmtSeg(p.descanso), rirTxt].filter(Boolean).join(' · ') +
-    (o ? '<br>o <button type="button" class="g-alt" onclick="cambiarVariante(' + i + ',\'' + otraV + '\')">' + esc(o.nombre) + '</button>' : '');
-  // UNA caja de sugerencia (se oculta cuando el ejercicio ya está completo)
-  var ref = sg.ref;
-  $('exSug' + i).innerHTML = completo || e.estado === 'omitido' ? '' : '<div class="g-sug">' + sugHTML(humanizarSug(sg.texto)) +
-    (ref ? '<div class="s">' + (ref.parecido ? 'Lo más parecido que has hecho: ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + '): ' + esc(resumenLlano(ref.resumen)) : 'La última vez hiciste ' + esc(resumenLlano(ref.resumen)) + ' con ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + ')') + '</div>' : '') +
-    (sg.aviso ? '<div class="s warn">' + esc(sg.aviso) + '</div>' : '') + '</div>';
+  $('exPresc' + i).textContent = prescLlana(p, e.unidad) + ' · ' + fmtSeg(p.descanso);
+  $('exPrescS' + i).textContent = rirTxt;
+  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : sugLinea(sg, p, e.unidad);
+  $('exSug' + i).innerHTML = linea ? '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + (sg.aviso ? '<span class="warn">' + esc(sg.aviso) + '</span>' : '') + '</div>' : '';
+  // Capa Más: la alternativa y la sugerencia completa con la última vez
+  $('exAlt' + i).innerHTML = o ? 'Cambiar a <button type="button" class="g-alt" onclick="cambiarVariante(' + i + ',\'' + otraV + '\')">' + esc(o.nombre) + '</button>' : '';
+  $('exSugFull' + i).innerHTML = (sg.texto ? '<div class="g-k">Por qué</div>' + sugHTML(humanizarSug(sg.texto)) : '') +
+    (ref ? '<div>' + (ref.parecido ? 'Lo más parecido que has hecho: ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + '): ' + esc(resumenLlano(ref.resumen)) : 'La última vez hiciste ' + esc(resumenLlano(ref.resumen)) + ' con ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + ')') + '</div>' : '');
   var cl = $('exClave' + i); cl.textContent = d.clave ? 'Técnica: ' + d.clave : ''; cl.style.display = d.clave ? '' : 'none';
   // Series como filas: número · kg · reps · Listo. Reps precargadas con el mínimo del rango.
   var filas = '';
@@ -2163,11 +2252,11 @@ function explicarRir(i) {
     'Descansa ese tiempo entre series. Fácil ≈ te sobraban 5, Bien ≈ 3, Al límite ≈ 1.';
   b.style.display = '';
 }
-function toggleMas(i) {
+function toggleMas(i, abrir) {
   var m = $('exMas' + i), b = $('exMasBtn' + i); if (!m) return;
-  var abrir = m.style.display === 'none';
+  if (abrir === undefined) abrir = m.style.display === 'none';
   m.style.display = abrir ? '' : 'none';
-  b.textContent = abrir ? 'Menos' : 'Más: técnica · calentamiento · historial';
+  b.textContent = abrir ? 'Menos ⌃' : 'Más ›'; b.setAttribute('aria-expanded', abrir ? 'true' : 'false');
 }
 /** Fácil · Bien · Al límite → RIR 5 · 3 · 1 para todas las series hechas; con carga estimada corrige las que siguen. */
 function elegirRir(i, r) {
@@ -2220,9 +2309,10 @@ function listo(i, k) {
   if (!gGet('inicio')) gSet('inicio', Date.now());
   guardar(i).then(function (r) {
     if (!r || era) return;
-    if (ultima) { siguiente(i); if (!comprobarCierre()) descanso(e.prescripcion.descanso); return; }
+    var ej = { i: i, nombre: String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0] };
+    if (ultima) { siguiente(i); if (!comprobarCierre()) descanso(e.prescripcion.descanso, ej); return; }
     if (e.ss && e.ss.pos === 1) { toast('Superserie: sin descanso, sigue con ' + e.ss.con); siguienteSuperserie(i); return; }
-    descanso(e.prescripcion.descanso);
+    descanso(e.prescripcion.descanso, ej);
     if (e.ss && e.ss.pos === 2 && i > 0 && sesionActual.ejercicios[i - 1].estado === 'pendiente') { abiertos[i - 1] = true; $('exBody' + (i - 1)).classList.add('open'); $('ex' + (i - 1)).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 }
@@ -2279,6 +2369,7 @@ function mostrarOmitir(i) {
   if (e.estado === 'omitido') { reabrir(i); return; }
   if (e.estado === 'hecho' && !confirm('Este ejercicio tiene series guardadas. ¿Borrarlas y marcarlo como no hecho?')) return;
   $('exOmitErr' + i).textContent = '';
+  toggleMas(i, true);
   $('exOmit' + i).style.display = 'block';
   $('exOmit' + i).scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -2431,9 +2522,22 @@ function quitarFijada() {
   }).catch(err);
 }
 
-/* ---------- Temporizador ---------- */
-var tFin = 0, tInt = null;
-function descanso(seg) { tFin = Date.now() + seg * 1000; clearTimeout(tCierre); $('timer').style.display = 'flex'; clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(seg); }
+/* ---------- Temporizador: píldora global arriba (se ve en todas las pestañas mientras corre) ---------- */
+var tFin = 0, tInt = null, tEj = null;
+function descanso(seg, ej) {
+  if (ej) tEj = ej;
+  tFin = Date.now() + seg * 1000; clearTimeout(tCierre);
+  var el = $('tEj'); if (el) el.textContent = tEj && tEj.nombre ? '· ' + tEj.nombre : '';
+  $('timer').style.display = 'flex'; document.body.classList.add('t-on');
+  clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(seg);
+}
+/* Tocar la píldora vuelve a Hoy y a la tarjeta del ejercicio que descansa */
+function tIrEjercicio() {
+  irA('hoy');
+  var i = tEj ? tEj.i : -1; if (i == null || i < 0 || !$('ex' + i)) return;
+  if (!abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); }
+  setTimeout(function () { $('ex' + i).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
 /* Con avisos activos: el servidor manda un aviso al terminar el descanso (sirve con el celular bloqueado) */
 function avisoDescanso(seg, cancelar) {
   var on = false; try { on = localStorage.getItem('pushDescanso') === '1'; } catch (e) {}
@@ -2450,9 +2554,10 @@ function tick() {
     clearTimeout(tCierre); tCierre = setTimeout(tOcultar, 8000);
   }
 }
-function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); $('timer').style.display = 'none'; }
-/** Fuera de Hoy el descanso no se muestra (sigue contando); al volver a Hoy reaparece si aún corre. */
-function tVisible(enHoy) { var t = $('timer'); if (!t) return; t.style.display = enHoy && tInt && tFin > Date.now() ? 'flex' : 'none'; }
+function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); $('timer').style.display = 'none'; document.body.classList.remove('t-on'); }
+/** La píldora se ve en cualquier pestaña mientras el descanso corre; al llegar a cero se va sola a los 8 s (tCierre). */
+function tVisible() { var t = $('timer'); if (!t) return; var on = !!(tInt && tFin > Date.now()); t.style.display = on ? 'flex' : 'none'; document.body.classList.toggle('t-on', on); }
+$('tIr').onclick = tIrEjercicio;
 $('tMas').onclick = function () { tFin = Math.max(tFin, Date.now()) + 30000; clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(Math.round((tFin - Date.now()) / 1000)); };
 $('tStop').onclick = function () { var corria = tFin > Date.now() + 2000; tOcultar(); if (corria) avisoDescanso(0, true); };
 function fmtSeg(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
@@ -2463,7 +2568,7 @@ var estatura = 1.69, perfilC = {}, sesSemana = 3, gcPanel = null;
 function cargarDiario() {
   if (!$('dFecha').value) $('dFecha').value = hoyISO();
   gcCuerpoKicker();
-  api('getDiario', $('dFecha').value).then(function (r) {
+  return api('getDiario', $('dFecha').value).then(function (r) {
     estatura = r.estatura || 0; perfilC = r.perfil || {}; sesSemana = r.sesionesSemana || 3;
     $('dEstatura').value = estatura || '';
     var d = r.dia || {};
@@ -2471,11 +2576,9 @@ function cargarDiario() {
     gcHabitosSub(d);
     calc();
   }).catch(err);
-  // Tendencia, chips y la MISMA meta de comida que en Comida (getPanel → objetivosNutricion_)
-  conCache('panel', function () { return api('getPanel'); }, function (p) { gcPanel = p; gcCuerpoTendencia(p); calc(); }).catch(function () {});
 }
 function cuDia(n) { var d = gcSumarDias($('dFecha').value || hoyISO(), n); if (d > hoyISO()) return; $('dFecha').value = d; cargarDiario(); }
-function gcCuerpoKicker() { var f = $('dFecha').value; $('cuKick').textContent = f === hoyISO() ? 'Hoy · en ayunas' : gcFechaCorta(f); }
+function gcCuerpoKicker() { var f = $('dFecha').value; $('cuKick').textContent = f === hoyISO() ? 'Tu peso de hoy' : 'Tu peso · ' + gcFechaCorta(f).toLowerCase(); }
 function gcHabitosSub(d) {
   var t = [];
   if (d.sueno !== undefined && d.sueno !== null && d.sueno !== '') t.push('Sueño ' + fmtNum(d.sueno) + ' h');
@@ -2518,12 +2621,12 @@ $('dGuardar').onclick = function () {
   var b = $('dGuardar'); b.disabled = true;
   var guardarEst = est && Math.abs((est > 3 ? est / 100 : est) - estatura) > 0.001 ? api('guardarPerfil', { EstaturaM: est > 3 ? est / 100 : est }) : Promise.resolve();
   guardarEst.then(function () { if (est) estatura = est > 3 ? est / 100 : est; return enviar('guardarDiario', d); })
-    .then(function () { b.disabled = false; toast(d.peso !== '' ? 'Peso guardado: ' + fmtNum(d.peso) + ' kg' : 'Día guardado'); invalidarTodo(); cargarDiario(); })
+    .then(function () { b.disabled = false; toast(d.peso !== '' ? 'Peso guardado: ' + fmtNum(d.peso) + ' kg' : 'Día guardado'); invalidarTodo(); cargarPanel(); })
     .catch(function (x) { b.disabled = false; err(x); });
 };
 /* Chips (ayer, 7 días, meta), gráfica de 6 semanas y una frase llana sobre el ritmo */
 function gcCuerpoTendencia(p) {
-  var box = $('cuTrend'), chipsBox = $('cuChips'); if (!box || !p) return;
+  var box = $('cuTrend'), chipsBox = $('cuChips'), frase = $('cuFrase'); if (!box || !p) return;
   var c = p.cuerpo || {}, hoy = hoyISO(), anio = Number(hoy.slice(0, 4));
   var fechaDe = function (x) { var f = anio + '-' + x; if (f > hoy) f = (anio - 1) + '-' + x; return f; };
   var pts = (c.peso || []).map(function (d) { return { f: fechaDe(d.x), y: Number(d.y) }; }).filter(function (d) { return d.f <= hoy; });
@@ -2544,7 +2647,7 @@ function gcCuerpoTendencia(p) {
   // Gráfica: promedio semanal de las últimas 6 semanas
   var sem = (p.semanas || []).filter(function (w) { return w.peso !== null && w.peso !== undefined; }).slice(-6);
   var cab = '<div class="dayh"><b>Últimas ' + (sem.length >= 2 ? sem.length + ' semanas' : '6 semanas') + '</b><span class="meta">promedio semanal</span></div>';
-  if (sem.length < 2) { box.innerHTML = cab + '<div class="meta" style="margin-top:8px">' + (pts.length ? 'Con dos semanas de pesajes verás tu tendencia aquí.' : 'Anota tu peso hoy: con dos semanas de pesajes verás tu tendencia aquí.') + '</div>'; return; }
+  if (sem.length < 2) { var sinT = pts.length ? 'Con dos semanas de pesajes verás tu tendencia aquí.' : 'Anota tu peso hoy: con dos semanas de pesajes verás tu tendencia.'; box.innerHTML = cab + '<div class="meta" style="margin-top:8px">' + sinT + '</div>'; if (frase) frase.textContent = sinT; return; }
   var ys = sem.map(function (w) { return w.peso; }), min = Math.min.apply(null, ys), max = Math.max.apply(null, ys);
   if (max - min < 1) { var mid = (max + min) / 2; min = mid - 0.5; max = mid + 0.5; }
   var n = sem.length, X = function (i) { return 12 + i * (296 / (n - 1)); }, Y = function (v) { return 16 + (max - v) / (max - min) * 48; };
@@ -2556,7 +2659,9 @@ function gcCuerpoTendencia(p) {
     '<text x="' + (X(n - 1) - 26) + '" y="' + (Y(last) < 26 ? Y(last) + 20 : Y(last) - 10) + '" fill="#f5f3ee" font-size="12" font-weight="700" font-family="DM Sans">' + fmtNum(Math.round(last * 10) / 10) + '</text>' +
     sem.map(function (w, i) { return '<text x="' + X(i) + '" y="84" text-anchor="middle" fill="#8d8a82" font-size="10" font-family="DM Sans">S' + w.semana + '</text>'; }).join('') + '</svg>';
   var tramo = sem.slice(-4), ritmo = (tramo[tramo.length - 1].peso - tramo[0].peso) / Math.max(1, tramo[tramo.length - 1].semana - tramo[0].semana);
-  box.innerHTML = cab + svg + '<div class="g-frase">' + gcFraseRitmo(obj, ritmo, rit[0] * peso / 100, rit[1] * peso / 100) + '</div>';
+  var txt = gcFraseRitmo(obj, ritmo, rit[0] * peso / 100, rit[1] * peso / 100);
+  box.innerHTML = cab + svg;
+  if (frase) frase.textContent = txt;
 }
 function gcFraseRitmo(obj, ritmo, lo, hi) {
   var r = Math.round(ritmo * 10) / 10, abs = fmtNum(Math.abs(r));
@@ -2665,7 +2770,7 @@ function pintarHistorial(dias) {
   if (estado) pintarSemanaTab();
   var con = dias.filter(function (d) { return d.sesiones.length; }), sub = $('histSub'), box = $('historial');
   if (!sub || !box) return;
-  if (!con.length) { sub.textContent = 'Aún no hay días registrados'; box.innerHTML = '<div class="meta" style="padding:8px 4px">Cuando registres tu primera sesión, aquí quedará el resumen de cada día.</div>'; return; }
+  if (!con.length) { sub.textContent = 'Aún no hay días registrados'; box.innerHTML = vacioHTML('Aún no hay días registrados', 'Cuando registres tu primera sesión, aquí quedará el resumen de cada día.', 'Ir a Hoy', "irA('hoy')"); return; }
   var recTxt = function (d) { return d.records ? ' · +' + d.records + ' récord' + (d.records > 1 ? 's' : '') : ''; };
   var s0 = con[0].sesiones[0];
   sub.textContent = gcDiaCorto(con[0].fecha) + ' · ' + s0.nombre + (s0.pct != null ? ' · ' + s0.pct + ' %' : '') + recTxt(con[0]) + (con.length > 1 ? ' · y ' + (con.length - 1) + ' más' : '');
@@ -2690,10 +2795,14 @@ function editarDia(fecha, ses) { $('fecha').value = fecha; irA('hoy'); cargarEst
 
 /* =================== PANEL / PROGRESO (boceto G: tres cifras llanas; lo demás en "Récords y cada ejercicio") =================== */
 var faltanGraficas = [], armandoPanel = false, gcPanelDet = false;
+/* Progreso carga en paralelo (una sola oleada de red): el panel (con caché), el diario del día de la tarjeta del peso y las fotos */
 function cargarPanel() {
-  $('panel').innerHTML = '<div class="empty">Cargando…</div>';
+  if (!$('dFecha').value) $('dFecha').value = hoyISO();
+  if (!gcPanel) $('panel').innerHTML = '<div class="empty">Cargando…</div>';
   faltanGraficas = [];
-  conCache('panel', function () { return api('getPanel'); }, pintarPanel).catch(err);
+  conCache('panel', function () { return api('getPanel'); }, function (p) { pintarPanel(p); gcCuerpoTendencia(p); calc(); }).catch(err);
+  cargarDiario();
+  cargarFotos();
 }
 function pintarPanel(r) {
   gcPanel = r;
@@ -2701,9 +2810,10 @@ function pintarPanel(r) {
   var ini = r.fechaInicio || (estado && estado.fechaInicio) || '';
   $('kPanel').textContent = ini ? 'Desde el ' + gcFechaLarga(ini) : 'Tu progreso';
   var haySes = k.adherencia.hechas > 0 || (r.series || []).length > 0, hayPeso = c.actual.peso != null;
+  ['recRow', 'semRow', 'masRow', 'shareRow'].forEach(function (id) { var el = $(id); if (el) el.style.display = haySes || hayPeso ? '' : 'none'; });
   if (!haySes && !hayPeso) {
-    $('panel').innerHTML = '<div class="card"><b>Aquí verás cómo vas.</b><div class="meta" style="margin-top:6px">Registra tu primera sesión en Hoy y tu peso en Cuerpo: tus cifras y gráficas se llenan solas.</div>' +
-      '<div class="acts" style="margin-top:12px"><button class="btn sec" onclick="irA(\'hoy\')">Ir a Hoy</button><button class="btn" onclick="irA(\'cuerpo\')">Anotar mi peso</button></div></div>';
+    $('panel').innerHTML = vacioHTML('Aquí verás cómo vas', 'Anota tu peso arriba y registra tu primera sesión en Hoy: tus cifras y gráficas se llenan solas.', 'Ir a Hoy', "irA('hoy')");
+    ['recBox', 'semBox', 'masBox'].forEach(function (id) { var el = $(id); if (el) el.innerHTML = ''; });
     return;
   }
   var tres = '<div class="g-3">' +
@@ -2722,18 +2832,45 @@ function pintarPanel(r) {
   var serH = ser.length ? '<div class="card" style="margin-top:12px"><div class="dayh"><b>Series por semana</b>' + (enCurso ? '<span class="meta">esta semana va por la mitad</span>' : '') + '</div>' +
     '<div class="g-sem">' + ser.map(function (x) { return '<i class="' + (x.semana === cur ? 'cur' : '') + '" style="height:' + Math.max(3, Math.round(x.y / maxS * 100)) + '%" title="' + x.y + ' series"></i>'; }).join('') + '</div>' +
     '<div class="g-semx">' + ser.map(function (x) { return '<span>' + esc(x.x) + '</span>'; }).join('') + '</div></div>' : '';
-  var detRow = '<div class="g-rowline"><button class="g-row" aria-expanded="' + gcPanelDet + '" onclick="gcPanelDet=!gcPanelDet;pintarPanel(gcPanel)"><span class="n"><b>Récords y cada ejercicio</b><span class="s">peso, grasa, comida, cardio y semana a semana</span></span>' + CHEV + '</button>' +
-    '<button class="g-ico" aria-label="Compartir la semana" title="Compartir mi semana" onclick="compartirSemana(this)"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 15v4h14v-4"/></svg></button></div>';
-  $('panel').innerHTML = tres + mejH + serH + detRow + (gcPanelDet ? gcPanelDetalle(r) : '');
-  if (gcPanelDet) activarTooltips();
+  $('panel').innerHTML = tres + mejH;
+  // Lo demás, plegado: récords por ejercicio, semana a semana (con la tendencia del peso y las series) y más gráficas
+  var sel = $('progSel'), selV = sel ? sel.value : '';
+  $('recBox').innerHTML = gcRecordsHTML(r);
+  $('semBox').innerHTML = '<div id="cuTrend"></div>' + serH + gcSemanasHTML(r);
+  $('masBox').innerHTML = gcMasGraficasHTML(r);
+  if (selV && $('progSel')) { $('progSel').value = selV; verProgreso(selV); }
+  $('recSub').textContent = r.progreso.length ? r.progreso.length + ' ejercicios · ' + (k.progreso.mejoraron || 0) + ' con más peso' : 'cuánto subió cada uno y su mejor serie';
+  activarTooltips();
 }
-/* El detalle de antes (cuerpo, entrenamiento, comida y cardio, por ejercicio, semana a semana), plegado */
-function gcPanelDetalle(r) {
+/* Récords por ejercicio: la tabla de cuánto subió cada uno y el récord con su gráfica */
+function gcRecordsHTML(r) {
+  var h = '';
+  if (r.progreso.length) h += '<div class="meta" style="margin:0 0 4px">Cada ejercicio: mejor serie de la última sesión contra la primera</div><table class="res">' +
+    r.progreso.map(function (p) { return '<tr><td>' + esc(p.ejercicio) + '</td><td style="text-align:right;white-space:nowrap;color:' + (p.cambioPct > 0 ? 'var(--green-ink)' : 'var(--muted)') + '">' + signo(Math.round(p.cambioPct), 0, ' %') + '</td></tr>'; }).join('') + '</table>';
+  if (r.ejerciciosHechos.length) h += '<label for="progSel" style="margin-top:12px">Récord de un ejercicio</label><select id="progSel" onchange="verProgreso(this.value)"><option value="">Elige un ejercicio…</option>' +
+    r.ejerciciosHechos.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('') + '</select><div id="progBox"></div>';
+  if (r.motivos.length) h += '<div class="meta" style="margin:12px 0 4px">Por qué no hiciste ejercicios</div><table class="res">' +
+    r.motivos.map(function (m) { return '<tr><td>' + esc(m.motivo) + '</td><td style="text-align:right">' + m.n + '</td></tr>'; }).join('') + '</table>';
+  return h || '<div class="meta">Con dos sesiones del mismo ejercicio verás aquí su récord y cuánto subió.</div>';
+}
+/* Semana a semana: la tabla (peso, grasa, sesiones, sueño, pasos) con la decisión de cada domingo */
+function gcSemanasHTML(r) {
+  if (!r.semanas.length) return '<div class="meta" style="margin-top:8px">Al cerrar tu primera semana verás aquí el resumen.</div>';
+  return '<div class="scroll" style="margin-top:12px"><table class="res"><tr><th>Sem</th><th>Peso</th><th>Grasa</th><th>Ses.</th><th>Sueño</th><th>Pasos</th></tr>' +
+    r.semanas.slice().reverse().map(function (w) {
+      var pill = w.decision ? '<tr><td></td><td colspan="5" style="padding-top:0"><span class="pillx ' + (w.decision.indexOf('En rango') === 0 ? 'up' : 'warn') + '">' + esc(w.decision) + '</span></td></tr>' : '';
+      return '<tr><td><b>' + w.semana + '</b></td><td>' + (w.peso == null ? '—' : n1(w.peso)) + (w.cambio != null ? '<br><span class="meta">' + signo(Math.round(w.cambio * 10) / 10, 1, ' kg') + '</span>' : '') +
+        '</td><td>' + (w.grasa == null ? '—' : n1(w.grasa) + ' %') + '</td><td>' + w.sesiones + '</td><td>' + (w.sueno == null ? '—' : n1(w.sueno)) +
+        '</td><td>' + (w.pasos == null ? '—' : n1(w.pasos, 0)) + '</td></tr>' + pill;
+    }).join('') + '</table></div>';
+}
+/* Más gráficas: cuerpo (peso, grasa, masa magra), kilos movidos, eficiencia, comida y cardio */
+function gcMasGraficasHTML(r) {
   var k = r.kpis, c = r.cuerpo;
   armandoPanel = true; faltanGraficas = [];
   var tile = function (v, l, d) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div>' + (d ? '<div class="d">' + d + '</div>' : '') + '</div>'; };
   var pc = function (v) { return v == null ? '—' : v + ' %'; };
-  var html = '<div class="card" style="margin-top:8px"><h2>Cuerpo</h2><div class="grid2">' +
+  var html = '<div class="g-k" style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)">Cuerpo</div><div class="grid2" style="margin-top:6px">' +
     tile(c.actual.peso != null ? n1(c.actual.peso) + ' kg' : '—', 'Peso', c.cambio.peso != null ? signo(c.cambio.peso, 1, ' kg') + ' desde el inicio' : '') +
     tile(c.actual.grasa != null ? n1(c.actual.grasa) + ' %' : '—', 'Grasa corporal', c.cambio.grasa != null ? signo(c.cambio.grasa, 1, ' puntos') + ' desde el inicio' : '') +
     tile(c.actual.magra != null ? n1(c.actual.magra) + ' kg' : '—', 'Masa magra', c.cambio.magra != null ? signo(c.cambio.magra, 1, ' kg') + ' desde el inicio' : 'Peso sin la grasa') +
@@ -2741,43 +2878,22 @@ function gcPanelDetalle(r) {
     '</div>' +
     chartBox('Peso (kg)', c.peso, 'line', 'var(--s1)', ' kg') +
     chartBox('Grasa corporal (%)', c.grasa, 'line', 'var(--s2)', ' %') +
-    chartBox('Masa magra (kg)', c.magra, 'line', 'var(--s3)', ' kg') + '</div>';
-  html += '<div class="card"><h2>Entrenamiento</h2>' + chartBox('Kilos movidos por semana', r.volumen, 'bar', 'var(--s1)', ' kg');
-  if (r.progreso.length) {
-    html += '<div class="meta" style="margin:10px 0 4px">Cada ejercicio: mejor serie de la última sesión contra la primera</div><table class="res">' +
-      r.progreso.map(function (p) { return '<tr><td>' + esc(p.ejercicio) + '</td><td style="text-align:right;white-space:nowrap;color:' + (p.cambioPct > 0 ? 'var(--green-ink)' : 'var(--muted)') + '">' + signo(Math.round(p.cambioPct), 0, ' %') + '</td></tr>'; }).join('') + '</table>';
-  }
-  if (r.motivos.length) {
-    html += '<div class="meta" style="margin:12px 0 4px">Por qué no hiciste ejercicios</div><table class="res">' +
-      r.motivos.map(function (m) { return '<tr><td>' + esc(m.motivo) + '</td><td style="text-align:right">' + m.n + '</td></tr>'; }).join('') + '</table>';
-  }
+    chartBox('Masa magra (kg)', c.magra, 'line', 'var(--s3)', ' kg');
+  html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);margin-top:14px">Entrenamiento</div>' + chartBox('Kilos movidos por semana', r.volumen, 'bar', 'var(--s1)', ' kg');
   html += '<details class="mas"><summary>Más detalle</summary><div class="grid2" style="margin-top:8px">' +
     tile(pc(k.adherencia.pct), 'Asistencia', k.adherencia.hechas + ' de ' + k.adherencia.programadas + ' programadas') +
     tile(pc(k.ejercicios.pct), 'Ejercicios hechos', k.ejercicios.hechos + ' de ' + k.ejercicios.plan + ' · ' + k.ejercicios.omitidos + ' no hechos') +
     tile(pc(k.series.pct), 'Series completadas', k.series.hechas + ' de ' + k.series.prescritas + ' prescritas') +
     tile(pc(k.rir.pct), 'Esfuerzo en el punto', k.rir.total ? k.rir.facil + ' series muy fáciles · ' + k.rir.duro + ' muy duras' : 'Anota las repeticiones que te quedan (RIR) en cada serie') +
-    '</div><div class="meta" style="margin-top:8px">Eficiencia global ' + pc(r.eficiencia) + ' = 40 % asistencia + 30 % series completadas + 30 % esfuerzo en el punto.</div></details></div>';
+    '</div><div class="meta" style="margin-top:8px">Eficiencia global ' + pc(r.eficiencia) + ' = 40 % asistencia + 30 % series completadas + 30 % esfuerzo en el punto.</div></details>';
   var nu = r.nutricion || {}, ob = nu.objetivos || {};
-  html += '<div class="card"><h2>Comida y cardio</h2><div class="meta" style="margin:-6px 0 8px">Últimos 7 días</div><div class="grid2">' +
+  html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);margin-top:14px">Comida y cardio · últimos 7 días</div><div class="grid2" style="margin-top:6px">' +
     tile(nu.kcal ? n1(nu.kcal, 0) : '—', 'Kcal al día', ob.kcal ? 'Meta ' + n1(ob.kcal, 0) + ' · ' + (nu.dias || 0) + ' días anotados' : '') +
     tile(nu.prot ? nu.prot + ' g' : '—', 'Proteína al día', ob.prot ? 'Meta ' + ob.prot + ' g' : '') +
     tile((r.cardio ? r.cardio.minutos : 0) + ' min', 'Cardio', (r.cardio ? r.cardio.sesiones : 0) + ' sesiones') +
-    tile(r.ejerciciosHechos.length, 'Ejercicios registrados', 'Elige uno abajo para ver su récord') +
-    '</div>' + chartBox('Calorías por día', nu.serie, 'bar', 'var(--s2)', ' kcal') + '</div>';
-  if (r.ejerciciosHechos.length) {
-    html += '<div class="card"><h2>Récord por ejercicio</h2><select id="progSel" onchange="verProgreso(this.value)"><option value="">Elige un ejercicio…</option>' +
-      r.ejerciciosHechos.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('') + '</select><div id="progBox"></div></div>';
-  }
-  if (r.semanas.length) {
-    html += '<div class="card"><h2>Semana a semana</h2><div class="scroll"><table class="res"><tr><th>Sem</th><th>Peso</th><th>Grasa</th><th>Ses.</th><th>Sueño</th><th>Pasos</th></tr>' +
-      r.semanas.slice().reverse().map(function (w) {
-        var pill = w.decision ? '<tr><td></td><td colspan="5" style="padding-top:0"><span class="pillx ' + (w.decision.indexOf('En rango') === 0 ? 'up' : 'warn') + '">' + esc(w.decision) + '</span></td></tr>' : '';
-        return '<tr><td><b>' + w.semana + '</b></td><td>' + (w.peso == null ? '—' : n1(w.peso)) + (w.cambio != null ? '<br><span class="meta">' + signo(Math.round(w.cambio * 10) / 10, 1, ' kg') + '</span>' : '') +
-          '</td><td>' + (w.grasa == null ? '—' : n1(w.grasa) + ' %') + '</td><td>' + w.sesiones + '</td><td>' + (w.sueno == null ? '—' : n1(w.sueno)) +
-          '</td><td>' + (w.pasos == null ? '—' : n1(w.pasos, 0)) + '</td></tr>' + pill;
-      }).join('') + '</table></div></div>';
-  }
-  var faltan = faltanGraficas.length ? '<div class="card" style="margin-top:8px"><b>Tus gráficas se llenan solas</b><div class="meta" style="margin-top:4px">Aparecen con 2 registros: ' + faltanGraficas.map(esc).join(', ') + '. Pésate por la mañana, registra tus sesiones y lo que comes.</div></div>' : '';
+    tile(r.ejerciciosHechos.length, 'Ejercicios registrados', 'Su récord está en "Récords por ejercicio"') +
+    '</div>' + chartBox('Calorías por día', nu.serie, 'bar', 'var(--s2)', ' kcal');
+  var faltan = faltanGraficas.length ? '<div class="meta" style="margin-bottom:10px"><b style="color:var(--ink)">Tus gráficas se llenan solas.</b> Aparecen con 2 registros: ' + faltanGraficas.map(esc).join(', ') + '. Pésate por la mañana, registra tus sesiones y lo que comes.</div>' : '';
   faltanGraficas = []; armandoPanel = false;
   return faltan + html;
 }
@@ -2927,18 +3043,13 @@ function pintarSemana(plan) {
 }
 function irFecha(f) { $('fecha').value = f; cargarEstado(); }
 
-$('btnPlanificar').onclick = function () {
-  var p = $('planificador');
-  if (!p.classList.contains('hidden')) { p.classList.add('hidden'); return; }
-  abrirPlanificador(estado.semana);
-};
-/* Planificador compacto: casillas + una línea con el resultado + Guardar */
+$('btnPlanificar').onclick = function () { abrirPlanificador(estado.semana); };
+/* Planificador ("Ajustar días") en la hoja inferior: ‹ semana ›, casillas, una línea con el resultado y Guardar */
 function abrirPlanificador(k) {
   api('getSemana', k).then(function (pl) {
     semanaVista = pl;
-    var p = $('planificador'); p.classList.remove('hidden');
-    p.innerHTML = '<div class="dayh"><button class="btn sec small" ' + (pl.semana <= 1 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana - 1) + ')" aria-label="Semana anterior">‹</button>' +
-      '<b>Semana ' + pl.semana + ' · ' + fechaCortaIso(pl.desde) + ' – ' + fechaCortaIso(pl.hasta) + '</b>' +
+    var html = '<div id="planificador"><div class="dayh"><button class="btn sec small" ' + (pl.semana <= 1 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana - 1) + ')" aria-label="Semana anterior">‹</button>' +
+      '<b>' + fechaCortaIso(pl.desde) + ' – ' + fechaCortaIso(pl.hasta) + '</b>' +
       '<button class="btn sec small" ' + (pl.semana >= 60 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana + 1) + ')" aria-label="Semana siguiente">›</button></div>' +
       '<div class="meta" style="margin-top:6px">Marca los días que irás al gimnasio.</div>' +
       '<div class="dias">' + pl.dias.map(function (d) {
@@ -2946,9 +3057,10 @@ function abrirPlanificador(k) {
         return '<label><input type="checkbox" value="' + d.fecha + '"' + (d.seleccionado ? ' checked' : '') + (bloq ? ' disabled' : '') + '>' + d.etiqueta + '</label>';
       }).join('') + '</div>' +
       '<div class="meta" id="planPrev" style="margin-top:8px"></div>' +
-      '<div class="acts" style="margin-top:8px"><button class="btn sec" onclick="$(\'planificador\').classList.add(\'hidden\')">Cerrar</button><button class="btn" onclick="guardarPlan()">Guardar</button></div>';
+      '<div class="acts" style="margin-top:12px"><button class="btn sec" onclick="hojaCerrar()">Cerrar</button><button class="btn" onclick="guardarPlan()">Guardar</button></div></div>';
+    if ($('planificador') && hojaEstado.abierta) { $('hojaB').innerHTML = html; $('hojaTit').textContent = 'Semana ' + pl.semana; }
+    else hojaAbrir({ kicker: 'Ajustar días', titulo: 'Semana ' + pl.semana, html: html });
     previewPlan(pl);
-    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }).catch(err);
 }
 function previewPlan(pl) {
@@ -2959,7 +3071,7 @@ function previewPlan(pl) {
 }
 function guardarPlan() {
   var f = []; document.querySelectorAll('#planificador input:checked').forEach(function (x) { f.push(x.value); });
-  api('guardarSemana', semanaVista.semana, f).then(function (pl) { semanaVista = pl; previewPlan(pl); toast('Semana guardada'); invalidarTodo(); cargarEstadoYSemana(); }).catch(err);
+  api('guardarSemana', semanaVista.semana, f).then(function (pl) { semanaVista = pl; hojaCerrar(); toast('Semana guardada'); invalidarTodo(); cargarEstadoYSemana(); }).catch(err);
 }
 function cargarEstadoYSemana() {
   var f = $('fecha').value;
@@ -2984,7 +3096,7 @@ function pintarConsejos() {
   var lista = r.consejos.filter(function (c) { return listos[c.id] !== hoy; });
   if (!lista.length) {
     box.innerHTML = !r.haySesiones
-      ? '<div class="card"><b>Tus consejos salen de tus datos.</b><div class="meta" style="margin-top:6px">Registra tu primera sesión en Hoy y lo que comes en Comida: aquí verás qué músculo va corto, qué carga subir y cuánta proteína te falta.</div></div>'
+      ? vacioHTML('Tus consejos salen de tus datos', 'Registra tu primera sesión en Hoy y lo que comes en Comida: aquí verás qué músculo va corto, qué carga subir y cuánta proteína te falta.', 'Ir a Hoy', "irA('hoy')")
       : '<div class="card"><b>Todo en orden por hoy.</b><div class="meta" style="margin-top:6px">Sigue con tu plan. Mañana vuelvo a mirar tus cargas, tu semana y tu comida.</div></div>';
     return;
   }
@@ -3006,7 +3118,7 @@ function pintarCoachFilas() {
   var tiene = c ? c.tieneClave : (r ? r.ia.tieneClave : false), esDueno = c ? c.esDueno : (r ? r.esDueno : false);
   var h = '<div class="sec-h" style="margin-top:18px"><b>Conversar</b></div>';
   if (tiene) h += '<button class="g-row" onclick="abrirChat()"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + esc(r && r.ejemplo || '"Me duele el hombro con el press, ¿qué cambio?"') + '</span></span>' + CHEV + '</button>';
-  else h += '<button class="g-row flat" onclick="' + (esDueno ? "irAjustes('ia')" : "toast(geIaTexto())") + '"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + (esDueno ? 'Falta la clave en Render → Environment (Ajustes → IA)' : esc(geIaTexto())) + '</span></span>' + CHEV + '</button>';
+  else h += vacioHTML('Pregúntale al coach (IA)', esDueno ? 'Falta la clave en Render → registro-gimnasio-servidor → Environment. Con ella puedes pedir planes y resolver dudas por chat.' : geIaTexto(), esDueno ? 'Ir a Ajustes → IA' : '', esDueno ? "irAjustes('ia')" : '');
   var ent = (estado && estado.entrenador) || (r && r.entrenador);
   if (ent && (ent.nota || ent.plan)) h += '<button class="g-row" onclick="gcIrEntrenador()"><span class="n"><b>Tu entrenador (persona)</b><span class="s">' + esc(ent.nota ? 'Nota del ' + fechaCortaIso(String(ent.nota.fecha).slice(0, 10)) + ': "' + ent.nota.texto + '"' : (ent.nombre || 'Tu entrenador') + ' te preparó un plan') + '</span></span>' + CHEV + '</button>';
   if (c && c.ajustes.length) h += '<button class="g-row" aria-expanded="false" onclick="gcToggle(\'coachAjustes\', this)"><span class="n"><b>Ajustes activos (' + c.ajustes.length + ')</b><span class="s">' + esc(c.ajustes.map(function (a) { return a.ejercicio; }).join(' · ')) + '</span></span>' + CHEV + '</button>' +
@@ -3214,18 +3326,26 @@ function cargarProgramas(p) {
   (p || api('getProgramas')).then(function (r) { programasCache = r; pintarProgramas(r); }).catch(function (e) { $('progCard').innerHTML = '<h2>Programa</h2><div class="meta">No pude cargar los programas: ' + esc(e.message || e) + '</div>'; });
 }
 
-/* Un solo Guardar por formulario: los días de entreno ya no se tocan aquí (viven en Programa y días; guardarPerfil sigue aceptando DiasEntreno
-   para cambiarPrograma). En la sección Perfil, el mismo botón guarda también los avisos por correo. */
+/* Un solo Guardar, y solo en los formularios de texto (Perfil: edad, estatura, minutos; Salud: texto libre). Los interruptores y selects
+   guardan solos con ajAuto. Los días de entreno viven en Programa y días (guardarPerfil sigue aceptando DiasEntreno para cambiarPrograma). */
 $('pGuardar').onclick = function () {
-  var p = { Edad: $('pEdad').value, Sexo: $('pSexo').value, EstaturaM: $('pEstatura').value,
-            Condiciones: $('pCond').value, Medicamentos: $('pMed').value, Lesiones: $('pLes').value, OtrosSalud: $('pOtros').value,
-            ModeloIA: $('pModelo').value || 'gemini-3.8-flash', ProveedorIA: $('pProv').value || '', ModeloClaude: $('pModeloClaude').value || 'claude-sonnet-5-5',
-            PasoMancuernas: $('pPasoM').value, DiscoMinimo: $('pDisco').value,
-            Nivel: $('pNivel').value, Equipo: $('pEquipo').value, MinutosSesion: $('pMin').value };
+  var p = ajSec === 'salud' ? { Condiciones: $('pCond').value, Medicamentos: $('pMed').value, Lesiones: $('pLes').value, OtrosSalud: $('pOtros').value }
+        : { Edad: $('pEdad').value, Sexo: $('pSexo').value, EstaturaM: $('pEstatura').value, Nivel: $('pNivel').value, MinutosSesion: $('pMin').value };
   var b = $('pGuardar'); b.disabled = true;
   var avisos = ajSec === 'perfil' ? guardarAvisosUI(true) : Promise.resolve();
   Promise.all([api('guardarPerfil', p), avisos]).then(function () { b.disabled = false; toast('Guardado'); cargarAjustes(); invalidarTodo(); cargarEstado(); }).catch(function (x) { b.disabled = false; err(x); });
 };
+/* Guardado automático de un campo (select, interruptor o texto corto al salir): guardarPerfil parcial + toast "Guardado". No repinta los
+   campos (podrías estar escribiendo en otro), solo las líneas del menú y el estado de la IA. */
+var ajAutoPendientes = 0;
+function ajAuto(campos) {
+  ajAutoPendientes++;
+  return api('guardarPerfil', campos).then(function (r) {
+    if (r && typeof r === 'object') { ajData.perfil = r; pintarResumenAjustes(); if (r.ia) gePintarEstadoIA(r.ia); }
+    toast('Guardado'); invalidarTodo();
+    if (campos.Sexo !== undefined || campos.Nivel !== undefined || campos.PasoMancuernas !== undefined || campos.DiscoMinimo !== undefined) cargarEstado();   // cambian las cargas sugeridas
+  }).catch(err).then(function () { ajAutoPendientes--; });
+}
 /* Prueba la IA con una llamada mínima (solo el dueño): así se sabe al instante si la clave de Render sirve */
 function probarIAUI() {
   var b = $('pProbarIA'), out = $('pProbarIAres'); b.disabled = true; out.style.color = ''; out.textContent = 'Probando la IA…';
@@ -3347,8 +3467,8 @@ function gcComidaKicker() {
 function elegirMomento(b) {
   var m = typeof b === 'string' ? b : b.textContent;
   $('cMomento').value = m;
-  document.querySelectorAll('#cMomChips .chip').forEach(function (x) { x.classList.toggle('on', x.textContent === m); });
-  var t = $('cAgTit'); if (t) t.textContent = m;
+  pintarMomSeg();
+  var t = $('hojaTit'); if (t && hojaAbiertaCon($('cAgregar'))) t.textContent = m;
   gcAgRegs();
 }
 function momentoPorHora() { var h = new Date().getHours(); return h < 10 ? 'Desayuno' : h < 12 ? 'Media mañana' : h < 15 ? 'Almuerzo' : h < 18 ? 'Algo' : h < 21 ? 'Cena' : 'Antes de dormir'; }
@@ -3360,7 +3480,7 @@ function pintarComida(c) {
   var sel = $('cMomento'), prev = sel.value;
   sel.innerHTML = c.momentos.map(function (m) { return '<option>' + m + '</option>'; }).join('');
   sel.value = prev || momentoPorHora();
-  $('cMomChips').innerHTML = c.momentos.map(function (m) { return '<button class="chip' + (m === sel.value ? ' on' : '') + '" onclick="elegirMomento(this)">' + esc(m) + '</button>'; }).join('');
+  pintarMomSeg();
   pintarMetaComida(c);
   pintarMomentos(c);
   var bb = $('cBasicos'), hayB = c.basicos && c.basicos.items && c.basicos.items.length;
@@ -3372,7 +3492,7 @@ function pintarComida(c) {
   gdPintarComida(c);
   if (pcDatos) pintarPlan(pcDatos);
 }
-/* Barras de calorías y proteína (una sola meta en toda la pestaña: objetivosNutricion_, la misma que en Cuerpo y en el plan).
+/* Barras de calorías y proteína (una sola meta en toda la pestaña: objetivosNutricion_, la misma que en Progreso y en el plan).
    Si al plan le faltan datos (pcDatos.falta), no se muestra una meta numérica: barras sin número y "Completar mi perfil". */
 function pintarMetaComida(c) {
   c = c || comidaDatos; if (!c || !$('cHoyMeta')) return;
@@ -3400,7 +3520,8 @@ function pintarMomentos(c) {
   var st = plan ? pcEstado(plan) : null, iPlan = st && st.esHoy && st.ahora >= 0 ? st.ahora : -1;
   var momPlan = iPlan >= 0 ? plan.comidas[iPlan].momento : '';
   if (momPlan) momAhora = momPlan;   // la comida que toca ahora manda (si la de la hora ya quedó registrada, pasa a la siguiente)
-  $('cMomentos').innerHTML = moms.map(function (m) {
+  var vacio = !c.registros.length && !plan ? vacioHTML(esHoy ? 'Nada anotado hoy' : 'Nada anotado ese día', esHoy ? 'Anota lo que comes y verás calorías y proteína contra tu meta. Si la IA está activa, basta con describirlo.' : 'Puedes anotar lo que comiste ese día; la semana se calcula con lo que haya.', '+ Agregar', "abrirAgregar(" + gdArg(esHoy ? momentoPorHora() : 'Almuerzo') + ")") : '';
+  $('cMomentos').innerHTML = vacio + moms.map(function (m) {
     var items = c.registros.filter(function (x) { return (x.momento || '') === m; });
     var kc = items.reduce(function (a, x) { return a + (Number(x.kcal) || 0); }, 0), pr = items.reduce(function (a, x) { return a + (Number(x.prot) || 0); }, 0);
     var s = items.length ? esc(items.map(function (x) { return x.comida + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : ''); }).join(' + ')) + ' · ' + n1(kc, 0) + ' kcal · ' + n1(pr, 0) + ' g' : 'Nada aún';
@@ -3418,15 +3539,16 @@ function pintarMomentos(c) {
     return h + '</div>';
   }).join('');
 }
-/* Hoja "Agregar": se despliega bajo el día con el momento fijado y visible, buscador, "Lo de ayer" e IA/foto */
+/* "Agregar" es una hoja inferior (hojaAbrir con el nodo #cAgregar): buscador arriba con foco, chips en una fila, el momento como segmento,
+   la lista con "+", y al final "Con IA" y "Crear una comida nueva". El momento llega fijado desde su fila del día y se puede cambiar. */
 function abrirAgregar(m) {
   if (m !== undefined && m !== null) elegirMomento(m);
-  var a = $('cAgregar'); a.classList.remove('hidden');
-  $('cAgTit').textContent = $('cMomento').value || 'Comida';
-  gcAgRegs();
-  setTimeout(function () { a.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
+  var a = $('cAgregar'); if (!a) return;
+  if (!hojaAbiertaCon(a)) hojaAbrir({ kicker: 'Agregar a', titulo: $('cMomento').value || 'Comida', nodo: a, foco: 'cBuscar' });
+  else $('hojaTit').textContent = $('cMomento').value || 'Comida';
+  cMomMasAbierto = false; pintarMomSeg(); gcAgRegs();
 }
-function cerrarAgregar() { var a = $('cAgregar'); if (a) a.classList.add('hidden'); }
+function cerrarAgregar() { var a = $('cAgregar'); if (a && hojaAbiertaCon(a)) hojaCerrar(); }
 function gcAgRegs() {
   var box = $('cAgRegs'); if (!box || !comidaDatos) return;
   var m = $('cMomento').value, items = comidaDatos.registros.filter(function (x) { return (x.momento || '') === m; });
@@ -3724,7 +3846,7 @@ function pcRegistrar(i, b) {
 /* Lo básico de comida y descanso, con tus números (plegado por defecto) */
 function basicosHTML(b) {
   return b.items.map(function (x) { return '<div class="porque"><b>' + esc(x.titulo) + ':</b> ' + esc(x.texto) + '</div>'; }).join('') +
-    (b.peso ? '' : '<div class="meta">Registra tu peso en Cuerpo para ver tus números.</div>');
+    (b.peso ? '' : '<div class="meta">Registra tu peso en Progreso para ver tus números.</div>');
 }
 /* Meta con tu gasto real (ingesta promedio + tendencia del peso): se ve en Comida y se activa con un toque */
 function metaAdaptHTML(ad) {
@@ -3825,8 +3947,8 @@ function pintarListaComidas() {
   var q = $('cBuscar').value.trim().toLowerCase();
   if (catComida === '__ayer' && !q) {
     var ay = comidaDatos.ayer || [];
-    $('cLista').innerHTML = '<div class="food"><div><b>Repetir todo lo de ayer</b><div class="meta">' + ay.length + ' comidas · ' + n1(ay.reduce(function (t, x) { return t + x.kcal; }, 0), 0) + ' kcal</div></div><button onclick="repetirAyer()">+ Todo</button></div>' +
-      ay.map(function (x, k) { return '<div class="food"><div>' + esc(x.comida) + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : '') + '<div class="meta">' + esc(x.momento || '') + ' · ' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot</div></div><button onclick="repetirAyer(' + k + ')">+ Agregar</button></div>'; }).join('');
+    $('cLista').innerHTML = '<div class="food"><div><b>Repetir todo lo de ayer</b><div class="meta">' + ay.length + ' comidas · ' + n1(ay.reduce(function (t, x) { return t + x.kcal; }, 0), 0) + ' kcal</div></div><button class="txt-b" onclick="repetirAyer()">+ Todo</button></div>' +
+      ay.map(function (x, k) { return '<div class="food"><div>' + esc(x.comida) + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : '') + '<div class="meta">' + esc(x.momento || '') + ' · ' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot</div></div><button aria-label="Agregar ' + esc(x.comida) + '" onclick="repetirAyer(' + k + ')">+</button></div>'; }).join('');
     return;
   }
   var norm = function (x) { return x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
@@ -3837,7 +3959,7 @@ function pintarListaComidas() {
     .slice(0, q || catComida ? 60 : 12);
   $('cLista').innerHTML = lista.map(function (c) {
     return '<div class="food"><div>' + esc(c.nombre) + '<div class="meta">' + esc(c.porcion) + ' · ' + n1(c.kcal * cantidad, 0) + ' kcal · ' + n1(c.prot * cantidad, 0) + ' g prot</div></div>' +
-      '<button onclick="agregarComidaUI(\'' + esc(c.nombre).replace(/'/g, "\\'") + '\')">+ Agregar</button></div>';
+      '<button aria-label="Agregar ' + esc(c.nombre) + '" onclick="agregarComidaUI(\'' + esc(c.nombre).replace(/'/g, "\\'") + '\')">+</button></div>';
   }).join('') || '<div class="meta">' + (catComida === 'Mis comidas' ? 'Todavía no has creado comidas propias: usa "Crear una comida nueva" abajo.' : 'No hay coincidencias. Créala abajo.') + '</div>';
 }
 $('cBuscar').oninput = pintarListaComidas;
@@ -3881,12 +4003,11 @@ function verProgreso(nombre) {
 function cargarFotos() {
   api('getFotos').then(function (f) {
     window._fotos = f;
-    if (!f.fechas.length) { $('fEstado').textContent = 'Toma la primera hoy: es tu punto de partida.'; $('fRow').style.display = 'none'; $('fComparar').innerHTML = ''; return; }
+    if (!f.fechas.length) { $('fEstado').textContent = 'Toma la primera hoy: es tu punto de partida.'; $('fComparar').innerHTML = ''; return; }
     var dias = f.ultima ? Math.round((new Date(hoyISO()) - new Date(f.ultima)) / 86400000) : 0;
-    $('fEstado').textContent = 'Última: ' + (dias === 0 ? 'hoy' : dias === 1 ? 'ayer' : 'hace ' + dias + ' días') + (dias >= 28 ? ' · ya toca tomar nuevas' : '');
-    $('fRow').style.display = ''; $('fRowSub').textContent = f.fechas.length + (f.fechas.length === 1 ? ' sesión de fotos' : ' sesiones de fotos') + ' · antes y después';
+    $('fEstado').textContent = 'Última: ' + (dias === 0 ? 'hoy' : dias === 1 ? 'ayer' : 'hace ' + dias + ' días') + (dias >= 28 ? ' · ya toca tomar nuevas' : '') + ' · ' + f.fechas.length + (f.fechas.length === 1 ? ' sesión' : ' sesiones');
     var ops = f.fechas.map(function (x) { return '<option value="' + x.fecha + '">' + fechaCortaIso(x.fecha) + '</option>'; }).join('');
-    $('fComparar').innerHTML = '<div class="row"><div><label>Antes</label><select id="fA">' + ops + '</select></div><div><label>Después</label><select id="fB">' + ops + '</select></div></div>' +
+    $('fComparar').innerHTML = '<div class="kicker" style="margin-top:4px">Comparar · antes y después</div><div class="row"><div><label>Antes</label><select id="fA">' + ops + '</select></div><div><label>Después</label><select id="fB">' + ops + '</select></div></div>' +
       '<button class="btn sec" style="margin-top:8px" onclick="compararFotos()">Comparar</button><div class="fotos" id="fImgs" style="margin-top:8px"></div>';
     $('fB').value = f.fechas[f.fechas.length - 1].fecha;
   }).catch(err);
@@ -4111,10 +4232,10 @@ function cargarCuenta(p) {
   $('iaCard').style.display = u.esDueno ? '' : 'none';   // las claves de la IA son del dueño: el invitado no ve ni la tarjeta ni el botón
   $('ajMenuIA').style.display = u.esDueno ? '' : 'none';
   $('ajMenuAlumnos').style.display = u.esDueno ? '' : 'none';
-  $('ajSubAvanzado').textContent = u.esDueno ? 'IA, alumnos, invitaciones, conexión' : 'Tu entrenador, tu plan y la conexión';
+  $('ajSubAvanzado').textContent = u.esDueno ? 'Personas, alumnos, IA y conexión' : 'Tu entrenador, tu plan y la conexión';
   var mc = $('ajMenuCuenta');
-  mc.querySelector('b').textContent = u.esDueno ? 'Invitados' : 'Tu entrenador y tu plan';
-  mc.querySelector('small').textContent = u.esDueno ? 'Tu código y quién se registró' : 'Lo que te dejó tu entrenador y tu nivel';
+  mc.querySelector('b').textContent = u.esDueno ? 'Personas e invitaciones' : 'Tu entrenador y tu plan';
+  mc.querySelector('small').textContent = u.esDueno ? 'Tu código, quién se registró y su IA' : 'Lo que te dejó tu entrenador y tu nivel';
   // "Cambiar mi contraseña" solo en la app instalada (con sesión de correo y contraseña); en Apps Script no hay contraseña
   var conSesion = false; try { conSesion = !!JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) {}
   $('cuentaClave').style.display = conSesion ? '' : 'none'; $('cuentaClaveTxt').style.display = conSesion ? '' : 'none';
@@ -4229,7 +4350,7 @@ function cargarAlumnos() {
 function borradorDe(id) { return borradores[id] = borradores[id] || { texto: '', plan: null, mensaje: '', nota: '', ocupado: false }; }
 function pintarAlumnos() {
   var r = alumnosDatos; if (!r) return;
-  if (!r.alumnos.length) { $('alumnosBody').innerHTML = '<div class="meta" style="margin-top:8px">Todavía no tienes invitados. Compárteles el código de Ajustes → Cuenta e invitados.</div>'; return; }
+  if (!r.alumnos.length) { $('alumnosBody').innerHTML = '<div class="meta" style="margin-top:8px">Todavía no tienes invitados. Compárteles el código de Ajustes → Avanzado → Personas e invitaciones.</div>'; return; }
   var orden = r.alumnos.slice().sort(function (a, b) { return (b.comparte ? 1 : 0) - (a.comparte ? 1 : 0) || a.nombre.localeCompare(b.nombre, 'es'); });
   $('alumnosBody').innerHTML = orden.map(alumnoHTML).join('');
 }
@@ -4354,11 +4475,11 @@ function cargarAvisos(p) {
   $('aHora').innerHTML = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].map(function (h) { return '<option value="' + h + '">' + (h <= 12 ? h : h - 12) + (h < 12 ? ' a. m.' : ' p. m.') + '</option>'; }).join('');
   (p || api('getAvisos')).then(function (a) { $('aDiario').checked = a.diario; $('aSemanal').checked = a.semanal; $('aHora').value = a.hora; $('aEmail').value = a.email || ''; }).catch(err);
 }
-/* Los avisos por correo se guardan con el único Guardar de la sección Perfil (pGuardar) */
+/* Los avisos por correo se guardan solos al tocar una casilla, la hora o el correo (y también con el Guardar de Perfil) */
 function guardarAvisosUI(silencio) {
   var pr = api('guardarAvisos', { diario: $('aDiario').checked, hora: $('aHora').value, semanal: $('aSemanal').checked, email: $('aEmail').value });
   if (silencio) return pr;
-  return pr.then(function () { toast('Avisos guardados'); }).catch(err);
+  return pr.then(function (a) { toast('Guardado'); if (a && typeof a === 'object' && 'diario' in a) { ajData.avisos = a; pintarResumenAjustes(); } }).catch(err);
 }
 $('aProbar').onclick = function () { api('probarAvisos').then(function (r) { toast('Correo de prueba enviado a ' + r.email); }).catch(err); };
 
@@ -4429,10 +4550,10 @@ function pintarBienvenida() {
     h += '<label class="sw"><span><b>Llevo más de un mes sin entrenar</b><small>Las primeras 2 semanas van suaves</small></span><input type="checkbox" id="bvEntrada"' + (bvDatos.entrada ? ' checked' : '') + ' onchange="bvDatos.entrada=this.checked"><i></i></label>';
     $('bvSig').textContent = 'Siguiente';
   } else if (bvPaso === 2) {
-    h += '<div class="kicker">Paso 3 de 3</div><h1 class="bv-h">Tu peso<br>de hoy</h1><p class="bv-p">Con esto calculamos tus pesos de partida y tu comida.</p>';
+    h += '<div class="kicker">Paso 3 de 3</div><h1 class="bv-h">Tu peso<br>de hoy</h1><p class="bv-p">Con tu peso, tu estatura y tu edad calculamos tus pesos de partida y tu meta de comida.</p>';
     h += '<div class="row bv-big"><div><label for="bvPeso">Peso (kg)</label><input id="bvPeso" type="number" inputmode="decimal" step="0.1" placeholder="72" value="' + esc(bvDatos.peso) + '"></div>' +
          '<div><label for="bvEst">Estatura (cm)</label><input id="bvEst" type="number" inputmode="numeric" placeholder="170" value="' + esc(bvDatos.estatura) + '"></div></div>';
-    h += '<div class="row" style="margin-top:6px"><div><label for="bvEdad">Edad (opcional)</label><input id="bvEdad" type="number" inputmode="numeric" placeholder="30" value="' + esc(bvDatos.edad) + '"></div>' +
+    h += '<div class="row" style="margin-top:6px"><div><label for="bvEdad">Edad</label><input id="bvEdad" type="number" inputmode="numeric" placeholder="30" value="' + esc(bvDatos.edad) + '"></div>' +
          '<div><label>Sexo (opcional)</label><div class="sl-yn" style="margin-top:0"><button type="button" class="' + (bvDatos.sexo === 'M' ? 'on' : '') + '" onclick="bvSexo(\'M\')">Hombre</button><button type="button" class="' + (bvDatos.sexo === 'F' ? 'on' : '') + '" onclick="bvSexo(\'F\')">Mujer</button></div></div></div>';
     h += '<p class="meta" style="margin-top:14px">Salud, avisos y fotos se piden después, cuando hagan falta.</p>';
     $('bvSig').textContent = 'Ver mi primer entrenamiento';
@@ -4460,6 +4581,8 @@ function guardarPasoBv(validar) {
       var peso = Number(String(bvDatos.peso).replace(',', '.')), est = Number(String(bvDatos.estatura).replace(',', '.'));
       if (!(peso >= 30 && peso <= 300)) { toast('Escribe tu peso de hoy en kilos'); $('bvPeso').focus(); return false; }
       if (!(est >= 100 && est <= 250) && !(est >= 1 && est <= 2.5)) { toast('Escribe tu estatura en centímetros (p. ej. 170)'); $('bvEst').focus(); return false; }
+      var edad = Number(bvDatos.edad);
+      if (!(edad >= 10 && edad <= 100)) { toastBad('Escribe tu edad: sin ella no podemos calcular tu meta'); $('bvEdad').focus(); return false; }
     }
   }
   return true;
@@ -4469,8 +4592,8 @@ function terminarBienvenida() {
   if (bvPreview && !confirm('Esto cambia tu programa actual a ' + nombreProg(prog, ficha.nombre) + ' desde hoy. ¿Seguir?')) return;
   var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
   var est = Number(String(bvDatos.estatura).replace(',', '.')); if (est > 3) est = est / 100;
-  var perfil = { EstaturaM: est, DiasEntreno: bvDatos.dias.join(',') };
-  if (bvDatos.edad) perfil.Edad = bvDatos.edad; if (bvDatos.sexo) perfil.Sexo = bvDatos.sexo;
+  var perfil = { EstaturaM: est, DiasEntreno: bvDatos.dias.join(','), Edad: bvDatos.edad };
+  if (bvDatos.sexo) perfil.Sexo = bvDatos.sexo;
   var pMio = progFicha('mio'), esMio = prog === 'mio';
   api('guardarPerfil', perfil)
     .then(function () { return api('guardarDiario', { fecha: hoyISO(), peso: String(bvDatos.peso).replace(',', '.') }); })
@@ -4506,10 +4629,11 @@ function aterrizajeHTML(r) {
   h += '<button class="cta" id="bvEmpezarHoy" onclick="bvEmpezar(true)"><div><div class="t">Empezar hoy</div><div class="s">' + (hoyDia ? 'Calienta 5 min antes de la primera serie' : 'La sesión queda en el día de hoy') + '</div></div><div class="ic">' + SVG.play + '</div></button>';
   return h;
 }
+var bvAbrirPrimera = false;   // al aterrizar, la primera tarjeta de Hoy se abre sola en modo simple
 function bvEmpezar(hoy) {
   try { localStorage.setItem('bvComo', '1'); } catch (x) {}
   var r = bvAterr, e = r && r.estado;
-  var fin = function () { invalidarTodo(); cerrarBienvenida(); irA('hoy'); cargarEstado(); toast(hoy ? 'Tu primer entrenamiento está en Hoy' : 'Listo. Hoy descansas y la app te avisa cuando toque.'); };
+  var fin = function () { invalidarTodo(); cerrarBienvenida(); bvAbrirPrimera = !!hoy; irA('hoy'); cargarEstado(); toast(hoy ? 'Tu primer entrenamiento está en Hoy' : 'Listo. Hoy descansas y la app te avisa cuando toque.'); };
   if (hoy && e && e.tipoDia !== 'sesion') {
     var cod = e.proxima ? e.proxima.codigo : r.sesion.codigo, b = $('bvEmpezarHoy'); if (b) b.disabled = true;
     api('fijarSesion', e.fecha, cod).then(fin).catch(function (x) { if (b) b.disabled = false; err(x); });
@@ -4760,16 +4884,13 @@ function mpMenuDia(i) {
   it.push(['Quitar el día', 'mpQuitarDia(' + i + ')', 'bad']);
   hojaAcciones(mp.sesiones[i].nombre || 'Día ' + (i + 1), it);
 }
-/* Hoja de acciones (menú "···"): lista desde abajo, un toque por opción */
+/* Hoja de acciones (menú "···"): la misma hoja inferior (hojaAbrir) con una lista de opciones, un toque por opción */
 function hojaAcciones(titulo, items) {
-  var ov = $('hojaAcc');
-  if (!ov) { ov = document.createElement('div'); ov.id = 'hojaAcc'; ov.className = 'ha-ov'; ov.onclick = function (ev) { if (ev.target === ov) cerrarHoja(); }; document.body.appendChild(ov); }
-  ov.innerHTML = '<div class="ha"><div class="ha-t">' + esc(titulo) + '</div>' + items.map(function (it) {
-    return '<button type="button" class="' + (it[2] || '') + '" onclick="cerrarHoja();' + it[1] + '">' + esc(it[0]) + '</button>'; }).join('') +
-    '<button type="button" class="ha-cancel" onclick="cerrarHoja()">Cancelar</button></div>';
-  ov.style.display = 'flex';
+  hojaAbrir({ titulo: titulo, sinCerrar: true, html: items.map(function (it) {
+    return '<button type="button" class="ha-it ' + (it[2] || '') + '" onclick="cerrarHoja();' + it[1] + '">' + esc(it[0]) + '</button>'; }).join('') +
+    '<button type="button" class="ha-cancel" onclick="cerrarHoja()">Cancelar</button>' });
 }
-function cerrarHoja() { var ov = $('hojaAcc'); if (ov) ov.style.display = 'none'; }
+function cerrarHoja() { hojaCerrar(); }
 /* ===== fin G-A ===== */
 /* ===== G-C: Semana, Comida, Cuerpo, Progreso, Coach (ayudantes comunes) ===== */
 var CHEV = '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
@@ -5081,6 +5202,68 @@ function geAutorizar(i, inp) {
   }).catch(function (e) { inp.disabled = false; inp.checked = !ia; err(e); });
 }
 /* ===== fin G-E ===== */
+
+/* ===== Tanda visual 2 (02/10/2026): hoja inferior reutilizable ===== */
+/* hojaAbrir({ titulo, kicker, html | nodo, foco, alCerrar, sinCerrar }): UNA hoja a la vez. Con `nodo`, el elemento se MUEVE dentro de la hoja
+   (conserva sus ids y sus manejadores) y vuelve a su sitio al cerrar. Se cierra al tocar fuera, con "Cerrar", con Escape o arrastrando el asa. */
+var hojaEstado = { abierta: false, alCerrar: null, devolver: null };
+function hojaAbrir(op) {
+  op = op || {};
+  var ov = $('hojaOv');
+  if (!ov) { ov = document.createElement('div'); ov.id = 'hojaOv'; ov.className = 'ha-ov'; ov.onclick = function (ev) { if (ev.target === ov) hojaCerrar(); }; document.body.appendChild(ov); }
+  if (hojaEstado.abierta) hojaCerrar(true);
+  ov.innerHTML = '<div class="hoja" role="dialog" aria-modal="true"><div class="hoja-grip"></div>' +
+    '<div class="hoja-h"><div class="n">' + (op.kicker ? '<div class="k" id="hojaKick">' + esc(op.kicker) + '</div>' : '') + '<b id="hojaTit">' + esc(op.titulo || '') + '</b></div>' +
+    (op.sinCerrar ? '' : '<button type="button" class="c-cerrar" onclick="hojaCerrar()" aria-label="Cerrar">Cerrar ✕</button>') + '</div>' +
+    '<div class="hoja-b" id="hojaB"></div></div>';
+  var b = $('hojaB');
+  if (op.nodo) { hojaEstado.devolver = { nodo: op.nodo, padre: op.nodo.parentNode, sig: op.nodo.nextSibling }; op.nodo.classList.remove('hidden'); b.appendChild(op.nodo); }
+  else b.innerHTML = op.html || '';
+  hojaEstado.abierta = true; hojaEstado.alCerrar = op.alCerrar || null;
+  ov.classList.add('abriendo'); ov.style.display = 'flex';
+  requestAnimationFrame(function () { requestAnimationFrame(function () { ov.classList.remove('abriendo'); }); });
+  document.body.classList.add('hoja-abierta');
+  hojaArrastre(ov.querySelector('.hoja'), ov.querySelector('.hoja-h'));
+  if (op.foco) { var f = $(op.foco); if (f) { try { f.focus({ preventScroll: true }); } catch (e) { f.focus(); } } }
+  return b;
+}
+function hojaCerrar(sinAnim) {
+  var ov = $('hojaOv'); if (!ov || !hojaEstado.abierta) return;
+  hojaEstado.abierta = false;
+  var d = hojaEstado.devolver, al = hojaEstado.alCerrar; hojaEstado.devolver = null; hojaEstado.alCerrar = null;
+  var fin = function () { ov.style.display = 'none'; if (d && d.nodo) { d.nodo.classList.add('hidden'); d.padre.insertBefore(d.nodo, d.sig && d.sig.parentNode === d.padre ? d.sig : null); } ov.innerHTML = ''; };
+  document.body.classList.remove('hoja-abierta');
+  if (sinAnim) fin(); else { ov.classList.add('abriendo'); setTimeout(fin, 220); }
+  if (al) al();
+}
+function hojaAbiertaCon(nodo) { return hojaEstado.abierta && !!hojaEstado.devolver && hojaEstado.devolver.nodo === nodo; }
+/* Arrastre del asa: si baja más de 90 px, se cierra; si no, vuelve */
+function hojaArrastre(hoja, asa) {
+  if (!hoja || !asa) return;
+  var y0 = null, dy = 0;
+  asa.addEventListener('touchstart', function (ev) { y0 = ev.touches[0].clientY; dy = 0; hoja.style.transition = 'none'; }, { passive: true });
+  asa.addEventListener('touchmove', function (ev) { if (y0 == null) return; dy = Math.max(0, ev.touches[0].clientY - y0); hoja.style.transform = 'translateY(' + dy + 'px)'; }, { passive: true });
+  var fin = function () { if (y0 == null) return; y0 = null; hoja.style.transition = ''; hoja.style.transform = ''; if (dy > 90) hojaCerrar(); };
+  asa.addEventListener('touchend', fin); asa.addEventListener('touchcancel', fin);
+}
+document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && hojaEstado.abierta) hojaCerrar(); });
+/* Comida → Agregar: el momento como segmento Desayuno · Almuerzo · Cena + "Más" que despliega los otros tres */
+var MOM_PRINCIPALES = ['Desayuno', 'Almuerzo', 'Cena'], cMomMasAbierto = false;
+function pintarMomSeg() {
+  var box = $('cMomChips'); if (!box || !comidaDatos) return;
+  var m = $('cMomento').value, otros = comidaDatos.momentos.filter(function (x) { return MOM_PRINCIPALES.indexOf(x) < 0; });
+  var enOtros = otros.indexOf(m) >= 0, abierto = cMomMasAbierto || enOtros;
+  var b = function (x) { return '<button type="button" class="' + (x === m ? 'on' : '') + '" onclick="elegirMomento(' + gdArg(x) + ')">' + esc(x) + '</button>'; };
+  box.innerHTML = '<div class="toggle c-seg">' + MOM_PRINCIPALES.filter(function (x) { return comidaDatos.momentos.indexOf(x) >= 0; }).map(b).join('') +
+    (otros.length ? '<button type="button" class="mas' + (enOtros ? ' on' : '') + '" onclick="cMomMasAbierto=!cMomMasAbierto;pintarMomSeg()">' + (abierto ? 'Menos ⌃' : 'Más ⌄') + '</button>' : '') + '</div>' +
+    (abierto && otros.length ? '<div class="toggle c-seg c-seg2">' + otros.map(b).join('') + '</div>' : '');
+}
+/* Estado vacío con plantilla única: título, una línea y (opcional) un botón */
+function vacioHTML(titulo, texto, botonTexto, accion) {
+  return '<div class="g-vacio"><b>' + esc(titulo) + '</b><div class="s">' + esc(texto) + '</div>' +
+    (botonTexto ? '<button type="button" class="btn" onclick="' + esc(accion || '') + '">' + esc(botonTexto) + '</button>' : '') + '</div>';
+}
+/* ===== fin Tanda visual 2 ===== */
 </script>
 </body>
 </html>
