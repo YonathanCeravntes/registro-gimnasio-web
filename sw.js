@@ -1,5 +1,5 @@
-/* Service worker — Mi plan (versión 202610010339) */
-var V = 'gym-202610010339', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
+/* Service worker — Mi plan (versión 202610010409) */
+var V = 'gym-202610010409', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
 // './' es lo que pide la app al abrir (start_url); './index.html' era lo mismo bajado dos veces
 var SHELL = ['./', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
