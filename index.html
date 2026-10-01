@@ -14,7 +14,10 @@
 <meta name="theme-color" content="#0e0e10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Fuentes sin bloquear el primer pintado: se precargan y se aplican al llegar (mientras, las del sistema; font-display=swap) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap"></noscript>
 <style>
   :root{
     --bg:#0e0e10; --card:#18171b; --card2:#1c1b1f; --raise:#24232a; --raise2:#2a2830; --line:#2a2830;
@@ -465,7 +468,7 @@
   <!-- HOY -->
   <section id="tab-hoy">
     <div class="hero" id="hero">
-      <img id="heroImg" alt="" src="">
+      <img id="heroImg" alt="" decoding="async" src="">
       <div class="grad"></div>
       <div class="top">
         <span class="kicker" id="heroKicker" onclick="toggleSelector()"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="heroKickerTxt">…</span></span>
@@ -865,7 +868,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202609302245', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610010331', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1337,7 +1340,7 @@ function proximaHTML(p) {
   return '<div class="sec-h"><b>Lo que viene · ' + esc(diaLargoEtiqueta(p.etiqueta)) + '</b><span>' + p.ejercicios.length + ' ejercicios</span></div>' +
     p.ejercicios.map(function (x) {
       var v = x.variantes.principal || {}, img = (v.imagenes || [])[0] || '';
-      return '<div class="ex prox"><div class="ex-row" style="cursor:default">' + (img ? '<img class="thumb" alt="" loading="lazy" src="' + esc(img) + '">' : '<div class="thumb"></div>') +
+      return '<div class="ex prox"><div class="ex-row" style="cursor:default">' + (img ? '<img class="thumb" alt="" loading="lazy" decoding="async" src="' + esc(img) + '">' : '<div class="thumb"></div>') +
         '<div class="ex-info">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') +
         '<div class="ex-name">' + esc(v.nombre || x.nombres[0]) + '</div><div class="ex-mus">' + musculosHTML(v.musculos) + '</div>' +
         '<div class="ex-meta"><b>' + prescCorta(x.prescripcion, x.unidad) + '</b></div>' +
@@ -1397,10 +1400,12 @@ function pintarSesion(s) {
 var prefetchHecho = false;
 function prefetch() {
   if (prefetchHecho) return; prefetchHecho = true;
-  // En segundo plano y de a una (en conexiones lentas no compite con lo que estás viendo)
+  // En segundo plano, 2,5 s después de pintar Hoy, y las dos a la vez (un solo viaje de red en vez de dos encadenados)
   setTimeout(function () {
-    api('getPanel').then(function (r) { escribirCache('panel', r); }).catch(function () {})
-      .then(function () { return api('getHistorial', 30).then(function (r) { escribirCache('hist', r); }).catch(function () {}); });
+    Promise.all([
+      api('getPanel').then(function (r) { escribirCache('panel', r); }).catch(function () {}),
+      api('getHistorial', 30).then(function (r) { escribirCache('hist', r); }).catch(function () {})
+    ]);
   }, 2500);
 }
 function invalidarDia() {
@@ -1440,7 +1445,7 @@ function tarjeta(e, i) {
   var abierto = !!abiertos[i];
   return '<div class="ex st-' + e.estado + '" id="ex' + i + '">' +
     '<div class="ex-row" onclick="alternar(' + i + ')">' +
-      '<img class="thumb" id="exThumb' + i + '" alt="" loading="lazy">' +
+      '<img class="thumb" id="exThumb' + i + '" alt="" loading="lazy" decoding="async">' +
       '<div class="ex-info">' + (e.rol ? '<span class="rol rol-' + esc(e.rol) + '">' + esc(e.rolTexto) + '</span>' : '') + '<div class="ex-name" id="exNom' + i + '"></div><div class="ex-mus" id="exMus' + i + '"></div><div class="ex-alt" id="exAlt' + i + '"></div>' +
       '<div class="ex-meta"><b>' + prescCorta(e.prescripcion, e.unidad) + '</b></div>' +
       '<div class="ex-sug" id="exRes' + i + '"></div></div>' +
@@ -1558,7 +1563,7 @@ function pintar(i, v) {
   $('exNo' + i).textContent = e.estado === 'omitido' ? 'Reabrir (volver a pendiente)' : 'No lo hice';
   var th = $('exThumb' + i);
   if (d.imagenes.length) { th.src = d.imagenes[0]; th.className = 'thumb'; } else th.className = 'thumb none';
-  $('exImg' + i).innerHTML = d.imagenes.map(function (u) { return '<img loading="lazy" alt="" src="' + esc(u) + '">'; }).join('');
+  $('exImg' + i).innerHTML = d.imagenes.map(function (u) { return '<img loading="lazy" decoding="async" alt="" src="' + esc(u) + '">'; }).join('');
   $('exImg' + i).style.display = d.imagenes.length ? 'flex' : 'none';
   var sg = d.sugerencia, ref = sg.ref;
   $('exSug' + i).innerHTML = '<div class="sug">' + esc(sg.texto) + '</div>' +
@@ -2240,14 +2245,14 @@ function soportaPush() { return 'serviceWorker' in navigator && 'PushManager' in
 /* El service worker de la app instalada (si en 4 s no está, la app no está instalada o no cargó sw.js) */
 function swListo() { return Promise.race([navigator.serviceWorker.ready, new Promise(function (ok) { setTimeout(function () { ok(null); }, 4000); })]); }
 var pushInfo = null;
-function cargarPushUI() {
+function cargarPushUI(p) {
   if (!$('pushEstado')) return;
   if (!soportaPush()) {
     var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
     $('pushEstado').innerHTML = ios ? 'Para recibir avisos en el iPhone: abre Mi plan desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
     $('pushActivar').style.display = 'none'; $('pushOpc').style.display = 'none'; return;
   }
-  Promise.all([api('getPush'), swListo().then(function (r) { return r ? r.pushManager.getSubscription() : null; }).catch(function () { return null; })]).then(function (x) {
+  Promise.all([p || api('getPush'), swListo().then(function (r) { return r ? r.pushManager.getSubscription() : null; }).catch(function () { return null; })]).then(function (x) {
     pushInfo = x[0]; var sub = x[1], activo = !!sub && Notification.permission === 'granted';
     $('pushEstado').innerHTML = activo ? '✓ Activos en este celular.' : Notification.permission === 'denied' ? 'Bloqueaste los avisos: actívalos en Ajustes del celular → Notificaciones → Mi plan.' : 'Apagados en este celular.';
     $('pushActivar').style.display = activo || Notification.permission === 'denied' ? 'none' : '';
@@ -2275,27 +2280,42 @@ function guardarPushPref() {
 }
 function probarPushUI(b) { b.disabled = true; api('probarPush').then(function () { toast('Aviso enviado: debe llegarte en unos segundos'); }).catch(err).then(function () { b.disabled = false; }); }
 
+/* Ajustes pide todo en UNA llamada (getAjustes) y reparte cada parte a su tarjeta; si una parte falló en el servidor, esa tarjeta
+   muestra su error y las demás pintan normal. Si el servidor aún no conoce getAjustes (app publicada antes que el servidor), se
+   piden las partes por separado como antes. Cada cargador acepta una promesa con sus datos o, sin ella, llama al servidor. */
 function cargarAjustes() {
-  cargarPushUI();
-  cargarSaludUI();
-  cargarCuenta();
-  cargarAvisos();
-  cargarProgramas();
-  api('getPerfil').then(function (p) {
-    $('pEdad').value = p.Edad || ''; $('pSexo').value = p.Sexo || 'M'; $('pEstatura').value = p.EstaturaM || '';
-    $('pPasoM').value = String(p.PasoMancuernas || 2); $('pDisco').value = String(p.DiscoMinimo || 1.25);
-    var sel = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); });
-    $('pDias').innerHTML = [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (sel.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('');
-    $('pInicio').textContent = 'El plan empezó el ' + p.fechaInicio + ' (se cambia en la hoja Config).';
-    $('pCond').value = p.Condiciones || ''; $('pMed').value = p.Medicamentos || ''; $('pLes').value = p.Lesiones || ''; $('pOtros').value = p.OtrosSalud || '';
-    if (p.Condiciones || p.Medicamentos || p.Lesiones || p.OtrosSalud) $('pCond').closest('details').open = true;
-    var ia = p.ia || {};
-    $('pProv').value = ia.eleccion || ''; $('pModeloClaude').value = ia.modeloClaude || ''; $('pClaveClaude').value = '';
-    $('pModelo').value = p.ModeloIA || ''; $('pClave').value = '';
-    $('pClaveClaudeEstado').textContent = ia.tieneClaveClaude ? 'Clave de Claude guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Claude todavía.';
-    $('pClaveEstado').textContent = ia.tieneClaveGemini ? 'Clave de Gemini guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Gemini.';
-    if (!ia.tieneClave) $('pClaveClaudeEstado').textContent += ' El Coach y el diseño con IA no funcionarán hasta que pegues una clave.';
-  }).catch(err);
+  api('getAjustes').then(function (a) {
+    var e = a.errores || {};
+    var parte = function (k) {
+      var pr = a[k] !== undefined ? Promise.resolve(a[k]) : Promise.reject(new Error(e[k] || 'No llegó ' + k));
+      pr.catch(function () {});   // si la tarjeta no la usa (p. ej. el celular no soporta avisos), el error no queda suelto en la consola
+      return pr;
+    };
+    cargarPushUI(parte('push'));
+    cargarSaludUI(parte('salud'));
+    cargarCuenta(parte(estado && estado.usuario && !estado.usuario.esDueno ? 'cuentaAlumno' : 'invitacion'));
+    cargarAvisos(parte('avisos'));
+    cargarProgramas(parte('programas'));
+    parte('perfil').then(pintarPerfil).catch(err);
+  }).catch(function () {
+    cargarPushUI(); cargarSaludUI(); cargarCuenta(); cargarAvisos(); cargarProgramas();
+    api('getPerfil').then(pintarPerfil).catch(err);
+  });
+}
+function pintarPerfil(p) {
+  $('pEdad').value = p.Edad || ''; $('pSexo').value = p.Sexo || 'M'; $('pEstatura').value = p.EstaturaM || '';
+  $('pPasoM').value = String(p.PasoMancuernas || 2); $('pDisco').value = String(p.DiscoMinimo || 1.25);
+  var sel = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); });
+  $('pDias').innerHTML = [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (sel.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('');
+  $('pInicio').textContent = 'El plan empezó el ' + p.fechaInicio + ' (se cambia en la hoja Config).';
+  $('pCond').value = p.Condiciones || ''; $('pMed').value = p.Medicamentos || ''; $('pLes').value = p.Lesiones || ''; $('pOtros').value = p.OtrosSalud || '';
+  if (p.Condiciones || p.Medicamentos || p.Lesiones || p.OtrosSalud) $('pCond').closest('details').open = true;
+  var ia = p.ia || {};
+  $('pProv').value = ia.eleccion || ''; $('pModeloClaude').value = ia.modeloClaude || ''; $('pClaveClaude').value = '';
+  $('pModelo').value = p.ModeloIA || ''; $('pClave').value = '';
+  $('pClaveClaudeEstado').textContent = ia.tieneClaveClaude ? 'Clave de Claude guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Claude todavía.';
+  $('pClaveEstado').textContent = ia.tieneClaveGemini ? 'Clave de Gemini guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Gemini.';
+  if (!ia.tieneClave) $('pClaveClaudeEstado').textContent += ' El Coach y el diseño con IA no funcionarán hasta que pegues una clave.';
 }
 /* ---------- Bienvenida (primera vez) ---------- */
 var bvMostrada = false, bvPaso = 0, bvPreview = false;
@@ -2380,8 +2400,8 @@ function terminarBienvenida() {
 
 /* ---------- Programas ---------- */
 var programasCache = null;
-function cargarProgramas() {
-  api('getProgramas').then(function (r) { programasCache = r; pintarProgramas(r); }).catch(function (e) { $('progCard').innerHTML = '<h2>Programa</h2><div class="meta">No pude cargar los programas: ' + esc(e.message || e) + '</div>'; });
+function cargarProgramas(p) {
+  (p || api('getProgramas')).then(function (r) { programasCache = r; pintarProgramas(r); }).catch(function (e) { $('progCard').innerHTML = '<h2>Programa</h2><div class="meta">No pude cargar los programas: ' + esc(e.message || e) + '</div>'; });
 }
 function pintarProgramas(r) {
   var est = r.estado || {};
@@ -2591,8 +2611,8 @@ function sinTildes(t) { return String(t || '').toLowerCase().normalize('NFD').re
 var SALUD_RAPIDAS = [['hipertension', 'Presión alta'], ['diabetes2', 'Diabetes tipo 2'], ['prediabetes', 'Prediabetes'], ['higado_graso', 'Hígado graso'],
   ['dislipidemia', 'Colesterol alto'], ['reflujo', 'Gastritis o reflujo'], ['lumbar', 'Dolor lumbar o hernia'], ['', 'Ninguna']];
 var saludMedSi = false;
-function cargarSaludUI() {
-  return api('getSalud').then(function (r) { saludCat = r; saludSel = { cond: r.cond.slice(), med: r.med.slice() }; saludMedSi = r.med.length > 0; pintarSaludTodo(); return r; }).catch(err);
+function cargarSaludUI(p) {
+  return (p || api('getSalud')).then(function (r) { saludCat = r; saludSel = { cond: r.cond.slice(), med: r.med.slice() }; saludMedSi = r.med.length > 0; pintarSaludTodo(); return r; }).catch(err);
 }
 function pintarSaludTodo() { pintarSaludGrid(); pintarSaludSel('cond'); pintarSaludSel('med'); pintarSaludMed(); pintarSaludResumen(); }
 function pintarSaludGrid() {
@@ -3130,7 +3150,7 @@ function pintarArmar() {
     if (!s.ejercicios.length) h += '<div class="meta">Sin ejercicios todavía.</div>';
     s.ejercicios.forEach(function (e, j) {
       var img = e.img || (mpBib[e.ejercicio] && mpBib[e.ejercicio].img) || '';
-      h += '<div class="mp-ex"><div class="mp-ex-top">' + (img ? '<img class="mp-thumb" loading="lazy" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
+      h += '<div class="mp-ex"><div class="mp-ex-top">' + (img ? '<img class="mp-thumb" loading="lazy" decoding="async" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
         '<div class="mp-ex-b"><div class="mp-ex-n">' + (j + 1) + ' · ' + esc(e.ejercicio) + '<button class="btn txt" onclick="abrirPicker(\'principal\',' + i + ',' + j + ')">Cambiar</button></div>' +
         '<div class="mp-ex-a">' + (e.alternativa ? 'Alternativa: ' + esc(e.alternativa) + '<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Cambiar</button>' : '<span class="amber">Falta la alternativa</span><button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Elegir</button>') + '</div></div>' +
         '<div class="mp-ico"><button title="Subir" onclick="mpMoverEj(' + i + ',' + j + ',-1)">▲</button><button title="Bajar" onclick="mpMoverEj(' + i + ',' + j + ',1)">▼</button><button title="Quitar" onclick="mpQuitarEj(' + i + ',' + j + ')">✕</button></div></div>' +
@@ -3199,7 +3219,7 @@ function pintarPicker() {
   $('pkChips').innerHTML = ['Todos'].concat(mp.grupos).map(function (x) { var on = (x === 'Todos' && !pkGrupo) || x === pkGrupo; return '<span class="chip' + (on ? ' on' : '') + '" onclick="pkGrupo=\'' + (x === 'Todos' ? '' : esc(x)) + '\';pintarPicker()">' + esc(x) + '</span>'; }).join('');
   $('pkLista').innerHTML = pkLista.length ? pkLista.map(function (b, k) {
     var usado = enUso.indexOf(b.nombre) >= 0;
-    return '<button class="pk-item" onclick="pkElegir(' + k + ')"' + (usado ? ' disabled style="opacity:.45"' : '') + '>' + (b.img ? '<img class="mp-thumb" loading="lazy" alt="" src="' + esc(b.img) + '">' : '<div class="mp-thumb"></div>') +
+    return '<button class="pk-item" onclick="pkElegir(' + k + ')"' + (usado ? ' disabled style="opacity:.45"' : '') + '>' + (b.img ? '<img class="mp-thumb" loading="lazy" decoding="async" alt="" src="' + esc(b.img) + '">' : '<div class="mp-thumb"></div>') +
       '<div><b>' + esc(b.nombre) + '</b><small>' + esc(b.grupo) + ' · ' + (b.tipo === 'C' ? 'compuesto' : 'aislamiento') + (usado ? ' · ya está en este día' : '') + '</small></div></button>';
   }).join('') : '<div class="meta" style="margin-top:8px">Nada con ese nombre en la biblioteca: puedes agregarlo abajo como ejercicio propio.</div>';
 }
@@ -3262,7 +3282,7 @@ function copiarDiag() {
 }
 
 /* =================== CUENTA E INVITADOS (en Ajustes) =================== */
-function cargarCuenta() {
+function cargarCuenta(p) {
   var u = estado && estado.usuario;
   if (!u) return;
   $('cuentaCard').style.display = '';
@@ -3272,9 +3292,9 @@ function cargarCuenta() {
   var mc = $('ajMenuCuenta');
   mc.querySelector('b').textContent = u.esDueno ? 'Cuenta e invitados' : 'Cuenta y entrenador';
   mc.querySelector('small').textContent = u.esDueno ? 'Quién eres y a quién invitaste' : 'Tu entrenador y tu plan';
-  if (!u.esDueno) { $('invCard').style.display = 'none'; cargarCuentaAlumno(); return; }
+  if (!u.esDueno) { $('invCard').style.display = 'none'; cargarCuentaAlumno(p); return; }
   $('invCard').style.display = '';
-  api('getInvitacion').then(pintarInvitacion).catch(function (e) { $('invBody').textContent = 'No pude cargar la invitación: ' + (e.message || e); });
+  (p || api('getInvitacion')).then(pintarInvitacion).catch(function (e) { $('invBody').textContent = 'No pude cargar la invitación: ' + (e.message || e); });
 }
 function pintarInvitacion(r) {
   var h = '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:4px 0 10px">' +
@@ -3337,9 +3357,9 @@ function planEntrenadorDespues(id, b) {
 }
 
 /* ---------- Ajustes → Cuenta (invitados): compartir con el entrenador y su plan (gratis / Pro) ---------- */
-function cargarCuentaAlumno() {
+function cargarCuentaAlumno(p) {
   $('entCard').style.display = '';
-  api('getCuentaAlumno').then(pintarCuentaAlumno).catch(function (e) { $('entBody').textContent = 'No pude cargar: ' + (e.message || e); });
+  (p || api('getCuentaAlumno')).then(pintarCuentaAlumno).catch(function (e) { $('entBody').textContent = 'No pude cargar: ' + (e.message || e); });
 }
 function quienEntrena(n) { return n && n !== 'Tu entrenador' ? n : 'el dueño de la app'; }
 function pintarCuentaAlumno(c) {
@@ -3506,9 +3526,9 @@ function guardarPro(btn) {
 }
 
 /* =================== AVISOS (en Ajustes) =================== */
-function cargarAvisos() {
+function cargarAvisos(p) {
   $('aHora').innerHTML = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].map(function (h) { return '<option value="' + h + '">' + (h <= 12 ? h : h - 12) + (h < 12 ? ' a. m.' : ' p. m.') + '</option>'; }).join('');
-  api('getAvisos').then(function (a) { $('aDiario').checked = a.diario; $('aSemanal').checked = a.semanal; $('aHora').value = a.hora; $('aEmail').value = a.email || ''; }).catch(err);
+  (p || api('getAvisos')).then(function (a) { $('aDiario').checked = a.diario; $('aSemanal').checked = a.semanal; $('aHora').value = a.hora; $('aEmail').value = a.email || ''; }).catch(err);
 }
 $('aGuardar').onclick = function () {
   api('guardarAvisos', { diario: $('aDiario').checked, hora: $('aHora').value, semanal: $('aSemanal').checked, email: $('aEmail').value })

@@ -1,6 +1,7 @@
-/* Service worker — Mi plan (versión 202609302245) */
-var V = 'gym-202609302245', MEDIA = 'gym-media';
-var SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+/* Service worker — Mi plan (versión 202610010331) */
+var V = 'gym-202610010331', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
+// './' es lo que pide la app al abrir (start_url); './index.html' era lo mismo bajado dos veces
+var SHELL = ['./', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(V).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
 });
@@ -9,26 +10,48 @@ self.addEventListener('activate', function (e) {
     return Promise.all(ks.filter(function (k) { return k !== V && k !== MEDIA; }).map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
+// La caché de fotos y fuentes no crece sin tope: se borran las entradas más viejas
+function recortar(c, max) {
+  return c.keys().then(function (ks) {
+    if (ks.length <= max) return;
+    return Promise.all(ks.slice(0, ks.length - max).map(function (k) { return c.delete(k); }));
+  });
+}
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET') return;
   var url = new URL(req.url);
   if (url.origin === location.origin) {
-    // La app: primero red (para recibir actualizaciones), si no hay señal la copia guardada
-    e.respondWith(fetch(req).then(function (r) {
-      if (r.ok) { var cp = r.clone(); caches.open(V).then(function (c) { c.put(req, cp); }); }
-      return r;
-    }).catch(function () {
-      return caches.match(req, { ignoreSearch: true }).then(function (r) { return r || caches.match('./index.html'); });
+    // La app: lo guardado primero (abre al instante, sin esperar la red) y se refresca por detrás para la próxima vez.
+    // Cuando se publica una versión, el sw.js nuevo baja el HTML nuevo al instalarse y la app se recarga sola (controllerchange).
+    e.respondWith(caches.open(V).then(function (c) {
+      return c.match(req, { ignoreSearch: true }).then(function (hit) {
+        var red = fetch(req).then(function (r) {
+          if (r.ok) e.waitUntil(c.put(req, r.clone()).catch(function () {}));
+          return r;
+        });
+        if (hit) { e.waitUntil(red.catch(function () {})); return hit; }
+        return red.catch(function () { return c.match('./'); });
+      });
     }));
     return;
   }
   if (/fonts\.(googleapis|gstatic)\.com|raw\.githubusercontent\.com|lh3\.googleusercontent\.com|drive\.google\.com/.test(url.host)) {
-    // Fuentes y fotos de ejercicios: lo guardado primero, y se refresca por detrás
+    // Fuentes y fotos: lo guardado primero. Las <img> y <link> a otro origen llegan como respuestas "opacas" (r.ok es false
+    // aunque estén bien): también se guardan (antes la caché quedaba siempre vacía) y se refrescan por detrás.
+    // Las fotos de ejercicios (raw.githubusercontent.com) no cambian: si están guardadas no se vuelven a bajar (630–810 KB por
+    // apertura en 4G); se piden con CORS (ese servidor lo permite) para ver el estado real y no guardar una foto rota.
+    var esFoto = /raw\.githubusercontent\.com/.test(url.host);
     e.respondWith(caches.open(MEDIA).then(function (c) {
       return c.match(req).then(function (hit) {
-        var red = fetch(req).then(function (r) { if (r.ok) c.put(req, r.clone()); return r; }).catch(function () { return hit; });
-        return hit || red;
+        if (hit && esFoto) return hit;
+        var pedido = esFoto ? fetch(req.url, { mode: 'cors', credentials: 'omit' }).catch(function () { return fetch(req); }) : fetch(req);
+        var red = pedido.then(function (r) {
+          if (r.ok || (!esFoto && r.type === 'opaque')) e.waitUntil(c.put(req, r.clone()).then(function () { return recortar(c, MEDIA_MAX); }).catch(function () {}));
+          return r;
+        });
+        if (hit) { e.waitUntil(red.catch(function () {})); return hit; }
+        return red;
       });
     }));
   }
