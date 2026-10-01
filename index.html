@@ -531,6 +531,76 @@
   .g-eye-s{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
   .g-grow{flex:1;min-height:16px}
   .g-cardio{margin-top:10px}
+  /* ===== G-A: primer día, entrada, programa, ajustes ===== */
+  .bv-metas{display:flex;flex-direction:column;gap:8px}
+  .bv-meta{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;border-radius:16px;padding:10px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-align:left;font-family:var(--body);cursor:pointer}
+  .bv-meta.on{background:var(--amber-bg);border:2px solid var(--amber);padding:9px}
+  .bv-meta img{width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--raise);flex-shrink:0}
+  .bv-meta b{display:block;font-size:17px;line-height:1.2} .bv-meta small{display:block;color:var(--muted);font-size:13px;margin-top:3px;line-height:1.35}
+  .bv-otro{margin-top:14px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5} .bv-otro a{font-weight:700}
+  .bv-n button{min-height:48px;font-size:16px}
+  .bv-sem{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
+  .bv-sem button{min-height:44px;border-radius:12px;font:800 14px var(--body);color:var(--dim);background:var(--card);border:1px solid var(--line);cursor:pointer;padding:0}
+  .bv-sem button.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+  .sw{display:flex;align-items:center;gap:12px;margin-top:18px;padding:12px;border-radius:14px;background:var(--card);text-transform:none;letter-spacing:0;color:var(--ink);cursor:pointer;position:relative}
+  .sw>span{flex:1} .sw b{display:block;font-size:15px} .sw small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .sw input{position:absolute;opacity:0;width:1px;height:1px}
+  .sw i{width:50px;height:30px;border-radius:999px;background:var(--raise2);position:relative;flex-shrink:0;transition:background .15s}
+  .sw i::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:999px;background:#fff;transition:transform .15s}
+  .sw input:checked+i{background:var(--amber)} .sw input:checked+i::after{transform:translateX(20px)}
+  .bv-big input{font-size:28px;font-family:var(--disp);font-weight:800;padding:12px;text-align:center}
+  .at-hero{position:relative;height:200px;margin:-8px -20px 12px;overflow:hidden;background:var(--card)}
+  .at-hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+  .at-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,14,16,.25) 0%,rgba(14,14,16,.1) 50%,#0e0e10 100%)}
+  .at-box{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--card);font-size:14px;line-height:1.45;color:var(--muted)} .at-box b{color:var(--ink)}
+  .at-row{display:flex;align-items:center;gap:10px} .at-row>div{flex:1} .at-row small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px} .at-row .btn{min-width:92px}
+  #bvCuerpo .cta{margin-top:14px}
+  /* Programa compacto (Ajustes → Programa y primer día) */
+  .pg-act{display:flex;align-items:center;gap:12px}
+  .pg-act img,.pg-foto{width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--raise);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .pg-foto svg{width:26px;height:26px;fill:none;stroke:var(--faint);stroke-width:2;stroke-linecap:round}
+  .pg-act-b{flex:1;min-width:0} .pg-act-b b{display:block;font-size:17px;line-height:1.2} .pg-act-b small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .pg-act .btn.small{min-height:44px}
+  .pg-car-wrap{position:relative;margin:8px -14px 0}
+  .pg-car-wrap::after{content:'';position:absolute;top:0;right:0;bottom:0;width:36px;background:linear-gradient(90deg,rgba(24,23,27,0),var(--card));pointer-events:none}
+  .pg-car{display:flex;gap:8px;overflow-x:auto;padding:4px 14px 6px;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch} .pg-car::-webkit-scrollbar{display:none}
+  .pg-card{flex:0 0 132px;scroll-snap-align:center;border-radius:14px;padding:8px;background:var(--card2);border:1px solid var(--line);color:var(--ink);text-align:left;font-family:var(--body);cursor:pointer}
+  .pg-card.on{background:var(--amber-bg);border:2px solid var(--amber);padding:7px}
+  .pg-card img,.pg-card .pg-foto{width:100%;height:84px;border-radius:10px;object-fit:cover;display:block;background:var(--raise)}
+  .pg-card b{display:block;font-size:14px;line-height:1.2;margin-top:8px} .pg-card small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .pg-panel{margin-top:10px;padding:12px;border-radius:14px;background:var(--card2)}
+  .pg-h{display:flex;align-items:center;gap:8px;margin-bottom:6px} .pg-h b{font-size:17px}
+  .pg-usar{position:sticky;bottom:calc(86px + env(safe-area-inset-bottom,0px));margin:12px -14px -14px;padding:10px 14px 12px;background:var(--card);border-radius:0 0 var(--r) var(--r)}
+  #bvProg .pg-car-wrap{margin:8px -20px 0} #bvProg .pg-car{padding:4px 20px 6px} #bvProg .pg-car-wrap::after{background:linear-gradient(90deg,rgba(14,14,16,0),var(--bg))}
+  #bvProg .pg-panel{background:var(--card)}
+  /* Ajustes por grupos */
+  .aj-res{margin-top:4px;font-size:13px;word-break:break-word}
+  .aj-grupo{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin:16px 0 6px 4px}
+  #ajMenu .aj-grupo:first-child{margin-top:4px}
+  .aj-menu button{justify-content:space-between;min-height:56px}
+  .aj-menu button>span:first-child{flex:1;min-width:0}
+  .aj-menu .chev{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .aj-menu small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .aj-obj{flex-wrap:wrap} .aj-obj button{flex:1 1 40%}
+  /* Armar mi plan: tres caminos y filas compactas */
+  .mp-vias{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .mp-via{display:flex;align-items:center;gap:12px;width:100%;min-height:68px;border-radius:16px;padding:10px 12px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-align:left;font-family:var(--body);cursor:pointer}
+  .mp-via .ic{width:44px;height:44px;border-radius:12px;background:var(--raise);display:flex;align-items:center;justify-content:center;flex-shrink:0;font:800 26px var(--disp);color:var(--amber)}
+  .mp-via .ic svg{width:22px;height:22px;fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round} .mp-via .ic.ia svg{stroke:var(--green-ink)}
+  .mp-via b{display:block;font-size:16px} .mp-via small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .mp-bases{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+  .mp-row{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 0;border-top:1px solid var(--line)}
+  .mp-row-b{flex:1;min-width:0;border:0;background:none;color:var(--ink);text-align:left;font-family:var(--body);padding:0;cursor:pointer;min-height:44px}
+  .mp-row-b b{display:block;font-size:15px;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical} .mp-row-b small{display:block;color:var(--muted);font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mp-more{width:44px;height:44px;border-radius:12px;border:0;background:var(--raise);color:var(--ink);font:800 18px var(--body);letter-spacing:1px;cursor:pointer;flex-shrink:0}
+  .mp-ss{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--amber);margin:-6px 0 6px 54px}
+  .mp-row+.mp-nums{margin:0 0 10px 54px}
+  .mp-mas{margin:12px 0 0} .mp-mas summary{color:var(--amber);font-weight:700;font-size:14px;cursor:pointer;padding:10px 0} .mp-mas .card{margin-top:8px}
+  .ha-ov{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
+  .ha{width:100%;max-width:640px;background:var(--card);border-radius:20px 20px 0 0;padding:10px 14px calc(14px + env(safe-area-inset-bottom,0px))}
+  .ha-t{font-size:13px;color:var(--muted);padding:6px 4px 8px;text-align:center}
+  .ha button{display:block;width:100%;min-height:50px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:600 16px var(--body);cursor:pointer}
+  .ha button.bad{color:var(--bad)} .ha .ha-cancel{margin-top:8px;border-top:0;border-radius:14px;background:var(--raise);font-weight:800}
 </style>
 </head>
 <body>
@@ -720,22 +790,37 @@
 
   <!-- AJUSTES -->
   <section id="tab-ajustes" class="hidden">
-    <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Ajustes</div></div><button class="gear" onclick="irA('hoy')" aria-label="Volver"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="page-h"><div><div class="kicker">Ajustes</div><div class="h-big sm" id="ajNombre">Ajustes</div><div class="meta aj-res" id="ajResumen"></div></div><button class="gear" onclick="irA('hoy')" aria-label="Volver"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div class="wrap">
-    <div class="card aj-menu" id="ajMenu">
-      <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span class="ic">👤</span><span><b>Cuenta e invitados</b><small>Quién eres y a quién invitaste</small></span></button>
-      <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span class="ic">🧑‍🏫</span><span><b>Alumnos y Pro</b><small>Modo entrenador: sus semanas, notas y planes</small></span></button>
-      <button onclick="ajSeccion('programa')"><span class="ic">🏋️</span><span><b>Programa</b><small>Tu programa, bloques y Mi plan</small></span></button>
-      <button onclick="ajSeccion('perfil')"><span class="ic">📏</span><span><b>Perfil y gimnasio</b><small>Edad, días de entreno y pesos de tu gimnasio</small></span></button>
-      <button onclick="ajSeccion('salud')"><span class="ic">❤️</span><span><b>Salud</b><small>Condiciones, medicamentos y molestias (las lee el Coach)</small></span></button>
-      <button onclick="ajSeccion('avisos')"><span class="ic">🔔</span><span><b>Avisos</b><small>En el celular y por correo</small></span></button>
-      <button onclick="ajSeccion('ia')"><span class="ic">✨</span><span><b>Inteligencia artificial</b><small>Claude o Gemini para el Coach y los planes</small></span></button>
-      <button onclick="ajSeccion('conexion')"><span class="ic">📶</span><span><b>Conexión</b><small>Si algo no carga, prueba aquí</small></span></button>
+    <div id="ajMenu">
+      <div class="aj-grupo">Tu entreno</div>
+      <div class="card aj-menu">
+        <button onclick="ajSeccion('programa')"><span><b>Programa y días</b><small id="ajSubPrograma">Cargando…</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="ajSeccion('gimnasio')"><span><b>Mi gimnasio</b><small id="ajSubGimnasio">Mancuernas y discos que tienes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="ajSeccion('salud')"><span><b>Salud</b><small id="ajSubSalud">Condiciones y medicamentos</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="aj-grupo">Tu comida</div>
+      <div class="card aj-menu">
+        <button onclick="ajSeccion('comida')"><span><b>Objetivo y meta</b><small id="ajSubComida">Cargando…</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="aj-grupo">Tu cuenta</div>
+      <div class="card aj-menu">
+        <button onclick="ajSeccion('perfil')"><span><b>Perfil, avisos y contraseña</b><small id="ajSubPerfil">Edad, estatura, días y recordatorios</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Invitaciones y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
     </div>
     <button class="btn txt aj-volver" id="ajVolver" onclick="ajSeccion('')">← Todos los ajustes</button>
-    <div class="card" id="cuentaCard" data-sec="cuenta" style="display:none">
+    <div class="card aj-menu" data-sec="avanzado">
+      <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span><b>Invitados</b><small>Tu código y quién se registró</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span><b>Alumnos y Pro</b><small>Modo entrenador: sus semanas, notas y planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('ia')" id="ajMenuIA" style="display:none"><span><b>Inteligencia artificial</b><small>Claude o Gemini para el Coach y los planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('conexion')"><span><b>Conexión</b><small>Si algo no carga, prueba aquí</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="card" id="cuentaCard" data-sec="cuenta perfil" style="display:none">
       <h2>Cuenta</h2>
       <div class="meta" id="cuentaTxt"></div>
+      <button class="btn sec" id="cuentaClave" style="margin-top:10px;display:none" onclick="cambiarClaveUI()">Cambiar mi contraseña</button>
+      <div class="meta faint" id="cuentaClaveTxt" style="margin-top:6px;font-size:12px;display:none">Te mandamos un código a tu correo y eliges la contraseña nueva. Las otras sesiones se cierran.</div>
     </div>
     <div class="card" id="entCard" data-sec="cuenta" style="display:none">
       <h2>Tu entrenador</h2>
@@ -756,7 +841,7 @@
     </div>
     <div class="card" id="invCard" data-sec="cuenta" style="display:none">
       <h2>Invitados</h2>
-      <div class="meta">Quien quiera probar la app abre este enlace en su celular, toca <b>Crear mi cuenta</b> y escribe el código. Cada persona tiene su propia hoja de datos en tu Drive.</div>
+      <div class="meta">Comparte el enlace por WhatsApp: abre la app en <b>Crear cuenta</b> con tu código ya puesto. Cada persona ve solo sus datos.</div>
       <div id="invBody" class="meta" style="margin-top:8px">Cargando…</div>
     </div>
     <div class="card" id="progCard" data-sec="programa">
@@ -770,20 +855,30 @@
         <div><label for="pSexo">Sexo</label><select id="pSexo"><option value="M">Hombre</option><option value="F">Mujer</option></select></div>
         <div><label for="pEstatura">Estatura (m)</label><input id="pEstatura" type="number" inputmode="decimal" step="0.01"></div>
       </div>
-      <label>Días de entreno por defecto (cada semana los puedes cambiar en "Ajustar días")</label>
+      <label>Días de entreno de siempre (cada semana los puedes mover en Hoy → Ajustar días)</label>
       <div class="dias" id="pDias"></div>
       <div class="meta" style="margin-top:6px" id="pInicio"></div>
-      <div class="row" style="margin-top:12px">
-        <div><label for="pPasoM">Mancuernas de tu gimnasio</label><select id="pPasoM"><option value="1">De 1 en 1 kg</option><option value="2">De 2 en 2 kg</option><option value="2.5">De 2,5 en 2,5 kg</option></select></div>
-        <div><label for="pDisco">Disco más pequeño</label><select id="pDisco"><option value="0.5">0,5 kg</option><option value="1.25">1,25 kg</option><option value="2.5">2,5 kg</option></select></div>
-      </div>
-      <div class="meta" style="margin-top:6px">Así la app solo te sugiere pesos que existen en tu gimnasio.</div>
       <div class="row" style="margin-top:12px">
         <div><label for="pNivel">Experiencia con pesas</label><select id="pNivel"><option value="">Sin dato</option><option value="nuevo">Empiezo (menos de 3 meses)</option><option value="3-12m">De 3 a 12 meses</option><option value="1a+">Más de 1 año</option></select></div>
         <div><label for="pMin">Minutos por sesión</label><input id="pMin" type="number" inputmode="numeric" min="15" max="180" placeholder="60"></div>
       </div>
+    </div>
+    <div class="card" data-sec="gimnasio">
+      <h2>Mi gimnasio</h2>
+      <div class="meta">Así la app solo te sugiere pesos que existen en tu gimnasio.</div>
+      <div class="row">
+        <div><label for="pPasoM">Mancuernas</label><select id="pPasoM"><option value="1">De 1 en 1 kg</option><option value="2">De 2 en 2 kg</option><option value="2.5">De 2,5 en 2,5 kg</option></select></div>
+        <div><label for="pDisco">Disco más pequeño</label><select id="pDisco"><option value="0.5">0,5 kg</option><option value="1.25">1,25 kg</option><option value="2.5">2,5 kg</option></select></div>
+      </div>
       <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa">
       <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer.</div>
+    </div>
+    <div class="card" data-sec="comida">
+      <h2>Objetivo y meta</h2>
+      <div class="meta">Con esto se arma tu plan de comida y la meta del día. El programa de pesas sigue igual.</div>
+      <div class="sl-yn aj-obj" id="ajObj"></div>
+      <div class="meta" id="ajMeta" style="margin-top:10px"></div>
+      <button class="btn txt" onclick="irA('comida')">Ver mi plan de comida →</button>
     </div>
     <div class="card" data-sec="salud">
       <h2>Tu salud</h2>
@@ -815,7 +910,7 @@
       <div class="meta faint" style="font-size:12px">Son datos sensibles (Ley 1581 de 2012). Van a la IA (Anthropic o Google) solo para responderte. Si lo apagas, la IA recibe las reglas (límites de comida y ejercicios a evitar) sin los nombres.</div>
       <div class="meta faint" style="margin-top:10px;font-size:12px">Se guarda solo. No reemplaza a tu médico; puedes cambiarlo cuando quieras.</div>
     </div>
-    <div class="card" data-sec="avisos" id="pushCard">
+    <div class="card" data-sec="avisos perfil" id="pushCard">
       <h2>Avisos en este celular</h2>
       <div class="meta" id="pushEstado">Cargando…</div>
       <button class="btn" style="margin-top:10px" id="pushActivar" onclick="activarPush()">Activar avisos</button>
@@ -825,7 +920,7 @@
         <button class="btn sec" style="margin-top:10px" onclick="probarPushUI(this)">Enviar un aviso de prueba</button>
       </div>
     </div>
-    <div class="card" data-sec="avisos">
+    <div class="card" data-sec="avisos perfil">
       <h2>Avisos por correo</h2>
       <label style="display:flex;gap:8px;align-items:center;color:var(--ink);text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aDiario" style="width:auto"> Recordatorio los días de entreno</label>
       <div class="row"><div><label for="aHora">Hora</label><select id="aHora"></select></div><div><label for="aEmail">Correo</label><input id="aEmail" type="email"></div></div>
@@ -846,7 +941,7 @@
       <button class="btn sec" type="button" id="pProbarIA" style="width:100%;margin-top:6px">Probar la IA</button>
       <div class="meta" id="pProbarIAres" style="margin-top:6px"></div>
     </div>
-    <button class="btn" id="pGuardar" data-sec="perfil salud ia">Guardar ajustes</button>
+    <button class="btn" id="pGuardar" data-sec="perfil salud ia gimnasio">Guardar ajustes</button>
     <div class="card" data-sec="conexion" style="margin-top:14px">
       <h2>Conexión</h2>
       <div class="meta">Si ves errores de "Load failed" o "Sin conexión", esta prueba muestra qué parte falla.</div>
@@ -871,7 +966,7 @@
   <div class="bv-wrap">
     <div class="bv-top"><span class="kicker" style="color:var(--amber)">MI PLAN</span><button class="gear" onclick="cerrarArmar()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <h1 class="bv-h" style="margin-top:12px">Arma<br>tu plan</h1>
-    <p class="bv-p">Cada día lleva sus ejercicios con principal y alternativa (por si la máquina está ocupada), series, repeticiones y descanso. La progresión por bloques (Base → Carga → Descarga → Volumen) la pone la app.</p>
+    <p class="bv-p" id="armarIntro">Días, ejercicios, series y descansos. La progresión la pone la app.</p>
     <div id="armarCuerpo"><div class="empty">Cargando…</div></div>
     <div class="acts bv-acts"><button class="btn sec" id="armarGuardar" onclick="mpGuardar(false)">Guardar</button><button class="btn" id="armarUsar" onclick="mpGuardar(true)">Guardar y usar este plan</button></div>
   </div>
@@ -893,53 +988,67 @@
 </div>
 <div id="cierre" class="hidden"></div>
 <div id="toast"></div>
-<div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);padding:48px 22px 22px;overflow:auto">
-  <div class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</div>
-  <h1 style="font-family:var(--disp);font-size:40px;font-weight:800;text-transform:uppercase;line-height:.95;margin:6px 0 14px">Empieza<br>aquí</h1>
-  <!--acceso--><div class="toggle" id="accTabs" style="margin:0 0 12px"><button type="button" class="on" data-v="entrar" onclick="accVista('entrar')">Entrar</button><button type="button" data-v="crear" onclick="accVista('crear')">Crear cuenta</button></div>
-  <form class="card" id="acc-entrar" style="margin:0 0 14px" onsubmit="return entrarClave()">
-    <h2>Entrar</h2>
-    <label for="enCorreo">Tu correo</label><input id="enCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tucorreo@gmail.com">
+<style>
+  /* Entrada (G-A): la app se presenta antes de pedir datos */
+  .en-hero{position:relative;height:calc(118px + env(safe-area-inset-top,0px));overflow:hidden;background:var(--card)}
+  .en-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block}
+  .en-hero .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,14,16,.3) 0%,rgba(14,14,16,.2) 45%,#0e0e10 100%)}
+  .en-hero .kicker{position:absolute;left:20px;bottom:6px;color:var(--amber);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+  .en-body{max-width:640px;margin:0 auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+  .en-h1{font-family:var(--disp);font-size:36px;font-weight:800;text-transform:uppercase;line-height:.95;margin:0}
+  .en-sub{color:var(--muted);font-size:14px;line-height:1.45;margin:8px 0 12px}
+  .en-tabs{margin:0 0 12px} .en-tabs button{min-height:44px;font-size:15px}
+  .en-ok{color:var(--green-ink);font-size:13px;margin:6px 0 0;display:none}
+  #vincular .card{margin:0 0 14px} #vincular label{margin-top:12px} #vincular .acc-msg{font-size:14px;line-height:1.5;margin:10px 0 0;color:var(--bad)}
+  #vincular .acc-msg:empty{display:none}
+</style>
+<div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch">
+  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker">Mi plan</div></div>
+  <div class="en-body">
+  <h1 class="en-h1">Tu plan de gimnasio y comida</h1>
+  <p class="en-sub">Te dice qué hacer hoy, cuánto peso poner y qué comer. Todo con tu historial.</p>
+  <!--acceso--><div class="toggle en-tabs" id="accTabs"><button type="button" data-v="crear" onclick="accVista('crear')">Crear cuenta</button><button type="button" class="on" data-v="entrar" onclick="accVista('entrar')">Ya tengo cuenta</button></div>
+  <form class="card" id="acc-entrar" novalidate onsubmit="return entrarClave()">
+    <label for="enCorreo" style="margin-top:0">Correo</label><input id="enCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tu@correo.com">
     <label for="enClave">Contraseña</label><div style="display:flex;gap:8px;align-items:center"><input id="enClave" name="password" type="password" autocomplete="current-password" placeholder="Tu contraseña"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('enClave', this)">Ver</button></div>
-    <button class="btn" id="enBtn" type="submit" style="width:100%;margin-top:12px">Entrar</button>
-    <p id="enMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
+    <button class="btn" id="enBtn" type="submit" style="width:100%;margin-top:14px">Entrar</button>
+    <p id="enMsg" class="acc-msg"></p>
     <button type="button" class="btn txt" style="width:100%" onclick="accVista('olvide')">¿Olvidaste tu contraseña o nunca la creaste?</button>
   </form>
-  <div class="card" id="acc-crear" style="margin:0 0 14px;display:none">
-    <h2>Crear cuenta</h2>
-    <form id="crPaso1" onsubmit="return crearCuenta()">
-      <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Necesitas el código de invitación que te dio quien te compartió la app. Te mandamos un código a tu correo para confirmar que es tuyo.</p>
+  <div class="card" id="acc-crear" style="display:none">
+    <form id="crPaso1" novalidate onsubmit="return crearCuenta()">
+      <label for="crInv" style="margin-top:0">Código de invitación</label><input id="crInv" autocapitalize="characters" autocomplete="off" placeholder="GYM-XXXXXX" style="text-transform:uppercase">
+      <p class="en-ok" id="crInvOk">Llegó con tu enlace. Ya quedó puesto.</p>
       <label for="crNombre">Tu nombre</label><input id="crNombre" name="name" autocomplete="name" placeholder="Ej.: Carlos">
-      <label for="crCorreo">Tu correo</label><input id="crCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tucorreo@gmail.com">
-      <label for="crClave">Contraseña (mínimo 8 caracteres)</label><div style="display:flex;gap:8px;align-items:center"><input id="crClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('crClave', this)">Ver</button></div>
-      <label for="crInv">Código de invitación</label><input id="crInv" autocapitalize="characters" autocomplete="off" placeholder="GYM-XXXXXX" style="text-transform:uppercase">
-      <button class="btn" id="crBtn" type="submit" style="width:100%;margin-top:12px">Crear cuenta</button>
+      <label for="crCorreo">Correo</label><input id="crCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tu@correo.com">
+      <label for="crClave">Contraseña (8 o más)</label><div style="display:flex;gap:8px;align-items:center"><input id="crClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('crClave', this)">Ver</button></div>
+      <button class="btn" id="crBtn" type="submit" style="width:100%;margin-top:14px;font-size:18px">Te mandamos un código al correo</button>
     </form>
-    <form id="crPaso2" style="display:none" onsubmit="return verificarCuenta()">
+    <p id="crMsg" class="acc-msg"></p>
+    <form id="crPaso2" style="display:none" novalidate onsubmit="return verificarCuenta()">
       <label for="crCodigo">Código de 6 dígitos</label><input id="crCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px;font-size:24px;text-align:center">
-      <button class="btn" id="crVerBtn" type="submit" style="width:100%;margin-top:12px">Verificar y entrar</button>
-      <button type="button" class="btn txt" style="width:100%" onclick="crearOtraVez()">¿No te llegó? Revisa spam o vuelve a intentarlo</button>
+      <button class="btn" id="crVerBtn" type="submit" style="width:100%;margin-top:14px">Verificar y entrar</button>
+      <button type="button" class="btn txt" style="width:100%" onclick="crearOtraVez()">¿No te llegó? Revisa el correo no deseado o vuelve al paso anterior</button>
     </form>
-    <p id="crMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
   </div>
-  <div class="card" id="acc-olvide" style="margin:0 0 14px;display:none">
+  <div class="card" id="acc-olvide" style="display:none">
     <h2>Crear o cambiar tu contraseña</h2>
-    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px">Te mandamos un código a tu correo para confirmar que eres tú. Sirve también si tu cuenta es de antes y nunca creaste contraseña.</p>
-    <form onsubmit="return olvidePedir()">
-      <label for="olCorreo">Tu correo</label><input id="olCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tucorreo@gmail.com">
-      <button class="btn sec" id="olBtn" type="submit" style="width:100%;margin-top:12px">Enviarme el código</button>
+    <p style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 4px">Te mandamos un código a tu correo para confirmar que eres tú. Sirve también si tu cuenta es de antes y nunca creaste contraseña.</p>
+    <form novalidate onsubmit="return olvidePedir()">
+      <label for="olCorreo">Correo</label><input id="olCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tu@correo.com">
+      <button class="btn sec" id="olBtn" type="submit" style="width:100%;margin-top:14px">Enviarme el código</button>
     </form>
-    <form id="olPaso2" style="display:none" onsubmit="return olvideGuardar()">
+    <p id="olMsg" class="acc-msg"></p>
+    <form id="olPaso2" style="display:none" novalidate onsubmit="return olvideGuardar()">
       <label for="olCodigo">Código de 6 dígitos</label><input id="olCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px;font-size:24px;text-align:center">
-      <label for="olClave">Contraseña nueva (mínimo 8 caracteres)</label><div style="display:flex;gap:8px;align-items:center"><input id="olClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('olClave', this)">Ver</button></div>
-      <button class="btn" id="olGuardar" type="submit" style="width:100%;margin-top:12px">Guardar y entrar</button>
+      <label for="olClave">Contraseña nueva (8 o más)</label><div style="display:flex;gap:8px;align-items:center"><input id="olClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('olClave', this)">Ver</button></div>
+      <button class="btn" id="olGuardar" type="submit" style="width:100%;margin-top:14px">Guardar y entrar</button>
     </form>
-    <p id="olMsg" style="color:var(--amber);font-size:14px;line-height:1.5;margin:10px 0 0"></p>
     <button type="button" class="btn txt" style="width:100%" onclick="accVista('entrar')">Volver a entrar</button>
   </div><!--/acceso-->
   
-  <details style="margin:4px 0 0"><summary style="color:var(--muted);font-size:14px">Tengo un enlace privado</summary>
-  <div class="card" style="margin:10px 0 0">
+  <details style="margin:4px 0 0"><summary style="color:var(--muted);font-size:14px;min-height:44px;display:flex;align-items:center;cursor:pointer">Más opciones</summary>
+  <div class="card" style="margin:6px 0 0">
     <h2>Tengo un enlace privado</h2>
     <p id="vincMsg" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 10px"></p>
     <textarea id="vincTxt" rows="3" placeholder="https://…/#api=…&t=…" style="width:100%;box-sizing:border-box;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px"></textarea>
@@ -947,10 +1056,11 @@
   </div>
   </details>
   <p style="color:var(--faint);font-size:12px;margin-top:18px">Tu sesión se guarda solo en este celular. Cada persona ve únicamente sus datos.</p>
+  </div>
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610010409', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610010415', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -965,6 +1075,11 @@ if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.c
     try { localStorage.setItem('cfg', JSON.stringify(CFG)); } catch (e) {}
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   }
+  // Enlace de invitación (WhatsApp): https://…/#inv=GYM-XXXXXX → abre "Crear cuenta" con el código puesto. #olvide → "Crear o cambiar tu contraseña"
+  var inv = /[#&?]inv=([^&]+)/.exec(h) || /[?&]inv=([^&]+)/.exec(location.search || '');
+  window.INV_CODIGO = inv ? decodeURIComponent(inv[1]).trim().toUpperCase() : '';
+  window.ABRIR_OLVIDE = /(^#|[#&])olvide(&|$)/.test(h);
+  if ((inv || window.ABRIR_OLVIDE) && !(a && t)) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
   // Si el enlace se abre con la app ya cargada (solo cambia el #), se recarga para tomarlo
   window.addEventListener('hashchange', function () { if (/[#&]api=/.test(location.hash) && /[#&]t=/.test(location.hash)) location.reload(); });
 })();
@@ -1114,6 +1229,11 @@ function mostrarVincular(tokenMalo) {
   var v = $('vincular'); v.classList.remove('hidden');
   $('vincMsg').textContent = tokenMalo ? 'Tu sesión venció o no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
   if (tokenMalo && $('enMsg')) accMsg('enMsg', 'Tu sesión venció: entra de nuevo con tu correo y tu contraseña.');
+  if (!$('accTabs')) return;
+  // Llegó por el enlace de invitación: Crear cuenta con el código puesto. Desde Ajustes → "Cambiar mi contraseña": el paso del código.
+  if (!tokenMalo && window.INV_CODIGO) { accVista('crear'); $('crInv').value = window.INV_CODIGO; $('crInvOk').style.display = 'block'; }
+  else if (!tokenMalo && window.ABRIR_OLVIDE) accVista('olvide');
+  else accVista('entrar');
 }
 /* Cuentas con correo y contraseña (servidor nuevo): entrar, crear cuenta con código al correo, crear o cambiar la contraseña */
 function baseServidor() { return API_PUBLICA.replace(/[/]api$/, ''); }
@@ -1130,7 +1250,8 @@ function abrirSesion(j) {
   location.href = location.pathname;
 }
 function ocupado(b, txt) { b.dataset.t = b.dataset.t || b.textContent; b.disabled = !!txt; b.textContent = txt || b.dataset.t; }
-function accMsg(id, txt, bien) { var m = $(id); m.textContent = txt || ''; m.style.color = bien ? 'var(--green-ink)' : 'var(--amber)'; }
+/* Errores en rojo (--bad), éxitos en verde: el ámbar es de la marca y de los botones, no de los errores */
+function accMsg(id, txt, bien) { var m = $(id); m.textContent = txt || ''; m.style.color = bien ? 'var(--green-ink)' : 'var(--bad)'; }
 /* Error con el paso que sigue: correo ya registrado → entrar; no registrado → crear cuenta; sin contraseña → crearla */
 function accError(id, e, correo) {
   var txt = (e && e.message) || String(e), m = $(id);
@@ -1143,7 +1264,7 @@ function accError(id, e, correo) {
     accVista(ir[0]);
     var campo = { entrar: 'enCorreo', crear: 'crCorreo', olvide: 'olCorreo' }[ir[0]];
     if (correo) $(campo).value = correo;
-    if (ir[0] === 'crear') { crearOtraVez(); $('crNombre').focus(); } else if (ir[0] === 'entrar') $('enClave').focus();
+    if (ir[0] === 'crear') { crearOtraVez(); $('crNombre').focus(); } else if (ir[0] === 'entrar') $('enClave').focus(); else $('olBtn').focus();
   };
   m.appendChild(document.createElement('br')); m.appendChild(b);
 }
@@ -1170,7 +1291,7 @@ function crearCuenta() {
   ocupado(b, 'Enviando código…'); accMsg('crMsg', '');
   postCuenta('crear', d).then(function (j) {
     ocupado(b); $('crPaso1').style.display = 'none'; $('crPaso2').style.display = '';
-    accMsg('crMsg', j.mensaje || 'Revisa tu correo.', true); $('crCodigo').focus();
+    accMsg('crMsg', j.mensaje || 'Te mandamos un código de 6 dígitos a ' + d.correo + '. Revisa también el correo no deseado.', true); $('crCodigo').focus(); window.scrollTo(0, 0);
   }).catch(function (e) { ocupado(b); accError('crMsg', e, d.correo); });
   return false;
 }
@@ -2628,18 +2749,21 @@ function cargarAjustes() {
     cargarAvisos(parte('avisos'));
     cargarProgramas(parte('programas'));
     parte('perfil').then(pintarPerfil).catch(err);
+    parte('comida').then(pintarComidaAjustes).catch(function () {});
+    parte('avisos').then(function (av) { ajData.avisos = av; pintarResumenAjustes(); }).catch(function () {});
   }).catch(function () {
     cargarPushUI(); cargarSaludUI(); cargarCuenta(); cargarAvisos(); cargarProgramas();
     api('getPerfil').then(pintarPerfil).catch(err);
   });
 }
 function pintarPerfil(p) {
+  ajData.perfil = p; pintarResumenAjustes();
   $('pEdad').value = p.Edad || ''; $('pSexo').value = p.Sexo || 'M'; $('pEstatura').value = p.EstaturaM || '';
   $('pPasoM').value = String(p.PasoMancuernas || 2); $('pDisco').value = String(p.DiscoMinimo || 1.25);
   $('pNivel').value = p.Nivel || ''; $('pEquipo').value = p.Equipo || ''; $('pMin').value = p.MinutosSesion || '';
   var sel = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); });
   $('pDias').innerHTML = [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (sel.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('');
-  $('pInicio').textContent = 'El plan empezó el ' + p.fechaInicio + ' (se cambia en la hoja Config).';
+  $('pInicio').textContent = 'El plan empezó el ' + p.fechaInicio + '.';
   $('pCond').value = p.Condiciones || ''; $('pMed').value = p.Medicamentos || ''; $('pLes').value = p.Lesiones || ''; $('pOtros').value = p.OtrosSalud || '';
   if (p.Condiciones || p.Medicamentos || p.Lesiones || p.OtrosSalud) $('pCond').closest('details').open = true;
   var ia = p.ia || {};
@@ -2649,146 +2773,10 @@ function pintarPerfil(p) {
   $('pClaveEstado').textContent = ia.tieneClaveGemini ? 'Clave de Gemini guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Gemini.';
   if (!ia.tieneClave) $('pClaveClaudeEstado').textContent += ' El Coach y el diseño con IA no funcionarán hasta que pegues una clave.';
 }
-/* ---------- Bienvenida (primera vez) ---------- */
-var bvMostrada = false, bvPaso = 0, bvPreview = false;
-var bvDatos = { programa: '', dias: ['Lu', 'Mi', 'Vi'], entrada: true, edad: '', sexo: 'M', estatura: '', peso: '' };
-function mostrarBienvenida(preview) {
-  bvMostrada = true; bvPreview = !!preview; bvPaso = 0;
-  var v = $('bienvenida'); v.classList.remove('hidden'); window.scrollTo(0, 0);
-  $('bvCerrar').style.display = preview ? '' : 'none';
-  $('bvCerrar').onclick = cerrarBienvenida;
-  $('bvAtras').onclick = function () { if (bvPaso > 0) { guardarPasoBv(); bvPaso--; pintarBienvenida(); } };
-  $('bvSig').onclick = function () {
-    if (!guardarPasoBv(true)) return;
-    if (bvPaso < 2) { bvPaso++; pintarBienvenida(); } else terminarBienvenida();
-  };
-  var listo = function () { pintarBienvenida(); };
-  if (programasCache) listo(); else api('getProgramas').then(function (r) { programasCache = r; listo(); }).catch(function (e) { err(e); listo(); });
-  // Prellenar con el perfil si existe
-  api('getPerfil').then(function (p) {
-    if (p.Edad) bvDatos.edad = p.Edad; if (p.Sexo) bvDatos.sexo = p.Sexo; if (p.EstaturaM) bvDatos.estatura = p.EstaturaM;
-    var d = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean); if (d.length) bvDatos.dias = d;
-    if (bvPaso > 0) pintarBienvenida();
-  }).catch(function () {});
-  pintarBienvenida();
-}
-function cerrarBienvenida() { $('bienvenida').classList.add('hidden'); }
-function pintarBienvenida() {
-  document.querySelectorAll('.bv-pasos i').forEach(function (x, i) { x.classList.toggle('on', i <= bvPaso); });
-  var progs = (programasCache && programasCache.programas) || [];
-  var h = '';
-  if (bvPaso === 0) {
-    if (!bvDatos.programa && progs.length) bvDatos.programa = progs[0].id;
-    h += '<h1 class="bv-h">¿Qué<br>buscas?</h1><p class="bv-p">Elige tu objetivo. La rutina, el cardio y las calorías se ajustan a él, y puedes cambiarlo cuando quieras.</p>';
-    h += '<div class="prog-lista" style="margin-top:0">' + (progs.length ? progs.map(function (p) {
-      return '<label class="prog-op' + (p.id === bvDatos.programa ? ' act' : '') + '"><input type="radio" name="bvProg" value="' + p.id + '"' + (p.id === bvDatos.programa ? ' checked' : '') + ' onchange="bvDatos.programa=this.value;pintarBienvenida()">' +
-        '<div><div class="t">' + esc(p.nombre) + '</div><div class="s">' + esc(p.lema) + ' · ' + p.semanas + ' semanas</div><div class="d">' + esc(p.objetivo) + '</div></div></label>';
-    }).join('') : '<div class="meta">Cargando programas…</div>') + '</div>';
-  } else if (bvPaso === 1) {
-    h += '<h1 class="bv-h">¿Cuándo<br>entrenas?</h1><p class="bv-p">Marca los días que normalmente vas al gimnasio. Con 3 o 4 días progresas muy bien; cada semana los puedes cambiar.</p>';
-    h += '<div class="dias" id="bvDias">' + [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (bvDatos.dias.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('') + '</div>';
-    h += '<label style="display:flex;gap:10px;align-items:flex-start;color:var(--ink);margin-top:18px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.4"><input type="checkbox" id="bvEntrada" style="width:auto;margin-top:3px"' + (bvDatos.entrada ? ' checked' : '') + '> <span><b>Vengo de un tiempo sin entrenar.</b><br><span style="color:var(--muted)">Empiezas con "Vuelta al gimnasio": 2 semanas suaves de cuerpo completo antes del Bloque 1.</span></span></label>';
-  } else {
-    h += '<h1 class="bv-h">Sobre ti</h1><p class="bv-p">Con esto calculamos tus calorías y proteína. Puedes dejarlo vacío y completarlo después en Ajustes.</p>';
-    h += '<div class="bv-form"><div class="row"><div><label for="bvEdad">Edad</label><input id="bvEdad" type="number" inputmode="numeric" value="' + esc(bvDatos.edad) + '"></div>' +
-         '<div><label for="bvSexo">Sexo</label><select id="bvSexo"><option value="M"' + (bvDatos.sexo === 'F' ? '' : ' selected') + '>Hombre</option><option value="F"' + (bvDatos.sexo === 'F' ? ' selected' : '') + '>Mujer</option></select></div></div>' +
-         '<div class="row"><div><label for="bvEst">Estatura (m)</label><input id="bvEst" type="number" inputmode="decimal" step="0.01" placeholder="1.70" value="' + esc(bvDatos.estatura) + '"></div>' +
-         '<div><label for="bvPeso">Peso hoy (kg)</label><input id="bvPeso" type="number" inputmode="decimal" step="0.1" placeholder="72" value="' + esc(bvDatos.peso) + '"></div></div></div>';
-  }
-  $('bvCuerpo').innerHTML = h;
-  $('bvAtras').style.visibility = bvPaso === 0 ? 'hidden' : 'visible';
-  $('bvSig').textContent = bvPaso === 2 ? 'Empezar' : 'Siguiente';
-}
-function guardarPasoBv(validar) {
-  if (bvPaso === 0) {
-    var r = document.querySelector('input[name=bvProg]:checked'); if (r) bvDatos.programa = r.value;
-    if (validar && !bvDatos.programa) { toast('Elige un objetivo'); return false; }
-  } else if (bvPaso === 1) {
-    var d = []; document.querySelectorAll('#bvDias input:checked').forEach(function (x) { d.push(x.value); });
-    bvDatos.dias = d; bvDatos.entrada = $('bvEntrada').checked;
-    if (validar && !d.length) { toast('Marca al menos un día'); return false; }
-  } else {
-    bvDatos.edad = $('bvEdad').value; bvDatos.sexo = $('bvSexo').value; bvDatos.estatura = $('bvEst').value; bvDatos.peso = $('bvPeso').value;
-  }
-  return true;
-}
-function terminarBienvenida() {
-  if (bvPreview && !confirm('Esto cambia tu programa actual a ' + bvDatos.programa + ' desde hoy. ¿Seguir?')) return;
-  var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
-  var perfil = { Edad: bvDatos.edad, Sexo: bvDatos.sexo, EstaturaM: bvDatos.estatura, DiasEntreno: bvDatos.dias.join(',') };
-  var pMio = (programasCache && programasCache.programas || []).filter(function (x) { return x.id === 'mio'; })[0];
-  var esMio = bvDatos.programa === 'mio';
-  api('guardarPerfil', perfil)
-    .then(function () { return bvDatos.peso ? api('guardarDiario', { fecha: hoyISO(), peso: bvDatos.peso }) : null; })
-    .then(function () { return esMio && !(pMio && pMio.configurado) ? api('guardarMiPlan', { base: 'hipertrofia' }) : null; })   // Mi plan vacío: arranca con Hipertrofia general de base
-    .then(function () { return api('cambiarPrograma', bvDatos.programa, { entrada: bvDatos.entrada, dias: bvDatos.dias.join(','), ajustarComida: true }); })
-    .then(function () {
-      invalidarTodo(); programasCache = null; cerrarBienvenida();
-      cargarEstado(); if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
-      if (esMio) abrirArmar('Te dejamos Hipertrofia general de base: cámbialo a tu gusto o pídele a la IA que lo diseñe'); else toast('¡Listo! Tu plan está preparado.');
-    })
-    .catch(function (e) { b.disabled = false; b.textContent = 'Empezar'; err(e); });
-}
-
 /* ---------- Programas ---------- */
 var programasCache = null;
 function cargarProgramas(p) {
   (p || api('getProgramas')).then(function (r) { programasCache = r; pintarProgramas(r); }).catch(function (e) { $('progCard').innerHTML = '<h2>Programa</h2><div class="meta">No pude cargar los programas: ' + esc(e.message || e) + '</div>'; });
-}
-function pintarProgramas(r) {
-  var est = r.estado || {};
-  var h = '<h2>Programa</h2>';
-  if (est.bloque) {
-    h += '<div class="meta" style="margin-bottom:10px"><b style="color:var(--ink)">' + esc(est.nombre) + '</b> · ' + esc(est.bloque.nombre) + ' · sesión ' + est.sesionEnBloque + ' de ' + est.sesionesBloque +
-         '<br>' + est.hechas + ' de ' + est.total + ' sesiones del programa' + (est.terminado ? ' · <b style="color:var(--amber)">terminado</b>' : '') + '</div>';
-    h += '<div class="prog-bloques">' + (est.bloques || []).map(function (b, i) {
-      var cls = i < est.bloque.indice ? 'done' : i === est.bloque.indice ? 'now' : '';
-      return '<span class="pb ' + cls + (b.descarga ? ' des' : '') + '" title="' + esc(b.nombre) + '">' + esc(b.nombre.replace(/^Bloque (\d+) · /, 'B$1 · ')) + '<small>' + b.tam + ' ses.</small></span>';
-    }).join('') + '</div>';
-    if (est.bloque.texto) h += '<div class="meta" style="margin-top:8px">' + esc(est.bloque.texto) + '</div>';
-  }
-  h += '<div class="prog-lista">' + (r.programas || []).map(function (p) {
-    var act = p.id === r.actual;
-    return '<label class="prog-op' + (act ? ' act' : '') + '"><input type="radio" name="progSel" value="' + p.id + '"' + (act ? ' checked' : '') + '>' +
-      '<div><div class="t">' + esc(p.nombre) + (act ? ' <span class="chip ok" style="margin-left:6px">Actual</span>' : '') + '</div><div class="s">' + esc(p.lema) + (p.mio ? (p.configurado ? ' · ' + p.sesiones + ' día' + (p.sesiones === 1 ? '' : 's') : ' · sin armar') : ' · ' + p.semanas + ' semanas') + '</div>' +
-      '<div class="d">' + esc(p.objetivo) + '</div><div class="d dim">' + esc(p.publico) + '</div>' +
-      (p.mio ? '<div style="margin-top:6px"><button type="button" class="btn txt" onclick="event.preventDefault();abrirArmar()">' + (p.configurado ? 'Editar mi plan →' : 'Armar mi plan →') + '</button></div>' :
-      '<div class="d dim">Cardio: ' + p.cardio.sesiones + ' × ' + esc(p.cardio.minutos) + ' min · ' + esc(p.nutricion.texto) + '</div>') + '</div></label>';
-  }).join('') + '</div>';
-  var nAct = Math.max(3, Math.min(5, Number(est.nDias) || 3));
-  h += '<label style="margin-top:12px">Días de pesas por semana</label><div class="toggle" id="progDias">' + [3, 4, 5].map(function (n) {
-    return '<button type="button" data-n="' + n + '" class="' + (n === nAct ? 'on' : '') + '">' + n + ' días</button>'; }).join('') + '</div>';
-  h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progEntrada" style="width:auto"> Empezar con "Vuelta al gimnasio" (2 semanas suaves, si vienes de parar)</label>';
-  h += '<label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:6px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="progComida" style="width:auto" checked> Ajustar calorías y proteína al objetivo del programa</label>';
-  h += '<div class="acts" style="margin-top:10px"><button class="btn" id="progCambiar">Cambiar de programa</button></div>';
-  h += '<div class="meta" style="margin-top:6px"><b style="color:var(--green-ink)">Nada se pierde.</b> El nuevo programa empieza hoy desde su Bloque 1; tu historial y tus cargas se quedan y arranca con tus últimos pesos.</div>';
-  h += '<div style="margin-top:10px"><button class="btn txt" onclick="mostrarBienvenida(true)">Ver la pantalla de bienvenida →</button></div>';
-  $('progCard').innerHTML = h;
-  $('progCambiar').onclick = cambiarProgramaUI;
-  document.querySelectorAll('#progDias button').forEach(function (b) {
-    b.onclick = function () { document.querySelectorAll('#progDias button').forEach(function (x) { x.classList.toggle('on', x === b); }); };
-  });
-}
-var DIAS_POR_N = { 3: 'Lu,Mi,Vi', 4: 'Lu,Ma,Ju,Vi', 5: 'Lu,Ma,Mi,Ju,Vi' };
-function cambiarProgramaUI() {
-  var sel = document.querySelector('input[name=progSel]:checked'); if (!sel) return;
-  var id = sel.value, p = (programasCache.programas || []).filter(function (x) { return x.id === id; })[0];
-  if (p && p.mio && !p.configurado) { abrirArmar('Primero arma tu plan: agrega días y ejercicios'); return; }
-  var mismo = id === programasCache.actual;
-  var bn = document.querySelector('#progDias button.on'), n = bn ? Number(bn.getAttribute('data-n')) : 0;
-  var nAntes = Math.max(3, Math.min(5, Number(programasCache.estado && programasCache.estado.nDias) || 3));
-  var opts = { entrada: $('progEntrada').checked, ajustarComida: $('progComida').checked };
-  if (n && n !== nAntes) opts.dias = DIAS_POR_N[n];   // si no cambias los días, se quedan los tuyos
-  var soloDias = mismo && !!opts.dias;
-  if (mismo && !opts.dias) opts.reiniciar = true;
-  var msg = soloDias ? 'Pasar ' + (p ? p.nombre : id) + ' a ' + n + ' días por semana? Sigues donde vas; tus días quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).'
-    : (mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + (n ? ' con ' + n + ' días por semana' : '') + ' desde hoy (Bloque 1)?' +
-      (opts.dias ? ' Tus días de entreno quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).' : '') + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : '');
-  if (!confirm(msg)) return;
-  var b = $('progCambiar'); b.disabled = true; b.textContent = 'Cambiando…';
-  api('cambiarPrograma', id, opts)
-    .then(function () { invalidarTodo(); toast('Programa: ' + (p ? p.nombre : id)); cargarAjustes(); cargarEstado(); })
-    .catch(function (e) { b.disabled = false; b.textContent = 'Cambiar de programa'; err(e); });
 }
 
 $('pGuardar').onclick = function () {
@@ -2956,7 +2944,7 @@ function guardarSaludIA() {
   var on = $('sIA').checked;
   api('guardarSalud', { ia: on }).then(function () { toast(on ? 'La IA recibirá tus condiciones y medicamentos' : 'La IA recibirá solo las reglas, sin nombres'); invalidarTodo(); }).catch(err);
 }
-function pintarSaludTodo() { pintarSaludGrid(); pintarSaludSel('cond'); pintarSaludSel('med'); pintarSaludMed(); pintarSaludResumen(); }
+function pintarSaludTodo() { pintarSaludGrid(); pintarSaludSel('cond'); pintarSaludSel('med'); pintarSaludMed(); pintarSaludResumen(); pintarResumenAjustes(); }
 function pintarSaludGrid() {
   var g = $('sGrid'); if (!g) return;
   var chk = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>';
@@ -3058,7 +3046,7 @@ function pcItemsHTML(items, dm1) {
 /* La comida de ahora, el día en una mirada, lo que cambia por tu salud y el mercado con casillas (una cosa a la vez) */
 var ORDEN_MOM = ['Desayuno', 'Media mañana', 'Almuerzo', 'Algo', 'Cena', 'Antes de dormir'];
 var HORA_MOM = { 'Desayuno': '7:00 a. m.', 'Media mañana': '10:00 a. m.', 'Almuerzo': '12:30 p. m.', 'Algo': '4:00 p. m.', 'Cena': '7:30 p. m.' };
-var OBJ_NOMBRE = { masa: 'Ganar masa', grasa: 'Quemar grasa', definir: 'Definir' };
+var OBJ_NOMBRE = { masa: 'Ganar masa', grasa: 'Quemar grasa', definir: 'Definir', mantener: 'Mantener' };
 var pcVer = { conf: false, cuid: false, merc: false, dia: -1 };
 var SVG_PA = {
   check: '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>',
@@ -3486,34 +3474,6 @@ function mpDisenarIA(ajustar) {
     toast('Propuesta lista: ' + r.sesiones.length + ' día' + (r.sesiones.length === 1 ? '' : 's') + '. Revísala y guarda.');
   }).catch(err).then(function () { mpIa.ocupado = false; pintarArmar(); });
 }
-function pintarArmar() {
-  if (!mp) return;
-  var h = tarjetaIA() + '<div class="card"><label for="mpObj">Objetivo (solo cambia cardio y comida)</label><select id="mpObj" onchange="mp.objetivo=this.value">' +
-    mp.objetivos.map(function (o) { return '<option value="' + o.id + '"' + (o.id === mp.objetivo ? ' selected' : '') + '>' + esc(o.nombre) + '</option>'; }).join('') + '</select>' +
-    '<label for="mpBase" style="margin-top:12px">Empezar desde un programa</label><div style="display:flex;gap:8px"><select id="mpBase" style="flex:1;min-width:0">' + mp.bases.map(function (b) { return '<option value="' + b.id + '">' + esc(b.nombre) + '</option>'; }).join('') + '</select><button class="btn sec mp-copiar" onclick="mpCopiarBase()">Copiar</button></div>' +
-    '<div class="meta" style="margin-top:6px">' + (mp.sesiones.length ? 'Copiar reemplaza los días que tienes ahora (según tus días por semana).' : 'Copia un programa y edítalo, o empieza en blanco agregando un día.') + '</div></div>';
-  mp.sesiones.forEach(function (s, i) {
-    h += '<div class="card mp-dia"><div class="mp-dia-h"><span class="kicker">Día ' + (i + 1) + '</span>' +
-      '<input value="' + esc(s.nombre) + '" placeholder="Nombre (p. ej. Pierna)" onchange="mp.sesiones[' + i + '].nombre=this.value">' +
-      '<button class="mp-b" title="Subir" onclick="mpMoverDia(' + i + ',-1)">▲</button><button class="mp-b" title="Bajar" onclick="mpMoverDia(' + i + ',1)">▼</button><button class="mp-b" title="Quitar día" onclick="mpQuitarDia(' + i + ')">✕</button></div>';
-    if (!s.ejercicios.length) h += '<div class="meta">Sin ejercicios todavía.</div>';
-    s.ejercicios.forEach(function (e, j) {
-      var img = e.img || (mpBib[e.ejercicio] && mpBib[e.ejercicio].img) || '';
-      h += '<div class="mp-ex"><div class="mp-ex-top">' + (img ? '<img class="mp-thumb" loading="lazy" decoding="async" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
-        '<div class="mp-ex-b"><div class="mp-ex-n">' + (j + 1) + ' · ' + esc(e.ejercicio) + '<button class="btn txt" onclick="abrirPicker(\'principal\',' + i + ',' + j + ')">Cambiar</button></div>' +
-        '<div class="mp-ex-a">' + (e.alternativa ? 'Alternativa: ' + esc(e.alternativa) + '<button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Cambiar</button>' : '<span class="amber">Falta la alternativa</span><button class="btn txt" onclick="abrirPicker(\'alternativa\',' + i + ',' + j + ')">Elegir</button>') + '</div></div>' +
-        '<div class="mp-ico"><button title="Subir" onclick="mpMoverEj(' + i + ',' + j + ',-1)">▲</button><button title="Bajar" onclick="mpMoverEj(' + i + ',' + j + ',1)">▼</button><button title="Quitar" onclick="mpQuitarEj(' + i + ',' + j + ')">✕</button></div></div>' +
-        (j < s.ejercicios.length - 1 ? '<button class="btn txt ss-btn' + (e.superserie ? ' on' : '') + '" onclick="mpSuperserie(' + i + ',' + j + ')">🔗 ' + (e.superserie ? 'En superserie con el siguiente' : 'Superserie con el siguiente') + '</button>' : '') +
-        '<div class="mp-nums"><input type="number" inputmode="numeric" min="1" max="6" value="' + e.series + '" onchange="mpNum(' + i + ',' + j + ',\'series\',this.value)">×' +
-        '<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmin + '" onchange="mpNum(' + i + ',' + j + ',\'rmin\',this.value)">–<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmax + '" onchange="mpNum(' + i + ',' + j + ',\'rmax\',this.value)">' + (e.unidad === 'seg' ? 's' : 'reps') +
-        ' · <select onchange="mpNum(' + i + ',' + j + ',\'descanso\',this.value)">' + mp.descansos.map(function (d) { return '<option value="' + d + '"' + (d === Number(e.descanso) ? ' selected' : '') + '>' + fmtSeg(d) + '</option>'; }).join('') + '</select></div></div>';
-    });
-    if (s.ejercicios.length < mp.maxEjercicios) h += '<button class="btn sec" style="width:100%;margin-top:10px" onclick="abrirPicker(\'agregar\',' + i + ')">+ Agregar ejercicio</button>';
-    h += '</div>';
-  });
-  if (mp.sesiones.length < mp.maxSesiones) h += '<button class="btn sec" style="width:100%;margin-top:12px" onclick="mpAgregarDia()">+ Agregar día</button>';
-  $('armarCuerpo').innerHTML = h;
-}
 function mpSuperserie(i, j) { var e = mp.sesiones[i].ejercicios[j]; e.superserie = !e.superserie; pintarArmar(); }
 function mpNum(i, j, k, v) { var e = mp.sesiones[i].ejercicios[j]; e[k] = Number(v) || e[k]; if (k === 'rmin' && e.rmax < e.rmin) e.rmax = e.rmin; if (k === 'rmax' && e.rmax < e.rmin) e.rmin = e.rmax; }
 function mpAgregarDia() { mp.sesiones.push({ codigo: '', nombre: 'Día ' + (mp.sesiones.length + 1), ejercicios: [] }); pintarArmar(); }
@@ -3521,8 +3481,9 @@ function mpQuitarDia(i) { var s = mp.sesiones[i]; if (s.ejercicios.length && !co
 function mpMoverDia(i, d) { var k = i + d; if (k < 0 || k >= mp.sesiones.length) return; var t = mp.sesiones[i]; mp.sesiones[i] = mp.sesiones[k]; mp.sesiones[k] = t; pintarArmar(); }
 function mpQuitarEj(i, j) { mp.sesiones[i].ejercicios.splice(j, 1); pintarArmar(); }
 function mpMoverEj(i, j, d) { var l = mp.sesiones[i].ejercicios, k = j + d; if (k < 0 || k >= l.length) return; var t = l[j]; l[j] = l[k]; l[k] = t; pintarArmar(); }
-function mpCopiarBase() {
-  var id = $('mpBase').value, nombre = (mp.bases.filter(function (b) { return b.id === id; })[0] || {}).nombre || id;
+function mpCopiarBase(idArg) {
+  var id = idArg || ($('mpBase') ? $('mpBase').value : ''), nombre = (mp.bases.filter(function (b) { return b.id === id; })[0] || {}).nombre || id;
+  if (!id) return;
   if (mp.sesiones.length && !confirm('Esto reemplaza tus días actuales por los de ' + nombre + ' (según tus días por semana). ¿Seguir?')) return;
   $('armarCuerpo').innerHTML = '<div class="empty">Copiando ' + esc(nombre) + '…</div>';
   api('guardarMiPlan', { base: id, objetivo: mp.objetivo }).then(function () { invalidarTodo(); programasCache = null; abrirArmar('Listo: ahora edítalo a tu gusto'); }).catch(function (e) { err(e); pintarArmar(); });
@@ -3635,12 +3596,18 @@ function cargarCuenta(p) {
   var u = estado && estado.usuario;
   if (!u) return;
   $('cuentaCard').style.display = '';
-  $('cuentaTxt').textContent = (u.nombre ? u.nombre + ' · ' : '') + (u.esDueno ? 'dueño de la app' : 'invitado (tus datos van en tu propia hoja)');
-  $('iaCard').style.display = u.esDueno ? '' : 'none';   // la clave de Gemini es del dueño
+  $('cuentaTxt').textContent = (u.nombre ? u.nombre + ' · ' : '') + (u.esDueno ? 'dueño de la app' : 'invitado · solo tú ves tus datos');
+  $('iaCard').style.display = u.esDueno ? '' : 'none';   // las claves de la IA son del dueño: el invitado no ve ni la tarjeta ni el botón
+  $('ajMenuIA').style.display = u.esDueno ? '' : 'none';
   $('ajMenuAlumnos').style.display = u.esDueno ? '' : 'none';
+  $('ajSubAvanzado').textContent = u.esDueno ? 'IA, alumnos, invitaciones, conexión' : 'Tu entrenador, tu plan y la conexión';
   var mc = $('ajMenuCuenta');
-  mc.querySelector('b').textContent = u.esDueno ? 'Cuenta e invitados' : 'Cuenta y entrenador';
-  mc.querySelector('small').textContent = u.esDueno ? 'Quién eres y a quién invitaste' : 'Tu entrenador y tu plan';
+  mc.querySelector('b').textContent = u.esDueno ? 'Invitados' : 'Tu entrenador y tu plan';
+  mc.querySelector('small').textContent = u.esDueno ? 'Tu código y quién se registró' : 'Lo que te dejó tu entrenador y tu nivel';
+  // "Cambiar mi contraseña" solo en la app instalada (con sesión de correo y contraseña); en Apps Script no hay contraseña
+  var conSesion = false; try { conSesion = !!JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) {}
+  $('cuentaClave').style.display = conSesion ? '' : 'none'; $('cuentaClaveTxt').style.display = conSesion ? '' : 'none';
+  pintarCabeceraAjustes();
   if (!u.esDueno) { $('invCard').style.display = 'none'; cargarCuentaAlumno(p); return; }
   $('invCard').style.display = '';
   (p || api('getInvitacion')).then(pintarInvitacion).catch(function (e) { $('invBody').textContent = 'No pude cargar la invitación: ' + (e.message || e); });
@@ -3648,11 +3615,11 @@ function cargarCuenta(p) {
 function pintarInvitacion(r) {
   var h = '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:4px 0 10px">' +
     '<div><div class="kicker">Código</div><div style="font-family:var(--disp);font-size:30px;font-weight:800;letter-spacing:2px;color:var(--amber)">' + esc(r.codigo) + '</div></div>' +
-    '<div style="flex:1;min-width:180px"><div class="kicker">Enlace de la app</div><div style="word-break:break-all;color:var(--ink)">' + esc(r.enlace) + '</div></div></div>' +
+    '<div style="flex:1;min-width:180px"><div class="kicker">Enlace para invitar</div><div style="word-break:break-all;color:var(--ink)">' + esc(enlaceInvitacion(r)) + '</div></div></div>' +
     '<div class="acts"><button class="btn sec" onclick="copiarInvitacion()">Copiar invitación</button><button class="btn txt" onclick="nuevoCodigo()">Nuevo código</button></div>';
   if (r.usuarios.length) {
     h += '<div class="kicker" style="margin-top:14px">Personas registradas (' + r.usuarios.length + ')</div><ul style="margin:6px 0 0;padding-left:18px">' +
-      r.usuarios.map(function (u) { return '<li>' + esc(u.nombre) + ' · ' + esc(u.correo) + ' · desde ' + esc(u.creado) + ' · <a href="' + esc(u.hoja) + '" target="_blank" rel="noopener">hoja</a></li>'; }).join('') + '</ul>';
+      r.usuarios.map(function (u) { return '<li>' + esc(u.nombre) + ' · ' + esc(u.correo) + ' · desde ' + esc(u.creado) + '</li>'; }).join('') + '</ul>';
   } else h += '<div style="margin-top:12px">Todavía nadie se ha registrado.</div>';
   invitacionCache = r;
   $('invBody').innerHTML = h;
@@ -3660,7 +3627,7 @@ function pintarInvitacion(r) {
 var invitacionCache = null;
 function copiarInvitacion() {
   if (!invitacionCache) return;
-  var txt = 'Prueba mi app de entrenamiento: abre ' + invitacionCache.enlace + ' en tu celular, toca "Crear mi cuenta" y usa el código ' + invitacionCache.codigo + '. Luego "Añadir a pantalla de inicio".';
+  var txt = 'Prueba mi app de gimnasio y comida: te dice qué hacer hoy, cuánto peso poner y qué comer. Abre ' + enlaceInvitacion(invitacionCache) + ' en tu celular y toca "Crear cuenta" (tu código ' + invitacionCache.codigo + ' ya va puesto). Luego "Añadir a pantalla de inicio".';
   var listo = function () { toast('Invitación copiada: pégala en WhatsApp'); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(listo).catch(function () { prompt('Copia este texto:', txt); });
   else prompt('Copia este texto:', txt);
@@ -3888,6 +3855,397 @@ $('aProbar').onclick = function () { api('probarAvisos').then(function (r) { toa
 /* ---------- Inicio ---------- */
 $('fecha').value = hoyISO(); $('dFecha').value = hoyISO(); $('cFecha').value = hoyISO();
 if (CFG) { pintarCola(); vaciarCola(); cargarEstado(); } else mostrarVincular(false);
+
+/* ===== G-A: primer día, entrada, programa, ajustes ===== */
+/* ---------- Primer día (3 pasos: qué quieres lograr → cuántos días → tu peso; aterriza en la primera sesión) ---------- */
+var bvMostrada = false, bvPaso = 0, bvPreview = false, bvAterr = null;
+var BV_IMG = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+var BV_METAS = [   // meta → programa + objetivo de comida (PlanComida.gs: OBJETIVOS_DIETA)
+  { id: 'musculo', nombre: 'Ganar músculo', linea: 'Más fuerza y tamaño. Comes un poco más.', programa: 'hipertrofia', dieta: 'masa', img: 'Dumbbell_Bench_Press' },
+  { id: 'grasa', nombre: 'Bajar grasa', linea: 'Pesas para no perder músculo. Comes un poco menos.', programa: 'definicion', dieta: 'grasa', img: 'Walking_Treadmill' },
+  { id: 'fuerte', nombre: 'Ponerme fuerte y sano', linea: 'Cuerpo completo, sin prisa. Comes para mantener.', programa: 'rotativo', dieta: 'mantener', img: 'Barbell_Squat' }
+];
+var BV_SEMANA = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+var DIAS_POR_N = { 3: 'Lu,Mi,Vi', 4: 'Lu,Ma,Ju,Vi', 5: 'Lu,Ma,Mi,Ju,Vi' };
+var bvDatos = {};
+function bvReset() { bvDatos = { meta: 'musculo', programa: '', n: 3, dias: ['Lu', 'Mi', 'Vi'], entrada: false, edad: '', sexo: '', estatura: '', peso: '' }; }
+function bvMeta() { return BV_METAS.filter(function (m) { return m.id === bvDatos.meta; })[0] || BV_METAS[0]; }
+function bvPrograma() { return bvDatos.programa || bvMeta().programa; }
+function mostrarBienvenida(preview) {
+  bvMostrada = true; bvPreview = !!preview; bvPaso = 0; bvAterr = null; bvReset();
+  var v = $('bienvenida'); v.classList.remove('hidden'); window.scrollTo(0, 0);
+  $('bvCerrar').style.display = preview ? '' : 'none';
+  $('bvCerrar').onclick = cerrarBienvenida;
+  $('bvAtras').onclick = function () {
+    if (bvPaso === 'prog') { bvPaso = 0; pintarBienvenida(); return; }
+    if (bvPaso > 0) { guardarPasoBv(); bvPaso--; pintarBienvenida(); }
+  };
+  $('bvSig').onclick = function () {
+    if (bvPaso === 'prog') { var id = progSel.bv.id; bvDatos.programa = id && id !== bvMeta().programa ? id : ''; bvPaso = 0; pintarBienvenida(); return; }
+    if (!guardarPasoBv(true)) return;
+    if (bvPaso < 2) { bvPaso++; pintarBienvenida(); } else terminarBienvenida();
+  };
+  if (!programasCache) api('getProgramas').then(function (r) { programasCache = r; if (bvPaso === 'prog') pintarBienvenida(); }).catch(function () {});
+  api('getPerfil').then(function (p) {   // si ya había datos (vista previa desde Ajustes), se prellenan
+    if (p.Edad) bvDatos.edad = p.Edad; if (p.Sexo && (p.Edad || p.EstaturaM)) bvDatos.sexo = p.Sexo; if (p.EstaturaM) bvDatos.estatura = Math.round(Number(p.EstaturaM) * 100);
+    if (bvPaso === 2) pintarBienvenida();
+  }).catch(function () {});
+  pintarBienvenida();
+}
+function cerrarBienvenida() { $('bienvenida').classList.add('hidden'); }
+function pintarBienvenida() {
+  var paso = bvPaso === 'prog' ? 0 : bvPaso;
+  document.querySelectorAll('.bv-pasos i').forEach(function (x, i) { x.classList.toggle('on', i <= paso); });
+  var h = '', acts = $('bvAtras').parentNode;
+  acts.style.display = ''; $('bvAtras').style.visibility = bvPaso === 0 ? 'hidden' : 'visible'; $('bvSig').disabled = false;
+  if (bvPaso === 'prog') {
+    h += '<div class="kicker">Paso 1 de 3</div><h1 class="bv-h">Elige tu<br>programa</h1><p class="bv-p">Toca uno para ver de qué va. Lo cambias cuando quieras en Ajustes.</p>';
+    h += '<div id="bvProg">' + selectorProgHTML('bv') + '</div>';
+    $('bvSig').textContent = 'Listo';
+  } else if (bvPaso === 0) {
+    var pr = bvDatos.programa ? progFicha(bvDatos.programa) : null;
+    h += '<div class="kicker">Paso 1 de 3</div><h1 class="bv-h">¿Qué quieres<br>lograr?</h1><p class="bv-p">Con esto elegimos tu plan y tu comida. Lo cambias cuando quieras.</p>';
+    h += '<div class="bv-metas">' + BV_METAS.map(function (m) {
+      var on = m.id === bvDatos.meta && !bvDatos.programa;
+      return '<button type="button" class="bv-meta' + (on ? ' on' : '') + '" aria-pressed="' + on + '" onclick="bvElegirMeta(\'' + m.id + '\')"><img alt="" loading="lazy" decoding="async" onerror="this.style.visibility=\'hidden\'" src="' + BV_IMG + m.img + '/0.jpg"><span><b>' + esc(m.nombre) + '</b><small>' + esc(m.linea) + '</small></span></button>';
+    }).join('') + '</div>';
+    h += pr ? '<div class="bv-otro">Programa elegido: <b style="color:var(--ink)">' + esc(pr.nombre) + '</b><br><a href="#" onclick="bvAbrirProg();return false">Cambiar</a> · <a href="#" onclick="bvDatos.programa=\'\';pintarBienvenida();return false">Volver a las tres metas</a></div>'
+            : '<div class="bv-otro">¿Ya sabes qué programa quieres? <a href="#" onclick="bvAbrirProg();return false">Elegir otro</a></div>';
+    $('bvSig').textContent = 'Siguiente';
+  } else if (bvPaso === 1) {
+    h += '<div class="kicker">Paso 2 de 3</div><h1 class="bv-h">¿Cuántos días<br>puedes ir?</h1><p class="bv-p">Con 3 días ya progresas bien. Mejor pocos y seguros.</p>';
+    h += '<div class="toggle bv-n">' + [3, 4, 5].map(function (n) { return '<button type="button" class="' + (n === bvDatos.n ? 'on' : '') + '" onclick="bvElegirN(' + n + ')">' + n + ' días</button>'; }).join('') + '</div>';
+    h += '<div class="kicker" style="margin-top:14px">Días sugeridos (tócalos para cambiar)</div><div class="bv-sem">' + BV_SEMANA.map(function (d) { return '<button type="button" class="' + (bvDatos.dias.indexOf(d) >= 0 ? 'on' : '') + '" onclick="bvToggleDia(\'' + d + '\')">' + d + '</button>'; }).join('') + '</div>';
+    h += '<label class="sw"><span><b>Llevo más de un mes sin entrenar</b><small>Las primeras 2 semanas van suaves</small></span><input type="checkbox" id="bvEntrada"' + (bvDatos.entrada ? ' checked' : '') + ' onchange="bvDatos.entrada=this.checked"><i></i></label>';
+    $('bvSig').textContent = 'Siguiente';
+  } else if (bvPaso === 2) {
+    h += '<div class="kicker">Paso 3 de 3</div><h1 class="bv-h">Tu peso<br>de hoy</h1><p class="bv-p">Con esto calculamos tus pesos de partida y tu comida.</p>';
+    h += '<div class="row bv-big"><div><label for="bvPeso">Peso (kg)</label><input id="bvPeso" type="number" inputmode="decimal" step="0.1" placeholder="72" value="' + esc(bvDatos.peso) + '"></div>' +
+         '<div><label for="bvEst">Estatura (cm)</label><input id="bvEst" type="number" inputmode="numeric" placeholder="170" value="' + esc(bvDatos.estatura) + '"></div></div>';
+    h += '<div class="row" style="margin-top:6px"><div><label for="bvEdad">Edad (opcional)</label><input id="bvEdad" type="number" inputmode="numeric" placeholder="30" value="' + esc(bvDatos.edad) + '"></div>' +
+         '<div><label>Sexo (opcional)</label><div class="sl-yn" style="margin-top:0"><button type="button" class="' + (bvDatos.sexo === 'M' ? 'on' : '') + '" onclick="bvSexo(\'M\')">Hombre</button><button type="button" class="' + (bvDatos.sexo === 'F' ? 'on' : '') + '" onclick="bvSexo(\'F\')">Mujer</button></div></div></div>';
+    h += '<p class="meta" style="margin-top:14px">Salud, avisos y fotos se piden después, cuando hagan falta.</p>';
+    $('bvSig').textContent = 'Ver mi primer entrenamiento';
+  } else {
+    h += aterrizajeHTML(bvAterr); acts.style.display = 'none';
+  }
+  $('bvCuerpo').innerHTML = h;
+  window.scrollTo(0, 0);
+}
+function bvAbrirProg() { progSel.bv.id = bvPrograma(); progSel.bv.n = bvDatos.n; bvPaso = 'prog'; pintarBienvenida(); repintarCarrusel('bv'); }
+function bvElegirMeta(id) { bvDatos.meta = id; bvDatos.programa = ''; pintarBienvenida(); }
+function bvElegirN(n) { bvDatos.n = n; bvDatos.dias = DIAS_POR_N[n].split(','); pintarBienvenida(); }
+function bvToggleDia(d) {
+  var i = bvDatos.dias.indexOf(d); if (i >= 0) bvDatos.dias.splice(i, 1); else bvDatos.dias.push(d);
+  bvDatos.dias = BV_SEMANA.filter(function (x) { return bvDatos.dias.indexOf(x) >= 0; });
+  pintarBienvenida();
+}
+function bvSexo(sx) { guardarPasoBv(); bvDatos.sexo = bvDatos.sexo === sx ? '' : sx; pintarBienvenida(); }
+function guardarPasoBv(validar) {
+  if (bvPaso === 1) {
+    if (validar && !bvDatos.dias.length) { toast('Marca al menos un día'); return false; }
+  } else if (bvPaso === 2) {
+    bvDatos.peso = $('bvPeso').value; bvDatos.estatura = $('bvEst').value; bvDatos.edad = $('bvEdad').value;
+    if (validar) {
+      var peso = Number(String(bvDatos.peso).replace(',', '.')), est = Number(String(bvDatos.estatura).replace(',', '.'));
+      if (!(peso >= 30 && peso <= 300)) { toast('Escribe tu peso de hoy en kilos'); $('bvPeso').focus(); return false; }
+      if (!(est >= 100 && est <= 250) && !(est >= 1 && est <= 2.5)) { toast('Escribe tu estatura en centímetros (p. ej. 170)'); $('bvEst').focus(); return false; }
+    }
+  }
+  return true;
+}
+function terminarBienvenida() {
+  var prog = bvPrograma(), meta = bvMeta(), ficha = progFicha(prog) || {};
+  if (bvPreview && !confirm('Esto cambia tu programa actual a ' + (ficha.nombre || prog) + ' desde hoy. ¿Seguir?')) return;
+  var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
+  var est = Number(String(bvDatos.estatura).replace(',', '.')); if (est > 3) est = est / 100;
+  var perfil = { EstaturaM: est, DiasEntreno: bvDatos.dias.join(',') };
+  if (bvDatos.edad) perfil.Edad = bvDatos.edad; if (bvDatos.sexo) perfil.Sexo = bvDatos.sexo;
+  var pMio = progFicha('mio'), esMio = prog === 'mio';
+  api('guardarPerfil', perfil)
+    .then(function () { return api('guardarDiario', { fecha: hoyISO(), peso: String(bvDatos.peso).replace(',', '.') }); })
+    .then(function () { return esMio && !(pMio && pMio.configurado) ? api('guardarMiPlan', { base: 'hipertrofia' }) : null; })   // Mi plan vacío: arranca con Hipertrofia general de base
+    .then(function () { return api('cambiarPrograma', prog, { entrada: bvDatos.entrada, dias: bvDatos.dias.join(','), ajustarComida: true }); })
+    .then(function () { return bvDatos.programa ? null : api('guardarSalud', { objetivo: meta.dieta }); })   // la meta elegida pone el objetivo de comida; con programa a mano, lo pone el programa
+    .then(function () { invalidarTodo(); programasCache = null; return api('getInicio', hoyISO(), ''); })
+    .then(function (r) {
+      if (!$('tab-ajustes').classList.contains('hidden')) cargarAjustes();
+      if (esMio) { cerrarBienvenida(); cargarEstado(); abrirArmar('Te dejamos Hipertrofia general de base: cámbialo a tu gusto o pídele a la IA que lo diseñe'); return; }
+      bvAterr = r; bvPaso = 3; pintarBienvenida();
+    })
+    .catch(function (e) { b.disabled = false; b.textContent = 'Ver mi primer entrenamiento'; err(e); });
+}
+/* Aterrizaje: la primera sesión con su foto; si hoy no es día marcado, "¿Empezamos hoy o el lunes?" */
+function aterrizajeHTML(r) {
+  if (!r || !r.estado) return '<div class="empty">Cargando…</div>';
+  var e = r.estado, s = r.sesion, hoyDia = e.tipoDia === 'sesion';
+  var prox = !hoyDia && e.proxima ? e.proxima : null;
+  var cod = hoyDia ? s.codigo : (prox ? prox.codigo : s.codigo);
+  var ses = s && s.codigo === cod ? s : null;
+  var img = ses && ses.ejercicios.length ? ((ses.ejercicios[0].variantes.principal.imagenes || [])[0] || '') : '';
+  var n = ses ? ses.ejercicios.length : 0, min = ses ? minutosSesion(ses) : 0;
+  var suave = e.programa && e.programa.bloque && e.programa.bloque.entrada;
+  var visto = false; try { visto = localStorage.getItem('bvComo') === '1'; } catch (x) {}
+  var dia = prox ? diaLargoEtiqueta(prox.etiqueta).split(' ')[0].toLowerCase() : 'otro día';
+  var h = '<div class="at-hero">' + (img ? '<img alt="" decoding="async" onerror="this.style.display=\'none\'" src="' + esc(img) + '">' : '') + '<div class="at-grad"></div></div>';
+  h += '<div class="kicker" style="color:var(--amber)">' + esc(e.fechaTexto) + ' · Tu primer día</div>';
+  h += '<h1 class="bv-h" style="margin-top:6px">' + esc(ses ? ses.nombre : (prox ? prox.nombre : 'Tu primera sesión')) + '</h1>';
+  h += '<div class="chips" style="margin-top:4px">' + (n ? '<span class="tag">' + n + ' ejercicios</span>' : '') + (min ? '<span class="tag">~' + min + ' min</span>' : '') + (suave ? '<span class="chip warn">Semana suave</span>' : '') + '</div>';
+  if (!visto) h += '<div class="at-box"><div class="kicker" style="color:var(--green-ink);margin-bottom:4px">Así funciona</div><div>Toca un ejercicio, anota el peso y las repeticiones y dale a <b>Listo</b>. El descanso se cuenta solo. La app te dice cuánto poner la próxima vez.</div></div>';
+  if (!hoyDia) h += '<div class="at-box at-row"><div><b>¿Empezamos hoy o el ' + esc(dia) + '?</b><small>Hoy no es uno de tus días marcados</small></div><button type="button" class="btn sec small" onclick="bvEmpezar(false)">' + esc(dia.charAt(0).toUpperCase() + dia.slice(1)) + '</button></div>';
+  h += '<button class="cta" id="bvEmpezarHoy" onclick="bvEmpezar(true)"><div><div class="t">Empezar hoy</div><div class="s">' + (hoyDia ? 'Calienta 5 min antes de la primera serie' : 'La sesión queda en el día de hoy') + '</div></div><div class="ic">' + SVG.play + '</div></button>';
+  return h;
+}
+function bvEmpezar(hoy) {
+  try { localStorage.setItem('bvComo', '1'); } catch (x) {}
+  var r = bvAterr, e = r && r.estado;
+  var fin = function () { invalidarTodo(); cerrarBienvenida(); irA('hoy'); cargarEstado(); toast(hoy ? 'Tu primer entrenamiento está en Hoy' : 'Listo. Hoy descansas y la app te avisa cuando toque.'); };
+  if (hoy && e && e.tipoDia !== 'sesion') {
+    var cod = e.proxima ? e.proxima.codigo : r.sesion.codigo, b = $('bvEmpezarHoy'); if (b) b.disabled = true;
+    api('fijarSesion', e.fecha, cod).then(fin).catch(function (x) { if (b) b.disabled = false; err(x); });
+  } else fin();
+}
+
+/* ---------- Elegir programa: carrusel + un solo panel (Ajustes → Programa y primer día) ---------- */
+var PROG_LLANO = {   // lema de 4 palabras y "para quién" sin jerga (informe UX)
+  hipertrofia: { lema: 'Más músculo en todo', para: 'Más músculo en todo el cuerpo. Pecho, espalda y pierna dos veces por semana. Para cualquiera; 3 a 5 días.' },
+  definicion: { lema: 'Bajar grasa sin perder', para: 'Bajar grasa sin perder músculo. Pesas con descansos cortos, caminar más y comer un poco menos. 3 a 5 días.' },
+  gluteo: { lema: 'Énfasis en pierna', para: 'Más glúteo y pierna; el resto se mantiene. 3 a 5 días.' },
+  torso: { lema: 'Espalda ancha', para: 'Espalda, hombros y pecho; pierna de mantenimiento. Mejor con 4 o 5 días.' },
+  rotativo: { lema: 'Cada día todo', para: 'Cada día trabajas todo, y un músculo va fuerte. 3 a 5 días, sesiones cortas.' },
+  mio: { lema: 'Lo armas tú', para: 'Tú eliges los ejercicios (o los arma la IA); la app pone la progresión.' }
+};
+var PROG_NOTA_DIAS = { 3: '3 sesiones de 45–60 min. Con 3 ya progresas bien.', 4: '4 sesiones de unos 45 min.', 5: '5 sesiones de unos 40 min.' };
+var progSel = { aj: { id: '', n: 3, entrada: false, comida: true, abierto: false }, bv: { id: '', n: 3 } };
+function progFicha(id) { return ((programasCache && programasCache.programas) || []).filter(function (p) { return p.id === id; })[0] || null; }
+function selectorProgHTML(ctx) {
+  var st = progSel[ctx], progs = (programasCache && programasCache.programas) || [];
+  if (!progs.length) return '<div class="meta">Cargando programas…</div>';
+  if (!progFicha(st.id)) st.id = progs[0].id;
+  var sel = progFicha(st.id), ll = PROG_LLANO[sel.id] || {};
+  var h = '<div class="pg-car-wrap"><div class="pg-car" id="pgCar-' + ctx + '">' + progs.map(function (p) {
+    var l = PROG_LLANO[p.id] || {};
+    return '<button type="button" class="pg-card' + (p.id === st.id ? ' on' : '') + '" aria-pressed="' + (p.id === st.id) + '" onclick="progElegir(\'' + ctx + '\',\'' + p.id + '\')">' +
+      (p.foto ? '<img alt="" loading="lazy" decoding="async" onerror="this.style.visibility=\'hidden\'" src="' + esc(p.foto) + '">' : '<div class="pg-foto">' + SVG.dumb + '</div>') +
+      '<b>' + esc(p.nombre) + '</b><small>' + esc(l.lema || p.lema) + '</small></button>';
+  }).join('') + '</div></div>';
+  h += '<div class="pg-panel"><div class="pg-h"><b>' + esc(sel.nombre) + '</b>' + (ctx === 'aj' && programasCache.actual === sel.id ? '<span class="chip ok">Actual</span>' : '') + '</div>';
+  h += '<div class="meta">' + esc(ll.para || sel.publico) + '</div>';
+  if (sel.mio) {
+    h += '<div class="meta" style="margin-top:6px">' + (sel.configurado ? sel.sesiones + ' día' + (sel.sesiones === 1 ? '' : 's') + ' armado' + (sel.sesiones === 1 ? '' : 's') + '.' : 'Todavía no tiene días.') + '</div>';
+    h += '<button type="button" class="btn sec" style="margin-top:10px" onclick="' + (ctx === 'bv' ? 'cerrarBienvenida();' : '') + 'abrirArmar()">' + (sel.configurado ? 'Editar mi plan →' : 'Armar mi plan →') + '</button>';
+  } else {
+    if (sel.ejemplo && sel.ejemplo.length) h += '<div class="meta" style="margin-top:6px"><b style="color:var(--ink)">Semana:</b> ' + esc(sel.ejemplo.join(' · ')) + '</div>';
+    h += '<div class="kicker" style="margin-top:12px">Días por semana</div><div class="toggle" style="margin-top:6px">' + [3, 4, 5].map(function (n) { return '<button type="button" class="' + (n === st.n ? 'on' : '') + '" onclick="progDias(\'' + ctx + '\',' + n + ')">' + n + ' días</button>'; }).join('') + '</div>';
+    h += '<div class="meta">' + PROG_NOTA_DIAS[st.n] + '</div>';
+  }
+  if (ctx === 'aj') {
+    h += '<label class="chk" style="margin-top:12px"><input type="checkbox" id="progEntrada"' + (st.entrada ? ' checked' : '') + ' onchange="progSel.aj.entrada=this.checked"> Empezar con 2 semanas suaves (vengo de parar)</label>';
+    h += '<label class="chk" style="margin-top:8px"><input type="checkbox" id="progComida"' + (st.comida ? ' checked' : '') + ' onchange="progSel.aj.comida=this.checked"> Ajustar mi comida al objetivo</label>';
+  }
+  return h + '</div>';
+}
+function progElegir(ctx, id) { progSel[ctx].id = id; repintarProg(ctx); }
+function progDias(ctx, n) { progSel[ctx].n = n; if (ctx === 'bv') { bvDatos.n = n; bvDatos.dias = DIAS_POR_N[n].split(','); } repintarProg(ctx); }
+function repintarProg(ctx) {
+  var y = window.scrollY;
+  if (ctx === 'bv') pintarBienvenida(); else pintarProgramas(programasCache);
+  window.scrollTo(0, y); repintarCarrusel(ctx);
+}
+function repintarCarrusel(ctx) {
+  var car = $('pgCar-' + ctx), on = car && car.querySelector('.pg-card.on');
+  if (on) car.scrollLeft = Math.max(0, on.offsetLeft - car.offsetLeft - (car.clientWidth - on.offsetWidth) / 2);
+}
+/* Ajustes → Programa: la tarjeta del programa actual y, al tocar "Cambiar", el carrusel con su panel */
+function pintarProgramas(r) {
+  programasCache = r;
+  var est = r.estado || {}, act = progFicha(r.actual) || {}, st = progSel.aj;
+  var nAct = Math.max(3, Math.min(5, Number(est.nDias) || 3));
+  if (!st.abierto) { st.id = r.actual; st.n = nAct; }
+  var semanas = act.semanas || 0, sem = Math.max(1, Math.min(semanas || 99, Math.floor((est.hechas || 0) / nAct) + 1));
+  var pct = est.total ? Math.min(100, Math.round((est.hechas || 0) / est.total * 100)) : 0;
+  var h = '<h2>Tu programa</h2>';
+  h += '<div class="pg-act">' + (act.foto ? '<img alt="" loading="lazy" decoding="async" onerror="this.style.visibility=\'hidden\'" src="' + esc(act.foto) + '">' : '<div class="pg-foto">' + SVG.dumb + '</div>') +
+    '<div class="pg-act-b"><b>' + esc(act.nombre || est.nombre || 'Programa') + '</b><small>' + (est.terminado ? 'Terminado · ' : act.mio ? '' : 'Semana ' + sem + ' de ' + semanas + ' · ') + nAct + ' días</small>' +
+    '<div class="bar" style="margin:8px 0 0"><i style="width:' + pct + '%"></i></div></div>' +
+    '<button type="button" class="btn small sec" onclick="progAbrir()">' + (st.abierto ? 'Cerrar' : 'Cambiar') + '</button></div>';
+  if (est.bloque && !st.abierto) h += '<div class="meta" style="margin-top:10px">' + esc(est.bloque.nombre) + ' · sesión ' + est.sesionEnBloque + ' de ' + est.sesionesBloque + (est.bloque.texto ? '. ' + esc(est.bloque.texto) : '') + '</div>';
+  if (st.abierto) {
+    h += '<div class="kicker" style="margin-top:16px">Elige otro (desliza)</div>' + selectorProgHTML('aj');
+    var sel = progFicha(st.id) || {};
+    h += '<div class="pg-usar"><button class="btn" id="progCambiar" onclick="cambiarProgramaUI()">' + (sel.mio ? (sel.configurado ? 'Usar Mi plan' : 'Armar mi plan') : 'Usar ' + esc(sel.nombre || '') + ' · ' + st.n + ' días') + '</button>' +
+      '<div class="meta" style="margin-top:6px;text-align:center"><b style="color:var(--green-ink)">Nada se pierde:</b> tu historial y tus pesos se quedan.</div></div>';
+  }
+  $('progCard').innerHTML = h;
+  pintarResumenAjustes();
+}
+function progAbrir() {
+  var st = progSel.aj; st.abierto = !st.abierto;
+  if (st.abierto) { st.id = programasCache.actual; st.entrada = false; st.comida = true; }
+  pintarProgramas(programasCache); if (st.abierto) repintarCarrusel('aj');
+}
+function cambiarProgramaUI() {
+  var st = progSel.aj, id = st.id, p = progFicha(id);
+  if (!id || !programasCache) return;
+  if (p && p.mio && !p.configurado) { abrirArmar('Primero arma tu plan: agrega días y ejercicios'); return; }
+  var mismo = id === programasCache.actual;
+  var n = p && p.mio ? 0 : st.n;
+  var nAntes = Math.max(3, Math.min(5, Number(programasCache.estado && programasCache.estado.nDias) || 3));
+  var opts = { entrada: !!st.entrada, ajustarComida: !!st.comida };
+  if (n && n !== nAntes) opts.dias = DIAS_POR_N[n];   // si no cambias los días, se quedan los tuyos
+  var soloDias = mismo && !!opts.dias;
+  if (mismo && !opts.dias) opts.reiniciar = true;
+  var msg = soloDias ? 'Pasar ' + (p ? p.nombre : id) + ' a ' + n + ' días por semana? Sigues donde vas; tus días quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).'
+    : (mismo ? 'Reiniciar ' : 'Cambiar a ') + (p ? p.nombre : id) + (n ? ' con ' + n + ' días por semana' : '') + ' desde hoy (Bloque 1)?' +
+      (opts.dias ? ' Tus días de entreno quedan en ' + opts.dias.replace(/,/g, ', ') + ' (los cambias en Perfil).' : '') + (mismo ? ' Tu avance en los bloques vuelve a cero; el historial se conserva.' : '');
+  if (!confirm(msg)) return;
+  var b = $('progCambiar'); b.disabled = true; b.textContent = 'Cambiando…';
+  api('cambiarPrograma', id, opts)
+    .then(function () { invalidarTodo(); st.abierto = false; toast('Programa: ' + (p ? p.nombre : id)); cargarAjustes(); cargarEstado(); })
+    .catch(function (e) { b.disabled = false; b.textContent = 'Usar ' + (p ? p.nombre : id); err(e); });
+}
+
+/* ---------- Ajustes: cabecera, resúmenes del menú, objetivo de comida, contraseña, enlace de invitación ---------- */
+var ajData = { perfil: null, comida: null, avisos: null };
+var OBJ_G = [['masa', 'Ganar masa'], ['grasa', 'Quemar grasa'], ['definir', 'Definir'], ['mantener', 'Mantener']];
+function coma(v) { return String(v).replace('.', ','); }
+function miles(n) { return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+function pintarCabeceraAjustes() {
+  var u = (estado && estado.usuario) || {}, est = (programasCache && programasCache.estado) || {};
+  if ($('ajNombre')) $('ajNombre').textContent = u.nombre || 'Tu cuenta';
+  var partes = [];
+  if (ajData.avisos && ajData.avisos.email) partes.push(ajData.avisos.email);
+  if (est.nombre) partes.push(est.nombre + ' · ' + (est.nDias || 3) + ' días');
+  if ($('ajResumen')) $('ajResumen').textContent = partes.join(' · ');
+}
+function pintarResumenAjustes() {
+  if (!$('ajSubPrograma')) return;
+  pintarCabeceraAjustes();
+  var est = (programasCache && programasCache.estado) || null, p = ajData.perfil, c = ajData.comida, av = ajData.avisos;
+  if (est) {
+    var dias = String(p && p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+    $('ajSubPrograma').textContent = est.nombre + ' · ' + (dias.length ? dias.join(' ') : (est.nDias || 3) + ' días');
+  }
+  if (p) {
+    $('ajSubGimnasio').textContent = 'Mancuernas de ' + coma(p.PasoMancuernas || 2) + ' en ' + coma(p.PasoMancuernas || 2) + ' · disco mínimo ' + coma(p.DiscoMinimo || 1.25) + ' kg';
+    var per = []; if (p.Edad) per.push(p.Edad + ' años'); if (p.EstaturaM) per.push(coma(p.EstaturaM) + ' m');
+    if (av) per.push(av.diario ? 'recordatorio a las ' + (av.hora <= 12 ? av.hora : av.hora - 12) + (av.hora < 12 ? ' a. m.' : ' p. m.') : 'sin recordatorio');
+    if (av && av.semanal) per.push('informe los domingos');
+    $('ajSubPerfil').textContent = per.length ? per.join(' · ') : 'Edad, estatura, días y recordatorios';
+  }
+  if (typeof saludCat !== 'undefined' && saludCat && typeof saludSel !== 'undefined') {
+    var nombres = saludSel.cond.map(function (id) { var x = saludCat.condiciones.filter(function (k) { return k.id === id; })[0]; return x ? x.nombre : ''; }).filter(Boolean);
+    var med = saludSel.med.length;
+    $('ajSubSalud').textContent = (nombres.length ? nombres.slice(0, 2).join(', ') + (nombres.length > 2 ? ' +' + (nombres.length - 2) : '') : 'Sin condiciones') + ' · ' + (med ? med + ' medicamento' + (med === 1 ? '' : 's') : 'sin medicamentos');
+  }
+  if (c) $('ajSubComida').textContent = (c.nombre || 'Sin objetivo') + ' · ' + miles(c.kcal) + ' kcal · ' + c.prot + ' g' + (c.adaptativa ? ' · se ajusta con tu peso real' : '');
+}
+function pintarComidaAjustes(c) {
+  ajData.comida = c; pintarResumenAjustes();
+  if (!$('ajObj')) return;
+  $('ajObj').innerHTML = OBJ_G.map(function (o) { return '<button type="button" class="' + (c.objetivo === o[0] ? 'on' : '') + '" aria-pressed="' + (c.objetivo === o[0]) + '" onclick="ajObjetivo(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+  $('ajMeta').innerHTML = 'Meta de hoy: <b style="color:var(--ink)">' + miles(c.kcal) + ' kcal</b> y <b style="color:var(--ink)">' + c.prot + ' g de proteína</b>' + (c.fuente ? ' · ' + esc(c.fuente) : '') + '.' + (c.objetivo ? '' : ' Elige un objetivo para que el plan de comida se arme solo.');
+}
+function ajObjetivo(id) {
+  api('guardarSalud', { objetivo: id }).then(function () { toast('Objetivo: ' + (OBJ_G.filter(function (o) { return o[0] === id; })[0] || [])[1]); if (typeof pcDatos !== 'undefined') pcDatos = null; invalidarTodo(); cargarAjustes(); }).catch(err);
+}
+/* Cambiar la contraseña (solo en la app instalada): cierra esta sesión y abre la entrada en "Crear o cambiar tu contraseña" */
+function cambiarClaveUI() {
+  if (!confirm('Te mandamos un código a tu correo para elegir la contraseña nueva. Sales de la app en este celular y vuelves a entrar con la nueva. ¿Seguir?')) return;
+  var cfg = null; try { cfg = JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) {}
+  var fin = function () { try { localStorage.removeItem('cfg'); } catch (e) {} location.hash = 'olvide'; location.reload(); };
+  if (cfg && cfg.api && cfg.t) fetch(cfg.api.replace(/[/]api$/, '') + '/cuenta/salir', { method: 'POST', body: JSON.stringify({ t: cfg.t }) }).then(fin, fin); else fin();
+}
+function enlaceInvitacion(r) { return String(r.enlace || '').replace(/#.*$/, '') + '#inv=' + encodeURIComponent(r.codigo || ''); }
+
+/* ---------- Armar mi plan: tres caminos con el plan vacío y filas compactas con menú "···" ---------- */
+var mpVia = null, mpAbierto = {};
+var SVG_SPARK = '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9.5l-4.2 1.9L12 16l-1.8-4.6L6 9.5l4.2-1.9z"/></svg>';
+function mpSub(e) { return e.series + ' × ' + e.rmin + (e.rmax !== e.rmin ? '–' + e.rmax : '') + (e.unidad === 'seg' ? ' s' : '') + ' · ' + fmtSeg(Number(e.descanso) || 90); }
+function mpObjetivoHTML() {
+  return '<div class="card"><label for="mpObj">Objetivo (solo cambia cardio y comida)</label><select id="mpObj" onchange="mp.objetivo=this.value">' +
+    mp.objetivos.map(function (o) { return '<option value="' + o.id + '"' + (o.id === mp.objetivo ? ' selected' : '') + '>' + esc(o.nombre) + '</option>'; }).join('') + '</select>' +
+    '<label for="mpBase" style="margin-top:12px">Copiar otro programa</label><div style="display:flex;gap:8px"><select id="mpBase" style="flex:1;min-width:0">' + mp.bases.map(function (b) { return '<option value="' + b.id + '">' + esc(b.nombre) + '</option>'; }).join('') + '</select><button class="btn sec mp-copiar" onclick="mpCopiarBase()">Copiar</button></div>' +
+    '<div class="meta" style="margin-top:6px">Copiar reemplaza los días que tienes ahora (según tus días por semana).</div></div>';
+}
+function pintarArmar() {
+  if (!mp) return;
+  var vacio = !mp.sesiones.length, intro = $('armarIntro');
+  if (intro) intro.style.display = vacio ? 'none' : '';
+  $('armarGuardar').parentNode.style.display = vacio && !mpIa.resp ? 'none' : '';
+  var h = '';
+  if (vacio && !mpVia && !mpIa.ocupado && !mpIa.resp) {
+    h += '<p class="bv-p">Tres formas de empezar. Después editas lo que quieras.</p><div class="mp-vias">' +
+      '<button type="button" class="mp-via" onclick="mpVia=\'copiar\';pintarArmar()"><span class="ic">' + SVG.dumb + '</span><span><b>Copiar un programa</b><small>Parte de Hipertrofia, Rotativo… y cámbialo</small></span></button>' +
+      '<button type="button" class="mp-via" onclick="mpVia=\'ia\';pintarArmar()"><span class="ic ia">' + SVG_SPARK + '</span><span><b>Que la IA lo arme</b><small>Dile qué quieres, con qué equipo y cuánto tiempo</small></span></button>' +
+      '<button type="button" class="mp-via" onclick="mpVia=\'blanco\';mpAgregarDia()"><span class="ic">+</span><span><b>En blanco</b><small>Día por día, ejercicio por ejercicio</small></span></button></div>';
+    h += '<div class="kicker" style="margin-top:18px">Así se ve un día (ejemplo)</div><div class="card" style="margin-top:8px;padding:4px 14px">' +
+      [['Press plano con mancuernas', '3 × 8–12 · 2:00'], ['Remo con apoyo en pecho', '3 × 10–12 · 1:45'], ['Sentadilla hack', '4 × 8–10 · 2:30']].map(function (f, i) {
+        return '<div class="mp-row"' + (i === 0 ? ' style="border-top:0"' : '') + '><div class="mp-thumb"></div><div class="mp-row-b" style="cursor:default"><b>' + f[0] + '</b><small>' + f[1] + '</small></div><span class="mp-more" style="opacity:.5;display:flex;align-items:center;justify-content:center">···</span></div>'; }).join('') + '</div>' +
+      '<div class="meta" style="margin-top:8px">"···" abre cambiar, superserie, orden o quitar. La app avisa si un músculo pasa de 12 series en un día.</div>';
+    $('armarCuerpo').innerHTML = h; return;
+  }
+  if (vacio && mpVia === 'copiar') {
+    h += '<div class="card"><h2>Copiar un programa</h2><div class="meta">Según tus días por semana. Después lo editas a tu gusto.</div><div class="mp-bases">' +
+      mp.bases.map(function (b) { return '<button type="button" class="btn sec" onclick="mpCopiarBase(\'' + b.id + '\')">' + esc(b.nombre) + '</button>'; }).join('') + '</div>' +
+      '<button type="button" class="btn txt" onclick="mpVia=null;pintarArmar()">← Otra forma de empezar</button></div>';
+  } else if (vacio && mpVia === 'ia' || mpIa.ocupado || mpIa.resp) {
+    h += tarjetaIA() + (vacio ? '<button type="button" class="btn txt" style="margin:0 0 10px" onclick="mpVia=null;mpIa.resp=null;pintarArmar()">← Otra forma de empezar</button>' : '');
+  } else if (!vacio) {
+    h += '<details class="mp-mas"><summary>Más: que la IA lo ajuste · objetivo · copiar otro programa</summary>' + tarjetaIA() + mpObjetivoHTML() + '</details>';
+  }
+  mp.sesiones.forEach(function (s, i) {
+    h += '<div class="card mp-dia"><div class="mp-dia-h"><span class="kicker">Día ' + (i + 1) + '</span>' +
+      '<input value="' + esc(s.nombre) + '" placeholder="Nombre (p. ej. Pierna)" onchange="mp.sesiones[' + i + '].nombre=this.value">' +
+      '<button class="mp-b" title="Opciones del día" aria-label="Opciones del día" onclick="mpMenuDia(' + i + ')">···</button></div>';
+    if (!s.ejercicios.length) h += '<div class="meta">Sin ejercicios todavía.</div>';
+    s.ejercicios.forEach(function (e, j) {
+      var img = e.img || (mpBib[e.ejercicio] && mpBib[e.ejercicio].img) || '', k = i + '|' + j;
+      h += '<div class="mp-row">' + (img ? '<img class="mp-thumb" loading="lazy" decoding="async" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
+        '<button type="button" class="mp-row-b" onclick="mpAbrirNums(\'' + k + '\')"><b>' + esc(e.ejercicio) + '</b><small>' + mpSub(e) + (e.alternativa ? ' · o ' + esc(e.alternativa) : ' · <span class="amber">falta la alternativa</span>') + '</small></button>' +
+        '<button type="button" class="mp-more" aria-label="Opciones" onclick="mpMenu(' + i + ',' + j + ')">···</button></div>';
+      if (e.superserie && j < s.ejercicios.length - 1) h += '<div class="mp-ss">Superserie con el siguiente</div>';
+      if (mpAbierto[k]) h += '<div class="mp-nums"><input type="number" inputmode="numeric" min="1" max="6" value="' + e.series + '" onchange="mpNum(' + i + ',' + j + ',\'series\',this.value)">×' +
+        '<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmin + '" onchange="mpNum(' + i + ',' + j + ',\'rmin\',this.value)">–<input type="number" inputmode="numeric" min="1" max="60" value="' + e.rmax + '" onchange="mpNum(' + i + ',' + j + ',\'rmax\',this.value)">' + (e.unidad === 'seg' ? 's' : 'reps') +
+        ' · <select onchange="mpNum(' + i + ',' + j + ',\'descanso\',this.value)">' + mp.descansos.map(function (d) { return '<option value="' + d + '"' + (d === Number(e.descanso) ? ' selected' : '') + '>' + fmtSeg(d) + '</option>'; }).join('') + '</select>' +
+        '<button type="button" class="btn txt" style="margin-left:auto" onclick="mpAbrirNums(\'' + k + '\')">Listo</button></div>';
+    });
+    if (s.ejercicios.length < mp.maxEjercicios) h += '<button class="btn sec" style="width:100%;margin-top:10px" onclick="abrirPicker(\'agregar\',' + i + ')">+ Agregar ejercicio</button>';
+    h += '</div>';
+  });
+  if (mp.sesiones.length < mp.maxSesiones) h += '<button class="btn sec" style="width:100%;margin-top:12px" onclick="mpAgregarDia()">+ Agregar día</button>';
+  $('armarCuerpo').innerHTML = h;
+}
+function mpAbrirNums(k) { mpAbierto[k] = !mpAbierto[k]; var y = window.scrollY; pintarArmar(); window.scrollTo(0, y); }
+function mpMenu(i, j) {
+  var s = mp.sesiones[i], e = s.ejercicios[j], it = [];
+  it.push(['Cambiar el ejercicio', "abrirPicker('principal'," + i + ',' + j + ')']);
+  it.push([e.alternativa ? 'Cambiar la alternativa' : 'Elegir la alternativa', "abrirPicker('alternativa'," + i + ',' + j + ')']);
+  it.push(['Series, repeticiones y descanso', "mpAbrirNums('" + i + '|' + j + "')"]);
+  if (j < s.ejercicios.length - 1) it.push([e.superserie ? 'Quitar la superserie' : 'Superserie con el siguiente', 'mpSuperserie(' + i + ',' + j + ')']);
+  if (j > 0) it.push(['Subir', 'mpMoverEj(' + i + ',' + j + ',-1)']);
+  if (j < s.ejercicios.length - 1) it.push(['Bajar', 'mpMoverEj(' + i + ',' + j + ',1)']);
+  it.push(['Quitar del día', 'mpQuitarEj(' + i + ',' + j + ')', 'bad']);
+  hojaAcciones(e.ejercicio, it);
+}
+function mpMenuDia(i) {
+  var it = [];
+  if (i > 0) it.push(['Subir el día', 'mpMoverDia(' + i + ',-1)']);
+  if (i < mp.sesiones.length - 1) it.push(['Bajar el día', 'mpMoverDia(' + i + ',1)']);
+  it.push(['Quitar el día', 'mpQuitarDia(' + i + ')', 'bad']);
+  hojaAcciones(mp.sesiones[i].nombre || 'Día ' + (i + 1), it);
+}
+/* Hoja de acciones (menú "···"): lista desde abajo, un toque por opción */
+function hojaAcciones(titulo, items) {
+  var ov = $('hojaAcc');
+  if (!ov) { ov = document.createElement('div'); ov.id = 'hojaAcc'; ov.className = 'ha-ov'; ov.onclick = function (ev) { if (ev.target === ov) cerrarHoja(); }; document.body.appendChild(ov); }
+  ov.innerHTML = '<div class="ha"><div class="ha-t">' + esc(titulo) + '</div>' + items.map(function (it) {
+    return '<button type="button" class="' + (it[2] || '') + '" onclick="cerrarHoja();' + it[1] + '">' + esc(it[0]) + '</button>'; }).join('') +
+    '<button type="button" class="ha-cancel" onclick="cerrarHoja()">Cancelar</button></div>';
+  ov.style.display = 'flex';
+}
+function cerrarHoja() { var ov = $('hojaAcc'); if (ov) ov.style.display = 'none'; }
+/* ===== fin G-A ===== */
 </script>
 </body>
 </html>
