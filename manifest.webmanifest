@@ -1,7 +1,7 @@
 {
-  "name": "Mi plan de hipertrofia",
-  "short_name": "Mi plan",
-  "description": "Tu plan de entrenamiento, comida y progreso",
+  "name": "Enfoque",
+  "short_name": "Enfoque",
+  "description": "Tu plan de gimnasio y comida, sin vueltas",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Mi plan de hipertrofia</title>
+<title>Enfoque</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Mi plan">
+<meta name="apple-mobile-web-app-title" content="Enfoque">
 <meta name="theme-color" content="#0e0e10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -980,7 +980,7 @@
       <div id="alumnosBody" style="margin-top:6px"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" data-sec="alumnos" id="proCard">
-      <h2>Mi plan Pro</h2>
+      <h2>Enfoque Pro</h2>
       <div id="proBody"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="invCard" data-sec="cuenta" style="display:none">
@@ -1104,7 +1104,7 @@
   <div style="display:flex;gap:8px"><button id="tMas">+30 s</button><button id="tStop">Listo</button></div></div>
 <div id="bienvenida" class="hidden">
   <div class="bv-wrap">
-    <div class="bv-top"><span class="kicker" style="color:var(--amber)">MI PLAN DE HIPERTROFIA</span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="bv-top"><span class="kicker" style="color:var(--amber)">ENFOQUE</span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="bv-pasos"><i></i><i></i><i></i></div>
     <div id="bvCuerpo"></div>
     <div class="acts bv-acts"><button class="btn sec" id="bvAtras">Atrás</button><button class="btn" id="bvSig">Siguiente</button></div>
@@ -1153,9 +1153,9 @@
   #vincular .acc-msg:empty{display:none}
 </style>
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch">
-  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker">Mi plan</div></div>
+  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker">Enfoque</div></div>
   <div class="en-body">
-  <h1 class="en-h1">Tu plan de gimnasio y comida</h1>
+  <h1 class="en-h1">Tu plan de gimnasio y comida, sin vueltas</h1>
   <p class="en-sub">Te dice qué hacer hoy, cuánto peso poner y qué comer. Todo con tu historial.</p>
   <!--acceso--><div class="toggle en-tabs" id="accTabs"><button type="button" data-v="crear" onclick="accVista('crear')">Crear cuenta</button><button type="button" class="on" data-v="entrar" onclick="accVista('entrar')">Ya tengo cuenta</button></div>
   <form class="card" id="acc-entrar" novalidate onsubmit="return entrarClave()">
@@ -1210,7 +1210,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610011543', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610011637', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2676,7 +2676,7 @@ function dibujarTarjeta(d) {
     g.fillStyle = '#0e0e10'; g.fillRect(0, 0, W, H);
     g.fillStyle = AMB; g.fillRect(0, 0, W, 16);
     g.textBaseline = 'alphabetic';
-    g.fillStyle = AMB; g.font = '700 34px ' + BODY; g.fillText(('Mi plan · semana ' + d.semana).toUpperCase(), 80, 130);
+    g.fillStyle = AMB; g.font = '700 34px ' + BODY; g.fillText(('Enfoque · semana ' + d.semana).toUpperCase(), 80, 130);
     g.fillStyle = INK; g.font = '800 170px ' + DISP; g.fillText('MI SEMANA', 76, 300);
     g.fillStyle = MUT; g.font = '500 36px ' + BODY;
     g.fillText(corto(fecha(d.desde) + ' – ' + fecha(d.hasta) + (d.bloque ? ' · ' + d.bloque : '') + (d.nombre ? ' · ' + d.nombre : ''), W - 160), 80, 362);
@@ -2704,7 +2704,7 @@ function dibujarTarjeta(d) {
       g.fillText('Peso ' + n1(d.peso) + ' kg' + (d.cambioPeso !== null && d.cambioPeso !== undefined ? ' (' + (d.cambioPeso > 0 ? '+' : '') + n1(d.cambioPeso) + ' esta semana)' : ''), 80, Math.min(1190, yFin + 110));
     }
     g.fillStyle = AMB; g.fillRect(80, 1250, 90, 8);
-    g.fillStyle = INK; g.font = '800 44px ' + DISP; g.fillText('HECHO CON MI PLAN', 80, 1310);
+    g.fillStyle = INK; g.font = '800 44px ' + DISP; g.fillText('HECHO CON ENFOQUE', 80, 1310);
     return new Promise(function (ok) { cv.toBlob(ok, 'image/png'); });
   });
 }
@@ -2719,7 +2719,7 @@ function abrirTarjeta(blob) {
   document.body.appendChild(ov);
   var cerrar = function () { ov.remove(); URL.revokeObjectURL(url); };
   $('tjCerrar').onclick = cerrar; ov.onclick = function (ev) { if (ev.target === ov) cerrar(); };
-  if (puede) $('tjCompartir').onclick = function () { navigator.share({ files: [file], title: 'Mi semana', text: 'Mi semana en Mi plan 💪' }).catch(function () {}); };
+  if (puede) $('tjCompartir').onclick = function () { navigator.share({ files: [file], title: 'Mi semana', text: 'Mi semana en Enfoque 💪' }).catch(function () {}); };
 }
 
 /* ---------- Gráficos SVG ---------- */
@@ -3013,12 +3013,12 @@ function cargarPushUI(p) {
   if (!$('pushEstado')) return;
   if (!soportaPush()) {
     var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    $('pushEstado').innerHTML = ios ? 'Para recibir avisos en el iPhone: abre Mi plan desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
+    $('pushEstado').innerHTML = ios ? 'Para recibir avisos en el iPhone: abre Enfoque desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
     $('pushActivar').style.display = 'none'; $('pushOpc').style.display = 'none'; return;
   }
   Promise.all([p || api('getPush'), swListo().then(function (r) { return r ? r.pushManager.getSubscription() : null; }).catch(function () { return null; })]).then(function (x) {
     pushInfo = x[0]; var sub = x[1], activo = !!sub && Notification.permission === 'granted';
-    $('pushEstado').innerHTML = activo ? '✓ Activos en este celular.' : Notification.permission === 'denied' ? 'Bloqueaste los avisos: actívalos en Ajustes del celular → Notificaciones → Mi plan.' : 'Apagados en este celular.';
+    $('pushEstado').innerHTML = activo ? '✓ Activos en este celular.' : Notification.permission === 'denied' ? 'Bloqueaste los avisos: actívalos en Ajustes del celular → Notificaciones → Enfoque.' : 'Apagados en este celular.';
     $('pushActivar').style.display = activo || Notification.permission === 'denied' ? 'none' : '';
     $('pushOpc').style.display = activo ? '' : 'none';
     $('pushRec').checked = !!pushInfo.recordatorio; $('pushDesc').checked = !!pushInfo.descanso;
@@ -3028,10 +3028,10 @@ function cargarPushUI(p) {
 function activarPush() {
   var b = $('pushActivar'); b.disabled = true;
   Notification.requestPermission().then(function (perm) {
-    if (perm !== 'granted') throw new Error('Sin permiso para avisos. Actívalo en Ajustes del celular → Notificaciones → Mi plan.');
+    if (perm !== 'granted') throw new Error('Sin permiso para avisos. Actívalo en Ajustes del celular → Notificaciones → Enfoque.');
     return (pushInfo ? Promise.resolve(pushInfo) : api('getPush')).then(function (info) {
       if (!info.clave) throw new Error('El servicio de avisos no está listo. Intenta en un momento.');
-      return swListo().then(function (reg) { if (!reg) throw new Error('Abre Mi plan desde el ícono de la pantalla de inicio para activar los avisos.'); return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(info.clave) }); });
+      return swListo().then(function (reg) { if (!reg) throw new Error('Abre Enfoque desde el ícono de la pantalla de inicio para activar los avisos.'); return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(info.clave) }); });
     });
   }).then(function (sub) { return api('guardarPush', { sub: sub.toJSON(), recordatorio: true, descanso: true }); })
     .then(function () { toast('Avisos activados en este celular'); cargarPushUI(); })
@@ -3233,7 +3233,7 @@ function momentoPorHora() { var h = new Date().getHours(); return h < 10 ? 'Desa
 function pintarComida(c) {
   comidaDatos = c;
   var fotoOk = !c.ia || c.ia.foto !== false, fb = $('cIaFotoBtn');
-  if (fb) { fb.classList.toggle('bloq', !fotoOk); fb.onclick = fotoOk ? null : function (ev) { ev.preventDefault(); toast('La comida por foto es de Mi plan Pro (Ajustes → Cuenta)'); }; }
+  if (fb) { fb.classList.toggle('bloq', !fotoOk); fb.onclick = fotoOk ? null : function (ev) { ev.preventDefault(); toast('La comida por foto es de Enfoque Pro (Ajustes → Cuenta)'); }; }
   var sel = $('cMomento'), prev = sel.value;
   sel.innerHTML = c.momentos.map(function (m) { return '<option>' + m + '</option>'; }).join('');
   sel.value = prev || momentoPorHora();
@@ -4118,7 +4118,7 @@ function alumnoDetalleHTML(a) {
   } else if (!a.error) {
     h += '<div class="meta">' + esc(a.nombre) + ' no comparte su progreso. Si quiere que lo acompañes, lo activa en su app: Ajustes → Cuenta y entrenador.</div>';
   }
-  h += '<label style="margin-top:14px">Mi plan Pro</label><div class="meta">' + (a.pro.vigente ? 'Pro hasta el ' + fechaCortaIso(a.pro.hasta) + '.' : 'Plan gratis' + (alumnosDatos.pro.activo ? '.' : ' (el cobro está apagado: por ahora tiene todo).')) +
+  h += '<label style="margin-top:14px">Enfoque Pro</label><div class="meta">' + (a.pro.vigente ? 'Pro hasta el ' + fechaCortaIso(a.pro.hasta) + '.' : 'Plan gratis' + (alumnosDatos.pro.activo ? '.' : ' (el cobro está apagado: por ahora tiene todo).')) +
     (a.pro.pedido && !a.pro.vigente ? ' Pidió Pro el ' + fechaCortaIso(a.pro.pedido) + '.' : '') + '</div>' +
     '<div class="acts" style="margin-top:6px"><select aria-label="Meses de Pro"><option value="1">1 mes</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option></select>' +
     '<button class="btn sec" onclick="darPro(\'' + id + '\', this)">' + (a.pro.vigente ? 'Sumar' : 'Darle Pro') + '</button></div>' +

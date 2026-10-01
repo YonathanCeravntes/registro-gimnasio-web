@@ -1,5 +1,5 @@
-/* Service worker — Mi plan (versión 202610011543) */
-var V = 'gym-202610011543', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
+/* Service worker — Enfoque (versión 202610011637) */
+var V = 'gym-202610011637', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
 // './' es lo que pide la app al abrir (start_url); './index.html' era lo mismo bajado dos veces
 var SHELL = ['./', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
@@ -60,7 +60,7 @@ self.addEventListener('fetch', function (e) {
 self.addEventListener('push', function (e) {
   var d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) { d = { texto: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(d.titulo || 'Mi plan', { body: d.texto || '', icon: './icon-192.png', badge: './icon-192.png',
+  e.waitUntil(self.registration.showNotification(d.titulo || 'Enfoque', { body: d.texto || '', icon: './icon-192.png', badge: './icon-192.png',
     tag: d.tag || undefined, renotify: !!d.tag, data: { url: d.url || './' } }));
 });
 self.addEventListener('notificationclick', function (e) {
