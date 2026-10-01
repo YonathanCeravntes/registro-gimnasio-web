@@ -735,6 +735,23 @@
   a.btn.gd-abrir{display:flex;align-items:center;justify-content:center;text-decoration:none;margin-top:12px}
   .gd-ok{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--green-bg);border:1px solid var(--green-line)} .gd-ok .n{flex:1;min-width:0} .gd-ok b{display:block;color:var(--green-ink);font-size:15px} .gd-ok .s{font-size:12px;color:var(--muted)}
   .gd-ok svg{width:22px;height:22px;fill:none;stroke:var(--green-ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  /* ===== G-E: IA solo en Render y autorización por persona ===== */
+  .ia-estado{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--raise,var(--card));border:1px solid var(--line);margin:4px 0 10px}
+  .ia-estado i{width:12px;height:12px;border-radius:999px;background:var(--muted);flex-shrink:0} .ia-estado.on i{background:var(--green-ink)} .ia-estado.off i{background:var(--bad)}
+  .ia-estado b{display:block;font-size:15px;color:var(--ink)} .ia-estado small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .ia-off{margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px dashed var(--line);color:var(--muted);font-size:14px;line-height:1.45}
+  .per-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);min-height:64px}
+  .per-row:first-child{border-top:0}
+  .per-row .n{flex:1;min-width:0} .per-row b{display:block;font-size:15px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .per-row small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .per-row .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green-ink);margin-top:3px}
+  .per-sw{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;cursor:pointer;text-transform:none;letter-spacing:0;margin:0;position:relative}
+  .per-sw span{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--muted)}
+  .per-sw input{position:absolute;opacity:0;width:1px;height:1px}
+  .per-sw i{width:50px;height:30px;border-radius:999px;background:var(--raise2);position:relative;transition:background .15s;display:block}
+  .per-sw i::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:999px;background:#fff;transition:transform .15s}
+  .per-sw input:checked+i{background:var(--amber)} .per-sw input:checked+i::after{transform:translateX(20px)}
+  .per-sw input:disabled+i{opacity:.5}
 </style>
 </head>
 <body>
@@ -829,6 +846,8 @@
         <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
       <div id="cLista" style="margin-top:6px"></div>
       <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto o foto</span></div>
+      <div id="cIaOff" class="ia-off" style="display:none"></div>
+      <div id="cIaBox">
       <div class="meta">Cuéntale qué comiste o tómale una foto al plato. Tú revisas antes de guardar.</div>
       <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
         <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label></div>
@@ -836,6 +855,7 @@
       <div class="meta" id="cIaFotoTxt"></div>
       <button class="btn sec" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular con IA</button>
       <div id="cIaRes"></div>
+      </div>
       <details style="margin-top:14px"><summary>Crear una comida nueva</summary>
         <label>Nombre</label><input id="nNombre" placeholder="Ej.: Batido de avena con banano">
         <label>Porción</label><input id="nPorcion" placeholder="Ej.: 1 vaso">
@@ -957,7 +977,7 @@
     <div class="card aj-menu" data-sec="avanzado">
       <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span><b>Invitados</b><small>Tu código y quién se registró</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span><b>Alumnos y Pro</b><small>Modo entrenador: sus semanas, notas y planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-      <button onclick="ajSeccion('ia')" id="ajMenuIA" style="display:none"><span><b>Inteligencia artificial</b><small>Claude o Gemini para el Coach y los planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('ia')" id="ajMenuIA" style="display:none"><span><b>Inteligencia artificial</b><small id="ajSubIA">Claude o Gemini para el Coach y los planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <button onclick="ajSeccion('conexion')"><span><b>Conexión</b><small>Si algo no carga, prueba aquí</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
     <div class="card" id="cuentaCard" data-sec="cuenta perfil" style="display:none">
@@ -987,6 +1007,11 @@
       <h2>Invitados</h2>
       <div class="meta">Comparte el enlace por WhatsApp: abre la app en <b>Crear cuenta</b> con tu código ya puesto. Cada persona ve solo sus datos.</div>
       <div id="invBody" class="meta" style="margin-top:8px">Cargando…</div>
+    </div>
+    <div class="card" id="perCard" data-sec="cuenta" style="display:none">
+      <h2>Personas registradas</h2>
+      <div class="meta">Quién se registró con tu código. El interruptor <b>IA</b> le activa el Coach, los planes y la comida con IA (la pagas tú); sin él, la app le dice que te la pida.</div>
+      <div id="perBody" style="margin-top:8px"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="progCard" data-sec="programa">
       <h2>Programa</h2>
@@ -1077,15 +1102,15 @@
     </div>
     <div class="card" id="iaCard" data-sec="ia">
       <h2>Inteligencia artificial</h2>
-      <div class="meta">Para el Coach y para diseñar planes con IA. Las claves quedan guardadas en el servidor: nunca se muestran en la app.</div>
+      <div class="ia-estado" id="pIaEstado"><i></i><span><b>Cargando…</b><small></small></span></div>
+      <div class="meta">Para el Coach, los planes y la comida con IA. Las claves se ponen en <b>Render → registro-gimnasio-servidor → Environment</b> (<code>GEMINI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>): la app no las pide ni las guarda.</div>
       <label for="pProv">Usar</label><select id="pProv"><option value="">Automático (Claude si tiene clave; si no, Gemini)</option><option value="claude">Claude (Anthropic)</option><option value="gemini">Gemini (Google)</option></select>
-      <div class="meta" id="pClaveClaudeEstado" style="margin-top:10px"></div>
-      <label for="pClaveClaude">Clave de Claude (console.anthropic.com → API keys)</label><input id="pClaveClaude" type="password" autocomplete="off" placeholder="sk-ant-…">
-      <label for="pModeloClaude">Modelo de Claude</label><input id="pModeloClaude" placeholder="claude-sonnet-5-5">
-      <div class="meta" id="pClaveEstado" style="margin-top:10px"></div>
-      <label for="pClave">Clave de Gemini (aistudio.google.com/apikey)</label><input id="pClave" type="password" autocomplete="off" placeholder="Pega aquí tu clave">
-      <label for="pModelo">Modelo de Gemini</label><input id="pModelo" placeholder="gemini-3.8-flash">
-      <p class="meta">Tus datos de salud y entrenamiento se envían a la IA elegida (Anthropic o Google) solo cuando pides un análisis, haces una pregunta o diseñas un plan. Los invitados usan estas mismas claves con un tope diario.</p>
+      <div class="row">
+        <div><label for="pModeloClaude">Modelo de Claude</label><input id="pModeloClaude" placeholder="claude-sonnet-5-5"></div>
+        <div><label for="pModelo">Modelo de Gemini</label><input id="pModelo" placeholder="gemini-3.8-flash"></div>
+      </div>
+      <div class="meta" id="pIaUso" style="margin-top:10px"></div>
+      <p class="meta">Tus datos de salud y entrenamiento se envían a la IA elegida (Anthropic o Google) solo cuando pides un análisis, haces una pregunta o diseñas un plan. Cada persona usa la IA solo si la activas en Avanzado → Invitados → Personas registradas.</p>
       <button class="btn sec" type="button" id="pProbarIA" style="width:100%;margin-top:6px">Probar la IA</button>
       <div class="meta" id="pProbarIAres" style="margin-top:6px"></div>
     </div>
@@ -1210,7 +1235,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610011824', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610011825', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2879,7 +2904,7 @@ function pintarCoachFilas() {
   var tiene = c ? c.tieneClave : (r ? r.ia.tieneClave : false), esDueno = c ? c.esDueno : (r ? r.esDueno : false);
   var h = '<div class="sec-h" style="margin-top:18px"><b>Conversar</b></div>';
   if (tiene) h += '<button class="g-row" onclick="abrirChat()"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + esc(r && r.ejemplo || '"Me duele el hombro con el press, ¿qué cambio?"') + '</span></span>' + CHEV + '</button>';
-  else h += '<button class="g-row flat" onclick="' + (esDueno ? "irAjustes('ia')" : "toast('La IA aún no está activa. Los consejos de arriba sí funcionan.')") + '"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + (esDueno ? 'Conecta la IA en Ajustes → Inteligencia artificial' : 'Pídele al dueño que active la IA') + '</span></span>' + CHEV + '</button>';
+  else h += '<button class="g-row flat" onclick="' + (esDueno ? "irAjustes('ia')" : "toast(geIaTexto())") + '"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + (esDueno ? 'Falta la clave en Render → Environment (Ajustes → IA)' : esc(geIaTexto())) + '</span></span>' + CHEV + '</button>';
   var ent = (estado && estado.entrenador) || (r && r.entrenador);
   if (ent && (ent.nota || ent.plan)) h += '<button class="g-row" onclick="gcIrEntrenador()"><span class="n"><b>Tu entrenador (persona)</b><span class="s">' + esc(ent.nota ? 'Nota del ' + fechaCortaIso(String(ent.nota.fecha).slice(0, 10)) + ': "' + ent.nota.texto + '"' : (ent.nombre || 'Tu entrenador') + ' te preparó un plan') + '</span></span>' + CHEV + '</button>';
   if (c && c.ajustes.length) h += '<button class="g-row" aria-expanded="false" onclick="gcToggle(\'coachAjustes\', this)"><span class="n"><b>Ajustes activos (' + c.ajustes.length + ')</b><span class="s">' + esc(c.ajustes.map(function (a) { return a.ejercicio; }).join(' · ')) + '</span></span>' + CHEV + '</button>' +
@@ -3080,11 +3105,9 @@ function pintarPerfil(p) {
   $('pCond').value = p.Condiciones || ''; $('pMed').value = p.Medicamentos || ''; $('pLes').value = p.Lesiones || ''; $('pOtros').value = p.OtrosSalud || '';
   if (p.Condiciones || p.Medicamentos || p.Lesiones || p.OtrosSalud) $('pCond').closest('details').open = true;
   var ia = p.ia || {};
-  $('pProv').value = ia.eleccion || ''; $('pModeloClaude').value = ia.modeloClaude || ''; $('pClaveClaude').value = '';
-  $('pModelo').value = p.ModeloIA || ''; $('pClave').value = '';
-  $('pClaveClaudeEstado').textContent = ia.tieneClaveClaude ? 'Clave de Claude guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Claude todavía.';
-  $('pClaveEstado').textContent = ia.tieneClaveGemini ? 'Clave de Gemini guardada ✓ (escribe una nueva solo si quieres cambiarla).' : 'Sin clave de Gemini.';
-  if (!ia.tieneClave) $('pClaveClaudeEstado').textContent += ' El Coach y el diseño con IA no funcionarán hasta que pegues una clave.';
+  $('pProv').value = ia.eleccion || ''; $('pModeloClaude').value = ia.modeloClaude || '';
+  $('pModelo').value = p.ModeloIA || '';
+  gePintarEstadoIA(ia);
 }
 /* ---------- Programas ---------- */
 var programasCache = null;
@@ -3099,13 +3122,10 @@ $('pGuardar').onclick = function () {
             ModeloIA: $('pModelo').value || 'gemini-3.8-flash', ProveedorIA: $('pProv').value || '', ModeloClaude: $('pModeloClaude').value || 'claude-sonnet-5-5',
             PasoMancuernas: $('pPasoM').value, DiscoMinimo: $('pDisco').value,
             Nivel: $('pNivel').value, Equipo: $('pEquipo').value, MinutosSesion: $('pMin').value };
-  if ($('pClave').value.trim()) p.apiKey = $('pClave').value.trim();
-  if ($('pClaveClaude').value.trim()) p.claveClaude = $('pClaveClaude').value.trim();
   var b = $('pGuardar'); b.disabled = true;
-  var claveNueva = !!(p.apiKey || p.claveClaude);
-  api('guardarPerfil', p).then(function () { b.disabled = false; toast('Ajustes guardados'); cargarAjustes(); invalidarTodo(); cargarEstado(); if (claveNueva) probarIAUI(); }).catch(function (x) { b.disabled = false; err(x); });
+  api('guardarPerfil', p).then(function () { b.disabled = false; toast('Ajustes guardados'); cargarAjustes(); invalidarTodo(); cargarEstado(); }).catch(function (x) { b.disabled = false; err(x); });
 };
-/* Prueba la IA con una llamada mínima (solo el dueño): así se sabe al instante si la clave sirve */
+/* Prueba la IA con una llamada mínima (solo el dueño): así se sabe al instante si la clave de Render sirve */
 function probarIAUI() {
   var b = $('pProbarIA'), out = $('pProbarIAres'); b.disabled = true; out.style.color = ''; out.textContent = 'Probando la IA…';
   return api('probarIAApp').then(function (r) {
@@ -3232,6 +3252,7 @@ function elegirMomento(b) {
 function momentoPorHora() { var h = new Date().getHours(); return h < 10 ? 'Desayuno' : h < 12 ? 'Media mañana' : h < 15 ? 'Almuerzo' : h < 18 ? 'Algo' : h < 21 ? 'Cena' : 'Antes de dormir'; }
 function pintarComida(c) {
   comidaDatos = c;
+  geIaComida(c);
   var fotoOk = !c.ia || c.ia.foto !== false, fb = $('cIaFotoBtn');
   if (fb) { fb.classList.toggle('bloq', !fotoOk); fb.onclick = fotoOk ? null : function (ev) { ev.preventDefault(); toast('La comida por foto es de Enfoque Pro (Ajustes → Cuenta)'); }; }
   var sel = $('cMomento'), prev = sel.value;
@@ -3798,7 +3819,7 @@ function tarjetaIA() {
   var ia = mp.ia || {};
   var h = tarjetaEntrenadorPlan() + '<div class="card mp-ia"><h2>Diséñalo con IA' + (ia.tieneClave ? ' <span class="chip">' + esc(ia.nombre || 'IA') + '</span>' : '') + '</h2>';
   if (!ia.tieneClave) {
-    return h + '<div class="meta">' + (ia.esDueno ? 'Pega tu clave de Claude (o de Gemini) en Ajustes → Inteligencia artificial y aquí podrás describir tu plan en texto para que la IA lo arme.' : 'El dueño de la app aún no ha conectado la IA. Mientras tanto puedes copiar un programa y editarlo.') + '</div></div>';
+    return h + '<div class="meta">' + (ia.esDueno ? 'Falta la clave de la IA en Render → registro-gimnasio-servidor → Environment (GEMINI_API_KEY o ANTHROPIC_API_KEY). Con ella, aquí describes tu plan y la IA lo arma.' : esc(geIaTexto()) + ' Mientras tanto puedes copiar un programa y editarlo.') + '</div></div>';
   }
   h += '<div class="meta">Cuéntale al entrenador cuántos días y minutos tienes, con qué equipo (gimnasio completo, mancuernas en casa…), tu experiencia, qué quieres priorizar y si tienes molestias. Arma los días con ejercicios de la biblioteca, series, repeticiones y descansos; tú revisas y guardas.</div>' +
     '<textarea id="mpIaTxt" rows="4" placeholder="Ej.: 4 días de 60 min en gimnasio completo, llevo un año entrenando, quiero priorizar espalda y glúteo, me molesta el hombro derecho en el press militar" oninput="mpIa.texto=this.value">' + esc(mpIa.texto) + '</textarea>' +
@@ -3962,19 +3983,16 @@ function cargarCuenta(p) {
   var conSesion = false; try { conSesion = !!JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) {}
   $('cuentaClave').style.display = conSesion ? '' : 'none'; $('cuentaClaveTxt').style.display = conSesion ? '' : 'none';
   pintarCabeceraAjustes();
-  if (!u.esDueno) { $('invCard').style.display = 'none'; cargarCuentaAlumno(p); return; }
-  $('invCard').style.display = '';
+  if (!u.esDueno) { $('invCard').style.display = 'none'; $('perCard').style.display = 'none'; cargarCuentaAlumno(p); return; }
+  $('invCard').style.display = ''; $('perCard').style.display = '';
   (p || api('getInvitacion')).then(pintarInvitacion).catch(function (e) { $('invBody').textContent = 'No pude cargar la invitación: ' + (e.message || e); });
+  geCargarPersonas();
 }
 function pintarInvitacion(r) {
   var h = '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:4px 0 10px">' +
     '<div><div class="kicker">Código</div><div style="font-family:var(--disp);font-size:30px;font-weight:800;letter-spacing:2px;color:var(--amber)">' + esc(r.codigo) + '</div></div>' +
     '<div style="flex:1;min-width:180px"><div class="kicker">Enlace para invitar</div><div style="word-break:break-all;color:var(--ink)">' + esc(enlaceInvitacion(r)) + '</div></div></div>' +
     '<div class="acts"><button class="btn sec" onclick="copiarInvitacion()">Copiar invitación</button><button class="btn txt" onclick="nuevoCodigo()">Nuevo código</button></div>';
-  if (r.usuarios.length) {
-    h += '<div class="kicker" style="margin-top:14px">Personas registradas (' + r.usuarios.length + ')</div><ul style="margin:6px 0 0;padding-left:18px">' +
-      r.usuarios.map(function (u) { return '<li>' + esc(u.nombre) + ' · ' + esc(u.correo) + ' · desde ' + esc(u.creado) + '</li>'; }).join('') + '</ul>';
-  } else h += '<div style="margin-top:12px">Todavía nadie se ha registrado.</div>';
   invitacionCache = r;
   $('invBody').innerHTML = h;
 }
@@ -4494,6 +4512,7 @@ function pintarResumenAjustes() {
   }
   if (c) $('ajSubComida').textContent = (c.nombre || 'Sin objetivo') + ' · ' + miles(c.kcal) + ' kcal · ' + c.prot + ' g' + (c.adaptativa ? ' · se ajusta con tu peso real' : '');
   if (typeof gdResumenTelegram === 'function') gdResumenTelegram();
+  if (p && p.ia && $('ajSubIA')) $('ajSubIA').textContent = geEstadoIATexto(p.ia);
 }
 function pintarComidaAjustes(c) {
   ajData.comida = c; pintarResumenAjustes();
@@ -4720,7 +4739,7 @@ function gdSupFormHTML(c) {
   var inp = function (k, lab, tipo, ph) { return '<div><label for="gds_' + k + '">' + lab + '</label><input id="gds_' + k + '" type="' + tipo + '"' + (tipo === 'number' ? ' inputmode="decimal" step="any" min="0"' : '') + ' placeholder="' + esc(ph) + '" value="' + esc(d[k] == null ? '' : d[k]) + '"></div>'; };
   return '<div class="gd-form" id="gdSupForm"><div class="dayh" style="margin-top:8px"><b>' + (d.id ? 'Editar' : 'Agregar proteína lista') + '</b><span class="meta">por scoop o porción</span></div>' +
     '<div class="ayuda">Copia lo que dice la tabla nutricional por porción.</div>' +
-    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="gdEtiquetaFoto(this)">' : '') +
+    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="gdEtiquetaFoto(this)">' : (geIaApagada() ? '<div class="ia-off">' + esc(geIaTexto()) + '</div>' : '')) +
     '<div class="row">' + inp('nombre', 'Nombre', 'text', 'Ej.: Whey Gold Standard') + inp('marca', 'Marca', 'text', 'Opcional') + '</div>' +
     '<div class="grid3">' + inp('gramos', 'Gramos', 'number', '30') + inp('kcal', 'Kcal', 'number', '120') + inp('prot', 'Proteína g', 'number', '24') + '</div>' +
     '<div class="grid3">' + inp('carb', 'Carbohidratos g', 'number', '3') + inp('azucar', 'Azúcar g', 'number', '1') + inp('grasa', 'Grasa g', 'number', '1,5') + '</div>' +
@@ -4843,6 +4862,61 @@ function gdResumenTelegram() {
   if (s && t) s.textContent = t.vinculado ? 'Vinculado' + (t.nombre ? ' como ' + t.nombre : '') : 'Sin vincular · anota lo que comes con un mensaje';
 }
 /* ===== fin G-D ===== */
+
+/* ===== G-E: IA solo en Render (claves fuera de la app) y autorización por persona (USUARIOS[].ia) ===== */
+/* La persona actual es un invitado al que el dueño aún no le activó la IA (getEstado().usuario.ia) */
+function geIaApagada() { var u = estado && estado.usuario; return !!(u && u.esDueno === false && u.ia === false); }
+function geIaTexto() { return geIaApagada() ? 'La IA aún no está activada para tu cuenta. Pídesela al dueño de la app.' : 'La IA no está disponible por ahora; avísale al dueño de la app.'; }
+/* Comida → Agregar: sin autorización, el bloque "Con IA" se cambia por una línea */
+function geIaComida(c) {
+  var off = $('cIaOff'), box = $('cIaBox'); if (!off || !box) return;
+  var apagada = geIaApagada() || (c && c.ia && c.ia.tieneClave === false && estado && estado.usuario && estado.usuario.esDueno === false);
+  off.style.display = apagada ? '' : 'none'; box.style.display = apagada ? 'none' : '';
+  off.textContent = apagada ? geIaTexto() : '';
+}
+/* Ajustes → IA (dueño): estado de la clave en Render, sin la clave */
+function geEstadoIATexto(ia) {
+  if (!ia) return 'Claude o Gemini para el Coach y los planes';
+  return ia.hayClave || ia.tieneClave ? (ia.nombre || 'IA') + ' activa · clave en Render' : 'Sin clave en Render';
+}
+function gePintarEstadoIA(ia) {
+  var e = $('pIaEstado'); if (!e) return;
+  var hay = !!(ia.hayClave || ia.tieneClave);
+  e.className = 'ia-estado ' + (hay ? 'on' : 'off');
+  var otros = [];
+  if (ia.tieneClaveClaude) otros.push('Claude'); if (ia.tieneClaveGemini) otros.push('Gemini');
+  e.querySelector('b').textContent = hay ? (ia.nombre || 'IA') + ' activa · clave en Render' : 'Sin clave en Render';
+  e.querySelector('small').textContent = hay ? 'Claves en Render: ' + otros.join(' y ') + (ia.proveedor === 'claude' ? ' · modelo ' + (ia.modeloClaude || '') : ' · modelo ' + (ia.modeloGemini || ''))
+    : 'Pega ' + (ia.proveedor === 'claude' ? 'ANTHROPIC_API_KEY' : 'GEMINI_API_KEY') + ' en Render → registro-gimnasio-servidor → Environment y reinicia el servicio.';
+  var u = $('pIaUso');
+  if (u) u.textContent = ia.uso ? 'Este mes: ' + ia.uso.n + ' llamada' + (ia.uso.n === 1 ? '' : 's') + ' · ' + usdTxt(ia.uso.usd) + (ia.uso.ant ? ' · mes anterior ' + ia.uso.ant.n + ' · ' + usdTxt(ia.uso.ant.usd) : '') : '';
+}
+/* Ajustes → Avanzado → Invitados: personas registradas con el interruptor IA */
+var gePersonas = null;
+function geCargarPersonas() {
+  var b = $('perBody'); if (!b) return;
+  api('getPersonas').then(function (r) { gePersonas = r.personas || []; gePintarPersonas(); })
+    .catch(function (e) { b.innerHTML = '<div class="meta">No pude cargar las personas: ' + esc(e.message || e) + '</div>'; });
+}
+function gePintarPersonas() {
+  var b = $('perBody'); if (!b) return;
+  var lista = gePersonas || [];
+  if (!lista.length) { b.innerHTML = '<div class="meta">Todavía no se ha registrado nadie con tu código.</div>'; return; }
+  b.innerHTML = lista.map(function (u, i) {
+    return '<div class="per-row"><div class="n"><b>' + esc(u.nombre || 'Sin nombre') + '</b><small>' + esc(u.correo || '') + (u.creado ? ' · desde ' + fechaCortaIso(String(u.creado).slice(0, 10)) : '') + '</small>' +
+      (u.ia ? '<span class="tag">IA activa</span>' : '') + (u.pro ? '<span class="tag" style="margin-left:8px">Pro</span>' : '') + '</div>' +
+      '<label class="per-sw" aria-label="IA para ' + esc(u.nombre || '') + '"><span>IA</span><input type="checkbox" id="perIa' + i + '"' + (u.ia ? ' checked' : '') + ' onchange="geAutorizar(' + i + ', this)"><i></i></label></div>';
+  }).join('');
+}
+function geAutorizar(i, inp) {
+  var u = (gePersonas || [])[i]; if (!u) return;
+  var ia = !!inp.checked; inp.disabled = true;
+  api('autorizarIA', { id: u.id, ia: ia }).then(function (r) {
+    gePersonas = r.personas || gePersonas; gePintarPersonas();
+    toast(ia ? 'Listo: ' + (u.nombre || 'esa persona') + ' ya puede usar la IA' : (u.nombre || 'Esa persona') + ' ya no usa la IA');
+  }).catch(function (e) { inp.disabled = false; inp.checked = !ia; err(e); });
+}
+/* ===== fin G-E ===== */
 </script>
 </body>
 </html>
