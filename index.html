@@ -601,6 +601,95 @@
   .ha-t{font-size:13px;color:var(--muted);padding:6px 4px 8px;text-align:center}
   .ha button{display:block;width:100%;min-height:50px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:600 16px var(--body);cursor:pointer}
   .ha button.bad{color:var(--bad)} .ha .ha-cancel{margin-top:8px;border-top:0;border-radius:14px;background:var(--raise);font-weight:800}
+  /* ===== G-C: Semana, Comida, Cuerpo, Progreso, Coach ===== */
+  .g-sub{font-size:12px;color:#8d8a82;margin-top:6px}
+  .g-row{display:flex;align-items:center;gap:10px;width:100%;margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink);font-family:var(--body);text-align:left;cursor:pointer;min-height:52px}
+  .g-row.flat{background:var(--card2)}
+  .g-row .n{flex:1;min-width:0} .g-row b{display:block;font-size:14px;font-weight:700} .g-row .s{display:block;font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .g-row .chev{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--amber);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+  .g-row[aria-expanded=true] .chev{transform:rotate(90deg)}
+  .g-fold{display:none;margin-top:6px} .g-fold.open{display:block}
+  .g-ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .g-q{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;border:1px solid var(--dim);color:var(--dim);font-size:11px;font-weight:800;margin-left:4px;cursor:pointer;vertical-align:1px;background:none;font-family:var(--body);padding:0}
+  .g-fecha{display:flex;align-items:center;gap:6px} .g-fecha button{width:42px;height:42px;border-radius:999px;border:0;background:var(--card2);color:var(--ink);font-size:20px;cursor:pointer;font-family:var(--body)}
+  /* Semana */
+  .g-dias{display:flex;gap:6px;margin-top:10px}
+  .g-dia{flex:1;min-width:0;text-align:center;border-radius:12px;padding:6px 0;background:var(--card);border:1px solid var(--line);color:var(--ink);cursor:pointer;font-family:var(--body);min-height:56px}
+  .g-dia small{display:block;font-size:10px;font-weight:700;letter-spacing:.5px} .g-dia b{display:block;font-family:var(--disp);font-weight:800;font-size:20px;line-height:1;margin-top:2px}
+  .g-dia i{display:block;margin:4px auto 0;width:8px;height:8px;border-radius:999px;background:transparent}
+  .g-dia.libre{color:#8d8a82} .g-dia.plan i{background:var(--muted)} .g-dia.hecho i{background:var(--green-ink)} .g-dia.sinreg i{background:var(--bad)} .g-dia.cardio i{background:var(--blue)}
+  .g-dia.hoy{background:var(--amber-bg);border-color:var(--amber);color:var(--ink)} .g-dia.hoy small{color:var(--amber)} .g-dia.hoy i{background:var(--amber)} .g-dia.hoy.hecho i{background:var(--green-ink)}
+  .g-fila{display:flex;align-items:center;gap:10px;border-radius:14px;padding:8px 10px;background:var(--card);border:1px solid var(--line);margin-top:6px;cursor:pointer;min-height:52px}
+  .g-fila.hoy{border:2px solid var(--amber)} .g-fila.hecho{border-color:var(--green-line)} .g-fila.desc{opacity:.75} .g-fila.sinreg{border-color:var(--bad)}
+  .g-fila .d{width:36px;display:flex;flex-direction:column;align-items:center;line-height:1;color:var(--dim);flex-shrink:0} .g-fila .d small{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase} .g-fila .d b{font-family:var(--disp);font-weight:800;font-size:18px;margin-top:2px;color:var(--ink)}
+  .g-fila.hoy .d small{color:var(--amber)} .g-fila.hecho .d small{color:var(--green-ink)}
+  .g-fila .c{flex:1;min-width:0} .g-fila .t{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .g-fila .s{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .g-fila .r{font-size:12px;font-weight:800;color:var(--amber);white-space:nowrap;flex-shrink:0} .g-fila.hecho .r{color:var(--green-ink)} .g-fila.sinreg .r{color:var(--bad)} .g-fila.desc .r{color:var(--dim)}
+  .g-h1{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--card2);margin-top:6px;cursor:pointer;min-height:46px;font-size:13px;border:0;width:100%;color:var(--ink);font-family:var(--body);text-align:left}
+  .g-h1 .d{font-weight:700;color:var(--ink);white-space:nowrap} .g-h1 .t{flex:1;min-width:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .g-h1 .pc{color:var(--pct);font-weight:800;white-space:nowrap} .g-h1 .rec{color:var(--green-ink);font-weight:700;white-space:nowrap}
+  .g-det{padding:4px 12px 10px;background:var(--card2);border-radius:0 0 12px 12px;margin-top:-6px}
+  .g-linea{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding:0 4px;font-size:13px;color:var(--muted)}
+  #balanceMus .bm-row .m{width:126px;font-size:13px}
+  #planificador .dias{grid-template-columns:repeat(4,1fr)}
+  /* Comida */
+  .g-ahora{margin-top:12px;background:var(--card2);border-radius:18px;padding:14px}
+  .g-ahora .plato{font-size:17px;font-weight:700;line-height:1.3;margin-top:6px} .g-ahora .meta{margin-top:4px}
+  .g-ahora .toggle{margin:10px 0 0}
+  .g-acts{display:flex;gap:8px;margin-top:12px} .g-acts button{flex:1;min-height:46px;border-radius:12px;border:0;font:800 15px var(--body);cursor:pointer;padding:0 8px}
+  .g-acts .ok{background:var(--amber);color:var(--amber-ink)} .g-acts .otra{background:var(--raise);color:var(--ink)} .g-acts button:disabled{opacity:.6}
+  .g-bar{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px} .g-bar span{width:66px;color:var(--muted);flex-shrink:0} .g-bar .tr{flex:1;height:8px;border-radius:999px;background:var(--raise2);overflow:hidden} .g-bar .tr i{display:block;height:100%;background:var(--amber);border-radius:999px} .g-bar.prot .tr i{background:var(--green-ink)} .g-bar.ok .tr i{background:var(--green-ink)} .g-bar b{width:74px;text-align:right;font-size:14px;flex-shrink:0}
+  .g-mom{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin-top:6px}
+  .g-mom.ahora{border-color:var(--amber)}
+  .g-mom .n{flex:1;min-width:0} .g-mom .t{font-size:14px;font-weight:700} .g-mom .t small{font-weight:500;color:var(--dim);font-size:12px} .g-mom .s{font-size:12px;color:var(--muted);line-height:1.35}
+  .g-mom button{min-height:40px;padding:0 12px;border-radius:10px;border:0;font:800 13px var(--body);cursor:pointer;flex-shrink:0;background:var(--raise);color:var(--ink)} .g-mom button.add{background:var(--amber);color:var(--amber-ink)}
+  .g-reg{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;padding:4px 0;border-top:1px solid var(--line)} .g-reg:first-child{border-top:0} .g-reg .meta{font-size:12px} .g-reg button{min-width:44px;min-height:40px;border:0;background:none;color:var(--dim);font-size:18px;cursor:pointer}
+  #cAgregar{margin-top:10px;border:2px solid var(--amber);border-radius:18px;padding:14px;background:var(--card)}
+  #cAgregar .c-chips{flex-wrap:wrap;overflow:visible;margin:8px 0 0;padding:0}
+  #cAgregar .chips-mom{flex-wrap:wrap;overflow:visible}
+  #cAgregar .chips-mom .chip{font-size:12px;padding:7px 10px;min-height:34px}
+  .g-ia-acts{display:flex;gap:8px;margin-top:8px} .g-ia-acts button{flex:1;min-height:46px;border-radius:12px;border:0;font:800 15px var(--body);cursor:pointer;white-space:nowrap} .g-ia-acts .ok{background:var(--amber);color:var(--amber-ink)} .g-ia-acts .no{background:var(--raise);color:var(--ink)}
+  .g-merc-h{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card);font-size:13px;color:var(--muted)} .g-merc-h b{color:var(--ink);font-size:15px;display:block}
+  .g-meta-info{margin-top:8px;font-size:12px;color:var(--dim)}
+  .g-obj{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px} .g-obj button{flex:1;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 14px var(--body);cursor:pointer}
+  /* Cuerpo */
+  .g-peso{display:flex;gap:10px;align-items:stretch;margin-top:12px}
+  .g-peso input{flex:1;min-width:0;font-family:var(--disp);font-weight:800;font-size:52px;line-height:1;padding:8px 14px;height:76px;border-radius:16px}
+  .g-peso .btn{width:auto;min-width:108px;height:76px;flex-shrink:0}
+  .g-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px} .g-chips span{font-size:12px;font-weight:700;padding:7px 10px;border-radius:999px;background:var(--raise);color:var(--muted)} .g-chips span.ok{background:var(--green-bg);color:var(--green-ink)} .g-chips span.warn{background:var(--amber-bg);color:var(--amber)}
+  .g-trend{margin-top:12px;background:var(--card2);border-radius:18px;padding:14px}
+  .g-trend svg{display:block;width:100%;height:90px;margin-top:8px}
+  .g-frase{font-size:14px;margin-top:8px;line-height:1.4}
+  .g-foto{display:flex;align-items:center;gap:10px;margin-top:10px;padding:12px 14px;border-radius:14px;background:var(--card)}
+  .g-foto .n{flex:1;min-width:0} .g-foto b{display:block;font-size:14px} .g-foto .s{font-size:12px;color:var(--muted)}
+  .g-foto select{width:auto;padding:8px 8px;font-size:13px;border-radius:10px;flex-shrink:0}
+  .g-foto label.btn{width:auto;min-height:44px;font-size:16px;padding:0 14px;display:flex;align-items:center;gap:6px;flex-shrink:0}
+  .g-foto label.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  /* Progreso */
+  .g-3{display:flex;gap:8px;margin-top:12px} .g-3 div{flex:1;min-width:0;background:var(--card);border-radius:14px;padding:12px 10px} .g-3 b{display:block;font-family:var(--disp);font-weight:800;font-size:34px;line-height:1;color:var(--amber)} .g-3 span{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}
+  .g-mej{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px} .g-mej span{width:156px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0} .g-mej .tr{flex:1;height:8px;border-radius:999px;background:var(--raise2);overflow:hidden} .g-mej .tr i{display:block;height:100%;background:var(--green-ink);border-radius:999px} .g-mej b{width:52px;text-align:right;color:var(--green-ink);flex-shrink:0}
+  .g-sem{display:flex;gap:6px;align-items:flex-end;height:90px;margin-top:10px} .g-sem i{flex:1;border-radius:6px 6px 0 0;background:var(--amber);display:block;min-height:3px} .g-sem i.cur{background:#5a4a1a}
+  .g-semx{display:flex;gap:6px;margin-top:4px} .g-semx span{flex:1;text-align:center;font-size:11px;color:var(--dim)}
+  .g-ico{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;margin-top:8px}
+  .g-ico svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .g-ico:disabled{opacity:.5}
+  .g-rowline{display:flex;gap:8px;align-items:stretch} .g-rowline .g-row{flex:1;min-width:0}
+  /* Coach */
+  .g-con{display:flex;gap:10px;align-items:flex-start;margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+  .g-con .dot{width:10px;height:10px;border-radius:999px;margin-top:6px;flex-shrink:0;background:var(--amber)} .g-con.carga .dot{background:var(--green-ink)} .g-con.comida .dot{background:#8fc3ff} .g-con.descanso .dot{background:var(--muted)}
+  .g-con .n{flex:1;min-width:0} .g-con b{display:block;font-size:14px} .g-con .s{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.4}
+  .g-con button{min-height:40px;padding:0 12px;border-radius:10px;border:0;background:var(--raise);color:var(--ink);font:800 13px var(--body);cursor:pointer;flex-shrink:0}
+  .g-con button.p{background:var(--amber);color:var(--amber-ink)}
+  #coachChat{position:fixed;inset:0;z-index:21;background:var(--bg);display:flex;flex-direction:column}
+  #coachChat.hidden{display:none}
+  #coachChat .ch-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 10px;border-bottom:1px solid var(--line)}
+  #coachChat .ch-top b{font-family:var(--disp);font-size:22px;font-weight:800;text-transform:uppercase;display:block;line-height:1}
+  #coachChat .chat{flex:1;max-height:none;overflow-y:auto;padding:12px 16px;margin:0;-webkit-overflow-scrolling:touch}
+  #coachChat .ch-bot{border-top:1px solid var(--line);padding:8px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+  #coachChat .chat-ideas{margin:0 0 8px}
+  #coachChat .chat-in textarea{min-height:48px;max-height:120px}
+  #coachChat .ch-nota{font-size:11px;color:var(--faint);margin-top:6px;text-align:center}
+  #coachChat .ch-nota .btn.txt{min-height:0;font-size:11px;display:inline}
+  @media (min-width:700px){#coachChat{left:50%;transform:translateX(-50%);width:640px;right:auto}}
 </style>
 </head>
 <body>
@@ -655,31 +744,63 @@
     </div>
   </section>
 
-  <!-- SEMANA -->
+  <!-- SEMANA (boceto G) -->
   <section id="tab-semana" class="hidden">
-    <div class="page-h"><div><div class="kicker" id="kSemana"></div><div class="h-big sm">Tu semana</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+    <div class="page-h"><div><div class="kicker" id="kSemanaG"></div><span id="kSemana" class="hidden"></span><div class="h-big sm">Tu semana</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
     <div class="wrap">
       <div id="semanaResumen"></div>
       <div id="semanaRows"></div>
-      <div class="card flat dayh"><span class="meta">¿Cambian tus días esta semana?</span><button class="btn txt" id="btnPlanificar">Ajustar días</button></div>
+      <button class="g-row" id="bmRow" aria-expanded="false" onclick="gcToggle('balanceMus', this)" style="display:none"><span class="n"><b id="bmTit">Músculos</b><span class="s" id="bmSub"></span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div id="balanceMus" class="g-fold"></div>
+      <button class="g-row" id="histRow" aria-expanded="false" onclick="gcToggle('historial', this)"><span class="n"><b>Días anteriores</b><span class="s" id="histSub">Cargando…</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div id="historial" class="g-fold"></div>
+      <div class="g-linea"><span>¿Cambian tus días esta semana?</span><button class="btn txt" id="btnPlanificar">Ajustar días</button></div>
       <div id="planificador" class="hidden card"></div>
-      <div id="balanceMus"></div>
-      <div class="sec-h"><b>Días anteriores</b><span>últimos 30 días</span></div>
-      <div id="historial"><div class="empty">Cargando…</div></div>
     </div>
   </section>
 
-  <!-- COMIDA -->
+  <!-- COMIDA (boceto G: ahora, hoy y lo demás plegado) -->
   <section id="tab-comida" class="hidden">
-    <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Comida</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+    <div class="page-h"><div><div class="kicker" id="cKick">Comida</div><div class="h-big sm" id="cTit">Comida</div></div>
+      <span style="display:flex;gap:6px;align-items:center"><span class="g-fecha"><button onclick="cDia(-1)" aria-label="Día anterior">‹</button><button onclick="cDia(1)" aria-label="Día siguiente">›</button></span><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></span></div>
     <div class="wrap">
-    <div class="card">
-      <div><label for="cFecha">Día</label><input type="date" id="cFecha"></div>
-      <label style="margin-top:10px">Momento</label><div class="chips-mom" id="cMomChips"></div><select id="cMomento" class="oculto" aria-hidden="true" tabindex="-1"></select>
-      <div id="cTotales" style="margin-top:12px"></div>
+    <input type="date" id="cFecha" class="oculto" aria-hidden="true" tabindex="-1">
+    <select id="cMomento" class="oculto" aria-hidden="true" tabindex="-1"></select>
+    <div id="pcAhora"></div>
+    <div class="card" id="cHoyCard" style="margin-top:10px">
+      <div class="dayh"><b id="cHoyTit">Hoy</b><span class="meta" id="cHoyMeta"></span></div>
+      <div id="cTotales"></div>
+      <div id="cMetaInfo" class="g-meta-info g-fold"></div>
+      <div id="cMomentos"></div>
     </div>
-    <div class="card" id="cBasicos" style="display:none"></div>
-    <div class="card" id="pcCard">
+    <div id="cAgregar" class="hidden">
+      <div class="dayh"><div><div class="kicker">Agregar a</div><div class="pa-t" style="font-size:30px" id="cAgTit">Comida</div></div><button class="gear" onclick="cerrarAgregar()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="chips-mom" id="cMomChips" style="margin-top:8px"></div>
+      <div id="cAgRegs"></div>
+      <input id="cBuscar" placeholder="Buscar comida… (ej.: huevo, atún, arepa)" style="margin-top:10px">
+      <div class="pk-chips c-chips" id="cChips"></div>
+      <div class="row" style="margin-top:8px;align-items:center"><div class="meta">Cantidad (porciones)</div>
+        <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
+      <div id="cLista" style="margin-top:6px"></div>
+      <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto o foto</span></div>
+      <div class="meta">Cuéntale qué comiste o tómale una foto al plato. Tú revisas antes de guardar.</div>
+      <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
+        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label></div>
+      <input id="cIaFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoComidaElegida(this)">
+      <div class="meta" id="cIaFotoTxt"></div>
+      <button class="btn sec" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular con IA</button>
+      <div id="cIaRes"></div>
+      <details style="margin-top:14px"><summary>Crear una comida nueva</summary>
+        <label>Nombre</label><input id="nNombre" placeholder="Ej.: Batido de avena con banano">
+        <label>Porción</label><input id="nPorcion" placeholder="Ej.: 1 vaso">
+        <div class="row"><div><label>Kcal</label><input id="nKcal" type="number" inputmode="decimal"></div><div><label>Proteína g</label><input id="nProt" type="number" inputmode="decimal"></div></div>
+        <div class="row"><div><label>Carbohidratos g</label><input id="nCarb" type="number" inputmode="decimal"></div><div><label>Grasa g</label><input id="nGrasa" type="number" inputmode="decimal"></div></div>
+        <button class="btn sec" style="margin-top:8px" onclick="crearComidaUI()">Guardar comida</button>
+        <div class="meta" style="margin-top:6px">Los valores de la etiqueta del producto o de una app de calorías.</div>
+      </details>
+    </div>
+    <button class="g-row" id="pcRow" aria-expanded="false" onclick="gcToggle('pcCard', this)"><span class="n"><b>Plan de la semana y mercado</b><span class="s" id="pcRowSub">Menú del D1 y el Ara para tu objetivo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="pcCard">
       <div class="pa-h"><div class="kicker" id="pcKick">Tu plan · D1 y Ara</div><button class="pa-obj" id="pcObjBtn" onclick="pcConfig()" style="display:none"></button></div>
       <div id="pcConf">
         <div class="meta" style="margin-top:6px">Un menú con lo que se consigue en el D1 y el Ara, ajustado a tu objetivo, tu salud y tus medicamentos.</div>
@@ -691,66 +812,50 @@
       </div>
       <div id="pcRes"></div>
     </div>
-    <div class="card" id="cIaCard"><h2>Con IA</h2>
-      <div class="meta">Cuéntale qué comiste o tómale una foto al plato. Tú revisas antes de guardar.</div>
-      <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
-        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato">📷</label></div>
-      <input id="cIaFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoComidaElegida(this)">
-      <div class="meta" id="cIaFotoTxt"></div>
-      <button class="btn" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular</button>
-      <div id="cIaRes"></div>
-    </div>
-    <div class="card"><h2>Agregar</h2>
-      <input id="cBuscar" placeholder="Buscar comida… (ej.: huevo, atún, kumis, arepa)">
-      <div class="pk-chips c-chips" id="cChips"></div>
-      <div class="row" style="margin-top:8px;align-items:center"><div class="meta">Cantidad (porciones)</div>
-        <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
-      <div id="cLista" style="margin-top:6px"></div>
-      <details style="margin-top:10px"><summary>Crear una comida nueva</summary>
-        <label>Nombre</label><input id="nNombre" placeholder="Ej.: Batido de avena con banano">
-        <label>Porción</label><input id="nPorcion" placeholder="Ej.: 1 vaso">
-        <div class="row"><div><label>Kcal</label><input id="nKcal" type="number" inputmode="decimal"></div><div><label>Proteína g</label><input id="nProt" type="number" inputmode="decimal"></div></div>
-        <div class="row"><div><label>Carbohidratos g</label><input id="nCarb" type="number" inputmode="decimal"></div><div><label>Grasa g</label><input id="nGrasa" type="number" inputmode="decimal"></div></div>
-        <button class="btn sec" style="margin-top:8px" onclick="crearComidaUI()">Guardar comida</button>
-        <div class="meta" style="margin-top:6px">Los valores de la etiqueta del producto o de una app de calorías. También puedes editarlos en la hoja "Comidas".</div>
-      </details>
-    </div>
-    <div class="card"><h2>Lo que comiste</h2><div id="cRegistros"></div></div>
+    <button class="g-row" id="cuRow" aria-expanded="false" onclick="gcToggle('pcCuid', this)" style="display:none"><span class="n"><b id="cuTit">Ajustado a tu salud</b><span class="s" id="cuSub"></span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="pcCuid"></div>
+    <button class="g-row" id="cbRow" aria-expanded="false" onclick="gcToggle('cBasicos', this)" style="display:none"><span class="n"><b>Lo básico</b><span class="s" id="cbSub">proteína por comida, agua, sueño</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="cBasicos"></div>
     </div>
   </section>
 
-  <!-- CUERPO -->
+  <!-- CUERPO (boceto G: el peso primero) -->
   <section id="tab-cuerpo" class="hidden">
-    <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Cuerpo</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+    <div class="page-h"><div><div class="kicker" id="cuKick">Hoy · en ayunas</div><div class="h-big sm">Tu peso</div></div>
+      <span style="display:flex;gap:6px;align-items:center"><span class="g-fecha"><button onclick="cuDia(-1)" aria-label="Día anterior">‹</button><button onclick="cuDia(1)" aria-label="Día siguiente">›</button></span><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></span></div>
     <div class="wrap">
-    <div class="card">
+    <input type="date" id="dFecha" class="oculto" aria-hidden="true" tabindex="-1">
+    <div class="g-peso"><input id="dPeso" type="number" inputmode="decimal" step="0.1" placeholder="0,0" aria-label="Peso de hoy en kg"><button class="btn" id="dGuardar">Guardar</button></div>
+    <div class="g-chips" id="cuChips"></div>
+    <div class="g-trend" id="cuTrend"></div>
+    <div class="g-foto"><div class="n"><b>Foto de progreso</b><span class="s" id="fEstado">Cada 4 semanas: frente, perfil y espalda.</span></div>
+      <select id="fTipo" aria-label="Tipo de foto"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select>
+      <label class="btn" for="fArchivo" id="fTomar"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="fArchivoTxt">Tomar</span></label></div>
+    <input id="fArchivo" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoProgresoElegida(this)">
+    <button class="g-row" aria-expanded="false" onclick="gcToggle('cuMas', this)"><span class="n"><b>Más datos de la báscula</b><span class="s" id="cuMasSub">grasa, músculo, agua, visceral, ósea, metabolismo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="cuMas">
       <div class="row">
-        <div><label for="dFecha">Día</label><input type="date" id="dFecha"></div>
-        <div><label for="dEstatura">Estatura (m)</label><input id="dEstatura" type="number" inputmode="decimal" step="0.01" placeholder="1.69"></div>
-      </div>
-      <h2 style="margin-top:16px">Báscula</h2>
-      <div class="row">
-        <div><label for="dPeso">Peso (kg)</label><input id="dPeso" type="number" inputmode="decimal" step="0.1"></div>
         <div><label for="dGrasa">Grasa (%)</label><input id="dGrasa" type="number" inputmode="decimal" step="0.1"></div>
-      </div>
-      <details class="mas"><summary>Más datos de la báscula (músculo, agua, visceral…)</summary>
-      <div class="row">
         <div><label for="dMusculo">Músculo (kg)</label><input id="dMusculo" type="number" inputmode="decimal" step="0.1"></div>
+      </div>
+      <div class="row">
         <div><label for="dAgua">Agua (%)</label><input id="dAgua" type="number" inputmode="decimal" step="0.1"></div>
-      </div>
-      <div class="row">
         <div><label for="dVisceral">Grasa visceral</label><input id="dVisceral" type="number" inputmode="decimal" step="0.5"></div>
-        <div><label for="dHueso">Masa ósea (kg)</label><input id="dHueso" type="number" inputmode="decimal" step="0.1"></div>
       </div>
       <div class="row">
+        <div><label for="dHueso">Masa ósea (kg)</label><input id="dHueso" type="number" inputmode="decimal" step="0.1"></div>
         <div><label for="dTmb">Metabolismo basal</label><input id="dTmb" type="number" inputmode="numeric" step="1"></div>
+      </div>
+      <div class="row">
+        <div><label for="dEstatura">Estatura (m)</label><input id="dEstatura" type="number" inputmode="decimal" step="0.01" placeholder="1.69"></div>
         <div></div>
       </div>
-      </details>
       <div class="calc" id="calc"></div>
       <div id="estimaciones" class="meta" style="margin-top:8px"></div>
-
-      <h2 style="margin-top:16px">Hábitos</h2>
+      <button class="btn sec" style="margin-top:10px" onclick="$('dGuardar').click()">Guardar</button>
+    </div>
+    <button class="g-row" aria-expanded="false" onclick="gcToggle('cuHab', this)"><span class="n"><b>Sueño, pasos y energía de hoy</b><span class="s" id="cuHabSub">si dormiste poco, la sesión de hoy va más suave</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="cuHab">
       <div class="row">
         <div><label for="dSueno">Sueño (h)</label><input id="dSueno" type="number" inputmode="decimal" step="0.5"></div>
         <div><label for="dPasos">Pasos</label><input id="dPasos" type="number" inputmode="numeric" step="100"></div>
@@ -758,33 +863,22 @@
           <select id="dEnergia"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
       </div>
       <label for="dNota">Nota (agujetas, estrés, molestias…)</label><textarea id="dNota" rows="2"></textarea>
-      <div style="height:12px"></div>
-      <button class="btn" id="dGuardar">Guardar día</button>
+      <button class="btn sec" style="margin-top:10px" onclick="$('dGuardar').click()">Guardar</button>
     </div>
-    <div class="card meta">
-      <b style="color:var(--ink)">Cómo pesarte para que los datos sirvan:</b> cada mañana, después de ir al baño, sin comer ni beber, descalzo y con los pies secos,
-      con la báscula siempre en el mismo piso duro. La grasa de una báscula de bioimpedancia varía ±1–2 % según tu hidratación:
-      fíjate en la tendencia de varias semanas, no en un día suelto.
-    </div>
-    <div class="card"><h2>Fotos de progreso</h2>
-      <div class="meta" id="fEstado">Cada 4 semanas: frente, perfil y espalda, con la misma luz y distancia.</div>
-      <div class="row" style="margin-top:6px"><div><label for="fTipo">Tipo</label><select id="fTipo"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select></div>
-        <div><label>Foto</label><label class="btn sec file-btn" for="fArchivo"><span id="fArchivoTxt">📷 Tomar o elegir</span></label>
-          <input id="fArchivo" class="oculto" type="file" accept="image/*" capture="environment" onchange="$('fArchivoTxt').textContent = this.files && this.files[0] ? '✓ ' + this.files[0].name.slice(0, 18) : '📷 Tomar o elegir'"></div></div>
-      <button class="btn sec" style="margin-top:8px" id="fSubir">Subir foto</button>
-      <div id="fComparar" style="margin-top:10px"></div>
-    </div>
+    <button class="g-row" id="fRow" aria-expanded="false" onclick="gcToggle('fCompararBox', this)" style="display:none"><span class="n"><b>Comparar fotos</b><span class="s" id="fRowSub"></span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="fCompararBox"><div id="fComparar"></div></div>
+    <div class="meta" style="margin:14px 4px 0;font-size:12px">Pésate en ayunas, después del baño, con la misma báscula. Un día raro no importa: mira el promedio.</div>
     </div>
   </section>
 
-  <!-- PANEL / PROGRESO -->
+  <!-- PANEL / PROGRESO (boceto G: tres cifras llanas) -->
   <section id="tab-panel" class="hidden">
-    <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Tu progreso</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+    <div class="page-h"><div><div class="kicker" id="kPanel">Tu progreso</div><div class="h-big sm">Tu progreso</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
     <div class="wrap"><div id="panel"><div class="empty">Cargando…</div></div></div>
   </section>
-  <!-- COACH -->
+  <!-- COACH (boceto G: consejos sin IA + chat a pantalla completa) -->
   <section id="tab-coach" class="hidden">
-    <div class="page-h"><div><div class="kicker kick-sem"></div><div class="h-big sm">Coach</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+    <div class="page-h"><div><div class="kicker">Coach</div><div class="h-big sm">Consejos de hoy</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
     <div class="wrap"><div id="coach"><div class="empty">Cargando…</div></div></div>
   </section>
 
@@ -962,6 +1056,7 @@
     <div class="acts bv-acts"><button class="btn sec" id="bvAtras">Atrás</button><button class="btn" id="bvSig">Siguiente</button></div>
   </div>
 </div>
+<div id="coachChat" class="hidden"></div>
 <div id="armar" class="hidden">
   <div class="bv-wrap">
     <div class="bv-top"><span class="kicker" style="color:var(--amber)">MI PLAN</span><button class="gear" onclick="cerrarArmar()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -1060,7 +1155,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610010415', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610010420', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2182,17 +2277,31 @@ $('tMas').onclick = function () { tFin = Math.max(tFin, Date.now()) + 30000; cle
 $('tStop').onclick = function () { clearInterval(tInt); $('timer').style.display = 'none'; if (tFin > Date.now() + 2000) avisoDescanso(0, true); };
 function fmtSeg(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
 
-/* =================== CUERPO =================== */
+/* =================== CUERPO (boceto G: el peso primero) =================== */
 var CAMPOS = { peso:'dPeso', grasa:'dGrasa', musculo:'dMusculo', agua:'dAgua', visceral:'dVisceral', hueso:'dHueso', tmb:'dTmb', sueno:'dSueno', pasos:'dPasos', energia:'dEnergia', nota:'dNota' };
-var estatura = 1.69, perfilC = {}, sesSemana = 3;
+var estatura = 1.69, perfilC = {}, sesSemana = 3, gcPanel = null;
 function cargarDiario() {
+  if (!$('dFecha').value) $('dFecha').value = hoyISO();
+  gcCuerpoKicker();
   api('getDiario', $('dFecha').value).then(function (r) {
     estatura = r.estatura || 0; perfilC = r.perfil || {}; sesSemana = r.sesionesSemana || 3;
     $('dEstatura').value = estatura || '';
     var d = r.dia || {};
     Object.keys(CAMPOS).forEach(function (k) { $(CAMPOS[k]).value = d[k] === undefined || d[k] === null ? '' : d[k]; });
+    gcHabitosSub(d);
     calc();
   }).catch(err);
+  // Tendencia, chips y la MISMA meta de comida que en Comida (getPanel → objetivosNutricion_)
+  conCache('panel', function () { return api('getPanel'); }, function (p) { gcPanel = p; gcCuerpoTendencia(p); calc(); }).catch(function () {});
+}
+function cuDia(n) { var d = gcSumarDias($('dFecha').value || hoyISO(), n); if (d > hoyISO()) return; $('dFecha').value = d; cargarDiario(); }
+function gcCuerpoKicker() { var f = $('dFecha').value; $('cuKick').textContent = f === hoyISO() ? 'Hoy · en ayunas' : gcFechaCorta(f); }
+function gcHabitosSub(d) {
+  var t = [];
+  if (d.sueno !== undefined && d.sueno !== null && d.sueno !== '') t.push('Sueño ' + fmtNum(d.sueno) + ' h');
+  if (d.pasos) t.push(n1(d.pasos, 0) + ' pasos');
+  if (d.energia) t.push('energía ' + d.energia + ' de 5');
+  $('cuHabSub').textContent = t.length ? t.join(' · ') : 'si dormiste poco, la sesión de hoy va más suave';
 }
 function numv(id) { var v = parseFloat(String($(id).value).replace(',', '.')); return isNaN(v) ? null : v; }
 function estim(peso, grasa, est, edad, sexo, ses) {
@@ -2213,190 +2322,292 @@ function calc() {
   if (r.magra) parts.push('Masa magra <b>' + n1(r.magra) + ' kg</b>');
   if (r.grasaKg) parts.push('Grasa <b>' + n1(r.grasaKg) + ' kg</b>');
   if (r.ffmi) parts.push('FFMI <b>' + n1(r.ffmi) + '</b>');
-  $('calc').innerHTML = parts.map(function (p) { return '<span>' + p + '</span>'; }).join('');
-  $('estimaciones').innerHTML = r.kcal ? 'Para ganar músculo: <b style="color:var(--ink)">' + n1(r.kcal, 0) + ' kcal/día</b> y <b style="color:var(--ink)">' + r.proteina + ' g de proteína</b> (gasto estimado ' + n1(r.gasto, 0) + ' kcal, ' + r.metodo + ').' : '';
+  $('calc').innerHTML = parts.map(function (p) { return '<span>' + p + '</span>'; }).join('') + (parts.length ? '<button class="g-q" aria-label="Qué significan" onclick="gcInfo(\'IMC: peso sobre estatura al cuadrado (18,5 a 25 es normal). Masa magra: lo que no es grasa. FFMI: masa magra ajustada por estatura; 20 a 22 es un buen nivel natural.\')">?</button>' : '');
+  var ob = gcPanel && gcPanel.nutricion && gcPanel.nutricion.objetivos;
+  $('estimaciones').innerHTML = r.gasto ? 'Tu cuerpo gasta unos <b style="color:var(--ink)">' + n1(r.gasto, 0) + ' kcal</b> al día' +
+    (ob && ob.kcal ? '. Tu meta de comida: <b style="color:var(--ink)">' + n1(ob.kcal, 0) + ' kcal</b> y <b style="color:var(--ink)">' + n1(ob.prot, 0) + ' g de proteína</b>, la misma que ves en Comida.' : '.') +
+    ' <button class="g-q" aria-label="Cómo se calcula" onclick="gcInfo(\'Gasto estimado con ' + r.metodo + ' y tus días de entreno. La meta de comida sale de tu plan y tu objetivo; si activas la meta con tu gasto real, se ajusta cada domingo.\')">?</button>' : '';
 }
 ['dPeso','dGrasa','dEstatura'].forEach(function (id) { $(id).oninput = calc; });
 $('dFecha').onchange = cargarDiario;
 $('dGuardar').onclick = function () {
-  var d = { fecha: $('dFecha').value };
+  var d = { fecha: $('dFecha').value || hoyISO() };
   var est = numv('dEstatura');
   Object.keys(CAMPOS).forEach(function (k) { d[k] = $(CAMPOS[k]).value; });
+  if (d.peso === '' && !confirm('No escribiste el peso. ¿Guardar igual lo demás?')) return;
   var b = $('dGuardar'); b.disabled = true;
   var guardarEst = est && Math.abs((est > 3 ? est / 100 : est) - estatura) > 0.001 ? api('guardarPerfil', { EstaturaM: est > 3 ? est / 100 : est }) : Promise.resolve();
   guardarEst.then(function () { if (est) estatura = est > 3 ? est / 100 : est; return enviar('guardarDiario', d); })
-    .then(function () { b.disabled = false; toast('Día guardado'); })
+    .then(function () { b.disabled = false; toast(d.peso !== '' ? 'Peso guardado: ' + fmtNum(d.peso) + ' kg' : 'Día guardado'); invalidarTodo(); cargarDiario(); })
     .catch(function (x) { b.disabled = false; err(x); });
 };
+/* Chips (ayer, 7 días, meta), gráfica de 6 semanas y una frase llana sobre el ritmo */
+function gcCuerpoTendencia(p) {
+  var box = $('cuTrend'), chipsBox = $('cuChips'); if (!box || !p) return;
+  var c = p.cuerpo || {}, hoy = hoyISO(), anio = Number(hoy.slice(0, 4));
+  var fechaDe = function (x) { var f = anio + '-' + x; if (f > hoy) f = (anio - 1) + '-' + x; return f; };
+  var pts = (c.peso || []).map(function (d) { return { f: fechaDe(d.x), y: Number(d.y) }; }).filter(function (d) { return d.f <= hoy; });
+  var ult = pts[pts.length - 1], ayer = pts.filter(function (d) { return d.f === gcSumarDias(hoy, -1); })[0];
+  if (ult && !$('dPeso').value) $('dPeso').placeholder = fmtNum(ult.y);
+  var chips = [];
+  if (ayer) chips.push('<span>Ayer ' + fmtNum(ayer.y) + '</span>');
+  else if (ult && ult.f !== hoy) chips.push('<span>Último ' + fmtNum(ult.y) + ' · ' + fechaCortaIso(ult.f) + '</span>');
+  // Promedio de los últimos 7 días contra los 7 anteriores (un día raro no manda)
+  var d7 = gcSumarDias(hoy, -6), d14 = gcSumarDias(hoy, -13);
+  var a = pts.filter(function (d) { return d.f >= d7; }), b = pts.filter(function (d) { return d.f >= d14 && d.f < d7; });
+  var prom = function (l) { return l.reduce(function (t, d) { return t + d.y; }, 0) / l.length; };
+  if (a.length && b.length) chips.push('<span>' + signo(Math.round((prom(a) - prom(b)) * 10) / 10, 1, ' kg') + ' en 7 días</span>');
+  var obj = p.objetivoPeso || 'ganar', rit = RITMO_META[obj] || RITMO_META.ganar, peso = ult ? ult.y : 0;
+  var metaKg = peso ? Math.round((rit[0] + rit[1]) / 2 * peso / 100 * 10) / 10 : 0;
+  chips.push('<span class="warn">' + (obj === 'mantener' ? 'Meta: mantener el peso' : 'Meta: ' + signo(metaKg, 1) + ' por semana') + '</span>');
+  chipsBox.innerHTML = pts.length ? chips.join('') : '';
+  // Gráfica: promedio semanal de las últimas 6 semanas
+  var sem = (p.semanas || []).filter(function (w) { return w.peso !== null && w.peso !== undefined; }).slice(-6);
+  var cab = '<div class="dayh"><b>Últimas ' + (sem.length >= 2 ? sem.length + ' semanas' : '6 semanas') + '</b><span class="meta">promedio semanal</span></div>';
+  if (sem.length < 2) { box.innerHTML = cab + '<div class="meta" style="margin-top:8px">' + (pts.length ? 'Con dos semanas de pesajes verás tu tendencia aquí.' : 'Anota tu peso hoy: con dos semanas de pesajes verás tu tendencia aquí.') + '</div>'; return; }
+  var ys = sem.map(function (w) { return w.peso; }), min = Math.min.apply(null, ys), max = Math.max.apply(null, ys);
+  if (max - min < 1) { var mid = (max + min) / 2; min = mid - 0.5; max = mid + 0.5; }
+  var n = sem.length, X = function (i) { return 12 + i * (296 / (n - 1)); }, Y = function (v) { return 16 + (max - v) / (max - min) * 48; };
+  var first = sem[0].peso, last = sem[n - 1].peso;
+  var svg = '<svg viewBox="0 0 320 90" role="img" aria-label="Tendencia del peso"><line x1="0" y1="70" x2="320" y2="70" stroke="#2a2830" stroke-width="1"/>' +
+    '<polyline fill="none" stroke="#ffb21a" stroke-width="3" stroke-linejoin="round" points="' + sem.map(function (w, i) { return X(i).toFixed(1) + ',' + Y(w.peso).toFixed(1); }).join(' ') + '"/>' +
+    '<circle cx="' + X(n - 1).toFixed(1) + '" cy="' + Y(last).toFixed(1) + '" r="5" fill="#ffb21a"/>' +
+    '<text x="' + X(0) + '" y="' + (Y(first) < 30 ? Y(first) + 16 : Y(first) - 8) + '" fill="#8d8a82" font-size="10" font-family="DM Sans">' + fmtNum(Math.round(first * 10) / 10) + '</text>' +
+    '<text x="' + (X(n - 1) - 26) + '" y="' + (Y(last) < 26 ? Y(last) + 20 : Y(last) - 10) + '" fill="#f5f3ee" font-size="12" font-weight="700" font-family="DM Sans">' + fmtNum(Math.round(last * 10) / 10) + '</text>' +
+    sem.map(function (w, i) { return '<text x="' + X(i) + '" y="84" text-anchor="middle" fill="#8d8a82" font-size="10" font-family="DM Sans">S' + w.semana + '</text>'; }).join('') + '</svg>';
+  var tramo = sem.slice(-4), ritmo = (tramo[tramo.length - 1].peso - tramo[0].peso) / Math.max(1, tramo[tramo.length - 1].semana - tramo[0].semana);
+  box.innerHTML = cab + svg + '<div class="g-frase">' + gcFraseRitmo(obj, ritmo, rit[0] * peso / 100, rit[1] * peso / 100) + '</div>';
+}
+function gcFraseRitmo(obj, ritmo, lo, hi) {
+  var r = Math.round(ritmo * 10) / 10, abs = fmtNum(Math.abs(r));
+  if (obj === 'ganar') {
+    if (ritmo >= lo && ritmo <= hi) return 'Vas subiendo ' + abs + ' kg por semana: justo lo que buscas. Tu meta de comida sigue igual.';
+    if (ritmo < lo) return r <= 0 ? 'Tu peso no sube (' + signo(r, 1, ' kg') + ' por semana). Para ganar músculo toca comer un poco más: unas 150 kcal al día.' : 'Subes despacio (' + abs + ' kg por semana). Suma unas 150 kcal al día y mira la próxima semana.';
+    return 'Subes ' + abs + ' kg por semana: un poco rápido, parte puede ser grasa. Quita unas 150 kcal al día.';
+  }
+  if (obj === 'perder') {
+    if (ritmo >= lo && ritmo <= hi) return 'Vas bajando ' + abs + ' kg por semana: justo lo que buscas. Sigue así.';
+    if (ritmo > hi) return r >= 0 ? 'Tu peso no baja (' + signo(r, 1, ' kg') + ' por semana). Quita unas 150 kcal al día o suma pasos.' : 'Bajas despacio (' + abs + ' kg por semana). Quita unas 150 kcal al día o suma pasos.';
+    return 'Bajas ' + abs + ' kg por semana: muy rápido, cuida el músculo. Suma unas 150 kcal al día.';
+  }
+  if (ritmo >= lo && ritmo <= hi) return 'Tu peso se mantiene (' + signo(r, 1, ' kg') + ' por semana): justo lo que buscas.';
+  return ritmo > hi ? 'Subes ' + abs + ' kg por semana: quita unas 150 kcal al día.' : 'Bajas ' + abs + ' kg por semana: suma unas 150 kcal al día.';
+}
 
-/* =================== SEMANA (pestaña) =================== */
-/* Balance muscular de la semana: series por músculo del plan contra la meta de 10–20 */
+/* =================== SEMANA (pestaña, boceto G) =================== */
+/* Balance muscular: plegado como una fila ("Músculos: 2 van cortos"); al tocar se despliega el detalle con el piso por bloque */
+var gcBal = null, gcHist = null;
 function cargarBalance() { conCache('bal', function () { return api('getBalanceMuscular'); }, pintarBalance).catch(function () {}); }
+var NOMBRE_LLANO_APP = { 'Hombro lat.': 'Hombro (lateral)', 'Hombro post.': 'Hombro (posterior)', 'Isquios': 'Isquios' };
+var MUSCULO_AYUDA = { 'Isquios': 'Isquios: la parte de atrás del muslo.', 'Hombro (posterior)': 'Hombro posterior: la parte de atrás del hombro; trabaja en remos y face pull.', 'Hombro (lateral)': 'Hombro lateral: el costado del hombro, el que da anchura (elevaciones laterales).' };
+function nombreLlano(n) { return NOMBRE_LLANO_APP[n] || n; }
 function pintarBalance(b) {
+  gcBal = b || null; gcBalanceRow();
   var box = $('balanceMus'); if (!box || !b) return;
   if (!b.sesiones) { box.innerHTML = ''; return; }
   // El piso depende del bloque (8 base, 10 carga, 12 volumen) y el músculo prioritario del programa aguanta hasta 24
   var prios = b.musculos.filter(function (m) { return m.prioritario; });
   var tope = prios.length ? 26 : 22;
   var bandDe = function (max) { return 'left:' + (b.meta.min / tope * 100) + '%;width:' + ((max - b.meta.min) / tope * 100) + '%'; };
-  var h = '<div class="card"><div class="kicker">Semana ' + b.semana + (b.programa ? ' · ' + esc(b.programa) : '') + '</div><h2 style="margin-top:4px">Balance muscular</h2>' +
-    '<div class="meta">Series por músculo esta semana. La franja es la meta' + (b.meta.bloqueNombre ? ' en ' + esc(b.meta.bloqueNombre.toLowerCase()) : '') + ': ' + b.meta.min + ' a ' + b.meta.max +
-    (prios.length ? ' (hasta ' + b.meta.maxPrioritario + ' en ' + esc(prios.map(function (m) { return m.nombre.toLowerCase(); }).join(' y ')) + ', lo que prioriza tu programa)' : '') + '.</div>';
+  var h = '<div class="card"><div class="meta">Series por músculo esta semana. La franja es la meta' + (b.meta.bloqueNombre ? ' en ' + esc(b.meta.bloqueNombre.toLowerCase()) : '') + ': ' + b.meta.min + ' a ' + b.meta.max +
+    (prios.length ? ' (hasta ' + b.meta.maxPrioritario + ' en ' + esc(prios.map(function (m) { return nombreLlano(m.nombre).toLowerCase(); }).join(' y ')) + ', lo que prioriza tu programa)' : '') + '.</div>';
   b.musculos.forEach(function (m) {
-    h += '<div class="bm-row ' + (b.entrada ? 'suave' : m.estado) + '"><div class="m">' + esc(m.nombre) + '</div><div class="bm-tr" role="img" aria-label="' + esc(m.nombre) + ': ' + n1(m.series) + ' series"><div class="band" style="' + bandDe(m.max || b.meta.max) + '"></div><i style="width:' + Math.min(100, m.series / tope * 100) + '%"></i></div><div class="v">' + n1(m.series) + '</div></div>';
+    var nom = nombreLlano(m.nombre), ayuda = MUSCULO_AYUDA[nom];
+    h += '<div class="bm-row ' + (b.entrada ? 'suave' : m.estado) + '"><div class="m">' + esc(nom) + (ayuda ? '<button class="g-q" aria-label="Qué es" onclick="gcInfo(\'' + esc(ayuda).replace(/'/g, "\\'") + '\')">?</button>' : '') + '</div><div class="bm-tr" role="img" aria-label="' + esc(nom) + ': ' + n1(m.series) + ' series"><div class="band" style="' + bandDe(m.max || b.meta.max) + '"></div><i style="width:' + Math.min(100, m.series / tope * 100) + '%"></i></div><div class="v">' + n1(m.series) + '</div></div>';
   });
-  h += '<div class="bm-leg"><span>Directas + ½ de las de apoyo</span><span>Meta ' + b.meta.min + '–' + b.meta.max + '</span></div>';
+  h += '<div class="bm-leg"><span>Meta: ' + b.meta.min + ' a ' + b.meta.max + ' series por músculo</span><span>2 días por músculo</span></div>';
   var bajos = b.consejos.filter(function (c) { return c.tipo === 'bajo'; }), otros = b.consejos.filter(function (c) { return c.tipo === 'alto' || c.tipo === 'entrada' || c.tipo === 'parcial'; }), d48 = b.consejos.filter(function (c) { return c.tipo === '48h'; })[0];
-  if (bajos.length) h += '<div class="bm-con"><b>' + esc(bajos.map(function (c) { return c.musculo; }).join(' y ')) + (bajos.length > 1 ? ' van cortos' : ' va corto') + '</b>' + bajos.map(function (c) { return '<div>' + esc(c.texto) + '</div>'; }).join('') +
+  if (bajos.length) h += '<div class="bm-con"><b>' + esc(bajos.map(function (c) { return nombreLlano(c.musculo); }).join(' y ')) + (bajos.length > 1 ? ' van cortos' : ' va corto') + '</b>' + bajos.map(function (c) { return '<div>' + esc(c.texto) + '</div>'; }).join('') +
     '<button class="btn" style="margin-top:10px" onclick="irAjustes(\'programa\')">' + (b.esMio ? 'Ajustar mi plan' : 'Ver mi programa') + '</button></div>';
   otros.forEach(function (c) { h += '<div class="bm-con"><div style="margin:0">' + esc(c.texto) + '</div></div>'; });
   if (d48) h += '<div class="bm-48">' + esc(d48.texto) + '</div>';
   box.innerHTML = h + '</div>';
 }
+/* La fila resumen del balance: solo aparece cuando ya hay al menos una sesión registrada (antes no dice nada útil) */
+function gcBalanceRow() {
+  var row = $('bmRow'); if (!row) return;
+  var b = gcBal, hayHist = !!(gcHist && gcHist.some(function (d) { return d.sesiones.length; }));
+  if (!b || !b.sesiones || !hayHist) { row.style.display = 'none'; return; }
+  row.style.display = '';
+  var bajos = b.consejos.filter(function (c) { return c.tipo === 'bajo'; }), tit, sub;
+  if (b.entrada) { tit = 'Músculos: vuelta al gimnasio'; sub = 'El volumen va bajo a propósito mientras te adaptas'; }
+  else if (bajos.length) {
+    tit = 'Músculos: ' + bajos.length + (bajos.length > 1 ? ' van cortos' : ' va corto');
+    sub = bajos.map(function (c) { var m = b.musculos.filter(function (x) { return x.nombre === c.musculo; })[0]; return nombreLlano(c.musculo) + (m ? ' ' + fmtNum(m.series) : ''); }).join(' · ') + ' · el resto en meta';
+  } else {
+    var alto = b.consejos.filter(function (c) { return c.tipo === 'alto'; })[0], parcial = b.consejos.filter(function (c) { return c.tipo === 'parcial'; })[0];
+    tit = 'Músculos: todo en meta';
+    sub = parcial ? 'Semana incompleta: el balance completo se ve la próxima' : alto ? nombreLlano(alto.musculo) + ' va alto · el resto en meta' : b.meta.min + ' a ' + b.meta.max + ' series por músculo esta semana';
+  }
+  $('bmTit').textContent = tit; $('bmSub').textContent = sub;
+}
+function gcRecords(fecha) { var d = (gcHist || []).filter(function (x) { return x.fecha === fecha; })[0]; return d && d.records ? d.records : 0; }
 function pintarSemanaTab() {
   if (!estado) return;
-  var e = estado, dias = e.plan.dias, nombres = e.nombres;
-  var pesas = dias.filter(function (d) { return d.tipo === 'sesion' || d.estado === 'hecho'; }).length;
-  var cardio = dias.filter(function (d) { return d.tipo === 'cardio'; }).length;
-  var pct = e.metaSemana ? Math.min(100, Math.round(100 * e.hechasSemana / e.metaSemana)) : 0;
-  $('semanaResumen').innerHTML = '<div class="card resumen"><div><div class="big">' + e.hechasSemana + '<span> / ' + e.metaSemana + '</span></div><div class="meta">sesiones hechas</div></div>' +
-    '<div style="flex:1"><div class="bar" style="margin:0 0 6px"><i style="width:' + pct + '%"></i></div><div class="meta" style="font-size:12px">' + (pesas + cardio) + ' días de gym: ' + pesas + ' con pesas + ' + cardio + ' de cardio</div>' + (e.plan.nota ? '<div class="meta" style="font-size:12px;margin-top:4px">' + esc(e.plan.nota) + '</div>' : '') + '</div></div>';
+  var e = estado, dias = e.plan.dias, nombres = e.nombres, pg = e.programa || {};
+  var totalSem = pg.total && pg.porSemana ? Math.ceil(pg.total / pg.porSemana) : 0;
+  $('kSemanaG').textContent = 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '') + ' · ' + rangoSemana(e.plan).toLowerCase();
+  var strip = dias.map(function (d) {
+    var p = d.etiqueta.split(' ');
+    var cls = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : 'libre';
+    var lbl = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : 'libre';
+    return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
+  }).join('');
+  $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas · toca un día para verlo</div>';
   $('semanaRows').innerHTML = dias.map(function (d) {
-    var p = d.etiqueta.split(' '), dow = DIA_3[p[0]] || p[0], num = p[1];
-    var c = e.cumpl && e.cumpl[d.fecha];
-    var cls = 'dia-row', nombre, sub, der;
-    var nomHecho = (d.sesiones && d.sesiones.length > 1 ? d.sesiones : [d.sesion]).map(function (s) { return nombres[s] || s; }).join(' + ');
-    if (d.estado === 'hecho' && c) {
-      cls += ' hecho'; nombre = esc(nomHecho) + '<span class="chip ok">' + SVG.check + 'Fuiste</span>';
-      sub = c.hechas + ' de ' + c.presc + ' series · ' + c.ejHechos + ' de ' + c.ej + ' ejercicios';
-      der = '<div class="pct">' + c.pct + '%<small>de la sesión</small></div>';
-    } else if (d.estado === 'hecho') {
-      cls += ' hecho'; nombre = esc(nomHecho) + '<span class="chip ok">' + SVG.check + 'Fuiste</span>'; sub = 'Sesión registrada'; der = '';
+    var p = d.etiqueta.split(' '), c = e.cumpl && e.cumpl[d.fecha];
+    var cls = 'g-fila', t, s, r = '';
+    var nomHecho = (d.sesiones && d.sesiones.length > 1 ? d.sesiones : [d.sesion]).map(function (x) { return nombres[x] || x; }).join(' + ');
+    var rec = gcRecords(d.fecha);
+    if (d.estado === 'hecho') {
+      cls += ' hecho'; t = nomHecho;
+      s = c ? c.hechas + ' de ' + c.presc + ' series' + (rec ? ' · +' + rec + ' récord' + (rec > 1 ? 's' : '') : '') : 'Sesión registrada';
+      r = c ? c.pct + ' %' : '✓';
     } else if (d.tipo === 'sesion') {
-      nombre = esc(nombres[d.sesion] || d.sesion); sub = 'Pesas' + (d.fijada ? ' · elegida por ti' : ''); der = '<div class="ico' + (d.esHoy ? ' on' : '') + '">' + SVG.dumb + '</div>';
-    } else if (d.tipo === 'cardio') {
-      nombre = 'Cardio suave'; sub = '20–30 min zona 2 + movilidad'; der = '<div class="ico' + (d.esHoy ? ' on' : '') + '">' + SVG.bolt + '</div>';
-    } else if (d.tipo === 'sinregistro') {
-      cls += ' sinreg'; nombre = esc(nombres[d.sesion] || 'Pesas') + '<span class="chip bad">No fuiste</span>'; sub = 'Sin registro ese día'; der = '';
-    } else {
-      cls += ' desc'; nombre = 'Descanso'; sub = 'Camina 30 min o movilidad'; der = d.esHoy ? '<span class="pill line">HOY</span>' : '';
-    }
+      t = nombres[d.sesion] || d.sesion;
+      var mia = d.esHoy && sesionActual && sesionActual.codigo === d.sesion ? sesionActual : null;
+      s = d.esHoy ? 'Hoy' + (mia ? ' · ' + mia.ejercicios.length + ' ejercicios · ~' + minutosSesion(mia) + ' min' : ' · pesas') : 'Pesas' + (d.fijada ? ' · elegida por ti' : '');
+      r = d.esHoy ? 'Empezar' : '';
+    } else if (d.tipo === 'cardio') { t = 'Cardio suave'; s = '20–30 min a ritmo de conversación'; r = d.esHoy ? 'Hoy' : ''; }
+    else if (d.tipo === 'sinregistro') { cls += ' sinreg'; t = nombres[d.sesion] || 'Pesas'; s = 'Sin registro ese día'; r = 'No fuiste'; }
+    else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
-    return '<div class="' + cls + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')"><div class="d"><small>' + dow + '</small><b>' + num + '</b></div>' +
-      '<div class="c"><div class="n">' + nombre + '</div><div class="s">' + sub + '</div></div><div class="r">' + der + '</div></div>';
+    return '<div class="' + cls + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')"><div class="d"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b></div>' +
+      '<div class="c"><div class="t">' + esc(t) + '</div><div class="s">' + esc(s) + '</div></div>' + (r ? '<div class="r">' + esc(r) + '</div>' : '') + '</div>';
   }).join('');
 }
 
-/* =================== HISTORIAL (dentro de Semana) =================== */
-function cargarHistorial() {
-  conCache('hist', function () { return api('getHistorial', 30); }, function (dias) {
-    if (!dias.length) { $('historial').innerHTML = '<div class="card empty">Aún no hay días registrados.</div>'; return; }
-    $('historial').innerHTML = dias.map(function (d) {
-      var c = d.cuerpo, cuerpo = '';
-      if (c && (c.peso !== '' || c.grasa !== '' || c.sueno !== '')) {
-        cuerpo = '<div class="meta" style="margin-top:6px">' + [
-          c.peso !== '' ? n1(c.peso) + ' kg' : '', c.grasa !== '' ? n1(c.grasa) + ' % grasa' : '',
-          c.musculo !== '' ? n1(c.musculo) + ' kg músculo' : '', c.sueno !== '' ? n1(c.sueno) + ' h sueño' : '',
-          c.pasos !== '' ? n1(c.pasos, 0) + ' pasos' : ''].filter(Boolean).join(' · ') + '</div>';
-      }
-      var ses = d.sesiones.map(function (s) {
-        return '<div style="margin-top:10px"><div class="dayh"><b>' + esc(s.nombre) + ' <span class="chip ok">' + SVG.check + 'Fuiste</span></b>' +
-          '<span class="meta">' + s.hechos + '/' + s.total + ' ej. · ' + s.series + ' series · ' + n1(s.volumen, 0) + ' kg</span></div>' +
-          s.ejercicios.map(function (e) {
-            var det = e.estado === 'hecho'
-              ? e.series.map(function (x) { return (x.carga !== '' && x.carga != null ? x.carga + '×' : '') + x.reps + (x.rir !== '' && x.rir != null ? ' @' + x.rir : ''); }).join(' · ')
-              : e.estado === 'omitido' ? 'No hecho · ' + esc(e.motivo) : 'Sin registrar';
-            var ic = e.estado === 'hecho' ? '<span style="color:var(--green-ink)">✓</span>' : e.estado === 'omitido' ? '<span style="color:var(--bad)">✕</span>' : '·';
-            return '<div class="hist-ex"><b>' + ic + ' ' + esc(e.nombre) + '</b><div class="meta">' + det + '</div></div>';
-          }).join('') +
-          '<button class="btn txt" onclick="editarDia(\'' + d.fecha + '\',\'' + s.codigo + '\')">Abrir este día →</button></div>';
+/* =================== HISTORIAL (Días anteriores, plegado: una línea por sesión, el detalle al tocar) =================== */
+function cargarHistorial() { conCache('hist', function () { return api('getHistorial', 30); }, pintarHistorial).catch(err); }
+function gcDiaCorto(iso) { var p = iso.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'][d.getDay()] + ' ' + d.getDate(); }
+function pintarHistorial(dias) {
+  gcHist = dias; gcBalanceRow();
+  if (estado) pintarSemanaTab();
+  var con = dias.filter(function (d) { return d.sesiones.length; }), sub = $('histSub'), box = $('historial');
+  if (!sub || !box) return;
+  if (!con.length) { sub.textContent = 'Aún no hay días registrados'; box.innerHTML = '<div class="meta" style="padding:8px 4px">Cuando registres tu primera sesión, aquí quedará el resumen de cada día.</div>'; return; }
+  var recTxt = function (d) { return d.records ? ' · +' + d.records + ' récord' + (d.records > 1 ? 's' : '') : ''; };
+  var s0 = con[0].sesiones[0];
+  sub.textContent = gcDiaCorto(con[0].fecha) + ' · ' + s0.nombre + (s0.pct != null ? ' · ' + s0.pct + ' %' : '') + recTxt(con[0]) + (con.length > 1 ? ' · y ' + (con.length - 1) + ' más' : '');
+  box.innerHTML = con.map(function (d, k) {
+    var cu = d.cuerpo, cuerpo = '';
+    if (cu && (cu.peso !== '' || cu.sueno !== '')) cuerpo = ' · ' + [cu.peso !== '' ? n1(cu.peso) + ' kg' : '', cu.sueno !== '' ? n1(cu.sueno) + ' h sueño' : ''].filter(Boolean).join(' · ');
+    return d.sesiones.map(function (s, j) {
+      var id = 'hd' + k + '_' + j;
+      var det = s.ejercicios.map(function (e) {
+        var txt = e.estado === 'hecho' ? e.series.map(function (x) { return (x.carga !== '' && x.carga != null ? x.carga + '×' : '') + x.reps + (x.rir !== '' && x.rir != null ? ' @' + x.rir : ''); }).join(' · ') : e.estado === 'omitido' ? 'No hecho · ' + esc(e.motivo) : 'Sin registrar';
+        var ic = e.estado === 'hecho' ? '<span style="color:var(--green-ink)">✓</span>' : e.estado === 'omitido' ? '<span style="color:var(--bad)">✕</span>' : '·';
+        return '<div class="hist-ex"><b>' + ic + ' ' + esc(e.nombre) + '</b><div class="meta">' + txt + '</div></div>';
       }).join('');
-      return '<div class="card"><div class="kicker" style="color:var(--ink)">' + esc(d.fechaTexto) + '</div>' + cuerpo + (ses || '<div class="meta" style="margin-top:6px">Sin entrenamiento.</div>') + '</div>';
+      return '<button class="g-h1" aria-expanded="false" onclick="gcToggle(\'' + id + '\', this)"><span class="d">' + gcDiaCorto(d.fecha) + '</span><span class="t">' + esc(s.nombre) + '</span>' +
+        (s.pct != null ? '<span class="pc">' + s.pct + ' %</span>' : '') + (d.records ? '<span class="rec">+' + d.records + ' récord' + (d.records > 1 ? 's' : '') + '</span>' : '') + '</button>' +
+        '<div class="g-fold g-det" id="' + id + '"><div class="meta" style="padding:6px 0">' + s.hechos + ' de ' + s.total + ' ejercicios · ' + s.series + ' series · ' + n1(s.volumen, 0) + ' kg movidos' + cuerpo + '</div>' + det +
+        '<button class="btn txt" onclick="editarDia(\'' + d.fecha + '\',\'' + s.codigo + '\')">Abrir este día →</button></div>';
     }).join('');
-  }).catch(err);
+  }).join('');
 }
 function editarDia(fecha, ses) { $('fecha').value = fecha; irA('hoy'); cargarEstado(ses); }
 
-/* =================== PANEL / PROGRESO =================== */
-var faltanGraficas = [], armandoPanel = false;
+/* =================== PANEL / PROGRESO (boceto G: tres cifras llanas; lo demás en "Récords y cada ejercicio") =================== */
+var faltanGraficas = [], armandoPanel = false, gcPanelDet = false;
 function cargarPanel() {
   $('panel').innerHTML = '<div class="empty">Cargando…</div>';
   faltanGraficas = [];
-  conCache('panel', function () { return api('getPanel'); }, function (r) {
-    var k = r.kpis, c = r.cuerpo;
-    armandoPanel = true; faltanGraficas = [];
-    var tile = function (v, l, d) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div>' + (d ? '<div class="d">' + d + '</div>' : '') + '</div>'; };
-    var pc = function (v) { return v == null ? '—' : v + ' %'; };
-    var html = '';
-    html += '<div class="card"><div class="hero-kpi"><div class="v">' + pc(r.eficiencia) + '</div><div><b>Eficiencia global</b>' +
-      '<div class="meta">' + (r.programa ? esc(r.programa.bloque) + ' · sesión ' + r.programa.sesionEnBloque + ' de ' + r.programa.sesionesBloque + '.' : 'Semana ' + r.semana + '.') + '</div>' +
-      '<details class="mas" style="margin-top:4px"><summary>¿Cómo se calcula?</summary><div class="meta">40 % asistencia + 30 % series completadas + 30 % RIR en objetivo.</div></details></div></div></div>' +
-      '<button class="btn line" style="margin-bottom:12px" onclick="compartirSemana(this)">📤 Compartir mi semana</button>' +
-      '<div id="faltanGraf"></div>';
-    html += '<div class="grid2">' +
-      tile(k.semana.hechas + '/' + k.semana.meta, 'Sesiones esta semana') +
-      tile(pc(k.adherencia.pct), 'Asistencia total', k.adherencia.hechas + ' de ' + k.adherencia.programadas + ' programadas a la fecha') +
-      tile(pc(k.ejercicios.pct), 'Ejercicios hechos', k.ejercicios.hechos + ' de ' + k.ejercicios.plan + ' · ' + k.ejercicios.omitidos + ' no hechos') +
-      tile(pc(k.series.pct), 'Series completadas', k.series.hechas + ' de ' + k.series.prescritas + ' prescritas') +
-      tile(pc(k.rir.pct), 'RIR en objetivo', k.rir.total ? k.rir.facil + ' muy fáciles · ' + k.rir.duro + ' muy duras' : 'Anota el RIR en cada serie') +
-      tile(k.progreso.total ? k.progreso.mejoraron + '/' + k.progreso.total : '—', 'Ejercicios que mejoraron', 'Mejor serie vs. primera sesión') +
-    '</div><div style="height:12px"></div>';
-
-    html += '<div class="card"><h2>Cuerpo</h2><div class="grid2">' +
-      tile(c.actual.peso != null ? n1(c.actual.peso) + ' kg' : '—', 'Peso', c.cambio.peso != null ? signo(c.cambio.peso, 1, ' kg') + ' desde el inicio' : '') +
-      tile(c.actual.grasa != null ? n1(c.actual.grasa) + ' %' : '—', 'Grasa corporal', c.cambio.grasa != null ? signo(c.cambio.grasa, 1, ' pts') + ' desde el inicio' : '') +
-      tile(c.actual.magra != null ? n1(c.actual.magra) + ' kg' : '—', 'Masa magra', c.cambio.magra != null ? signo(c.cambio.magra, 1, ' kg') + ' desde el inicio' : 'Peso × (1 − grasa)') +
-      tile(c.actual.imc != null ? n1(c.actual.imc) : '—', 'IMC', c.estimaciones.ffmi ? 'FFMI ' + n1(c.estimaciones.ffmi) : '') +
+  conCache('panel', function () { return api('getPanel'); }, pintarPanel).catch(err);
+}
+function pintarPanel(r) {
+  gcPanel = r;
+  var k = r.kpis, c = r.cuerpo;
+  var ini = r.fechaInicio || (estado && estado.fechaInicio) || '';
+  $('kPanel').textContent = ini ? 'Desde el ' + gcFechaLarga(ini) : 'Tu progreso';
+  var haySes = k.adherencia.hechas > 0 || (r.series || []).length > 0, hayPeso = c.actual.peso != null;
+  if (!haySes && !hayPeso) {
+    $('panel').innerHTML = '<div class="card"><b>Aquí verás cómo vas.</b><div class="meta" style="margin-top:6px">Registra tu primera sesión en Hoy y tu peso en Cuerpo: tus cifras y gráficas se llenan solas.</div>' +
+      '<div class="acts" style="margin-top:12px"><button class="btn sec" onclick="irA(\'hoy\')">Ir a Hoy</button><button class="btn" onclick="irA(\'cuerpo\')">Anotar mi peso</button></div></div>';
+    return;
+  }
+  var tres = '<div class="g-3">' +
+    '<div><b>' + k.adherencia.hechas + '</b><span>veces fuiste de ' + k.adherencia.programadas + '</span></div>' +
+    '<div><b>' + (k.progreso.total ? k.progreso.mejoraron : '—') + '</b><span>ejercicios con más peso</span></div>' +
+    '<div><b>' + (c.cambio.peso != null ? signo(Math.round(c.cambio.peso * 10) / 10, 1) : '—') + '</b><span>' + (c.cambio.peso != null ? 'kg de peso corporal' : 'kg de peso · pésate 2 veces') + '</span></div></div>';
+  var mej = (r.progreso || []).filter(function (p) { return p.cambioPct > 0.5; }).slice(0, 4);
+  var maxP = mej.length ? Math.max.apply(null, mej.map(function (p) { return p.cambioPct; })) : 1;
+  var mejH = mej.length ? '<div class="card" style="margin-top:12px"><b>Los que más subieron</b>' + mej.map(function (p) {
+      return '<div class="g-mej"><span>' + esc(p.ejercicio) + '</span><div class="tr"><i style="width:' + Math.max(6, Math.round(p.cambioPct / maxP * 100)) + '%"></i></div><b>+' + Math.round(p.cambioPct) + ' %</b></div>';
+    }).join('') + '<div class="meta" style="margin-top:8px">Mejor serie de la última sesión contra la primera.</div></div>'
+    : (haySes ? '<div class="card" style="margin-top:12px"><b>Los que más subieron</b><div class="meta" style="margin-top:4px">Con dos sesiones del mismo ejercicio verás aquí cuánto subió cada uno.</div></div>' : '');
+  var ser = (r.series || []).slice(-8), cur = r.semana;
+  var maxS = Math.max.apply(null, ser.map(function (x) { return x.y; }).concat([1]));
+  var enCurso = ser.some(function (x) { return x.semana === cur; }) && k.semana.meta && k.semana.hechas < k.semana.meta;
+  var serH = ser.length ? '<div class="card" style="margin-top:12px"><div class="dayh"><b>Series por semana</b>' + (enCurso ? '<span class="meta">esta semana va por la mitad</span>' : '') + '</div>' +
+    '<div class="g-sem">' + ser.map(function (x) { return '<i class="' + (x.semana === cur ? 'cur' : '') + '" style="height:' + Math.max(3, Math.round(x.y / maxS * 100)) + '%" title="' + x.y + ' series"></i>'; }).join('') + '</div>' +
+    '<div class="g-semx">' + ser.map(function (x) { return '<span>' + esc(x.x) + '</span>'; }).join('') + '</div></div>' : '';
+  var detRow = '<div class="g-rowline"><button class="g-row" aria-expanded="' + gcPanelDet + '" onclick="gcPanelDet=!gcPanelDet;pintarPanel(gcPanel)"><span class="n"><b>Récords y cada ejercicio</b><span class="s">peso, grasa, comida, cardio y semana a semana</span></span>' + CHEV + '</button>' +
+    '<button class="g-ico" aria-label="Compartir la semana" title="Compartir mi semana" onclick="compartirSemana(this)"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 15v4h14v-4"/></svg></button></div>';
+  $('panel').innerHTML = tres + mejH + serH + detRow + (gcPanelDet ? gcPanelDetalle(r) : '');
+  if (gcPanelDet) activarTooltips();
+}
+/* El detalle de antes (cuerpo, entrenamiento, comida y cardio, por ejercicio, semana a semana), plegado */
+function gcPanelDetalle(r) {
+  var k = r.kpis, c = r.cuerpo;
+  armandoPanel = true; faltanGraficas = [];
+  var tile = function (v, l, d) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div>' + (d ? '<div class="d">' + d + '</div>' : '') + '</div>'; };
+  var pc = function (v) { return v == null ? '—' : v + ' %'; };
+  var html = '<div class="card" style="margin-top:8px"><h2>Cuerpo</h2><div class="grid2">' +
+    tile(c.actual.peso != null ? n1(c.actual.peso) + ' kg' : '—', 'Peso', c.cambio.peso != null ? signo(c.cambio.peso, 1, ' kg') + ' desde el inicio' : '') +
+    tile(c.actual.grasa != null ? n1(c.actual.grasa) + ' %' : '—', 'Grasa corporal', c.cambio.grasa != null ? signo(c.cambio.grasa, 1, ' puntos') + ' desde el inicio' : '') +
+    tile(c.actual.magra != null ? n1(c.actual.magra) + ' kg' : '—', 'Masa magra', c.cambio.magra != null ? signo(c.cambio.magra, 1, ' kg') + ' desde el inicio' : 'Peso sin la grasa') +
+    tile(c.actual.imc != null ? n1(c.actual.imc) : '—', 'IMC', '') +
     '</div>' +
-    (c.estimaciones.kcal ? '<div class="msg">Para ganar músculo con tu peso y actividad actual: <b>' + n1(c.estimaciones.kcal, 0) + ' kcal/día</b> y <b>' + c.estimaciones.proteina + ' g de proteína</b> (gasto estimado ' + n1(c.estimaciones.gasto, 0) + ' kcal).</div>' : '') +
     chartBox('Peso (kg)', c.peso, 'line', 'var(--s1)', ' kg') +
     chartBox('Grasa corporal (%)', c.grasa, 'line', 'var(--s2)', ' %') +
-    chartBox('Masa magra (kg)', c.magra, 'line', 'var(--s3)', ' kg') +
-    '</div>';
-
-    html += '<div class="card"><h2>Entrenamiento</h2>' + chartBox('Volumen semanal (kg × reps)', r.volumen, 'bar', 'var(--s1)', ' kg');
-    if (r.progreso.length) {
-      html += '<div class="meta" style="margin:10px 0 4px">Progreso por ejercicio (mejor serie, primera vs. última sesión)</div><table class="res">' +
-        r.progreso.map(function (p) { return '<tr><td>' + esc(p.ejercicio) + '</td><td style="text-align:right;white-space:nowrap;color:' + (p.cambioPct > 0 ? 'var(--green-ink)' : 'var(--muted)') + '">' + signo(p.cambioPct, 0, ' %') + '</td></tr>'; }).join('') + '</table>';
-    }
-    if (r.motivos.length) {
-      html += '<div class="meta" style="margin:12px 0 4px">Por qué no hiciste ejercicios</div><table class="res">' +
-        r.motivos.map(function (m) { return '<tr><td>' + esc(m.motivo) + '</td><td style="text-align:right">' + m.n + '</td></tr>'; }).join('') + '</table>';
-    }
-    html += '</div>';
-
-    var nu = r.nutricion || {}, ob = nu.objetivos || {};
-    html += '<div class="card"><h2>Alimentación y cardio</h2><div class="meta" style="margin:-6px 0 8px">Últimos 7 días</div><div class="grid2">' +
-      tile(nu.kcal ? n1(nu.kcal, 0) : '—', 'Kcal promedio', ob.kcal ? 'Objetivo ' + n1(ob.kcal, 0) + ' · ' + (nu.dias || 0) + ' días registrados' : '') +
-      tile(nu.prot ? nu.prot + ' g' : '—', 'Proteína promedio', ob.prot ? 'Objetivo ' + ob.prot + ' g' : '') +
-      tile((r.cardio ? r.cardio.minutos : 0) + ' min', 'Cardio', (r.cardio ? r.cardio.sesiones : 0) + ' sesiones') +
-      tile(r.ejerciciosHechos.length, 'Ejercicios registrados', 'Toca uno abajo para ver su progreso') +
+    chartBox('Masa magra (kg)', c.magra, 'line', 'var(--s3)', ' kg') + '</div>';
+  html += '<div class="card"><h2>Entrenamiento</h2>' + chartBox('Kilos movidos por semana', r.volumen, 'bar', 'var(--s1)', ' kg');
+  if (r.progreso.length) {
+    html += '<div class="meta" style="margin:10px 0 4px">Cada ejercicio: mejor serie de la última sesión contra la primera</div><table class="res">' +
+      r.progreso.map(function (p) { return '<tr><td>' + esc(p.ejercicio) + '</td><td style="text-align:right;white-space:nowrap;color:' + (p.cambioPct > 0 ? 'var(--green-ink)' : 'var(--muted)') + '">' + signo(Math.round(p.cambioPct), 0, ' %') + '</td></tr>'; }).join('') + '</table>';
+  }
+  if (r.motivos.length) {
+    html += '<div class="meta" style="margin:12px 0 4px">Por qué no hiciste ejercicios</div><table class="res">' +
+      r.motivos.map(function (m) { return '<tr><td>' + esc(m.motivo) + '</td><td style="text-align:right">' + m.n + '</td></tr>'; }).join('') + '</table>';
+  }
+  html += '<details class="mas"><summary>Más detalle</summary><div class="grid2" style="margin-top:8px">' +
+    tile(pc(k.adherencia.pct), 'Asistencia', k.adherencia.hechas + ' de ' + k.adherencia.programadas + ' programadas') +
+    tile(pc(k.ejercicios.pct), 'Ejercicios hechos', k.ejercicios.hechos + ' de ' + k.ejercicios.plan + ' · ' + k.ejercicios.omitidos + ' no hechos') +
+    tile(pc(k.series.pct), 'Series completadas', k.series.hechas + ' de ' + k.series.prescritas + ' prescritas') +
+    tile(pc(k.rir.pct), 'Esfuerzo en el punto', k.rir.total ? k.rir.facil + ' series muy fáciles · ' + k.rir.duro + ' muy duras' : 'Anota las repeticiones que te quedan (RIR) en cada serie') +
+    '</div><div class="meta" style="margin-top:8px">Eficiencia global ' + pc(r.eficiencia) + ' = 40 % asistencia + 30 % series completadas + 30 % esfuerzo en el punto.</div></details></div>';
+  var nu = r.nutricion || {}, ob = nu.objetivos || {};
+  html += '<div class="card"><h2>Comida y cardio</h2><div class="meta" style="margin:-6px 0 8px">Últimos 7 días</div><div class="grid2">' +
+    tile(nu.kcal ? n1(nu.kcal, 0) : '—', 'Kcal al día', ob.kcal ? 'Meta ' + n1(ob.kcal, 0) + ' · ' + (nu.dias || 0) + ' días anotados' : '') +
+    tile(nu.prot ? nu.prot + ' g' : '—', 'Proteína al día', ob.prot ? 'Meta ' + ob.prot + ' g' : '') +
+    tile((r.cardio ? r.cardio.minutos : 0) + ' min', 'Cardio', (r.cardio ? r.cardio.sesiones : 0) + ' sesiones') +
+    tile(r.ejerciciosHechos.length, 'Ejercicios registrados', 'Elige uno abajo para ver su récord') +
     '</div>' + chartBox('Calorías por día', nu.serie, 'bar', 'var(--s2)', ' kcal') + '</div>';
-    if (r.ejerciciosHechos.length) {
-      html += '<div class="card"><h2>Progreso por ejercicio</h2><select id="progSel" onchange="verProgreso(this.value)"><option value="">Elige un ejercicio…</option>' +
-        r.ejerciciosHechos.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('') + '</select><div id="progBox"></div></div>';
-    }
-    if (r.semanas.length) {
-      html += '<div class="card"><h2>Semana a semana</h2><div class="scroll"><table class="res"><tr><th>Sem</th><th>Peso</th><th>Grasa</th><th>Ses.</th><th>Sueño</th><th>Pasos</th></tr>' +
-        r.semanas.slice().reverse().map(function (w) {
-          var pill = w.decision ? '<tr><td></td><td colspan="5" style="padding-top:0"><span class="pillx ' + (w.decision.indexOf('En rango') === 0 ? 'up' : 'warn') + '">' + esc(w.decision) + '</span></td></tr>' : '';
-          return '<tr><td><b>' + w.semana + '</b></td><td>' + (w.peso == null ? '—' : n1(w.peso)) + (w.cambio != null ? '<br><span class="meta">' + signo(w.cambio, 2, ' kg') + '</span>' : '') +
-            '</td><td>' + (w.grasa == null ? '—' : n1(w.grasa) + ' %') + '</td><td>' + w.sesiones + '</td><td>' + (w.sueno == null ? '—' : n1(w.sueno)) +
-            '</td><td>' + (w.pasos == null ? '—' : n1(w.pasos, 0)) + '</td></tr>' + pill;
-        }).join('') + '</table></div><p class="meta">Objetivo desde la semana 3: +0,2 a +0,35 kg por semana (con al menos 4 pesajes semanales).</p></div>';
-    }
-    $('panel').innerHTML = html;
-    if (faltanGraficas.length) $('faltanGraf').innerHTML = '<div class="card"><b>Tus gráficas se llenan solas</b><div class="meta" style="margin-top:4px">Aparecen con 2 registros: ' + faltanGraficas.map(esc).join(', ') + '. Pésate por la mañana, registra tus sesiones y lo que comes.</div></div>';
-    faltanGraficas = []; armandoPanel = false;
-    activarTooltips();
-  }).catch(err);
+  if (r.ejerciciosHechos.length) {
+    html += '<div class="card"><h2>Récord por ejercicio</h2><select id="progSel" onchange="verProgreso(this.value)"><option value="">Elige un ejercicio…</option>' +
+      r.ejerciciosHechos.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('') + '</select><div id="progBox"></div></div>';
+  }
+  if (r.semanas.length) {
+    html += '<div class="card"><h2>Semana a semana</h2><div class="scroll"><table class="res"><tr><th>Sem</th><th>Peso</th><th>Grasa</th><th>Ses.</th><th>Sueño</th><th>Pasos</th></tr>' +
+      r.semanas.slice().reverse().map(function (w) {
+        var pill = w.decision ? '<tr><td></td><td colspan="5" style="padding-top:0"><span class="pillx ' + (w.decision.indexOf('En rango') === 0 ? 'up' : 'warn') + '">' + esc(w.decision) + '</span></td></tr>' : '';
+        return '<tr><td><b>' + w.semana + '</b></td><td>' + (w.peso == null ? '—' : n1(w.peso)) + (w.cambio != null ? '<br><span class="meta">' + signo(Math.round(w.cambio * 10) / 10, 1, ' kg') + '</span>' : '') +
+          '</td><td>' + (w.grasa == null ? '—' : n1(w.grasa) + ' %') + '</td><td>' + w.sesiones + '</td><td>' + (w.sueno == null ? '—' : n1(w.sueno)) +
+          '</td><td>' + (w.pasos == null ? '—' : n1(w.pasos, 0)) + '</td></tr>' + pill;
+      }).join('') + '</table></div></div>';
+  }
+  var faltan = faltanGraficas.length ? '<div class="card" style="margin-top:8px"><b>Tus gráficas se llenan solas</b><div class="meta" style="margin-top:4px">Aparecen con 2 registros: ' + faltanGraficas.map(esc).join(', ') + '. Pésate por la mañana, registra tus sesiones y lo que comes.</div></div>' : '';
+  faltanGraficas = []; armandoPanel = false;
+  return faltan + html;
 }
 
 /* ---------- Tarjeta de la semana para compartir (imagen 1080×1350, Estilo A) ---------- */
 function compartirSemana(btn) {
-  btn.disabled = true; var t0 = btn.textContent; btn.textContent = 'Armando tu tarjeta…';
+  btn.disabled = true; var ico = btn.classList.contains('g-ico'), t0 = btn.innerHTML;
+  if (ico) toast('Armando tu tarjeta…'); else btn.textContent = 'Armando tu tarjeta…';
   api('getTarjetaSemana').then(dibujarTarjeta).then(function (blob) { abrirTarjeta(blob); })
-    .catch(err).then(function () { btn.disabled = false; btn.textContent = t0; });
+    .catch(err).then(function () { btn.disabled = false; btn.innerHTML = t0; });
 }
 function dibujarTarjeta(d) {
   var W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
@@ -2487,10 +2698,10 @@ function linea(d, color, u) {
   var X = function (i) { return L + (W - L - R) * (n === 1 ? 0.5 : i / (n - 1)); };
   var Y = function (v) { return T + (H - T - B) * (1 - (v - e.min) / (e.max - e.min)); };
   var pts = d.map(function (p, i) { return X(i).toFixed(1) + ',' + Y(p.y).toFixed(1); }).join(' ');
-  var lab = [0, n - 1].map(function (i) { return '<text x="' + X(i) + '" y="' + (H - 6) + '" text-anchor="' + (i ? 'end' : 'start') + '" font-size="10" fill="var(--dim)">' + d[i].x + '</text>'; }).join('');
+  var lab = [0, n - 1].map(function (i) { return '<text x="' + X(i) + '" y="' + (H - 6) + '" text-anchor="' + (i ? 'end' : 'start') + '" font-size="10" fill="var(--dim)">' + gcEjeX(d[i].x) + '</text>'; }).join('');
   var dots = d.map(function (p, i) {
     return '<circle cx="' + X(i) + '" cy="' + Y(p.y) + '" r="' + (i === n - 1 ? 4 : 2.5) + '" fill="' + color + '" stroke="var(--card)" stroke-width="1.5"/>' +
-      '<rect class="hit" x="' + (X(i) - 12) + '" y="' + T + '" width="24" height="' + (H - T - B) + '" fill="transparent" data-t="' + esc(p.x + ': ' + n1(p.y) + u) + '" data-x="' + X(i) + '" data-y="' + Y(p.y) + '"/>';
+      '<rect class="hit" x="' + (X(i) - 12) + '" y="' + T + '" width="24" height="' + (H - T - B) + '" fill="transparent" data-t="' + esc(gcEjeX(p.x) + ': ' + n1(p.y) + u) + '" data-x="' + X(i) + '" data-y="' + Y(p.y) + '"/>';
   }).join('');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">' + ejes(e) + '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' + dots + lab + '</svg>';
 }
@@ -2503,8 +2714,8 @@ function barras(d, color, u) {
     var y = Y(p.y), h = Math.max(0, base - y), x = X(i) - bw / 2, r = Math.min(4, h);
     var path = 'M' + x + ',' + base + ' V' + (y + r) + ' Q' + x + ',' + y + ' ' + (x + r) + ',' + y + ' H' + (x + bw - r) + ' Q' + (x + bw) + ',' + y + ' ' + (x + bw) + ',' + (y + r) + ' V' + base + ' Z';
     return '<path d="' + path + '" fill="' + color + '"/>' +
-      '<text x="' + X(i) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="10" fill="var(--dim)">' + p.x + '</text>' +
-      '<rect class="hit" x="' + (X(i) - bw / 2 - 4) + '" y="' + T + '" width="' + (bw + 8) + '" height="' + (H - T - B) + '" fill="transparent" data-t="' + esc(p.x + ': ' + n1(p.y, 0) + u) + '" data-x="' + X(i) + '" data-y="' + y + '"/>';
+      '<text x="' + X(i) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="10" fill="var(--dim)">' + gcEjeX(p.x) + '</text>' +
+      '<rect class="hit" x="' + (X(i) - bw / 2 - 4) + '" y="' + T + '" width="' + (bw + 8) + '" height="' + (H - T - B) + '" fill="transparent" data-t="' + esc(gcEjeX(p.x) + ': ' + n1(p.y, 0) + u) + '" data-x="' + X(i) + '" data-y="' + y + '"/>';
   }).join('');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">' + ejes(e) + bars + '</svg>';
 }
@@ -2541,87 +2752,129 @@ $('btnPlanificar').onclick = function () {
   if (!p.classList.contains('hidden')) { p.classList.add('hidden'); return; }
   abrirPlanificador(estado.semana);
 };
+/* Planificador compacto: casillas + una línea con el resultado + Guardar */
 function abrirPlanificador(k) {
   api('getSemana', k).then(function (pl) {
     semanaVista = pl;
     var p = $('planificador'); p.classList.remove('hidden');
-    p.innerHTML = '<div class="dayh"><button class="btn sec small" ' + (pl.semana <= 1 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana - 1) + ')">◀</button>' +
-      '<b>Semana ' + pl.semana + ' · ' + pl.desde.slice(5) + ' a ' + pl.hasta.slice(5) + '</b>' +
-      '<button class="btn sec small" ' + (pl.semana >= 60 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana + 1) + ')">▶</button></div>' +
-      '<div class="meta" style="margin-top:6px">Marca los días que irás al gimnasio. La rutina se reparte sola dentro de la semana.</div>' +
+    p.innerHTML = '<div class="dayh"><button class="btn sec small" ' + (pl.semana <= 1 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana - 1) + ')" aria-label="Semana anterior">‹</button>' +
+      '<b>Semana ' + pl.semana + ' · ' + fechaCortaIso(pl.desde) + ' – ' + fechaCortaIso(pl.hasta) + '</b>' +
+      '<button class="btn sec small" ' + (pl.semana >= 60 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana + 1) + ')" aria-label="Semana siguiente">›</button></div>' +
+      '<div class="meta" style="margin-top:6px">Marca los días que irás al gimnasio.</div>' +
       '<div class="dias">' + pl.dias.map(function (d) {
         var bloq = d.estado === 'hecho';
         return '<label><input type="checkbox" value="' + d.fecha + '"' + (d.seleccionado ? ' checked' : '') + (bloq ? ' disabled' : '') + '>' + d.etiqueta + '</label>';
       }).join('') + '</div>' +
       '<div class="meta" id="planPrev" style="margin-top:8px"></div>' +
-      '<div class="acts" style="margin-top:8px"><button class="btn sec" onclick="$(\'planificador\').classList.add(\'hidden\')">Cerrar</button><button class="btn" onclick="guardarPlan()">Guardar semana</button></div>';
+      '<div class="acts" style="margin-top:8px"><button class="btn sec" onclick="$(\'planificador\').classList.add(\'hidden\')">Cerrar</button><button class="btn" onclick="guardarPlan()">Guardar</button></div>';
     previewPlan(pl);
     p.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }).catch(err);
 }
 function previewPlan(pl) {
-  var corto = pl.nombres || {};
-  $('planPrev').innerHTML = pl.dias.filter(function (d) { return d.tipo !== 'descanso'; }).map(function (d) {
-    return d.etiqueta + ': <b>' + (d.tipo === 'sesion' ? corto[d.sesion] : d.tipo === 'cardio' ? 'cardio suave' : '—') + '</b>';
-  }).join(' · ') + (pl.nota ? '<br>' + esc(pl.nota) : '');
+  var pesas = pl.dias.filter(function (d) { return d.tipo === 'sesion'; }), cardio = pl.dias.filter(function (d) { return d.tipo === 'cardio'; });
+  var et = function (d) { return d.etiqueta.split(' ')[0]; };
+  $('planPrev').innerHTML = (pesas.length ? '<b>' + pesas.length + ' de pesas</b>: ' + pesas.map(et).join(', ') : 'Sin pesas esta semana') +
+    (cardio.length ? ' · <b>cardio</b>: ' + cardio.map(et).join(', ') : '') + (pl.cambioPrograma && pl.nota ? '<br>' + esc(pl.nota) : '');
 }
 function guardarPlan() {
   var f = []; document.querySelectorAll('#planificador input:checked').forEach(function (x) { f.push(x.value); });
-  api('guardarSemana', semanaVista.semana, f).then(function (pl) { semanaVista = pl; previewPlan(pl); toast('Semana ' + pl.semana + ' guardada'); invalidarTodo(); cargarEstadoYSemana(); }).catch(err);
+  api('guardarSemana', semanaVista.semana, f).then(function (pl) { semanaVista = pl; previewPlan(pl); toast('Semana guardada'); invalidarTodo(); cargarEstadoYSemana(); }).catch(err);
 }
 function cargarEstadoYSemana() {
   var f = $('fecha').value;
   api('getInicio', f, '').then(function (r) { escribirCache('ini:' + f + ':', r); pintarEstado(r.estado, r.sesion.codigo); pintarSesion(r.sesion); pintarSemanaTab(); }).catch(err);
 }
 
-/* =================== COACH (chat) =================== */
-/* Un chat: le escribes, te responde con el contexto de tus últimas 2 semanas y, si le pides un plan, te da 2 o 3 opciones.
-   "Ver plan completo" arma la opción con series, reps y descansos y la abre en el editor de Mi plan para revisarla y guardarla. */
+/* =================== COACH (boceto G: consejos de hoy sin IA + chat a pantalla completa) =================== */
+/* Arriba, los consejos que la app calcula con reglas (getConsejos: balance, cargas, comida, sueño). La IA queda para conversar:
+   el chat abre a pantalla completa, con el campo fijo abajo; en el historial solo lo que escribió la persona. */
 var IDEAS_COACH = ['Quiero un plan de 3 días', 'Plan de 4 días con prioridad en glúteo', 'Solo tengo 40 minutos hoy', 'Me molesta la rodilla en la prensa', '¿Cómo voy?'];
-var opcionesCoach = [], coachOcupado = false;
+var opcionesCoach = [], coachOcupado = false, coachDatos = null, consejosDatos = null, ajustesActivos = [];
 function cargarCoach() {
-  $('coach').innerHTML = '<div class="empty">Cargando…</div>';
-  api('getCoach').then(function (c) {
-    var h = '';
-    if (!c.tieneClave) h += '<div class="card"><b>Falta conectar la IA.</b><div class="meta" style="margin-top:6px">' + (c.esDueno ? 'Pega tu clave de Claude (console.anthropic.com) o de Gemini (aistudio.google.com/apikey) en Ajustes → Inteligencia artificial.' : 'Pídele al dueño de la app que conecte la IA en sus Ajustes.') + '</div>' + (c.esDueno ? '<button class="btn" style="margin-top:10px" onclick="irAjustes(\'ia\')">Ir a Ajustes</button>' : '') + '</div>';
-    var hilo = c.historial.slice().reverse();   // de la más vieja a la más nueva
-    h += '<div class="card"><h2>Tu entrenador' + (c.ia && c.tieneClave ? ' <span class="chip">' + esc(c.ia.nombre) + '</span>' : '') + '</h2>' +
-      '<div class="chat" id="chat">' +
-        '<div class="msg coach">Hola. Conozco tus últimas 2 semanas: series, RIR, comida, peso y notas. Pídeme un plan (“quiero 4 días para glúteo”), cuéntame una molestia o pregúntame cómo vas.</div>' +
-        hilo.map(function (x) { return burbujaYo(x.tipo === 'pregunta' ? x.pregunta : x.tipo === 'plan' ? 'Diseña mi plan: ' + x.pregunta : 'Analiza mis últimas 2 semanas', x.fecha) + '<div class="msg coach">' + respuestaChatHTML(x.respuesta, x.tipo === 'pregunta' ? x.pregunta : '', false) + '</div>'; }).join('') +
-      '</div>' +
-      '<div class="chat-ideas">' + IDEAS_COACH.map(function (t) { return '<button onclick="usarIdea(this)">' + esc(t) + '</button>'; }).join('') + '</div>' +
-      '<div class="chat-in"><textarea id="pregunta" rows="2" placeholder="Escríbele a tu entrenador…"' + (c.tieneClave ? '' : ' disabled') + '></textarea>' +
-      '<button class="btn" id="btnPreguntar" onclick="preguntar()"' + (c.tieneClave ? '' : ' disabled') + ' aria-label="Enviar">Enviar</button></div>' +
-      '<button class="btn sec" style="margin-top:10px" id="btnAnalizar" onclick="analizar()"' + (c.tieneClave ? '' : ' disabled') + '>Analizar mis últimas 2 semanas</button>' +
-      (c.uso && c.uso.nivel === 'gratis' ? '<div class="meta" style="margin-top:8px">Hoy: ' + c.uso.usados + ' de ' + c.uso.maximo + ' preguntas del plan gratis. <a href="#" onclick="irAjustes(\'cuenta\');return false">Ver Pro</a></div>' : '') +
-      '<div class="meta" style="margin-top:8px">Orientación de entrenamiento, no consejo médico. No cambia tus medicamentos.</div>' +
-      (c.esDueno ? '<button class="btn txt" onclick="irAjustes(\'alumnos\')">🧑‍🏫 Modo entrenador: tus alumnos →</button>' : '') + '</div>';
-    if (c.ajustes.length) h += '<div class="card"><h2>Ajustes activos</h2>' + c.ajustes.map(function (a) {
-      return '<div class="ajuste"><b>' + esc(a.ejercicio) + '</b><div class="meta">' + descAjuste(a) + (a.motivo ? ' · ' + esc(a.motivo) : '') + ' · desde ' + esc(a.desde) + '</div>' +
-        '<button class="btn ghost small" style="margin-top:6px" onclick="quitar(' + a.fila + ')">Quitar ajuste</button></div>';
-    }).join('') + '</div>';
-    $('coach').innerHTML = h;
-    bajarChat();
-  }).catch(err);
+  if (!$('consejosBox')) $('coach').innerHTML = '<div class="meta">Salen de tus datos, sin IA. La IA es opcional, para conversar.</div><div id="consejosBox"><div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div></div></div><div id="coachRows"></div>';
+  conCache('consejos', function () { return api('getConsejos'); }, function (r) { consejosDatos = r; pintarConsejos(); pintarCoachFilas(); }).catch(err);
+  api('getCoach').then(function (c) { coachDatos = c; ajustesActivos = c.ajustes || []; pintarCoachFilas(); }).catch(err);
 }
-function burbujaYo(t, fecha) { return '<div class="msg yo">' + esc(t) + (fecha ? '<span class="hora">' + esc(String(fecha).slice(5, 16).replace('-', '/')) + '</span>' : '') + '</div>'; }
+function gcListos() { try { return JSON.parse(localStorage.getItem('consejosListos') || '{}'); } catch (e) { return {}; } }
+function consejoListo(id) { var l = gcListos(); l[id] = hoyISO(); try { localStorage.setItem('consejosListos', JSON.stringify(l)); } catch (e) {} pintarConsejos(); }
+function pintarConsejos() {
+  var r = consejosDatos, box = $('consejosBox'); if (!r || !box) return;
+  var listos = gcListos(), hoy = hoyISO();
+  var lista = r.consejos.filter(function (c) { return listos[c.id] !== hoy; });
+  if (!lista.length) {
+    box.innerHTML = !r.haySesiones
+      ? '<div class="card"><b>Tus consejos salen de tus datos.</b><div class="meta" style="margin-top:6px">Registra tu primera sesión en Hoy y lo que comes en Comida: aquí verás qué músculo va corto, qué carga subir y cuánta proteína te falta.</div></div>'
+      : '<div class="card"><b>Todo en orden por hoy.</b><div class="meta" style="margin-top:6px">Sigue con tu plan. Mañana vuelvo a mirar tus cargas, tu semana y tu comida.</div></div>';
+    return;
+  }
+  box.innerHTML = lista.map(function (c) {
+    var acc = c.accion === 'listo' ? "consejoListo('" + esc(c.id).replace(/'/g, "\\'") + "')" : c.accion === 'semana' ? 'gcIrBalance()' : c.accion === 'comida' ? "irA('comida')" : "irA('hoy')";
+    return '<div class="g-con ' + esc(c.tipo) + '"><div class="dot"></div><div class="n"><b>' + esc(c.titulo) + '</b><div class="s">' + esc(c.texto) + '</div></div><button class="' + (c.accion === 'listo' ? 'p' : '') + '" onclick="' + acc + '">' + esc(c.boton || 'Ver') + '</button></div>';
+  }).join('');
+}
+function gcIrBalance() {
+  irA('semana');
+  setTimeout(function () { var r = $('bmRow'); if (!r) return; if (r.style.display !== 'none' && r.getAttribute('aria-expanded') !== 'true') gcToggle('balanceMus', r); r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
+}
+function gcIrEntrenador() { irA('hoy'); setTimeout(function () { var b = $('entrenadorBox'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300); }
+function pintarCoachFilas() {
+  var box = $('coachRows'); if (!box) return;
+  var r = consejosDatos, c = coachDatos;
+  var tiene = c ? c.tieneClave : (r ? r.ia.tieneClave : false), esDueno = c ? c.esDueno : (r ? r.esDueno : false);
+  var h = '<div class="sec-h" style="margin-top:18px"><b>Conversar</b></div>';
+  if (tiene) h += '<button class="g-row" onclick="abrirChat()"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + esc(r && r.ejemplo || '"Me duele el hombro con el press, ¿qué cambio?"') + '</span></span>' + CHEV + '</button>';
+  else h += '<button class="g-row flat" onclick="' + (esDueno ? "irAjustes('ia')" : "toast('La IA aún no está activa. Los consejos de arriba sí funcionan.')") + '"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + (esDueno ? 'Conecta la IA en Ajustes → Inteligencia artificial' : 'Pídele al dueño que active la IA') + '</span></span>' + CHEV + '</button>';
+  var ent = (estado && estado.entrenador) || (r && r.entrenador);
+  if (ent && (ent.nota || ent.plan)) h += '<button class="g-row" onclick="gcIrEntrenador()"><span class="n"><b>Tu entrenador (persona)</b><span class="s">' + esc(ent.nota ? 'Nota del ' + fechaCortaIso(String(ent.nota.fecha).slice(0, 10)) + ': "' + ent.nota.texto + '"' : (ent.nombre || 'Tu entrenador') + ' te preparó un plan') + '</span></span>' + CHEV + '</button>';
+  if (c && c.ajustes.length) h += '<button class="g-row" aria-expanded="false" onclick="gcToggle(\'coachAjustes\', this)"><span class="n"><b>Ajustes activos (' + c.ajustes.length + ')</b><span class="s">' + esc(c.ajustes.map(function (a) { return a.ejercicio; }).join(' · ')) + '</span></span>' + CHEV + '</button>' +
+    '<div class="g-fold card" id="coachAjustes">' + c.ajustes.map(function (a) {
+      return '<div class="ajuste"><b>' + esc(a.ejercicio) + '</b><div class="meta">' + descAjuste(a) + (a.motivo ? ' · ' + esc(a.motivo) : '') + ' · desde ' + esc(a.desde) + '</div><button class="btn ghost small" style="margin-top:6px" onclick="quitar(' + a.fila + ')">Quitar ajuste</button></div>';
+    }).join('') + '</div>';
+  if (esDueno) h += '<button class="g-row flat" onclick="irAjustes(\'alumnos\')"><span class="n"><b>Modo entrenador</b><span class="s">Tus alumnos: su semana, notas y planes</span></span>' + CHEV + '</button>';
+  if (c && c.uso && c.uso.nivel === 'gratis') h += '<div class="meta" style="margin-top:8px">Hoy: ' + c.uso.usados + ' de ' + c.uso.maximo + ' preguntas del plan gratis. <a href="#" onclick="irAjustes(\'cuenta\');return false">Ver Pro</a></div>';
+  h += '<div class="meta" style="margin-top:12px;font-size:12px">Orientación de entrenamiento, no consejo médico. No cambia tus medicamentos.</div>';
+  box.innerHTML = h;
+}
+/* Chat a pantalla completa: capa fija, mensajes con scroll propio y el campo fijo abajo */
+function abrirChat() {
+  var c = coachDatos; if (!c) { toast('Un momento, cargando el chat…'); return; }
+  opcionesCoach = []; ultimosAjustes = [];
+  var hilo = c.historial.slice().reverse();   // de la más vieja a la más nueva
+  var v = $('coachChat'); v.classList.remove('hidden');
+  v.innerHTML = '<div class="ch-top"><div><div class="kicker" style="color:var(--amber)">Coach (IA)' + (c.ia ? ' · ' + esc(c.ia.nombre) : '') + '</div><b>Pregúntale</b></div><button class="gear" onclick="cerrarChat()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+    '<div class="chat" id="chat"><div class="msg coach">Hola. Conozco tus últimas 2 semanas: series, RIR, comida, peso y notas. Pídeme un plan ("quiero 4 días para glúteo"), cuéntame una molestia o pregúntame cómo vas.</div>' +
+    hilo.map(function (x) {
+      // En el historial solo lo que escribió la persona: el pedido técnico de un plan se resume
+      var yo = x.tipo === 'pregunta' ? x.pregunta : x.tipo === 'plan' ? 'Pedí un plan desde el chat' : 'Analiza mis últimas 2 semanas';
+      return burbujaYo(yo, x.fecha) + '<div class="msg coach">' + respuestaChatHTML(x.respuesta, x.tipo === 'pregunta' ? x.pregunta : '', true) + '</div>';
+    }).join('') + '</div>' +
+    '<div class="ch-bot"><div class="chat-ideas">' + IDEAS_COACH.map(function (t) { return '<button onclick="usarIdea(this)">' + esc(t) + '</button>'; }).join('') + '</div>' +
+    '<div class="chat-in"><textarea id="pregunta" rows="2" placeholder="Escríbele al coach…"></textarea><button class="btn" id="btnPreguntar" onclick="preguntar()" aria-label="Enviar">Enviar</button></div>' +
+    '<div class="ch-nota">Orientación de entrenamiento, no consejo médico · <button class="btn txt" id="btnAnalizar" onclick="analizar()">Analizar mis últimas 2 semanas</button></div></div>';
+  bajarChat();
+}
+function cerrarChat() { $('coachChat').classList.add('hidden'); cargarCoach(); }
+function burbujaYo(t, fecha) { return '<div class="msg yo">' + esc(t) + (fecha ? '<span class="hora">' + esc(gcHoraChat(fecha)) + '</span>' : '') + '</div>'; }
+function gcHoraChat(f) { f = String(f || ''); var d = f.slice(0, 10), h = f.slice(11, 16); return /^\d{4}-\d{2}-\d{2}$/.test(d) ? fechaCortaIso(d) + (h ? ' · ' + h : '') : f; }
 function bajarChat() { var c = $('chat'); if (c) c.scrollTop = c.scrollHeight; }
 function usarIdea(b) { var t = $('pregunta'); if (!t || t.disabled) return; t.value = b.textContent; t.focus(); }
 function descAjuste(a) { return a.accion === 'sustituir' ? 'Sustituir por ' + esc(a.valor) : a.accion === 'reducir_series' ? 'Quitar ' + esc(a.valor || 1) + ' serie(s)' : 'Evitar por ahora'; }
 var ultimosAjustes = [];
+function gcYaAplicado(a) { return ajustesActivos.some(function (x) { return x.ejercicio === a.ejercicio && x.accion === a.accion && String(x.valor || '') === String(a.valor || ''); }); }
 function respuestaHTML(r, conBotones) {
   if (!r) return '';
   var h = '<div class="ia">';
   if (r.resumen) h += '<p><b>' + esc(r.resumen) + '</b></p>';
   if (r.respuesta) h += '<p>' + esc(r.respuesta).replace(/\n/g, '<br>') + '</p>';
-  (r.alertas || []).forEach(function (a) { h += '<div class="alerta">⚠ ' + esc(a) + '</div>'; });
+  (r.alertas || []).forEach(function (a) { h += '<div class="alerta">' + esc(a) + '</div>'; });
   if (r.consultarMedico) h += '<div class="medico">Consulta a tu médico: ' + esc(r.consultarMedico) + '</div>';
   if ((r.recomendaciones || []).length) h += '<ul>' + r.recomendaciones.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+  // Los ajustes propuestos siempre llevan su botón: "Aplicar" o "Ya aplicado" (también en el historial)
   (r.ajustes || []).filter(function (a) { return a && a.ejercicio && a.accion; }).forEach(function (a) {
     var i = ultimosAjustes.push(a) - 1;
     h += '<div class="ajuste"><b>' + esc(a.ejercicio) + '</b><div class="meta">' + descAjuste(a) + (a.motivo ? ' · ' + esc(a.motivo) : '') + '</div>' +
-      (conBotones ? '<button class="btn small" style="margin-top:6px" onclick="aplicar(' + i + ', this)">Aplicar a mi rutina</button>' : '') + '</div>';
+      (conBotones ? (gcYaAplicado(a) ? '<button class="btn sec small" style="margin-top:6px" disabled>Ya aplicado</button>' : '<button class="btn small" style="margin-top:6px" onclick="aplicar(' + i + ', this)">Aplicar a mi rutina</button>') : '') + '</div>';
   });
   return h + '</div>';
 }
@@ -2665,7 +2918,10 @@ function preguntar() {
   enviarAlCoach(txt, function () { return api('coachPreguntar', txt); }, txt);
 }
 function analizar() { enviarAlCoach('Analiza mis últimas 2 semanas', function () { return api('coachAnalizar'); }, ''); }
-function aplicar(i, btn) { btn.disabled = true; api('aplicarAjuste', ultimosAjustes[i]).then(function () { btn.textContent = 'Aplicado ✓'; toast('Ajuste aplicado: lo verás en Hoy'); }).catch(function (x) { btn.disabled = false; err(x); }); }
+function aplicar(i, btn) {
+  btn.disabled = true;
+  api('aplicarAjuste', ultimosAjustes[i]).then(function () { btn.textContent = 'Ya aplicado'; btn.classList.add('sec'); ajustesActivos.push(ultimosAjustes[i]); invalidarTodo(); toast('Ajuste aplicado: lo verás en Hoy'); }).catch(function (x) { btn.disabled = false; err(x); });
+}
 /** "Ver plan completo": la IA arma la opción (series, reps, descansos) y se abre en el editor de Mi plan. */
 function verOpcion(idx, btn) {
   var x = opcionesCoach[idx]; if (!x || coachOcupado) return;
@@ -2677,6 +2933,7 @@ function verOpcion(idx, btn) {
 }
 /** Programa de la app sugerido por el Coach: te lleva a Ajustes con ese programa marcado; tú confirmas el cambio. */
 function usarProgramaApp(id) {
+  $('coachChat').classList.add('hidden');
   irAjustes('programa');
   var n = 0, t = setInterval(function () {
     var r = document.querySelector('input[name=progSel][value="' + id + '"]');
@@ -2686,7 +2943,7 @@ function usarProgramaApp(id) {
     }
   }, 150);
 }
-function quitar(f) { api('quitarAjuste', f).then(function () { toast('Ajuste quitado'); cargarCoach(); }).catch(err); }
+function quitar(f) { api('quitarAjuste', f).then(function () { toast('Ajuste quitado'); invalidarTodo(); cargarCoach(); }).catch(err); }
 
 /* =================== AJUSTES =================== */
 $('btnAjustes').onclick = function () { irA('ajustes'); };
@@ -2895,10 +3152,26 @@ var comidaDatos = null, cantidad = 1;
 function cargarComida() {
   if (!$('cFecha').value) $('cFecha').value = hoyISO();
   var f = $('cFecha').value;
+  gcComidaKicker();
   conCache('com:' + f, function () { return api('getComida', f); }, pintarComida).catch(err);
   cargarPlanComida();
 }
-function elegirMomento(b) { $('cMomento').value = b.textContent; document.querySelectorAll('#cMomChips .chip').forEach(function (x) { x.classList.toggle('on', x === b); }); }
+function cDia(n) { var d = gcSumarDias($('cFecha').value || hoyISO(), n); if (d > hoyISO()) return; $('cFecha').value = d; cerrarAgregar(); cargarComida(); }
+function gcHoraTexto() { var d = new Date(), h = d.getHours(), m = d.getMinutes(); return (h % 12 || 12) + ':' + ('0' + m).slice(-2) + (h < 12 ? ' a. m.' : ' p. m.'); }
+function gcComidaKicker() {
+  var f = $('cFecha').value, hoy = f === hoyISO();
+  $('cKick').textContent = hoy ? gcFechaCorta(f) + ' · ' + gcHoraTexto() : gcFechaCorta(f);
+  $('cTit').textContent = hoy ? momentoPorHora() : 'Comida';
+  $('cHoyTit').textContent = hoy ? 'Hoy' : fechaCortaIso(f);
+}
+/* El momento queda fijado al tocar "+ Agregar" en su fila (o "Comí otra cosa"); en la hoja se ve y se puede cambiar */
+function elegirMomento(b) {
+  var m = typeof b === 'string' ? b : b.textContent;
+  $('cMomento').value = m;
+  document.querySelectorAll('#cMomChips .chip').forEach(function (x) { x.classList.toggle('on', x.textContent === m); });
+  var t = $('cAgTit'); if (t) t.textContent = m;
+  gcAgRegs();
+}
 function momentoPorHora() { var h = new Date().getHours(); return h < 10 ? 'Desayuno' : h < 12 ? 'Media mañana' : h < 15 ? 'Almuerzo' : h < 18 ? 'Algo' : h < 21 ? 'Cena' : 'Antes de dormir'; }
 function pintarComida(c) {
   comidaDatos = c;
@@ -2909,25 +3182,48 @@ function pintarComida(c) {
   sel.value = prev || momentoPorHora();
   $('cMomChips').innerHTML = c.momentos.map(function (m) { return '<button class="chip' + (m === sel.value ? ' on' : '') + '" onclick="elegirMomento(this)">' + esc(m) + '</button>'; }).join('');
   var t = c.totales, o = c.objetivos;
-  var barra = function (nom, v, obj, u) {
+  // Una sola meta en toda la pestaña (objetivosNutricion_: la misma que en Cuerpo y en el plan de comida)
+  $('cHoyMeta').innerHTML = 'meta: ' + n1(o.kcal, 0) + ' kcal · ' + n1(o.prot, 0) + ' g prot <button class="g-q" aria-label="De dónde sale la meta" onclick="gcToggle(\'cMetaInfo\', this)">?</button>';
+  var barra = function (nom, v, obj, u, cls) {
     var p = obj ? Math.min(100, v / obj * 100) : 0;
-    return '<div class="dayh"><b>' + nom + '</b><span class="meta"><b class="num" style="font-size:18px;color:var(--ink)">' + n1(v, 0) + '</b> / ' + n1(obj, 0) + ' ' + u + (obj && v < obj ? ' · faltan ' + n1(obj - v, 0) : '') + '</span></div><div class="qbar' + (p >= 95 ? ' ok' : '') + '"><i style="width:' + p + '%"></i></div>';
+    return '<div class="g-bar ' + cls + (p >= 95 ? ' ok' : '') + '"><span>' + nom + '</span><div class="tr"><i style="width:' + p + '%"></i></div><b>' + n1(v, 0) + (u ? ' ' + u : '') + '</b></div>';
   };
-  $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, 'kcal') + barra('Proteína', t.prot, o.prot, 'g') +
-    barra('Carbohidratos', t.carb, o.carb, 'g') + barra('Grasa', t.grasa, o.grasa, 'g') +
-    '<div class="meta">Meta ' + esc(o.fuente) + '. Valores de las comidas aproximados.</div>' + metaAdaptHTML(c.adaptativa);
-  var bb = $('cBasicos');
-  if (bb) { var hayB = c.basicos && c.basicos.items && c.basicos.items.length; bb.style.display = hayB ? '' : 'none'; bb.innerHTML = hayB ? basicosHTML(c.basicos) : ''; }
+  $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, '', '') + barra('Proteína', t.prot, o.prot, 'g', 'prot');
+  $('cMetaInfo').innerHTML = 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.<div id="cMetaCalc"></div>' + metaAdaptHTML(c.adaptativa);
+  // Los momentos del día: lo registrado y "+ Agregar" en cada uno
+  var esHoy = c.fecha === hoyISO(), momAhora = esHoy ? momentoPorHora() : '';
+  var moms = c.momentos.slice(); if (c.registros.some(function (x) { return !x.momento; })) moms.push('');
+  $('cMomentos').innerHTML = moms.map(function (m) {
+    var items = c.registros.filter(function (x) { return (x.momento || '') === m; });
+    var kc = items.reduce(function (a, x) { return a + (Number(x.kcal) || 0); }, 0), pr = items.reduce(function (a, x) { return a + (Number(x.prot) || 0); }, 0);
+    var s = items.length ? esc(items.map(function (x) { return x.comida + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : ''); }).join(' + ')) + ' · ' + n1(kc, 0) + ' kcal · ' + n1(pr, 0) + ' g' : 'Nada aún';
+    var hora = HORA_MOM[m];
+    return '<div class="g-mom' + (m === momAhora ? ' ahora' : '') + '"><div class="n"><div class="t">' + esc(m || 'Sin momento') + (hora ? ' <small>· ' + hora + '</small>' : '') + '</div><div class="s">' + s + '</div></div>' +
+      '<button class="' + (items.length ? '' : 'add') + '" onclick="abrirAgregar(\'' + esc(m) + '\')">' + (items.length ? 'Editar' : '+ Agregar') + '</button></div>';
+  }).join('');
+  var bb = $('cBasicos'), hayB = c.basicos && c.basicos.items && c.basicos.items.length;
+  $('cbRow').style.display = hayB ? '' : 'none'; bb.innerHTML = hayB ? basicosHTML(c.basicos) : '';
+  if (hayB) $('cbSub').textContent = 'proteína por comida, agua, sueño' + (c.basicos.creatina ? ', creatina' : '');
   pintarChipsComida();
   pintarListaComidas();
-  $('cRegistros').innerHTML = c.registros.length ? c.momentos.concat(['']).map(function (m) {
-    var items = c.registros.filter(function (x) { return (x.momento || '') === m; });
-    if (!items.length) return '';
-    return '<div class="kicker" style="margin-top:10px">' + esc(m || 'Sin momento') + '</div>' + items.map(function (x) {
-      return '<div class="food"><div>' + esc(x.comida) + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : '') + '<div class="meta">' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot</div></div><button onclick="quitarComidaUI(\'' + esc(x.id) + '\')">✕</button></div>';
-    }).join('');
-  }).join('') : '<div class="meta">Aún no registras comidas este día.</div>';
+  gcAgRegs();
   if (pcDatos) pintarPlan(pcDatos);
+}
+/* Hoja "Agregar": se despliega bajo el día con el momento fijado y visible, buscador, "Lo de ayer" e IA/foto */
+function abrirAgregar(m) {
+  if (m !== undefined && m !== null) elegirMomento(m);
+  var a = $('cAgregar'); a.classList.remove('hidden');
+  $('cAgTit').textContent = $('cMomento').value || 'Comida';
+  gcAgRegs();
+  setTimeout(function () { a.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
+}
+function cerrarAgregar() { var a = $('cAgregar'); if (a) a.classList.add('hidden'); }
+function gcAgRegs() {
+  var box = $('cAgRegs'); if (!box || !comidaDatos) return;
+  var m = $('cMomento').value, items = comidaDatos.registros.filter(function (x) { return (x.momento || '') === m; });
+  box.innerHTML = items.length ? '<div class="meta" style="margin-top:10px">Ya en ' + esc(m.toLowerCase()) + ':</div>' + items.map(function (x) {
+    return '<div class="g-reg"><div>' + esc(x.comida) + (x.cantidad !== 1 ? ' ×' + n1(x.cantidad) : '') + '<div class="meta">' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot</div></div><button aria-label="Quitar" onclick="quitarComidaUI(\'' + esc(x.id) + '\')">✕</button></div>';
+  }).join('') : '';
 }
 /* ---------- Salud: enfermedades y medicamentos con buscador (Ajustes) ---------- */
 var saludCat = null, saludSel = { cond: [], med: [] }, saludTimer = null;
@@ -3029,8 +3325,9 @@ document.addEventListener('click', function (ev) {
 var pcDatos = null, pcVariante = 0, pcOpc = {};
 function cargarPlanComida(forzar) {
   if (pcDatos && !forzar) { pintarPlan(pcDatos); return; }
+  if (!$('pcAhora').innerHTML) $('pcAhora').innerHTML = '<div class="g-ahora"><div class="skel" style="width:40%"></div><div class="skel"></div><div class="skel" style="width:70%"></div></div>';
   $('pcRes').innerHTML = '<div class="meta" style="margin-top:10px">Armando tu plan…</div>';
-  api('getPlanComida', { variante: pcVariante }).then(function (r) { pcDatos = r; pcOpc = {}; pintarPlan(r); }).catch(function (e) { $('pcRes').innerHTML = ''; err(e); });
+  api('getPlanComida', { variante: pcVariante }).then(function (r) { pcDatos = r; pcOpc = {}; pintarPlan(r); }).catch(function (e) { $('pcRes').innerHTML = ''; $('pcAhora').innerHTML = ''; err(e); });
 }
 function pcObjetivo(o) { pcVariante = 0; api('getPlanComida', { objetivo: o, variante: 0 }).then(function (r) { pcDatos = r; pcOpc = {}; pcVer.conf = false; pintarPlan(r); invalidarTodo(); cargarComida(); }).catch(err); marcarPc('pcObj', 'o', o); }
 function pcComidas(n) { api('getPlanComida', { comidas: n, variante: pcVariante }).then(function (r) { pcDatos = r; pcOpc = {}; pcVer.conf = false; pintarPlan(r); }).catch(err); marcarPc('pcNum', 'n', String(n)); }
@@ -3084,35 +3381,33 @@ function pintarPlan(r) {
   $('pcConf').style.display = !elegido || pcVer.conf ? '' : 'none';
   var dm1 = (r.salud.cond || []).indexOf('Diabetes tipo 1') >= 0;
   $('pcKick').textContent = 'Tu plan · D1 y Ara';
-  if (r.elegir) { $('pcRes').innerHTML = '<div class="sug" style="margin-top:10px">Elige tu objetivo para armar el plan.</div>' + pcCuidadosHTML(r, true); return; }
-  if (r.bloqueado) { $('pcRes').innerHTML = '<div class="pc-av consultar" style="margin-top:10px">' + esc(r.motivo) + '</div>' + pcCuidadosHTML(r, true) + '<div class="meta" style="margin-top:8px">' + esc(r.aviso) + '</div>'; return; }
-  if (r.falta) { $('pcRes').innerHTML = '<div class="sug" style="margin-top:10px">' + esc(r.falta) + '</div>'; return; }
+  var ahora = $('pcAhora'), calc = $('cMetaCalc');
+  // "Ajustado a tu salud": fila plegada propia, con cuántos cuidados trae
+  var cu = r.cuidados, nCu = cu ? (cu.menos.length + cu.mas.length + cu.entrenar.length + (cu.medico ? 1 : 0)) : 0;
+  var hayCuid = !!(cu || (r.derivar && r.derivar.length) || (r.avisos && r.avisos.length) || (r.ejercicio && r.ejercicio.length));
+  $('cuRow').style.display = hayCuid ? '' : 'none';
+  if (hayCuid) { $('cuTit').textContent = 'Ajustado a tu salud' + (nCu ? ' (' + nCu + ')' : ''); $('cuSub').textContent = cu ? cu.titulo.join(' · ') : 'Avisos de comida y ejercicio'; $('pcCuid').innerHTML = pcCuidadosHTML(r, true); }
+  if (r.elegir) {
+    ahora.innerHTML = '<div class="g-ahora"><div class="kicker">Tu plan de comida</div><div class="plato">¿Qué buscas con la comida?</div><div class="meta">Con eso armo un menú con lo del D1 y el Ara, ajustado a tu salud, y te digo qué comer en cada comida.</div>' +
+      '<div class="g-obj"><button onclick="pcObjetivo(\'masa\')">Ganar masa</button><button onclick="pcObjetivo(\'grasa\')">Quemar grasa</button><button onclick="pcObjetivo(\'definir\')">Definir</button></div></div>';
+    $('pcRes').innerHTML = ''; $('pcRowSub').textContent = 'Primero elige tu objetivo arriba'; if (calc) calc.innerHTML = ''; return;
+  }
+  if (r.bloqueado) { ahora.innerHTML = '<div class="pc-av consultar" style="margin-top:10px">' + esc(r.motivo) + '</div><div class="meta" style="margin-top:8px">' + esc(r.aviso) + '</div>'; $('pcRes').innerHTML = ''; $('pcRowSub').textContent = 'Sin plan con calorías por tu salud'; return; }
+  if (r.falta) { ahora.innerHTML = '<div class="sug" style="margin-top:10px">' + esc(r.falta) + '</div>'; $('pcRes').innerHTML = ''; $('pcRowSub').textContent = 'Falta un dato para armar el plan'; return; }
   var st = pcEstado(r), m = r.metas, h = '';
-  $('pcKick').textContent = st.ahora < 0 ? 'Tu plan · D1 y Ara' : st.esHoy ? 'Ahora' : 'Siguiente';
-  // 1) La comida de ahora
-  if (st.ahora < 0) h += '<div class="pa-ok">' + SVG_PA.check + 'Día completo: registraste las ' + r.comidas.length + ' comidas</div>';
+  // 1) La comida de ahora, arriba de todo
+  if (st.ahora < 0) { ahora.innerHTML = '<div class="pa-ok" style="margin-top:12px">' + SVG_PA.check + 'Día completo: registraste las ' + r.comidas.length + ' comidas</div>'; if (st.esHoy) $('cTit').textContent = 'Comida'; }
   else {
     var i = st.ahora, c = r.comidas[i], d = pcDat(r, i);
-    h += '<div class="pa-t">' + esc(c.momento) + '</div>';
-    if (comidaDatos && comidaDatos.fecha === st.f) {
-      var t = comidaDatos.totales;
-      h += '<div class="pa-bar"><span>Llevas ' + (st.esHoy ? 'hoy' : 'ese día') + '</span><span><b>' + n1(t.kcal, 0) + '</b> <i>de ' + n1(m.kcal, 0) + ' kcal</i></span></div><div class="qbar"><i style="width:' + Math.min(100, t.kcal / m.kcal * 100) + '%"></i></div>' +
-        '<div class="pa-bar"><span>Proteína</span><span><b>' + n1(t.prot, 0) + ' g</b> <i>de ' + n1(m.prot, 0) + ' g</i></span></div><div class="qbar prot"><i style="width:' + Math.min(100, t.prot / m.prot * 100) + '%"></i></div>';
-    }
-    h += '<div class="pa-card">' + pcToggleAB(i) + pcItemsGrandes(d.items, dm1) +
-      '<div class="pa-tot"><span><b>' + n1(d.total.kcal, 0) + '</b> <span class="meta">kcal ·</span> <b>' + n1(d.total.prot, 0) + ' g</b> <span class="meta">proteína</span></span>' +
-      (r.cuidados ? '<button class="btn txt" onclick="pcVerCuid(true)">Cuida tu salud</button>' : '') + '</div></div>' +
-      '<button class="btn" style="margin-top:12px;min-height:54px" onclick="pcRegistrar(' + i + ', this)">Ya me lo comí</button>' +
-      '<button class="btn txt pa-otra" onclick="pcOtraCosa(' + i + ')">Comí otra cosa</button>';
-    var sig = -1; for (var k = i + 1; k < r.comidas.length; k++) if (!st.hecha[k]) { sig = k; break; }
-    if (sig >= 0) {
-      var ds = pcDat(r, sig);
-      h += '<div class="kicker" style="margin-top:12px">Después</div><button class="pa-fila" onclick="pcAbrir(' + sig + ', true)"><span class="n"><b>' + esc(r.comidas[sig].momento) + (HORA_MOM[r.comidas[sig].momento] ? ' · ' + HORA_MOM[r.comidas[sig].momento] : '') + '</b><span class="meta">' + esc(ds.items.map(function (x) { return x.nombre; }).join(' + ')) + '</span></span><em>Ver el día</em></button>';
-    }
+    $('cTit').textContent = st.esHoy ? c.momento : 'Comida';
+    var pasada = st.esHoy && ORDEN_MOM.indexOf(c.momento) < ORDEN_MOM.indexOf(momentoPorHora());
+    ahora.innerHTML = '<div class="g-ahora"><div class="kicker">' + (!st.esHoy ? 'Tu plan para ' + esc(c.momento.toLowerCase()) : pasada ? 'Te quedó pendiente: ' + esc(c.momento.toLowerCase()) : 'Tu plan para ahora') + (st.esHoy && HORA_MOM[c.momento] ? ' <span class="faint">· ' + HORA_MOM[c.momento] + '</span>' : '') + '</div>' +
+      '<div class="plato">' + esc(d.items.map(function (x) { return x.nombre + (x.cantidad !== 1 ? ' ×' + pcCant(x.cantidad) : ''); }).join(' + ')) + '</div>' +
+      '<div class="meta">' + n1(d.total.kcal, 0) + ' kcal · ' + n1(d.total.prot, 0) + ' g proteína · lo tienes en tu mercado</div>' + pcToggleAB(i) +
+      '<div class="g-acts"><button class="ok" onclick="pcRegistrar(' + i + ', this)">Ya me lo comí</button><button class="otra" onclick="pcOtraCosa(' + i + ')">Comí otra cosa</button></div></div>';
   }
-  // 2) El día en una mirada
-  h += '<div id="pcDia"><div class="kicker" style="margin-top:20px">Tu plan de ' + (st.esHoy ? 'hoy' : 'ese día') + '</div><div class="pa-t" style="font-size:32px">' + r.comidas.length + ' comidas</div>' +
-    '<div class="pa-stats"><div><b>' + n1(m.kcal, 0) + '</b><span>kcal al día</span></div><div><b>' + n1(m.prot, 0) + ' g</b><span>proteína</span></div><div><b class="ok-t">' + st.hechas + ' de ' + r.comidas.length + '</b><span>hechas</span></div></div><div class="pa-dia">';
+  // 2) Dentro del pliegue "Plan de la semana y mercado": el día del plan
+  h += '<div id="pcDia"><div class="dayh" style="margin-top:10px"><b>Tu plan de ' + (st.esHoy ? 'hoy' : 'ese día') + ' · ' + r.comidas.length + ' comidas</b><span class="meta ok-t">' + st.hechas + ' de ' + r.comidas.length + ' hechas</span></div><div class="pa-dia">';
   r.comidas.forEach(function (c, i) {
     var d = pcDat(r, i), cls = st.hecha[i] ? 'hecha' : i === st.ahora ? 'ahora' : '', ab = pcVer.dia === i;
     h += '<div class="pa-com ' + cls + '"><button class="pa-row" style="width:100%;background:none;border:0;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer" aria-expanded="' + ab + '" onclick="pcAbrir(' + i + ')">' +
@@ -3125,17 +3420,17 @@ function pintarPlan(r) {
   });
   h += '</div><div class="dayh" style="margin-top:6px"><span class="meta">El menú suma ' + n1(r.total.kcal, 0) + ' kcal y ' + n1(r.total.prot, 0) + ' g de proteína.</span><button class="btn txt" onclick="pcOtroMenu()">Otro menú ↻</button></div></div>';
   if (r.notas && r.notas.length) h += r.notas.map(function (n) { return '<div class="sug">' + esc(n) + '</div>'; }).join('');
-  // 3) Lo que cambia por tu salud (a un toque)
-  if (r.cuidados) h += '<button class="pa-fila salud" aria-expanded="' + pcVer.cuid + '" onclick="pcVerCuid()">' + SVG_PA.escudo + '<span class="n"><b>Ajustado a tu salud</b><span class="meta">' + esc(r.cuidados.titulo.join(' · ')) + '</span></span><em>' + (pcVer.cuid ? 'Ocultar' : 'Ver') + '</em></button>' + (pcVer.cuid ? pcCuidadosHTML(r, false) : '');
-  // 4) Mercado con casillas
+  // 3) Mercado con casillas (se guardan en el celular)
   var mc = r.mercado;
-  h += '<button class="pa-fila" aria-expanded="' + pcVer.merc + '" onclick="pcVerMerc()">' + SVG_PA.carro + '<span class="n"><b>Lista de mercado · 7 días</b><span class="meta">' + mc.items.length + ' productos' + (mc.total ? ' · unos $' + n1(mc.total, 0) + ' en D1' : '') + '</span></span><em>' + (pcVer.merc ? 'Cerrar' : 'Abrir') + '</em></button>' + (pcVer.merc ? pcMercadoHTML(mc) : '');
-  // 5) Lo demás, a un toque
+  h += '<button class="pa-fila" aria-expanded="' + pcVer.merc + '" onclick="pcVerMerc()">' + SVG_PA.carro + '<span class="n"><b>Lista de mercado · 7 días</b><span class="meta">' + mc.items.length + ' productos' + (mc.total ? ' · unos $' + n1(mc.total, 0) + ' en D1' : '') + '</span></span><em>' + (pcVer.merc ? 'Cerrar' : 'Abrir') + '</em></button>' + (pcVer.merc ? pcMercadoHTML(mc, r.comidas.length) : '');
+  // 4) Lo demás, a un toque
   if (r.proteina) h += '<details style="margin-top:10px"><summary>Tu proteína · ' + n1(r.proteina.gramos, 0) + ' g al día</summary>' + pcProteinaHTML(r.proteina) + '</details>';
-  h += '<details style="margin-top:6px"><summary>¿Cómo se calculó? · ' + n1(m.kcal, 0) + ' kcal al día</summary><div class="adapt"><b>' + esc(m.nombre) + ': ' + n1(m.kcal, 0) + ' kcal al día</b><div class="meta" style="margin-top:4px">Proteína ' + n1(m.prot, 0) + ' g · carbohidratos ' + n1(m.carb, 0) + ' g · grasa ' + n1(m.grasa, 0) + ' g · sodio máx. ' + n1(m.sodioMg, 0) + ' mg · fibra ' + n1(m.fibraG, 0) + ' g.<br>Tu gasto estimado: ' + n1(m.gasto, 0) + ' kcal (' + esc(m.metodo) + '). ' + esc(m.ritmo) + '</div></div>' +
-    (r.fuera && r.fuera.length ? '<div class="meta" style="margin-top:8px">Quitados por tu salud: ' + esc(r.fuera.map(function (x) { return x.nombre + ' (' + x.por + ')'; }).join(', ')) + '.</div>' : '') + '</details>';
   h += '<div class="meta faint" style="margin-top:10px;font-size:12px">' + esc(r.aviso) + '</div>';
   $('pcRes').innerHTML = h;
+  $('pcRowSub').textContent = r.comidas.length + ' comidas al día · mercado de 7 días' + (mc.total ? ' ~$' + n1(mc.total, 0) : '');
+  // La explicación de la meta vive en el "?" de Hoy (una sola meta en toda la pestaña)
+  if (calc) calc.innerHTML = '<div style="margin-top:6px"><b style="color:var(--ink)">' + esc(m.nombre) + ': ' + n1(m.kcal, 0) + ' kcal al día</b> · gasto estimado ' + n1(m.gasto, 0) + ' kcal (' + esc(m.metodo) + '). ' + esc(m.ritmo) +
+    (r.fuera && r.fuera.length ? '<br>Quitados por tu salud: ' + esc(r.fuera.map(function (x) { return x.nombre + ' (' + x.por + ')'; }).join(', ')) + '.' : '') + '</div>';
 }
 /* Lo que cambia por tu salud: Menos / Más / Al entrenar, lo del médico y los detalles con su fuente a un toque */
 function pcCuidadosHTML(r, abierto) {
@@ -3159,7 +3454,7 @@ function pcCuidadosHTML(r, abierto) {
   if (det) h += '<details style="margin-top:10px"' + (abierto && !cu ? ' open' : '') + '><summary>Ver todos los detalles</summary>' + det + '</details>';
   return h;
 }
-function pcMercadoHTML(mc) {
+function pcMercadoHTML(mc, nComidas) {
   var firma = mc.items.map(function (x) { return x.producto; }).join('|'), guard = {};
   try { guard = JSON.parse(localStorage.getItem('mercado') || '{}'); } catch (e) {}
   var hechos = guard.firma === firma ? guard.hechos || {} : {};
@@ -3169,7 +3464,8 @@ function pcMercadoHTML(mc) {
     return '<button class="mc-it' + (on ? ' on' : '') + '" aria-pressed="' + on + '" onclick="pcMarcar(' + k + ')"><span class="mc-box">' + (on ? '✓' : '') + '</span><span class="n"><b>' + x.unidades + ' × ' + esc(x.producto) + '</b><div class="meta" style="font-size:12px">para ' + esc(x.para) + '</div></span><span class="meta">' + (x.precio ? '$' + n1(x.precio, 0) : 'en tienda') + '</span></button>';
   };
   var d1 = mc.items.filter(function (x) { return /D1/i.test(x.tienda); }), otros = mc.items.filter(function (x) { return !/D1/i.test(x.tienda); });
-  return '<div class="dayh" style="margin-top:10px"><span class="meta">Te faltan ' + (mc.items.length - n) + ' de ' + mc.items.length + '</span><span class="num" style="font-size:24px">' + (mc.total ? '~$' + n1(mc.total, 0) : '') + '</span></div>' +
+  // Primero qué es y cuánto: el total asusta si no se explica que es para toda la semana
+  return '<div class="g-merc-h"><b>7 días × ' + (nComidas || 5) + ' comidas' + (mc.total ? ' · ~$' + n1(mc.total, 0) : '') + '</b>Todo lo del plan para la semana completa' + (mc.total ? ', a precios del D1' : '') + '. Marca lo que ya tienes: te faltan ' + (mc.items.length - n) + ' de ' + mc.items.length + '.</div>' +
     (d1.length ? '<div class="kicker" style="margin-top:10px">En el D1</div>' + d1.map(fila).join('') : '') +
     (otros.length ? '<div class="kicker" style="margin-top:12px">En el Ara o la plaza</div>' + otros.map(fila).join('') : '') +
     '<div class="meta faint" style="margin-top:8px;font-size:12px">Precios del D1 del ' + esc(mc.fecha) + '; cambian según la ciudad.</div>';
@@ -3183,15 +3479,10 @@ function pcMarcar(k) {
   pintarPlan(pcDatos);
 }
 function pcConfig() { pcVer.conf = !pcVer.conf; pintarPlan(pcDatos); }
-function pcVerCuid(abrir) { pcVer.cuid = abrir === true ? true : !pcVer.cuid; pintarPlan(pcDatos); if (pcVer.cuid) setTimeout(function () { var b = document.querySelector('#pcRes .pa-fila.salud'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30); }
+function pcVerCuid() { var r = $('cuRow'); if (!r || r.style.display === 'none') return; if (r.getAttribute('aria-expanded') !== 'true') gcToggle('pcCuid', r); r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 function pcVerMerc() { pcVer.merc = !pcVer.merc; pintarPlan(pcDatos); }
 function pcAbrir(i, ir) { pcVer.dia = pcVer.dia === i && !ir ? -1 : i; pintarPlan(pcDatos); if (ir) setTimeout(function () { var d = $('pcDia'); if (d) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30); }
-function pcOtraCosa(i) {
-  var mom = pcDatos.comidas[i].momento;
-  document.querySelectorAll('#cMomChips .chip').forEach(function (b) { if (b.textContent === mom) elegirMomento(b); });
-  var q = $('cBuscar'); q.closest('.card').scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(function () { q.focus(); }, 350);
-  toast('Busca lo que comiste: queda en ' + mom.toLowerCase());
-}
+function pcOtraCosa(i) { abrirAgregar(pcDatos.comidas[i].momento); }
 /* Tu proteína: cuánta y qué fuentes convienen por tu salud (con la razón a un toque) */
 function pcProteinaHTML(p) {
   var corto = function (n) { return n.replace(/ a la plancha| asado| \(.*\)| sin piel/g, ''); };
@@ -3215,14 +3506,13 @@ function pcRegistrar(i, b) {
 }
 /* Lo básico de comida y descanso, con tus números (plegado por defecto) */
 function basicosHTML(b) {
-  return '<details><summary><b>Lo básico</b> · proteína por comida, agua, sueño' + (b.creatina ? ', creatina' : '') + '</summary>' +
-    b.items.map(function (x) { return '<div class="porque"><b>' + esc(x.titulo) + ':</b> ' + esc(x.texto) + '</div>'; }).join('') +
-    (b.peso ? '' : '<div class="meta">Registra tu peso en Cuerpo para ver tus números.</div>') + '</details>';
+  return b.items.map(function (x) { return '<div class="porque"><b>' + esc(x.titulo) + ':</b> ' + esc(x.texto) + '</div>'; }).join('') +
+    (b.peso ? '' : '<div class="meta">Registra tu peso en Cuerpo para ver tus números.</div>');
 }
 /* Meta con tu gasto real (ingesta promedio + tendencia del peso): se ve en Comida y se activa con un toque */
 function metaAdaptHTML(ad) {
   if (!ad) return '';
-  if (!ad.listo) return '<div class="meta" style="margin-top:8px">📈 ' + esc(ad.texto) + '</div>';
+  if (!ad.listo) return '<div class="meta" style="margin-top:8px">' + esc(ad.texto) + '</div>';
   return '<div class="adapt"><b>Tu gasto real: ' + n1(ad.gasto, 0) + ' kcal/día</b><div class="meta" style="margin-top:4px">Últimas 3 semanas: comiste ' + n1(ad.ingesta, 0) + ' kcal en promedio y tu peso ' +
     (ad.kgSemana >= 0 ? 'subió ' : 'bajó ') + n1(Math.abs(ad.kgSemana), 2) + ' kg por semana. ' +
     (ad.activa ? 'Tu meta ya usa este cálculo y se ajusta cada domingo.' : 'Meta sugerida para tu objetivo: <b style="color:var(--ink)">' + n1(ad.meta, 0) + ' kcal</b>.') + '</div>' +
@@ -3255,7 +3545,7 @@ function comidaIA() {
   if (!t && !fotoComida) { toast('Escribe qué comiste o toma una foto'); $('cIaTxt').focus(); return; }
   var b = $('cIaBtn'); b.disabled = true; b.textContent = 'Calculando… (10–20 s)';
   api('comidaConIA', { texto: t, foto: fotoComida || '', momento: $('cMomento').value }).then(function (r) { comidaIAres = r; pintarComidaIA(); })
-    .catch(err).then(function () { b.disabled = false; b.textContent = 'Calcular'; });
+    .catch(err).then(function () { b.disabled = false; b.textContent = 'Calcular con IA'; });
 }
 function pintarComidaIA() {
   var r = comidaIAres, box = $('cIaRes'); if (!box) return;
@@ -3268,8 +3558,8 @@ function pintarComidaIA() {
       '<div class="meta">' + esc(x.porcion) + ' · ' + n1(x.kcal, 0) + ' kcal · ' + n1(x.prot, 0) + ' g prot · ' + n1(x.carb, 0) + ' C · ' + n1(x.grasa, 0) + ' G</div></div></label>';
   }).join('') + '</div>' +
   (r.nota ? '<div class="meta" style="margin-top:6px">' + esc(r.nota) + '</div>' : '') +
-  '<div class="dayh" style="margin-top:8px"><b>Total</b><span class="meta"><b style="color:var(--ink)">' + n1(tot.kcal, 0) + ' kcal</b> · ' + n1(tot.prot, 0) + ' g prot</span></div>' +
-  '<div class="acts" style="margin-top:8px"><button class="btn" onclick="guardarComidaIA()">Agregar a ' + esc($('cMomento').value) + '</button><button class="btn ghost" onclick="comidaIAres=null;pintarComidaIA()">Descartar</button></div>' +
+  '<div class="dayh" style="margin-top:8px"><b>Total</b><span class="meta"><b style="color:var(--ink)">' + n1(tot.kcal, 0) + ' kcal</b> · ' + n1(tot.prot, 0) + ' g prot · a ' + esc($('cMomento').value.toLowerCase()) + '</span></div>' +
+  '<div class="g-ia-acts"><button class="ok" onclick="guardarComidaIA()">Agregar (' + n1(tot.kcal, 0) + ' kcal)</button><button class="no" onclick="comidaIAres=null;pintarComidaIA()">Descartar</button></div>' +
   '<div class="meta" style="margin-top:6px">Valores aproximados. Hoy: ' + r.usados + ' de ' + r.maximo + ' con IA.</div>';
 }
 function guardarComidaIA() {
@@ -3370,16 +3660,18 @@ function verProgreso(nombre) {
   }).catch(err);
 }
 
-/* =================== FOTOS =================== */
+/* =================== FOTOS (un toque: elegir = subir) =================== */
 function cargarFotos() {
   api('getFotos').then(function (f) {
-    if (!f.fechas.length) { $('fComparar').innerHTML = '<div class="meta">Aún no hay fotos. Toma las primeras hoy: son tu punto de partida.</div>'; return; }
+    window._fotos = f;
+    if (!f.fechas.length) { $('fEstado').textContent = 'Toma la primera hoy: es tu punto de partida.'; $('fRow').style.display = 'none'; $('fComparar').innerHTML = ''; return; }
     var dias = f.ultima ? Math.round((new Date(hoyISO()) - new Date(f.ultima)) / 86400000) : 0;
-    $('fEstado').textContent = 'Última sesión de fotos: ' + f.ultima + (dias >= 28 ? ' · ya toca tomar nuevas' : ' · próximas en ' + (28 - dias) + ' días');
-    var ops = f.fechas.map(function (x) { return '<option value="' + x.fecha + '">' + x.fecha + '</option>'; }).join('');
+    $('fEstado').textContent = 'Última: ' + (dias === 0 ? 'hoy' : dias === 1 ? 'ayer' : 'hace ' + dias + ' días') + (dias >= 28 ? ' · ya toca tomar nuevas' : '');
+    $('fRow').style.display = ''; $('fRowSub').textContent = f.fechas.length + (f.fechas.length === 1 ? ' sesión de fotos' : ' sesiones de fotos') + ' · antes y después';
+    var ops = f.fechas.map(function (x) { return '<option value="' + x.fecha + '">' + fechaCortaIso(x.fecha) + '</option>'; }).join('');
     $('fComparar').innerHTML = '<div class="row"><div><label>Antes</label><select id="fA">' + ops + '</select></div><div><label>Después</label><select id="fB">' + ops + '</select></div></div>' +
       '<button class="btn sec" style="margin-top:8px" onclick="compararFotos()">Comparar</button><div class="fotos" id="fImgs" style="margin-top:8px"></div>';
-    window._fotos = f; $('fB').value = f.fechas[f.fechas.length - 1].fecha;
+    $('fB').value = f.fechas[f.fechas.length - 1].fecha;
   }).catch(err);
 }
 function compararFotos() {
@@ -3391,21 +3683,23 @@ function compararFotos() {
     $('fImgs').innerHTML = d.map(function (u) { return u ? '<img src="' + u + '">' : '<div class="meta" style="width:50%">Sin foto de ' + t + '</div>'; }).join('');
   }).catch(err);
 }
-$('fSubir').onclick = function () {
-  var file = $('fArchivo').files[0]; if (!file) { toast('Elige o toma una foto'); return; }
-  var b = $('fSubir'); b.disabled = true; b.textContent = 'Subiendo…';
+function fotoProgresoElegida(inp) {
+  var file = inp.files && inp.files[0]; if (!file) return;
+  var lab = $('fTomar'), txt = $('fArchivoTxt'); lab.style.pointerEvents = 'none'; txt.textContent = 'Subiendo…';
+  var fin = function () { lab.style.pointerEvents = ''; txt.textContent = 'Tomar'; inp.value = ''; };
   var img = new Image(), rd = new FileReader();
   rd.onload = function () { img.src = rd.result; };
+  img.onerror = function () { fin(); toast('No pude leer la foto'); };
   img.onload = function () {
     var max = 1080, k = Math.min(1, max / Math.max(img.width, img.height));
     var cv = document.createElement('canvas'); cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
     cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
     api('subirFoto', { fecha: $('dFecha').value || hoyISO(), tipo: $('fTipo').value, dataUrl: cv.toDataURL('image/jpeg', 0.82), id: 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) })
-      .then(function () { b.disabled = false; b.textContent = 'Subir foto'; $('fArchivo').value = ''; $('fArchivoTxt').textContent = '📷 Tomar o elegir'; toast('Foto guardada en tu Drive'); cargarFotos(); })
-      .catch(function (x) { b.disabled = false; b.textContent = 'Subir foto'; err(x); });
+      .then(function () { fin(); toast('Foto de ' + $('fTipo').value + ' guardada'); cargarFotos(); })
+      .catch(function (x) { fin(); err(x); });
   };
   rd.readAsDataURL(file);
-};
+}
 
 /* =================== ARMAR MI PLAN =================== */
 var mp = null, mpBib = {}, pkModo = null, pkLista = [], pkGrupo = '';
@@ -4246,6 +4540,18 @@ function hojaAcciones(titulo, items) {
 }
 function cerrarHoja() { var ov = $('hojaAcc'); if (ov) ov.style.display = 'none'; }
 /* ===== fin G-A ===== */
+/* ===== G-C: Semana, Comida, Cuerpo, Progreso, Coach (ayudantes comunes) ===== */
+var CHEV = '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+/* Ritmo meta de cambio de peso (% por semana) según el objetivo: el mismo que usa el servidor (META_RITMO, Code.gs) */
+var RITMO_META = { ganar: [0.25, 0.5], perder: [-1, -0.5], mantener: [-0.25, 0.25] };
+/* Pliegues: la fila (botón) lleva aria-expanded y el contenido la clase .g-fold */
+function gcToggle(id, btn) { var el = $(id); if (!el) return; var abre = !el.classList.contains('open'); el.classList.toggle('open', abre); if (btn) btn.setAttribute('aria-expanded', abre ? 'true' : 'false'); }
+function gcSumarDias(iso, n) { var p = iso.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2] + n); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function gcFechaCorta(iso) { var p = iso.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return (DIA_3[['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'][d.getDay()]] || '') + ' ' + d.getDate() + ' ' + MES_3[d.getMonth()]; }
+function gcEjeX(x) { var m = /^(\d{2})-(\d{2})$/.exec(String(x)); return m ? Number(m[2]) + ' ' + String(MES_3[Number(m[1]) - 1] || '').toLowerCase() : esc(x); }
+function gcFechaLarga(iso) { var p = iso.split('-'), meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']; return Number(p[2]) + ' de ' + (meses[Number(p[1]) - 1] || ''); }
+/* Explicación corta (6 s) para los "?" de la jerga: IMC, FFMI, músculos… */
+function gcInfo(txt) { var t = $('toast'); t.textContent = txt; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function () { t.style.display = 'none'; }, 6000); }
 </script>
 </body>
 </html>
