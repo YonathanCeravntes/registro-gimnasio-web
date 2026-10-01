@@ -690,7 +690,7 @@
   #coachChat .ch-nota{font-size:11px;color:var(--faint);margin-top:6px;text-align:center}
   #coachChat .ch-nota .btn.txt{min-height:0;font-size:11px;display:inline}
   @media (min-width:700px){#coachChat{left:50%;transform:translateX(-50%);width:640px;right:auto}}
-  /* ===== G-D: Cierre del día, proteína lista, Telegram ===== */
+  /* ===== G-D: Cierre del día, Mis suplementos, Telegram ===== */
   .gd-card{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px}
   .gd-card.reco{border-color:var(--amber);background:var(--card)}
   .gd-h{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--ink);font-family:var(--body);text-align:left;cursor:pointer;padding:0;min-height:44px}
@@ -716,19 +716,42 @@
   .gd-bar.ok .tr i{background:var(--green-ink)} .gd-bar.alto .tr i{background:var(--bad)}
   .gd-bar .st{font-size:12px;font-weight:700;margin-top:4px;color:var(--amber)} .gd-bar.ok .st{color:var(--green-ink)} .gd-bar.alto .st{color:var(--bad)}
   .gd-bar .de{font-size:12px;color:var(--dim);margin-top:3px}
-  .gd-sup{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)} .gd-sup:first-child{border-top:0}
-  .gd-sup b{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .gd-sup b .faint{font-weight:500}
-  .gd-sup .s{font-size:12px;color:var(--muted);line-height:1.35;min-width:0} .gd-sup .s .hoy{color:var(--green-ink);font-weight:700}
-  .gd-sup .tomar{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:var(--amber);color:var(--amber-ink);font:800 13px var(--body);cursor:pointer;white-space:nowrap}
-  .gd-sup .tomar:disabled{opacity:.6}
-  .gd-sup .mas{width:44px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--body);justify-self:end}
-  .gd-vacio{font-size:14px;color:var(--muted);line-height:1.45;padding:4px 0}
-  .gd-add{margin-top:10px;width:100%;min-height:46px;border-radius:14px;border:2px solid var(--amber);background:transparent;color:var(--amber);font-family:var(--disp);font-size:17px;font-weight:800;text-transform:uppercase;cursor:pointer}
-  .gd-form{margin-top:10px;border-top:1px solid var(--line);padding-top:4px}
+  /* Mis suplementos (02/10/2026): fila con veredicto (verde = te conviene, gris = opcional, ámbar suave = con cuidado, rojo = mejor no);
+     "Tomé" gris salvo el del suplemento que toca hoy (el único ámbar de la lista); "+ Agregar" gris; detalle y formulario en la hoja inferior */
+  .sup-it{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)} .sup-it:first-child{border-top:0}
+  .sup-it.off .n{opacity:.55}
+  .sup-it .n{flex:1;min-width:0;border:0;background:none;padding:0;text-align:left;color:var(--ink);font-family:var(--body);cursor:pointer}
+  .sup-it b{display:block;font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .sup-it b .faint{font-weight:500}
+  .sup-it .s{display:block;font-size:12px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sup-it .tags{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+  .sup-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.3px;border-radius:999px;padding:3px 9px;background:var(--raise);color:var(--muted);white-space:nowrap;font-family:var(--body)}
+  .sup-chip.favorable{background:var(--green-bg);color:var(--green-ink)} .sup-chip.cuidado{background:var(--amber-bg);color:#e2b45e} .sup-chip.evitar{background:var(--bad-bg);color:var(--bad)}
+  .sup-est{font-size:12px;color:var(--muted)} .sup-est.hoy{color:var(--green-ink);font-weight:700}
+  .sup-it .tomar{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--raise2);background:var(--raise);color:var(--ink);font:800 13px var(--body);cursor:pointer;white-space:nowrap;flex-shrink:0}
+  .sup-it .tomar.ahora{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)} .sup-it .tomar:disabled{opacity:.6}
+  .sup-med{font-size:12px;font-weight:700;color:var(--bad);text-align:right;max-width:92px;line-height:1.25;flex-shrink:0}
+  .gd-add{margin-top:10px;width:100%;min-height:46px;border-radius:14px;border:1px solid var(--raise2);background:transparent;color:var(--muted);font:700 15px var(--body);cursor:pointer}
+  .sup-tg{font-size:12.5px;color:var(--dim);text-align:center;margin:8px 0 2px;line-height:1.4}
+  .sup-ver{padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line)} .sup-ver b{display:block;font-size:16px;margin-top:8px}
+  .sup-ver.favorable{border-color:var(--green-line)} .sup-ver.evitar{border-color:var(--bad)} .sup-ver.cuidado{border-color:#6a5420}
+  .sup-ver .r{margin-top:8px;font-size:14px;line-height:1.4} .sup-ver .r small,.sup-ver .ev{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
+  .sup-ver .ev{margin-top:8px}
+  .sup-datos{margin-top:12px} .sup-datos>div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+  .sup-datos>div:first-child{border-top:0} .sup-datos span{color:var(--muted);flex-shrink:0} .sup-datos b{font-weight:600;text-align:right;min-width:0}
+  .sup-acts{margin-top:14px} .sup-acts .btn{font-size:17px;min-height:46px} .sup-acts .btn.bad{color:var(--bad)}
+  .sup-link{display:block;text-align:center;margin-top:10px;color:var(--muted);font-size:14px;font-weight:600;text-decoration:none;min-height:44px;line-height:44px}
+  .gd-form{margin-top:4px}
   .gd-form .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end} .gd-form .grid3 input{padding:11px 8px} .gd-form .row{align-items:flex-end}
-  .gd-form .ayuda{font-size:12px;color:var(--dim);margin-top:6px}
-  .gd-form label.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;font-size:16px;margin-top:10px} .gd-form label.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .gd-form .acts{margin-top:12px}
+  .gd-form label.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;font-size:16px;margin-top:6px} .gd-form label.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .gd-form .acts{margin-top:14px}
+  .sup-tipos{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:2px 16px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch} .sup-tipos::-webkit-scrollbar{display:none}
+  .sup-tipos .chip{flex:0 0 auto;border:1px solid var(--raise2);background:transparent;color:var(--muted);font:700 13px var(--body);text-transform:none;letter-spacing:0;padding:0 12px;min-height:40px;cursor:pointer}
+  .sup-tipos .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .sup-forma{margin:0} .sup-forma button{padding:9px 2px;font-size:12px}
+  .gds-act{margin-top:6px} .gds-act .mg{flex:0 0 96px} .gds-act input{padding:11px 10px}
+  .sup-mas{margin-top:4px;color:var(--muted)} .sup-tabla{margin-top:12px} .sup-tabla summary{padding-left:0}
+  .sup-pend{display:flex;align-items:center;gap:12px} .sup-pend .n{flex:1;min-width:0} .sup-pend b{display:block;font-size:15px} .sup-pend .s{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .sup-pend .btn{width:auto;flex-shrink:0;padding:0 18px;min-height:44px;font-size:17px}
   .gd-tg{font-size:14px;color:var(--muted);line-height:1.45} .gd-tg b{color:var(--ink)}
   .gd-code{font-family:var(--disp);font-weight:800;font-size:38px;letter-spacing:3px;color:var(--amber);line-height:1;margin:10px 0 4px;text-align:center;white-space:nowrap;user-select:all;-webkit-user-select:all}
   .gd-code-l{text-align:center;font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
@@ -777,7 +800,7 @@
   .g-3 b{color:var(--ink)} .g-h1 .pc{color:var(--ink)} .dia-row .r .pct{color:var(--muted)} .kpi .v{color:var(--ink)} .hero-kpi .v{color:var(--ink)}
   .g-fila .r{color:var(--muted)} .g-fila.hoy .r{color:var(--amber)} .g-fila.hecho .r{color:var(--green-ink)} .g-fila.sinreg .r{color:var(--bad)}
   .pa-fila em{color:var(--muted)}
-  .gd-sup .tomar{background:var(--raise);color:var(--ink)} .gd-add{border-color:var(--raise2);color:var(--ink)}
+  /* (Mis suplementos: .sup-it .tomar y .gd-add ya nacen grises en su bloque) */
   .gd-bar .st{color:var(--muted)} .gd-bar.ok .st{color:var(--green-ink)} .gd-bar.alto .st{color:var(--muted)} .gd-bar.alto .tr i{background:var(--amber)}
   .g-row .chev,.gd-h .chev,.aj-menu .chev{stroke:var(--muted)}
   button.g-con{width:100%;text-align:left;cursor:pointer;font-family:var(--body);color:var(--ink)} .g-con .chev{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;align-self:center}
@@ -956,7 +979,7 @@
     <div id="pcAhora"></div>
     <div id="cReco"></div>
     <div id="cCierreBox"></div>
-    <button class="g-row" id="supRow" aria-expanded="false" onclick="gcToggle('supCard', this)"><span class="n"><b>Proteína lista</b><span class="s" id="supSub">Batidos y proteína en polvo, aparte de la comida</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="g-row" id="supRow" aria-expanded="false" onclick="gcToggle('supCard', this)"><span class="n"><b>Mis suplementos</b><span class="s" id="supSub">Creatina, proteína, vitaminas… con veredicto para ti</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="supCard"></div>
     <button class="g-row" id="pcRow" aria-expanded="false" onclick="gcToggle('pcCard', this)"><span class="n"><b>Plan de la semana y mercado</b><span class="s" id="pcRowSub">Menú del D1 y el Ara para tu objetivo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="pcCard">
@@ -1331,7 +1354,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610012148', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610012212', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2440,7 +2463,7 @@ function mostrarCierre() {
       '<div><b' + (recs.length ? ' class="ok-t"' : '') + '>' + (recs.length ? '+' + recs.length : '0') + '</b><span>' + (recs.length ? 'récord: ' + esc(recs[0].nombre.split(' (')[0]) : 'récords hoy') + '</span></div>' +
       '<div><b>' + n1(Math.round(kg), 0) + '</b><span>kg movidos</span></div></div>' +
     '<div class="g-box"><div class="t">La próxima vez</div><div class="g-list" id="cierreProx"><div class="meta">Calculando…</div></div></div>' +
-    '<div class="g-box green" id="cierreCome"><b>Ahora come.</b> Mirando tu proteína de hoy…</div>' +
+    '<div class="g-box green" id="cierreCome"><b>Ahora come.</b> Mirando tu proteína de hoy…</div><div id="cierreSup"></div>' +
     (e.proxima ? '<div class="g-viene"><div><div class="g-eye-s">Lo que viene</div><b>' + esc(diaLargoEtiqueta(e.proxima.etiqueta)) + ' · ' + esc(String(e.proxima.nombre || '').split(' · ')[0]) + '</b></div>' + (nProx ? '<span class="g-chip st">' + nProx + ' ejercicios</span>' : '') + '</div>' : '') +
     '<div class="g-grow"></div>' +
     '<button type="button" class="btn" onclick="cerrarCierre()">Listo por hoy</button></div>';
@@ -2469,6 +2492,7 @@ function mostrarCierre() {
     var b = $('cierreCome'); if (!b || !c || !c.objetivos) return;
     var falta = Math.round((c.objetivos.prot || 0) - ((c.totales && c.totales.prot) || 0));
     b.innerHTML = falta > 0 ? '<b>Ahora come.</b> Te faltan ' + falta + ' g de proteína hoy.' + (falta >= 25 ? ' Por ejemplo: pechuga 150 g, 4 huevos o atún con arroz.' : '') : '<b>Proteína al día.</b> Ya cumpliste tu meta de hoy (' + Math.round(c.objetivos.prot || 0) + ' g). Come y descansa.';
+    if (typeof gdSupPendEn === 'function') gdSupPendEn('cierreSup', c);
   };
   var cc = leerCache('com:' + s.fecha); if (cc) pintarCome(cc);
   api('getComida', s.fecha).then(function (c) { escribirCache('com:' + s.fecha, c); pintarCome(c); }).catch(function () { var b = $('cierreCome'); if (b && !cc) b.innerHTML = '<b>Ahora come.</b> Proteína en la siguiente comida: pechuga, huevos, atún o lentejas.'; });
@@ -3505,7 +3529,7 @@ function pintarMetaComida(c) {
   };
   var protSup = Number(t.protSuplemento) || 0;
   $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, '', '') + barra('Proteína', t.prot, o.prot, 'g', 'prot') +
-    (protSup > 0 && !falta ? '<div class="gd-sub">de comida ' + n1(Math.max(0, t.prot - protSup), 0) + ' g · proteína lista ' + n1(protSup, 0) + ' g</div>' : '') +
+    (protSup > 0 && !falta ? '<div class="gd-sub">de comida ' + n1(Math.max(0, t.prot - protSup), 0) + ' g · proteína en polvo ' + n1(protSup, 0) + ' g</div>' : '') +
     (falta ? '<div class="meta" style="margin-top:6px">Para calcular tu meta faltan datos.</div><button type="button" class="btn sec c-meta-btn" onclick="irAjustes(\'perfil\')">Completar mi perfil</button>' : '');
   $('cMetaInfo').innerHTML = 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.<div id="cMetaCalc"></div>' + metaAdaptHTML(c.adaptativa);
   if (pcDatos && !falta) pintarMetaCalc(pcDatos);
@@ -4904,9 +4928,9 @@ function gcEjeX(x) { var m = /^(\d{2})-(\d{2})$/.exec(String(x)); return m ? Num
 function gcFechaLarga(iso) { var p = iso.split('-'), meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']; return Number(p[2]) + ' de ' + (meses[Number(p[1]) - 1] || ''); }
 /* Explicación corta (6 s) para los "?" de la jerga: IMC, FFMI, músculos… */
 function gcInfo(txt) { var t = $('toast'); t.textContent = txt; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function () { t.style.display = 'none'; }, 6000); }
-/* ===== G-D: Cierre del día, proteína lista, Telegram ===== */
-/* Comida: "Hoy te recomiendo" (con lo de ayer), "Cerrar el día" con su resumen a pantalla completa, "Proteína lista"
-   (batidos y proteína en polvo aparte de la comida) y, en Ajustes → Tu cuenta, la vinculación con Telegram. */
+/* ===== G-D: Cierre del día, Mis suplementos, Telegram ===== */
+/* Comida: "Hoy te recomiendo" (con lo de ayer), "Cerrar el día" con su resumen a pantalla completa, "Mis suplementos"
+   (lista con veredicto, racha y "Tomé"; detalle y formulario en la hoja inferior) y, en Ajustes → Tu cuenta, la vinculación con Telegram. */
 var gdRecoAbierta = null, gdSupForm = null, gdCerrando = false;
 function gdUuid() { try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {} return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
 function gdLS(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
@@ -4924,6 +4948,7 @@ function gdPintarComida(c) {
   var reco = $('cReco'); if (reco) reco.innerHTML = c.fecha === hoyISO() ? gdRecoHTML(c) : '';
   var cb = $('cCierreBox'); if (cb) cb.innerHTML = gdCierreBoxHTML(c);
   gdPintarSup(c);
+  if (Date.now() - gdConsejoT > 5000) gdCargarConsejo();
 }
 /* 1) Hoy te recomiendo: después del día, plegado a UNA línea ("3 cambios por tu hígado graso · proteína: te faltan 53 g") que se abre a la lista.
    Solo en un día nuevo (sin cierre) y con ítems. */
@@ -4990,101 +5015,263 @@ function gdMostrarCierre(r, f) {
     '<div class="g-eye"><span>' + esc(fechaEyebrow(f)) + ' · Comida</span></div>' +
     '<div class="g-title big">Así te <span class="' + (bien ? 'ok' : 'amber') + '">fue</span> hoy</div>' +
     '<div class="gd-bars">' + bar('Calorías', kcal, o.kcal, '', st.kcal, kcalTxt) +
-      bar('Proteína', prot, o.prot, 'g', st.prot, protTxt, ps > 0 ? '<div class="de">de comida ' + n1(pc, 0) + ' g + proteína lista ' + n1(ps, 0) + ' g</div>' : '') + '</div>' +
+      bar('Proteína', prot, o.prot, 'g', st.prot, protTxt, ps > 0 ? '<div class="de">de comida ' + n1(pc, 0) + ' g · proteína en polvo ' + n1(ps, 0) + ' g</div>' : '') + '</div>' +
+    '<div id="gdCierreSup"></div>' +
     (man.items && man.items.length ? '<div class="g-box"><div class="t">Mañana te recomiendo</div><div style="margin-top:4px">' + gdItemsHTML(man.items, 4) + '</div></div>'
       : (man.resumen ? '<div class="g-box green"><b>Mañana.</b> ' + esc(man.resumen) + '</div>' : '')) +
     '<div class="g-grow"></div>' +
     '<button type="button" class="btn" onclick="gdCerrarOverlay()">Listo</button></div>';
   box.classList.remove('hidden'); box.scrollTop = 0;
+  gdSupPendEn('gdCierreSup', r.comida || comidaDatos);
 }
 function gdCerrarOverlay() { $('gdCierre').classList.add('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-/* 3) Proteína lista: tus productos con "Tomé 1 scoop", "+ Agregar" (formulario corto, foto de la etiqueta con IA) y "···" → Editar / Quitar */
+/* 3) Mis suplementos: lista con veredicto (chip con color semántico), racha y "Tomé"; detalle, formulario y "Quitar" en la hoja
+   inferior; "+ Agregar" en gris. Un solo ámbar: el "Tomé" del suplemento que toca hoy (lo dice consejoSuplementos, no la app). */
+var gdConsejo = null, gdConsejoT = 0, gdSupBase = '', gdPendSups = null;
+var GD_TIPOS = [['creatina', 'Creatina'], ['proteina', 'Proteína en polvo'], ['preentreno', 'Pre-entreno'], ['cafeina', 'Cafeína'], ['multivitaminico', 'Multivitamínico'],
+  ['omega3', 'Omega-3'], ['vitamina_d', 'Vitamina D'], ['magnesio', 'Magnesio'], ['zinc', 'Zinc'], ['calcio', 'Calcio'], ['hierro', 'Hierro'], ['electrolitos', 'Electrolitos'],
+  ['carbohidrato', 'Ganador de masa'], ['colageno', 'Colágeno'], ['bcaa', 'BCAA'], ['eaa', 'EAA'], ['glutamina', 'Glutamina'], ['quemador', 'Quemador'], ['probiotico', 'Probiótico'],
+  ['melatonina', 'Melatonina'], ['ashwagandha', 'Ashwagandha'], ['otro', 'Otro']];
+var GD_TIPO_NOMBRE = {}; GD_TIPOS.forEach(function (t) { GD_TIPO_NOMBRE[t[0]] = t[1]; });
+var GD_TIPOS_ENERGIA = { proteina: 1, carbohidrato: 1, electrolitos: 1, colageno: 1 }, GD_TIPOS_CAFEINA = { preentreno: 1, cafeina: 1, quemador: 1 };
+var GD_TIPOS_CAPSULA = { cafeina: 1, multivitaminico: 1, omega3: 1, vitamina_d: 1, magnesio: 1, zinc: 1, calcio: 1, hierro: 1, quemador: 1, probiotico: 1, melatonina: 1, ashwagandha: 1 };
+var GD_FORMAS = [['polvo', 'Polvo'], ['capsula', 'Cápsula'], ['tableta', 'Tableta'], ['liquido', 'Líquido'], ['gomita', 'Gomita']];
+var GD_FORMA_NOMBRE = {}; GD_FORMAS.forEach(function (f) { GD_FORMA_NOMBRE[f[0]] = f[1]; });
+var GD_UNIDADES = [['g', 'g'], ['mg', 'mg'], ['ml', 'ml'], ['capsula', 'cápsula'], ['tableta', 'tableta'], ['scoop', 'scoop']];
+var GD_VEREDICTO = { favorable: 'te conviene', neutro: 'opcional', cuidado: 'con cuidado', evitar: 'mejor no' };
+var GD_DE = { objetivo: 'Por tu objetivo', salud: 'Por tu salud', medicamento: 'Por tu medicamento', evidencia: 'Evidencia' };
+var GD_RESPALDO = { respaldado: 'respaldado', dudoso: 'evidencia dudosa', sin_evidencia: 'sin evidencia suficiente' };
+var GD_INVESTIGACION = 'https://claude.ai/artifact/JdMDEuE6yGN28RRtfQ3gnD';
+var GD_SUP_NUM = ['porcion', 'gramos', 'kcal', 'prot', 'carb', 'azucar', 'grasa', 'sodio', 'cafeinaMg'];
+/* Compatibilidad con los campos viejos de "proteína lista" (sin tipo, porción ni veredicto) */
+function gdSupTipoNombre(s) { return s.tipoNombre || GD_TIPO_NOMBRE[s.tipo] || 'Proteína en polvo'; }
+function gdSupPorcion(s) { return s.porcionTexto || (Number(s.gramos) > 0 ? n1(s.gramos, 1) + ' g' : ''); }
+function gdSupNivel(s) { return s.veredicto && GD_VEREDICTO[s.veredicto.nivel] ? s.veredicto.nivel : ''; }
+/* consejoSuplementos(): el subtítulo de la fila y "el que toca hoy". Se refresca al pintar Comida (máx. una vez cada 5 s) y tras guardar o tomar. */
+function gdCargarConsejo(cb) {
+  if (!gdConsejo) { var c = leerCache('sup:consejo'); if (c) { gdConsejo = c; gdPintarSupRow(); } }
+  gdConsejoT = Date.now();
+  return api('consejoSuplementos').then(function (r) {
+    gdConsejo = r && Array.isArray(r.lineas) ? r : { lineas: [], n: 0 }; escribirCache('sup:consejo', gdConsejo); gdPintarSupRow();
+    if (comidaDatos && $('supCard')) gdPintarSup(comidaDatos);
+    if (cb) cb(gdConsejo); return gdConsejo;
+  }).catch(function () { if (cb && gdConsejo) cb(gdConsejo); return gdConsejo; });
+}
+/* "Tu creatina: 3 días seguidos; hoy aún no la has tomado." → "Creatina: 3 días seguidos" */
+function gdSupResumen(lineas) {
+  return (lineas || []).map(function (l) { var t = String(l.texto || '').replace(/^Tu\s+/i, '').split(/[.;]/)[0].trim(); return t.charAt(0).toUpperCase() + t.slice(1); }).filter(Boolean).join(' · ');
+}
+/* El suplemento que toca hoy: SOLO si consejoSuplementos lo dice (favorable y "hoy aún no" / "tómala hoy") y no tiene toma hoy */
+function gdSupPendiente(sups) {
+  var ls = (gdConsejo && gdConsejo.lineas) || [];
+  for (var i = 0; i < ls.length; i++) {
+    var l = ls[i], tx = String(l.texto || '');
+    if (l.nivel !== 'favorable' || !/hoy aún no|t[oó]mal[ao] hoy/i.test(tx)) continue;
+    var s = (sups || []).filter(function (x) { return x.id === l.id; })[0] || null;
+    if (s && Number(s.hoy) > 0) continue;
+    return { linea: l, s: s, nombre: tx.split(':')[0].replace(/^Tu\s+/i, '').trim().toLowerCase() };
+  }
+  return null;
+}
+function gdPintarSupRow(c) {
+  c = c || comidaDatos; var sub = $('supSub'); if (!sub) return;
+  var sups = (c && c.suplementos) || [], res = gdConsejo && gdConsejo.lineas && gdConsejo.lineas.length ? gdSupResumen(gdConsejo.lineas) : '';
+  sub.textContent = !sups.length ? 'Creatina, proteína, vitaminas… con veredicto para ti' : res || (sups.length + (sups.length === 1 ? ' suplemento' : ' suplementos'));
+}
 function gdPintarSup(c) {
-  c = c || comidaDatos; if (!c || !$('supCard')) return;
-  var sups = c.suplementos || [], ps = Number(c.totales && c.totales.protSuplemento) || 0;
-  $('supCard').innerHTML = gdSupHTML(c);
-  $('supSub').textContent = sups.length ? sups.length + (sups.length === 1 ? ' producto' : ' productos') + (ps ? ' · ' + (c.fecha === hoyISO() ? 'hoy ' : '') + n1(ps, 0) + ' g de proteína' : '') : 'Batidos y proteína en polvo, aparte de la comida';
+  c = c || comidaDatos; var card = $('supCard'); if (!c || !card) return;
+  var sups = c.suplementos || [];
+  card.classList.toggle('card', sups.length > 0);
+  card.innerHTML = gdSupHTML(c);
+  gdPintarSupRow(c);
 }
 function gdSupHTML(c) {
-  var sups = c.suplementos || [], esHoy = c.fecha === hoyISO(), h = '';
-  if (!sups.length && !gdSupForm) h += '<div class="gd-vacio">Si tomas proteína en polvo o batido listo, agrégala aquí para contarla aparte de la comida.</div>';
-  h += sups.map(function (s, k) {
-    var n = Number(s.hoy) || 0;
-    return '<div class="gd-sup"><b>' + esc(s.nombre) + '</b>' +
-      '<button type="button" class="mas" aria-label="Opciones de ' + esc(s.nombre) + '" onclick="gdSupMenu(' + k + ')">···</button>' +
-      '<div class="s">' + (s.marca ? esc(s.marca) + ' · ' : '') + n1(s.gramos, 0) + ' g por scoop · ' + n1(s.kcal, 0) + ' kcal · ' + n1(s.prot, 0) + ' g prot' + (n ? ' · <span class="hoy">' + (esHoy ? 'hoy: ' : 'ese día: ') + n + '</span>' : '') + '</div>' +
-      '<button type="button" class="tomar" onclick="gdTomar(' + k + ', this)">Tomé 1 scoop</button></div>';
-  }).join('');
-  h += gdSupForm ? gdSupFormHTML(c) : '<button type="button" class="gd-add" onclick="gdSupNuevo()">+ Agregar</button>';
-  return h;
+  var sups = c.suplementos || [], esHoy = c.fecha === hoyISO();
+  if (!sups.length) return vacioHTML('Mis suplementos', 'Creatina, proteína, vitaminas… te digo si te conviene según tu salud y tu objetivo.', 'Agregar uno', 'gdSupNuevo()') +
+    '<div class="sup-tg">También puedes mandarle la foto de la etiqueta al bot de Telegram.</div>';
+  var pend = esHoy ? gdSupPendiente(sups) : null;
+  return sups.map(function (s, k) {
+    var niv = gdSupNivel(s), n = Number(s.hoy) || 0, racha = Number(s.racha) || 0, evitar = niv === 'evitar', porcion = gdSupPorcion(s);
+    var est = racha >= 2 ? racha + ' días seguidos' : n ? (esHoy ? 'hoy: ' : 'ese día: ') + n1(n, 2) : '';
+    return '<div class="sup-it' + (evitar ? ' off' : '') + '">' +
+      '<button type="button" class="n" onclick="gdSupDetalle(' + k + ')" aria-label="Ver ' + esc(s.nombre) + '">' +
+        '<b>' + esc(s.nombre) + (s.marca ? ' <span class="faint">· ' + esc(s.marca) + '</span>' : '') + '</b>' +
+        '<span class="s">' + esc(gdSupTipoNombre(s)) + (porcion ? ' · ' + esc(porcion) : '') + '</span>' +
+        ((niv || est) ? '<span class="tags">' + (niv ? '<span class="sup-chip ' + niv + '">' + GD_VEREDICTO[niv] + '</span>' : '') + (est ? '<span class="sup-est' + (n ? ' hoy' : '') + '">' + esc(est) + '</span>' : '') + '</span>' : '') +
+      '</button>' +
+      (evitar ? '<span class="sup-med">Habla con tu médico</span>'
+        : '<button type="button" class="tomar' + (pend && pend.s && pend.s.id === s.id ? ' ahora' : '') + '" onclick="gdTomar(' + k + ', this)">Tomé</button>') +
+      '</div>';
+  }).join('') + '<button type="button" class="gd-add" onclick="gdSupNuevo()">+ Agregar</button>';
 }
-var GD_SUP_NUM = ['gramos', 'kcal', 'prot', 'carb', 'azucar', 'grasa', 'sodio'];
+/* Detalle en la hoja: el veredicto completo con sus razones y fuentes, los datos del producto, Editar / Quitar y la investigación */
+function gdSupDetalle(k) {
+  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
+  var v = s.veredicto, niv = gdSupNivel(s), h = '';
+  if (v && niv) {
+    h += '<div class="sup-ver ' + niv + '"><span class="sup-chip ' + niv + '">' + GD_VEREDICTO[niv] + '</span><b>' + esc(v.titulo || '') + '</b>' +
+      (v.razones || []).map(function (r) { var fu = /_$/.test(String(r.fuente || '')) ? '' : (r.fuente || ''); return '<div class="r"><div>' + esc(r.texto) + '</div>' + ((GD_DE[r.de] || fu) ? '<small>' + esc([GD_DE[r.de] || '', fu].filter(Boolean).join(' · ')) + '</small>' : '') + '</div>'; }).join('') +
+      (v.evidencia ? '<small class="ev">Evidencia ' + esc(v.evidencia) + (GD_RESPALDO[v.respaldo] ? ' · ' + GD_RESPALDO[v.respaldo] : '') + '</small>' : '') + '</div>';
+  }
+  var datos = [], porcion = gdSupPorcion(s);
+  if (porcion) datos.push(['Porción', porcion]);
+  if (s.forma) datos.push(['Forma', GD_FORMA_NOMBRE[s.forma] || s.forma]);
+  if (s.activos && s.activos.length) datos.push(['Activos', s.activos.map(function (a) { return a.nombre + (a.mg ? ' ' + n1(a.mg, 0) + ' mg' : ''); }).join(', ')]);
+  if (Number(s.cafeinaMg) > 0) datos.push(['Cafeína', n1(s.cafeinaMg, 0) + ' mg por porción']);
+  if (s.energia || Number(s.kcal) > 0 || Number(s.prot) > 0) datos.push(['Por porción', n1(s.kcal, 0) + ' kcal · ' + n1(s.prot, 0) + ' g prot · ' + n1(s.carb, 0) + ' g carb · ' + n1(s.grasa, 0) + ' g grasa' + (Number(s.azucar) > 0 ? ' · ' + n1(s.azucar, 0) + ' g azúcar' : '') + (Number(s.sodio) > 0 ? ' · ' + n1(s.sodio, 0) + ' mg sodio' : '')]);
+  if (Number(s.racha) >= 2) datos.push(['Racha', s.racha + ' días seguidos']);
+  if (s.nota) datos.push(['Nota', s.nota]);
+  h += '<div class="sup-datos">' + datos.map(function (d) { return '<div><span>' + d[0] + '</span><b>' + esc(d[1]) + '</b></div>'; }).join('') + '</div>' +
+    '<div class="acts sup-acts"><button type="button" class="btn sec" onclick="gdSupEditar(' + k + ')">Editar</button><button type="button" class="btn sec bad" onclick="gdSupQuitar(' + k + ')">Quitar</button></div>' +
+    '<a class="sup-link" href="' + GD_INVESTIGACION + '" target="_blank" rel="noopener">Ver la investigación ›</a>';
+  hojaAbrir({ kicker: gdSupTipoNombre(s) + (s.marca ? ' · ' + s.marca : ''), titulo: s.nombre, html: h });
+}
+/* Formulario en la hoja. gdSupForm = el borrador; gdSupBase = su firma al abrir (para hayCambiosSinGuardar). */
+function gdSupNuevo() { gdSupForm = { tipo: '', forma: 'polvo', unidad: 'g', porcion: '', activos: [] }; gdSupAbrirForm(); }
+function gdSupEditar(k) {
+  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
+  gdSupForm = {}; for (var x in s) gdSupForm[x] = s[x];
+  if (gdSupForm.porcion == null || gdSupForm.porcion === '') gdSupForm.porcion = s.gramos;
+  if (!gdSupForm.unidad) gdSupForm.unidad = 'g';
+  if (!gdSupForm.forma) gdSupForm.forma = 'polvo';
+  gdSupAbrirForm();
+}
+function gdSupAbrirForm() {
+  gdSupBase = gdSupFirma(gdSupForm);
+  hojaAbrir({ kicker: 'Mis suplementos', titulo: gdSupForm.id ? 'Editar suplemento' : 'Agregar suplemento', html: gdSupFormHTML(comidaDatos || {}), foco: gdSupForm.id ? '' : 'gds_nombre',
+    alCerrar: function () { gdSupForm = null; } });
+}
+function gdSupCancelar() { gdSupForm = null; hojaCerrar(); }
+function gdSupRepintar() { var b = $('hojaB'); if (b && gdSupForm) b.innerHTML = gdSupFormHTML(comidaDatos || {}); }
 function gdSupFormHTML(c) {
-  var d = gdSupForm || {}, ia = !!(c.ia && c.ia.tieneClave);
-  var inp = function (k, lab, tipo, ph) { return '<div><label for="gds_' + k + '">' + lab + '</label><input id="gds_' + k + '" type="' + tipo + '"' + (tipo === 'number' ? ' inputmode="decimal" step="any" min="0"' : '') + ' placeholder="' + esc(ph) + '" value="' + esc(d[k] == null ? '' : d[k]) + '"></div>'; };
-  return '<div class="gd-form" id="gdSupForm"><div class="dayh" style="margin-top:8px"><b>' + (d.id ? 'Editar' : 'Agregar proteína lista') + '</b><span class="meta">por scoop o porción</span></div>' +
-    '<div class="ayuda">Copia lo que dice la tabla nutricional por porción.</div>' +
-    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="gdEtiquetaFoto(this)">' : (geIaApagada() ? '<div class="ia-off">' + esc(geIaTexto()) + '</div>' : '')) +
-    '<div class="row">' + inp('nombre', 'Nombre', 'text', 'Ej.: Whey Gold Standard') + inp('marca', 'Marca', 'text', 'Opcional') + '</div>' +
-    '<div class="grid3">' + inp('gramos', 'Gramos', 'number', '30') + inp('kcal', 'Kcal', 'number', '120') + inp('prot', 'Proteína g', 'number', '24') + '</div>' +
-    '<div class="grid3">' + inp('carb', 'Carbohidratos g', 'number', '3') + inp('azucar', 'Azúcar g', 'number', '1') + inp('grasa', 'Grasa g', 'number', '1,5') + '</div>' +
-    '<div class="row">' + inp('sodio', 'Sodio mg', 'number', '130') + '<div><label for="gds_nota">Nota</label><input id="gds_nota" placeholder="Opcional" value="' + esc(d.nota || '') + '"></div></div>' +
+  var d = gdSupForm || {}, ia = !!(c.ia && c.ia.tieneClave), tipo = d.tipo || '', unidad = d.unidad || 'g';
+  var conEnergia = !!GD_TIPOS_ENERGIA[tipo] || Number(d.kcal) > 0 || Number(d.prot) > 0, conCaf = !!GD_TIPOS_CAFEINA[tipo] || Number(d.cafeinaMg) > 0;
+  var inp = function (k, lab, tipoI, ph, extra) { return '<div' + (extra || '') + '><label for="gds_' + k + '">' + lab + '</label><input id="gds_' + k + '" type="' + tipoI + '"' + (tipoI === 'number' ? ' inputmode="decimal" step="any" min="0"' : '') + ' placeholder="' + esc(ph) + '" value="' + esc(d[k] == null ? '' : d[k]) + '"></div>'; };
+  var activos = d.activos && d.activos.length ? d.activos : [{ nombre: '', mg: '' }];
+  return '<div class="gd-form sup-form" id="gdSupForm">' +
+    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="gdEtiquetaFoto(this)">'
+      : (geIaApagada() ? '<div class="ia-off">' + esc(geIaTexto()) + '</div>' : '')) +
+    '<label>Tipo</label><div class="sup-tipos" id="gdsTipos">' + GD_TIPOS.map(function (t) { return '<button type="button" class="chip' + (t[0] === tipo ? ' on' : '') + '" onclick="gdSupTipo(' + esc(gdArg(t[0])) + ')">' + esc(t[1]) + '</button>'; }).join('') + '</div>' +
+    '<div class="row">' + inp('nombre', 'Nombre', 'text', 'Ej.: Creatina monohidrato') + inp('marca', 'Marca', 'text', 'Opcional') + '</div>' +
+    '<label>Forma</label><div class="toggle sup-forma" id="gdsForma">' + GD_FORMAS.map(function (f) { return '<button type="button" class="' + (f[0] === (d.forma || 'polvo') ? 'on' : '') + '" data-f="' + f[0] + '" onclick="gdSupForma(' + esc(gdArg(f[0])) + ')">' + f[1] + '</button>'; }).join('') + '</div>' +
+    '<div class="row">' + inp('porcion', 'Porción', 'number', unidad === 'g' ? '3' : '1') + '<div><label for="gds_unidad">Unidad</label><select id="gds_unidad" onchange="gdSupUnidad()">' + GD_UNIDADES.map(function (u) { return '<option value="' + u[0] + '"' + (u[0] === unidad ? ' selected' : '') + '>' + u[1] + '</option>'; }).join('') + '</select></div></div>' +
+    '<details class="aj-tec sup-tabla' + (conEnergia ? '' : ' hidden') + '" id="gdsTabla"' + (conEnergia ? ' open' : '') + '><summary>Tabla nutricional</summary>' +
+      '<div class="row">' + inp('gramos', 'Gramos', 'number', '30', ' id="gdsGramos"' + (unidad === 'g' ? ' class="hidden"' : '')) + inp('kcal', 'Kcal', 'number', '120') + inp('prot', 'Proteína g', 'number', '24') + '</div>' +
+      '<div class="grid3">' + inp('carb', 'Carb. g', 'number', '3') + inp('azucar', 'Azúcar g', 'number', '1') + inp('grasa', 'Grasa g', 'number', '1,5') + '</div>' +
+      '<div class="grid3">' + inp('sodio', 'Sodio mg', 'number', '130') + '</div></details>' +
+    '<label>Activos <span class="faint">(nombre y mg por porción)</span></label><div id="gdsActivos">' + activos.map(gdSupActivoHTML).join('') + '</div>' +
+    '<button type="button" class="btn txt sup-mas" onclick="gdSupActivoMas()">+ otro activo</button>' +
+    '<div id="gdsCaf"' + (conCaf ? '' : ' class="hidden"') + '>' + inp('cafeinaMg', 'Cafeína mg por porción', 'number', '200') + '</div>' +
+    inp('nota', 'Nota', 'text', 'Opcional') +
     '<div class="acts"><button type="button" class="btn sec" onclick="gdSupCancelar()">Cancelar</button><button type="button" class="btn" id="gdsGuardar" onclick="gdSupGuardar()">Guardar</button></div></div>';
 }
-function gdSupNuevo() { gdSupForm = {}; gdPintarSup(); var i = $('gds_nombre'); if (i) { i.focus(); i.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
-function gdSupCancelar() { gdSupForm = null; gdPintarSup(); }
-function gdSupEditar(k) { var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return; gdSupForm = {}; for (var x in s) gdSupForm[x] = s[x]; gdPintarSup(); }
+function gdSupActivoHTML(a) { return '<div class="row gds-act"><div><input class="an" placeholder="Ej.: creatina monohidrato" value="' + esc(a.nombre || '') + '"></div><div class="mg"><input class="am" type="number" inputmode="decimal" step="any" min="0" placeholder="mg" value="' + esc(a.mg ? a.mg : '') + '"></div></div>'; }
+function gdSupActivoMas() { var b = $('gdsActivos'); if (!b) return; b.insertAdjacentHTML('beforeend', gdSupActivoHTML({})); var i = b.lastElementChild.querySelector('input'); if (i) i.focus(); }
+/* Cambiar el tipo repinta el formulario con lo ya escrito; las cápsulas (vitaminas, omega-3…) sugieren "1 cápsula" si aún no hay porción */
+function gdSupTipo(t) {
+  if (!gdSupForm) return;
+  gdSupForm = Object.assign(gdSupForm, gdSupLeer()); gdSupForm.tipo = t;
+  if (!gdSupForm.id && (gdSupForm.porcion === '' || gdSupForm.porcion == null)) {
+    if (GD_TIPOS_CAPSULA[t]) { gdSupForm.forma = 'capsula'; gdSupForm.unidad = 'capsula'; gdSupForm.porcion = 1; }
+    else if (t !== 'otro') { gdSupForm.forma = 'polvo'; gdSupForm.unidad = 'g'; }
+  }
+  gdSupRepintar();
+  var on = document.querySelector('#gdsTipos .chip.on'); if (on) on.scrollIntoView({ inline: 'center', block: 'nearest' });
+  var n = $('gds_nombre'); if (n && !n.value) n.focus({ preventScroll: true });
+}
+function gdSupForma(f) {
+  if (!gdSupForm) return;
+  gdSupForm.forma = f;
+  Array.prototype.forEach.call(document.querySelectorAll('#gdsForma button'), function (b) { b.classList.toggle('on', b.dataset.f === f); });
+  var u = $('gds_unidad'); if (u && (f === 'capsula' || f === 'tableta') && u.value === 'g') { u.value = f; gdSupUnidad(); }
+}
+function gdSupUnidad() { var u = $('gds_unidad'), g = $('gdsGramos'); if (u && g) g.classList.toggle('hidden', u.value === 'g'); }
 function gdSupLeer() {
-  var d = { id: (gdSupForm && gdSupForm.id) || '', nombre: ($('gds_nombre').value || '').trim(), marca: ($('gds_marca').value || '').trim(), nota: ($('gds_nota').value || '').trim() };
-  GD_SUP_NUM.forEach(function (k) { var v = String($('gds_' + k).value || '').replace(',', '.').trim(); d[k] = v === '' ? 0 : Number(v); });
+  var g = function (k) { var el = $('gds_' + k); return el ? String(el.value || '').trim() : ''; };
+  var d = { id: (gdSupForm && gdSupForm.id) || '', tipo: (gdSupForm && gdSupForm.tipo) || '', forma: (gdSupForm && gdSupForm.forma) || '', nombre: g('nombre'), marca: g('marca'), nota: g('nota'), unidad: g('unidad') || 'g' };
+  GD_SUP_NUM.forEach(function (k) { var v = g(k).replace(',', '.'); d[k] = v === '' ? '' : Number(v); });
+  d.activos = Array.prototype.map.call(document.querySelectorAll('#gdsActivos .gds-act'), function (r) {
+    var n = r.querySelector('.an').value.trim(), mg = String(r.querySelector('.am').value || '').replace(',', '.');
+    return n ? { nombre: n, mg: mg === '' ? 0 : Number(mg) } : null;
+  }).filter(Boolean);
   return d;
 }
-/* El formulario a medio llenar cuenta como cambio sin guardar (la app no se recarga sola encima) */
-function gdFormSucio() {
-  if (!gdSupForm || !$('gdSupForm')) return false;
-  return ['nombre', 'marca', 'nota'].concat(GD_SUP_NUM).some(function (k) { var el = $('gds_' + k); return !!(el && String(el.value || '').trim() !== '' && String(el.value) !== String(gdSupForm[k] == null ? '' : gdSupForm[k])); });
+function gdSupFirma(d) {
+  var o = {}; ['nombre', 'marca', 'nota', 'tipo', 'forma', 'unidad'].concat(GD_SUP_NUM).forEach(function (k) { var v = d[k]; o[k] = v == null || v === '' || Number(v) === 0 ? '' : String(v); });
+  o.activos = (d.activos || []).filter(function (a) { return a && a.nombre; }).map(function (a) { return a.nombre + '|' + (Number(a.mg) || 0); });
+  return JSON.stringify(o);
 }
+/* El formulario abierto con datos cuenta como cambio sin guardar (la app no se recarga sola encima) */
+function gdFormSucio() { return !!(gdSupForm && $('gdSupForm')) && gdSupFirma(gdSupLeer()) !== gdSupBase; }
 function gdSupGuardar() {
   var d = gdSupLeer();
-  if (!d.nombre) { toastBad('Escribe el nombre del producto'); $('gds_nombre').focus(); return; }
-  if (!(d.gramos > 0)) { toastBad('Escribe los gramos por scoop'); $('gds_gramos').focus(); return; }
-  if (GD_SUP_NUM.some(function (k) { return isNaN(d[k]) || d[k] < 0; })) { toastBad('Revisa los números: solo valores de 0 en adelante'); return; }
+  if (!d.nombre) { toastBad('Escribe el nombre del suplemento'); $('gds_nombre').focus(); return; }
+  if (!(Number(d.porcion) > 0)) { toastBad('¿Cuánto trae una porción? Mira la etiqueta (p. ej. 3 g o 2 cápsulas)'); $('gds_porcion').focus(); return; }
+  if (GD_SUP_NUM.some(function (k) { return d[k] !== '' && (isNaN(d[k]) || d[k] < 0); })) { toastBad('Revisa los números: solo valores de 0 en adelante'); return; }
+  if (d.tipo === 'proteina' && !(Number(d.prot) > 0)) { toastBad('¿Cuánta proteína trae un scoop? Mira la etiqueta'); var t = $('gdsTabla'); if (t) { t.classList.remove('hidden'); t.open = true; } $('gds_prot').focus(); return; }
   if (!d.id) d.id = gdUuid();
   var b = $('gdsGuardar'); b.disabled = true; b.textContent = 'Guardando…';
   api('guardarSuplemento', d).then(function (r) {
-    gdSupForm = null; gdSupAplicar(r); toast('Guardado: ' + d.nombre);
+    var lista = Array.isArray(r) ? r : (r && Array.isArray(r.suplementos) ? r.suplementos : null), s = lista ? lista.filter(function (x) { return x.id === d.id; })[0] : null;
+    gdSupForm = null; hojaCerrar(); gdSupAplicar(lista);
+    toast(s && s.veredicto && s.veredicto.titulo ? s.veredicto.titulo : 'Guardado: ' + d.nombre);
+    gdCargarConsejo();
   }).catch(function (e) { errG(e); var b2 = $('gdsGuardar'); if (b2) { b2.disabled = false; b2.textContent = 'Guardar'; } });
-}
-function gdSupMenu(k) {
-  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
-  hojaAcciones(s.nombre, [['Editar los valores', 'gdSupEditar(' + k + ')'], ['Quitar', 'gdSupQuitar(' + k + ')', 'bad']]);
 }
 function gdSupQuitar(k) {
   var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
   if (!confirm('¿Quitar "' + s.nombre + '"? Lo que ya anotaste se conserva.')) return;
-  api('quitarSuplemento', { id: s.id }).then(function (r) { gdSupAplicar(r); toast('Quitado: ' + s.nombre); }).catch(errG);
+  hojaCerrar();
+  api('quitarSuplemento', { id: s.id }).then(function (r) { gdSupAplicar(Array.isArray(r) ? r : null); toast('Quitado: ' + s.nombre); gdCargarConsejo(); }).catch(errG);
 }
-/* La lista de productos sale en el getComida de todos los días: se actualiza la del día y se olvidan las cachés de los otros */
-function gdSupAplicar(r) {
+/* La lista (getSuplementos, con `hoy` y `racha` de HOY) vale para el día de hoy; en otro día se vuelve a pedir getComida. Las cachés de los otros días se olvidan. */
+function gdSupAplicar(lista) {
   if (!comidaDatos) return;
-  if (r && Array.isArray(r.suplementos)) comidaDatos.suplementos = r.suplementos;
+  if (comidaDatos.fecha !== hoyISO()) { gdInvalidarComida(''); cargarComida(); return; }
+  if (Array.isArray(lista)) comidaDatos.suplementos = lista;
   gdInvalidarComida(comidaDatos.fecha);
   escribirCache('com:' + comidaDatos.fecha, comidaDatos);
   gdPintarSup(comidaDatos);
 }
 function gdInvalidarComida(salvo) { try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(CACHE_V + 'com:') === 0 && k !== CACHE_V + 'com:' + salvo) localStorage.removeItem(k); }); } catch (e) {} }
-/* Tomé 1 scoop: se anota en el momento de ahora (hoy) o en el elegido (otro día); idempotente por regId y con cola si no hay señal */
-function gdTomar(k, b) {
-  var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (!s) return;
-  var f = comidaDatos.fecha, mom = f === hoyISO() ? momentoPorHora() : ($('cMomento').value || 'Algo');
+/* Tomé: una porción en el momento de ahora (hoy) o en el elegido (otro día); idempotente por regId y con cola si no hay señal */
+function gdTomar(k, b) { var s = comidaDatos && comidaDatos.suplementos && comidaDatos.suplementos[k]; if (s) gdTomarSup(s, b, comidaDatos.fecha); }
+function gdTomarSup(s, b, f) {
+  f = f || hoyISO();
+  var mom = f === hoyISO() ? momentoPorHora() : (($('cMomento') && $('cMomento').value) || 'Algo'), txt = b ? b.textContent : '';
   if (b) { b.disabled = true; b.textContent = 'Anotando…'; }
-  enviar('tomarSuplemento', { id: s.id, fecha: f, momento: mom, porciones: 1, regId: gdUuid() }).then(function (r) {
-    if (r && r.enCola) { toast('Sin conexión: se anotará cuando vuelva la señal'); return; }
-    if (r && r.registros) { comidaDatos = r; escribirCache('com:' + f, r); pintarComida(r); }
-    toast(s.nombre + ': +' + n1(s.prot, 0) + ' g de proteína en ' + mom.toLowerCase());
-  }).catch(errG).then(function () { if (b && b.isConnected) { b.disabled = false; b.textContent = 'Tomé 1 scoop'; } });
+  return enviar('tomarSuplemento', { id: s.id, fecha: f, momento: mom, porciones: 1, regId: gdUuid() }).then(function (r) {
+    if (r && r.enCola) { toast('Sin conexión: se anotará cuando vuelva la señal'); return r; }
+    if (r && r.registros) {
+      escribirCache('com:' + f, r); gdInvalidarComida(f);
+      if (comidaDatos && comidaDatos.fecha === f) { comidaDatos = r; pintarComida(r); }
+    }
+    var porcion = gdSupPorcion(s);
+    toast('Anotado: ' + s.nombre + (porcion ? ' (' + porcion + ')' : '') + ' · ' + mom.toLowerCase() + (Number(s.prot) > 0 ? ' · +' + n1(s.prot, 0) + ' g de proteína' : ''));
+    gdCargarConsejo();
+    return r;
+  }).catch(errG).then(function (r) { if (b && b.isConnected) { b.disabled = false; b.textContent = txt; } return r; });
 }
-/* Leer la etiqueta con una foto (IA): llena el formulario; la persona revisa antes de guardar */
+/* "Hoy no has tomado tu creatina" en el cierre de la sesión (Hoy) y en el del día (Comida): solo si consejoSuplementos lo trae */
+function gdSupPendHTML(c) {
+  if (!c || c.fecha !== hoyISO()) return '';
+  var p = gdSupPendiente(c.suplementos); if (!p) return '';
+  gdPendSups = c.suplementos || [];
+  var s = p.s || {}, racha = Number(s.racha) || 0, sub = racha >= 2 ? racha + ' días seguidos: no cortes la racha' : 'Lo que cuenta es tomarla todos los días';
+  return '<div class="g-box sup-pend"><div class="n"><b>Hoy no has tomado tu ' + esc(p.nombre) + '</b><span class="s">' + esc(sub) + '</span></div>' +
+    '<button type="button" class="btn sec" onclick="gdTomarPend(' + esc(gdArg(p.linea.id)) + ', this)">Tomé</button></div>';
+}
+/* Pinta la línea en un contenedor (si ya hay consejo) y la vuelve a pintar con el consejo fresco */
+function gdSupPendEn(idCont, c) {
+  var pintar = function () { var b = $(idCont); if (b) b.innerHTML = gdSupPendHTML(c); };
+  pintar(); gdCargarConsejo(pintar);
+}
+function gdTomarPend(id, b) {
+  var s = (gdPendSups || []).concat((comidaDatos && comidaDatos.suplementos) || []).filter(function (x) { return x.id === id; })[0] || { id: id, nombre: 'Suplemento' };
+  var box = b && b.closest('.sup-pend');
+  gdTomarSup(s, b, hoyISO()).then(function (r) { if (r && r.registros && box) box.innerHTML = '<div class="n"><b class="ok-t">Anotado</b><span class="s">' + esc(s.nombre) + ' · mañana otra vez</span></div>'; });
+}
+/* Leer la etiqueta con una foto (IA): llena el formulario (tipo, porción, activos y cafeína si es un suplemento); la persona revisa antes de guardar */
 function gdReducirFoto(f, max) {
   return new Promise(function (ok, ko) {
     var img = new Image(), rd = new FileReader();
@@ -5102,12 +5289,21 @@ function gdReducirFoto(f, max) {
 function gdEtiquetaFoto(inp) {
   var f = inp.files && inp.files[0]; if (!f) return;
   var txt = $('gdsFotoTxt'); if (txt) txt.textContent = 'Leyendo la etiqueta… (10–20 s)';
-  gdReducirFoto(f, 1280).then(function (data) { return api('etiquetaConIA', { foto: data, texto: $('gds_nombre') ? $('gds_nombre').value.trim() : '' }); }).then(function (r) {
-    if (!r || typeof r !== 'object') throw new Error('No pude leer la etiqueta. Prueba con más luz y la tabla completa.');
-    var m = { nombre: r.nombre, marca: r.marca, gramos: r.porcion_g, kcal: r.kcal, prot: r.proteina, carb: r.carbohidratos, azucar: r.azucares, grasa: r.grasa, sodio: r.sodio_mg, nota: r.nota };
-    Object.keys(m).forEach(function (k) { var el = $('gds_' + k); if (el && m[k] != null && m[k] !== '') el.value = m[k]; });
-    toast('Etiqueta leída: revisa los números antes de guardar');
-  }).catch(errG).then(function () { var t2 = $('gdsFotoTxt'); if (t2) t2.textContent = 'Leer la etiqueta con una foto'; inp.value = ''; });
+  var prev = gdSupLeer();
+  gdReducirFoto(f, 1280).then(function (data) { return api('etiquetaConIA', { foto: data, texto: prev.nombre }); }).then(function (r) {
+    if (!r || typeof r !== 'object' || r.tipo === 'nada') throw new Error('No pude leer la etiqueta. Prueba con más luz y la tabla completa.');
+    if (!gdSupForm || !$('gdSupForm')) return;
+    var d = prev, m = { nombre: r.nombre, marca: r.marca, kcal: r.kcal, prot: r.prot != null ? r.prot : r.proteina, carb: r.carb != null ? r.carb : r.carbohidratos,
+      azucar: r.azucar != null ? r.azucar : r.azucares, grasa: r.grasa, sodio: r.sodio != null ? r.sodio : r.sodio_mg, nota: r.nota, gramos: r.porcion_g };
+    Object.keys(m).forEach(function (k) { if (m[k] != null && m[k] !== '') d[k] = m[k]; });
+    var sp = r.esSuplemento && r.suplemento;
+    if (sp) {
+      if (sp.tipo) d.tipo = sp.tipo; if (sp.forma) d.forma = sp.forma; if (sp.unidad) d.unidad = sp.unidad; if (sp.porcion) d.porcion = sp.porcion;
+      if (sp.activos && sp.activos.length) d.activos = sp.activos; if (sp.cafeinaMg) d.cafeinaMg = sp.cafeinaMg;
+    } else if (r.porcion_g) { d.porcion = r.porcion_g; d.unidad = 'g'; }
+    gdSupForm = Object.assign(gdSupForm, d); gdSupRepintar();
+    toast(sp && sp.prohibido ? 'Ojo: este producto está en la lista de "mejor no". Revisa antes de guardar.' : 'Etiqueta leída: revisa los datos antes de guardar');
+  }).catch(errG).then(function () { var t2 = $('gdsFotoTxt'); if (t2) t2.textContent = 'Leer la etiqueta con una foto'; if (inp.isConnected) inp.value = ''; });
 }
 /* 5) Telegram (Ajustes → Tu cuenta): vincular con un código, abrir el bot, ver con quién quedó vinculado y desvincular */
 var tgEstado = null, tgCodigo = null;
