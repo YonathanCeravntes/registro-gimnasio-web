@@ -705,6 +705,12 @@
         <div><label for="pDisco">Disco más pequeño</label><select id="pDisco"><option value="0.5">0,5 kg</option><option value="1.25">1,25 kg</option><option value="2.5">2,5 kg</option></select></div>
       </div>
       <div class="meta" style="margin-top:6px">Así la app solo te sugiere pesos que existen en tu gimnasio.</div>
+      <div class="row" style="margin-top:12px">
+        <div><label for="pNivel">Experiencia con pesas</label><select id="pNivel"><option value="">Sin dato</option><option value="nuevo">Empiezo (menos de 3 meses)</option><option value="3-12m">De 3 a 12 meses</option><option value="1a+">Más de 1 año</option></select></div>
+        <div><label for="pMin">Minutos por sesión</label><input id="pMin" type="number" inputmode="numeric" min="15" max="180" placeholder="60"></div>
+      </div>
+      <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa">
+      <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer.</div>
     </div>
     <div class="card" data-sec="salud">
       <h2>Tu salud</h2>
@@ -732,6 +738,8 @@
         <label for="pLes">Lesiones o molestias</label><textarea id="pLes" rows="2" placeholder="Ej.: molestia en rodilla derecha al bajar escaleras"></textarea>
         <label for="pOtros">Otros (sueño, trabajo, horarios, lo que quieras que sepa)</label><textarea id="pOtros" rows="2"></textarea>
       </details>
+      <label class="chk" style="margin-top:12px"><input type="checkbox" id="sIA" onchange="guardarSaludIA()"> Enviar mis condiciones y medicamentos a la IA para personalizar</label>
+      <div class="meta faint" style="font-size:12px">Son datos sensibles (Ley 1581 de 2012). Van a la IA (Anthropic o Google) solo para responderte. Si lo apagas, la IA recibe las reglas (límites de comida y ejercicios a evitar) sin los nombres.</div>
       <div class="meta faint" style="margin-top:10px;font-size:12px">Se guarda solo. No reemplaza a tu médico; puedes cambiarlo cuando quieras.</div>
     </div>
     <div class="card" data-sec="avisos" id="pushCard">
@@ -868,7 +876,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610010331', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610010337', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2305,6 +2313,7 @@ function cargarAjustes() {
 function pintarPerfil(p) {
   $('pEdad').value = p.Edad || ''; $('pSexo').value = p.Sexo || 'M'; $('pEstatura').value = p.EstaturaM || '';
   $('pPasoM').value = String(p.PasoMancuernas || 2); $('pDisco').value = String(p.DiscoMinimo || 1.25);
+  $('pNivel').value = p.Nivel || ''; $('pEquipo').value = p.Equipo || ''; $('pMin').value = p.MinutosSesion || '';
   var sel = String(p.DiasEntreno || '').split(',').map(function (x) { return x.trim(); });
   $('pDias').innerHTML = [1,2,3,4,5,6,0].map(function (i) { return '<label><input type="checkbox" value="' + DIAS_N[i] + '"' + (sel.indexOf(DIAS_N[i]) >= 0 ? ' checked' : '') + '>' + DIAS_N[i] + '</label>'; }).join('');
   $('pInicio').textContent = 'El plan empezó el ' + p.fechaInicio + ' (se cambia en la hoja Config).';
@@ -2464,7 +2473,8 @@ $('pGuardar').onclick = function () {
   var p = { Edad: $('pEdad').value, Sexo: $('pSexo').value, EstaturaM: $('pEstatura').value, DiasEntreno: dias.join(','),
             Condiciones: $('pCond').value, Medicamentos: $('pMed').value, Lesiones: $('pLes').value, OtrosSalud: $('pOtros').value,
             ModeloIA: $('pModelo').value || 'gemini-3.8-flash', ProveedorIA: $('pProv').value || '', ModeloClaude: $('pModeloClaude').value || 'claude-sonnet-5-5',
-            PasoMancuernas: $('pPasoM').value, DiscoMinimo: $('pDisco').value };
+            PasoMancuernas: $('pPasoM').value, DiscoMinimo: $('pDisco').value,
+            Nivel: $('pNivel').value, Equipo: $('pEquipo').value, MinutosSesion: $('pMin').value };
   if ($('pClave').value.trim()) p.apiKey = $('pClave').value.trim();
   if ($('pClaveClaude').value.trim()) p.claveClaude = $('pClaveClaude').value.trim();
   var b = $('pGuardar'); b.disabled = true;
@@ -2612,7 +2622,12 @@ var SALUD_RAPIDAS = [['hipertension', 'Presión alta'], ['diabetes2', 'Diabetes 
   ['dislipidemia', 'Colesterol alto'], ['reflujo', 'Gastritis o reflujo'], ['lumbar', 'Dolor lumbar o hernia'], ['', 'Ninguna']];
 var saludMedSi = false;
 function cargarSaludUI(p) {
-  return (p || api('getSalud')).then(function (r) { saludCat = r; saludSel = { cond: r.cond.slice(), med: r.med.slice() }; saludMedSi = r.med.length > 0; pintarSaludTodo(); return r; }).catch(err);
+  return (p || api('getSalud')).then(function (r) { saludCat = r; saludSel = { cond: r.cond.slice(), med: r.med.slice() }; saludMedSi = r.med.length > 0; if ($('sIA')) $('sIA').checked = r.ia !== false; pintarSaludTodo(); return r; }).catch(err);
+}
+/* Consentimiento (Ley 1581 de 2012): con el interruptor apagado la IA recibe solo las reglas derivadas, sin nombres */
+function guardarSaludIA() {
+  var on = $('sIA').checked;
+  api('guardarSalud', { ia: on }).then(function () { toast(on ? 'La IA recibirá tus condiciones y medicamentos' : 'La IA recibirá solo las reglas, sin nombres'); invalidarTodo(); }).catch(err);
 }
 function pintarSaludTodo() { pintarSaludGrid(); pintarSaludSel('cond'); pintarSaludSel('med'); pintarSaludMed(); pintarSaludResumen(); }
 function pintarSaludGrid() {
