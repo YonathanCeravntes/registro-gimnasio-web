@@ -510,6 +510,7 @@
   .g-sets td.u{font-size:11px;color:var(--dim);white-space:nowrap}
   .g-sets input{min-height:44px;padding:4px 2px;text-align:center;font-family:var(--disp);font-size:21px;font-weight:800;border-radius:10px;background:var(--bg);border:1px solid var(--raise2);width:74px}
   .g-sets td:nth-child(4) input{width:58px}
+  .g-sets input::placeholder{color:var(--faint);font-weight:500;opacity:1}   /* el sugerido en gris: la casilla va vacía hasta que escribes */
   .g-sets td.b{width:auto;text-align:right}
   .g-listo{min-height:44px;min-width:76px;border-radius:10px;border:0;font:800 14px var(--body);background:var(--amber);color:var(--amber-ink);cursor:pointer;padding:0 10px}
   .g-sets tr.done td{background:var(--green-bg)} .g-sets tr.done .g-listo{background:var(--green-ink);color:#151208} .g-sets tr.done input{border-color:transparent;background:transparent}
@@ -1354,7 +1355,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610012212', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610021254', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2132,7 +2133,7 @@ function fmtNum(x) { return String(Math.round(x * 100) / 100).replace('.', ',');
 /** Calentamiento (compuestos) y discos por lado (barra), calculados con la carga de la primera serie. */
 function pintarCal(i) {
   var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], box = $('exCal' + i); if (!box || !d) return;
-  var inp = document.querySelector('#exSets' + i + ' tr input'), W = inp ? Number(String(inp.value).replace(',', '.')) || 0 : 0;
+  var inp = document.querySelector('#exSets' + i + ' tr input'), W = inp ? Number(String(inp.value || inp.placeholder).replace(',', '.')) || 0 : 0;
   var paso = d.paso || 2.5, barra = d.barra || 0, h = [];
   if (W > 0 && e.tipo === 'C' && e.estado !== 'hecho' && e.unidad !== 'seg') {
     var abajo = function (x) { return Math.max(barra || paso, Math.floor(x / paso + 1e-9) * paso); }, cal = [];
@@ -2234,15 +2235,22 @@ function pintar(i, v) {
   $('exSugFull' + i).innerHTML = (sg.texto ? '<div class="g-k">Por qué</div>' + sugHTML(humanizarSug(sg.texto)) : '') +
     (ref ? '<div>' + (ref.parecido ? 'Lo más parecido que has hecho: ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + '): ' + esc(resumenLlano(ref.resumen)) : 'La última vez hiciste ' + esc(resumenLlano(ref.resumen)) + ' con ' + esc(ref.nombre) + ' (' + esc(ref.fechaTexto) + ')') + '</div>' : '');
   var cl = $('exClave' + i); cl.textContent = d.clave ? 'Técnica: ' + d.clave : ''; cl.style.display = d.clave ? '' : 'none';
-  // Series como filas: número · kg · reps · Listo. Reps precargadas con el mínimo del rango.
-  var filas = '';
+  // Series como filas: número · kg · reps · Listo. Las hechas traen lo guardado; las que faltan van VACÍAS y muestran el sugerido en gris
+  // (placeholder): así nadie escribe "1012" encima de un 10 precargado. Lo escrito a mano (data-ed) sobrevive al repintado: antes, elegir
+  // Fácil/Bien/Al límite o dar "Listo" en otra serie volvía a pintar la tarjeta y borraba lo que ya ibas anotando en las series que seguían.
+  var previas = {};
+  Array.prototype.forEach.call(document.querySelectorAll('#exSets' + i + ' tr'), function (tr, k) {
+    var ins = tr.querySelectorAll('input'); if (tr.dataset.ed === '1' && tr.dataset.done !== '1' && ins.length === 2) previas[k] = { carga: ins[0].value, reps: ins[1].value };
+  });
+  var filas = '', cargaRef = e._ajustada != null ? e._ajustada : (sg.carga != null ? sg.carga : '');
   for (var k = 0; k < n; k++) {
-    var h = hoy[k] || {}, done = k < hechas;
-    var carga = h.carga !== undefined ? h.carga : (sg.carga != null ? sg.carga : '');
-    var reps = h.reps !== undefined ? h.reps : p.rmin;
-    filas += '<tr class="g-set' + (done ? ' done' : '') + '" data-done="' + (done ? 1 : 0) + '"><td class="n">' + (k + 1) + '</td>' +
-      '<td><input type="number" inputmode="decimal" step="any" aria-label="Carga en kg" value="' + esc(carga) + '"></td><td class="u">kg</td>' +
-      '<td><input type="number" inputmode="numeric" aria-label="' + (seg ? 'Segundos' : 'Repeticiones') + '" value="' + esc(reps) + '"></td><td class="u">' + (seg ? 's' : 'reps') + '</td>' +
+    var h = hoy[k] || {}, done = k < hechas, pv = !done && previas[k];
+    var carga = done ? (h.carga !== undefined ? h.carga : '') : (pv ? pv.carga : '');
+    var reps = done ? (h.reps !== undefined ? h.reps : '') : (pv ? pv.reps : '');
+    var ant = k > 0 ? hoy[k - 1] : null, phCarga = ant && ant.carga !== '' && ant.carga != null ? ant.carga : cargaRef;   // en gris: lo de la serie anterior o el sugerido
+    filas += '<tr class="g-set' + (done ? ' done' : '') + '" data-done="' + (done ? 1 : 0) + '"' + (pv ? ' data-ed="1"' : '') + '><td class="n">' + (k + 1) + '</td>' +
+      '<td><input type="number" inputmode="decimal" step="any" aria-label="Carga en kg" value="' + esc(carga) + '" placeholder="' + esc(phCarga) + '" onfocus="this.select()"></td><td class="u">kg</td>' +
+      '<td><input type="number" inputmode="numeric" aria-label="' + (seg ? 'Segundos' : 'Repeticiones') + '" value="' + esc(reps) + '" placeholder="' + esc(p.rmin) + '" onfocus="this.select()"></td><td class="u">' + (seg ? 's' : 'reps') + '</td>' +
       '<td class="b"><button type="button" class="g-listo" onclick="listo(' + i + ',' + k + ')">' + (done ? 'Hecha' : 'Listo') + '</button></td></tr>';
   }
   $('exSets' + i).innerHTML = filas;
@@ -2299,13 +2307,14 @@ function elegirRir(i, r) {
 function ajustarPorRir(i, sugerida) {
   var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], filas = document.querySelectorAll('#exSets' + i + ' tr');
   if (!filas.length || !d || e._rir == null) return;
-  var base = Number(String(filas[0].querySelector('input').value).replace(',', '.')) || Number(sugerida) || 0; if (!base) return;
+  var in0 = filas[0].querySelector('input'), base = Number(String(in0.value || in0.placeholder).replace(',', '.')) || Number(sugerida) || 0; if (!base) return;
   var r = Number(e._rir), f = r >= 5 ? 1.10 : r >= 3 ? 1 : r === 2 ? 0.95 : 0.90;
   var paso = d.paso || 2.5, nueva = Math.max(d.barra || 0, Math.round(base * f / paso) * paso); nueva = Math.round(nueva * 100) / 100;
   for (var k = 1; k < filas.length; k++) {
     if (filas[k].dataset.done === '1') continue;   // las ya hechas no se tocan
     var inp = filas[k].querySelector('input'), v = Number(String(inp.value).replace(',', '.'));
-    if (inp.value === '' || v === Number(sugerida) || v === e._ajustada || v === base) inp.value = nueva;   // solo las que no tocaste a mano
+    if (inp.value === '') inp.placeholder = nueva;   // vacía: cambia el sugerido en gris
+    else if (v === Number(sugerida) || v === e._ajustada || v === base) inp.value = nueva;   // solo las que no tocaste a mano
   }
   e._ajustada = nueva;
   e._ajusteTxt = nueva === base ? 'Carga bien elegida: las siguientes series siguen con ' + fmtNum(base) + ' kg.'
@@ -2323,7 +2332,12 @@ function listo(i, k) {
   else {
     var reps = tr.querySelectorAll('input')[1];
     if (reps.value === '') { reps.focus(); toastBad('Anota las repeticiones de la serie ' + (k + 1)); return; }
-    for (j = 0; j <= k; j++) if (filas[j].querySelectorAll('input')[1].value !== '') marcarFila(filas[j], true);
+    for (j = 0; j <= k; j++) {
+      var ins = filas[j].querySelectorAll('input');
+      if (ins[1].value === '') continue;
+      if (ins[0].value === '' && ins[0].placeholder !== '') ins[0].value = ins[0].placeholder;   // kg vacíos = el sugerido que se veía en gris
+      marcarFila(filas[j], true);
+    }
   }
   var quedan = Array.prototype.filter.call(filas, function (t) { return t.dataset.done === '1'; }).length;
   if (!quedan) { reabrir(i); return; }
@@ -2352,6 +2366,7 @@ function guardar(i) {
   var validas = series.filter(function (s) { return s.reps !== ''; });
   if (!validas.length) { toastBad('Marca "Listo" en al menos una serie, o usa "No lo hice"'); return Promise.resolve(null); }
   var pay = payloadBase(e); pay.ejercicio = d.nombre; pay.variante = v; pay.series = validas; pay.nota = $('exNota' + i) ? $('exNota' + i).value : (e.nota || '');
+  pay.fin = !!e._fin;   // "Terminar aquí" con menos series: el servidor lo recuerda (si no, al recargar volvería a salir en curso)
   e._guardando = true;
   return enviar('guardarSeries', pay).then(function (r) {
     e._guardando = false;
@@ -2370,7 +2385,9 @@ function guardarNota(i) { var e = sesionActual.ejercicios[i]; e.nota = $('exNota
 /** Hiciste menos series de las prescritas y paras ahí: el ejercicio queda hecho con lo que hay. */
 function terminarEj(i) {
   var e = sesionActual.ejercicios[i]; e._fin = true; e.estado = 'hecho';
-  pintar(i, e._var); progreso(); actualizarCumplLocal(); siguiente(i); comprobarCierre();
+  pintar(i, e._var); progreso(); actualizarCumplLocal();
+  // Se vuelve a guardar con fin: true (idempotente) para que el servidor también lo dé por terminado
+  guardar(i).then(function () { siguiente(i); comprobarCierre(); });
 }
 /** Tras guardar, la portada y la semana reflejan el avance sin esperar al servidor. */
 function actualizarCumplLocal() {
