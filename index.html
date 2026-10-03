@@ -869,6 +869,42 @@
   .g-vacio b{display:block;font-size:16px} .g-vacio .s{margin-top:6px;font-size:14px;color:var(--muted);line-height:1.45}
   .g-vacio .btn{margin:12px auto 0;width:auto;padding:0 20px;min-height:44px;font-size:17px}
   #cMomentos .g-vacio{margin:10px 0 8px}
+  /* ===== Inducción (03/10/2026): recorrido "Cómo funciona Enfoque" (#guia) y tarjeta "Primeros pasos" en Hoy (#pasosBox) ===== */
+  #guia{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+  .gu-wrap{max-width:640px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px))}
+  .gu-top{display:flex;justify-content:space-between;align-items:center;min-height:36px}
+  .gu-top .gu-skip{background:none;border:0;color:var(--muted);font-size:14px;font-weight:600;padding:8px 0;cursor:pointer;font-family:var(--body)}
+  .gu-dots{display:flex;gap:6px;margin:12px 0 22px} .gu-dots i{flex:1;height:4px;border-radius:99px;background:var(--raise)} .gu-dots i.on{background:var(--amber)}
+  .gu-body{flex:1}
+  .gu-mock{margin:18px 0 6px;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+  .gu-set{display:flex;align-items:center;gap:8px}
+  .gu-set .n{width:18px;font-weight:800;color:var(--dim);font-size:14px}
+  .gu-set .v{min-width:64px;padding:8px 6px;border-radius:10px;background:var(--bg);border:1px solid var(--raise2);text-align:center;font-family:var(--disp);font-size:20px;font-weight:800}
+  .gu-set .u{font-size:11px;color:var(--dim)}
+  .gu-set .b{margin-left:auto;padding:10px 16px;border-radius:12px;background:var(--amber);color:var(--amber-ink);font-weight:800;font-size:15px}
+  .gu-pill{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:6px 12px;border-radius:999px;background:var(--amber);color:var(--amber-ink);font-weight:800;font-size:13px}
+  .gu-bar{margin-top:10px} .gu-bar:first-child{margin-top:0}
+  .gu-bar .l{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:4px} .gu-bar .l b{color:var(--ink)}
+  .gu-bar .t{height:8px;border-radius:99px;background:var(--raise)} .gu-bar .t i{display:block;height:100%;border-radius:99px;background:var(--amber)}
+  .gu-chat{display:flex;flex-direction:column;gap:8px}
+  .gu-chat div{max-width:88%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.4;background:var(--raise);color:var(--ink)}
+  .gu-chat div.yo{align-self:flex-end;background:var(--amber);color:var(--amber-ink);font-weight:600}
+  .gu-kpi{display:flex;gap:10px} .gu-kpi div{flex:1;padding:10px;border-radius:12px;background:var(--bg);border:1px solid var(--raise2)}
+  .gu-kpi b{display:block;font-family:var(--disp);font-size:22px;font-weight:800} .gu-kpi small{color:var(--muted);font-size:12px}
+  .gu-tip{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.4;color:var(--ink)} .gu-tip:first-child{border-top:0;padding-top:0}
+  .gu-tip i{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:7px}
+  .gu-acts{display:flex;gap:10px;margin-top:18px} .gu-acts .btn{flex:1}
+  .gu-link{display:block;width:100%;margin-top:12px;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink);font-weight:700;font-size:15px;text-align:center;cursor:pointer;font-family:var(--body)}
+  .pasos{margin-top:12px;padding:12px 14px}
+  .pasos-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px} .pasos-h b{font-size:15px} .pasos-h span{font-size:12px;color:var(--muted)}
+  .pasos-it{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;background:none;border:0;border-top:1px solid var(--line);color:var(--ink);font-family:var(--body);font-size:15px;text-align:left;cursor:pointer;min-height:44px}
+  .pasos-it:first-of-type{border-top:0}
+  .pasos-it .ck{flex:0 0 22px;width:22px;height:22px;border-radius:50%;border:2px solid var(--raise2);display:flex;align-items:center;justify-content:center}
+  .pasos-it.ok .ck{background:var(--green);border-color:var(--green)} .pasos-it.ok .ck svg{width:14px;height:14px;stroke:var(--green-ink);fill:none;stroke-width:3}
+  .pasos-it.ok span{color:var(--muted);text-decoration:line-through}
+  .pasos-it .chev{margin-left:auto;width:18px;height:18px;stroke:var(--dim);fill:none;stroke-width:2}
+  .pasos-f{display:flex;gap:16px;margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
+  .pasos-f button{background:none;border:0;padding:4px 0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--body)}
 </style>
 </head>
 <body>
@@ -898,6 +934,7 @@
       <div id="ctaBox"></div>
       <div class="g-chips" id="hoyChips"></div>
       <div id="entrenadorBox"></div>
+      <div id="pasosBox"></div>
       <div id="selector" class="hidden">
         <div class="card">
           <div class="row">
@@ -1091,6 +1128,7 @@
         <button onclick="ajSeccion('perfil')"><span><b>Perfil, avisos y contraseña</b><small id="ajSubPerfil">Edad, estatura y recordatorios</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('telegram')" id="ajMenuTelegram" style="display:none"><span><b>Telegram</b><small id="ajSubTelegram">Anota lo que comes con un mensaje</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Personas, alumnos, IA y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="mostrarGuia('ajustes')"><span><b>Cómo funciona Enfoque</b><small>Un recorrido de un minuto por la app</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
     <div class="card aj-menu" data-sec="avanzado">
@@ -1255,6 +1293,14 @@
     <div class="acts bv-acts"><button class="btn sec" id="bvAtras">Atrás</button><button class="btn" id="bvSig">Siguiente</button></div>
   </div>
 </div>
+<div id="guia" class="hidden" role="dialog" aria-label="Cómo funciona Enfoque">
+  <div class="gu-wrap">
+    <div class="gu-top"><span class="kicker" style="color:var(--amber)">ENFOQUE</span><button type="button" class="gu-skip" id="guSaltar" onclick="cerrarGuia()">Saltar</button></div>
+    <div class="gu-dots" id="guDots"></div>
+    <div class="gu-body" id="guCuerpo"></div>
+    <div class="gu-acts"><button type="button" class="btn sec" id="guAtras" onclick="guiaIr(-1)">Atrás</button><button type="button" class="btn" id="guSig" onclick="guiaIr(1)">Siguiente</button></div>
+  </div>
+</div>
 <div id="coachChat" class="hidden"></div>
 <div id="armar" class="hidden">
   <div class="bv-wrap">
@@ -1355,7 +1401,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610030146', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610030157', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1782,6 +1828,8 @@ function pintarEstado(e, codigo) {
   $('cicloCard').innerHTML = e.cicloTerminado ? '<div class="card"><h2>¡Terminaste ' + esc(pg.nombre || 'el programa') + '!</h2><div class="meta">Puedes repetirlo desde el principio con tus cargas de ahora (nuevo ciclo) o cambiar de programa en Ajustes. Elige el lunes en que empiezas.</div>' +
     '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
   pintarEntrenador(e.entrenador);
+  pintarPasos(e);
+  if (guiaAlLlegar) { guiaAlLlegar = false; mostrarGuia('bv'); }   // la persona nueva ve el recorrido una vez, justo al llegar a Hoy
   pintarCardio(e);
   var sel = $('sesion');
   sel.innerHTML = e.sesiones.map(function (s) { return '<option value="' + s.codigo + '">' + esc(s.nombre) + '</option>'; }).join('');
@@ -4673,10 +4721,11 @@ function aterrizajeHTML(r) {
   return h;
 }
 var bvAbrirPrimera = false;   // al aterrizar, la primera tarjeta de Hoy se abre sola en modo simple
+var guiaAlLlegar = false;     // tras el primer día, el recorrido "Cómo funciona Enfoque" se muestra una vez
 function bvEmpezar(hoy) {
   try { localStorage.setItem('bvComo', '1'); } catch (x) {}
   var r = bvAterr, e = r && r.estado;
-  var fin = function () { invalidarTodo(); cerrarBienvenida(); bvAbrirPrimera = !!hoy; irA('hoy'); cargarEstado(); toast(hoy ? 'Tu primer entrenamiento está en Hoy' : 'Listo. Hoy descansas y la app te avisa cuando toque.'); };
+  var fin = function () { invalidarTodo(); cerrarBienvenida(); bvAbrirPrimera = !!hoy; guiaAlLlegar = !guiaVista(); irA('hoy'); cargarEstado(); toast(hoy ? 'Tu primer entrenamiento está en Hoy' : 'Listo. Hoy descansas y la app te avisa cuando toque.'); };
   if (hoy && e && e.tipoDia !== 'sesion') {
     var cod = e.proxima ? e.proxima.codigo : r.sesion.codigo, b = $('bvEmpezarHoy'); if (b) b.disabled = true;
     api('fijarSesion', e.fecha, cod).then(fin).catch(function (x) { if (b) b.disabled = false; err(x); });
@@ -5479,6 +5528,75 @@ function vacioHTML(titulo, texto, botonTexto, accion) {
     (botonTexto ? '<button type="button" class="btn" onclick="' + esc(accion || '') + '">' + esc(botonTexto) + '</button>' : '') + '</div>';
 }
 /* ===== fin Tanda visual 2 ===== */
+
+/* ===== Inducción (03/10/2026): recorrido "Cómo funciona Enfoque" y tarjeta "Primeros pasos" ===== */
+var GUIA = [
+  { k: 'Hoy', t: 'Tu rutina del día', p: 'Toca el ejercicio, escribe el peso y las repeticiones y dale a Listo. El descanso se cuenta solo arriba y la app te dice cuánto poner la próxima vez.',
+    tips: ['Las casillas van vacías: el número gris es el sugerido.', 'Si no alcanzas a terminar, "Terminar aquí" guarda lo que hiciste.'],
+    mock: '<div class="gu-set"><span class="n">1</span><span class="v">95</span><span class="u">kg</span><span class="v">10</span><span class="u">reps</span><span class="b">Listo</span></div><span class="gu-pill">1:58 · descanso</span>' },
+  { k: 'Comida', t: 'Anota lo que comes', p: 'Busca el alimento o escríbelo tal cual y la IA lo calcula. Al final del día toca "Cerrar el día": te dice cómo te fue y qué ajustar mañana, con tu salud en cuenta.',
+    tips: ['Una sola meta de calorías y proteína, calculada con tus datos.', 'Tus suplementos también van aquí, con un veredicto para ti.'],
+    mock: '<div class="gu-bar"><div class="l"><span>Calorías</span><b>1.270 de 2.250</b></div><div class="t"><i style="width:56%"></i></div></div><div class="gu-bar"><div class="l"><span>Proteína</span><b>65 de 150 g</b></div><div class="t"><i style="width:43%"></i></div></div>' },
+  { k: 'Telegram', t: 'El bot te acompaña', p: 'Escríbele lo que comiste o mándale la foto de la etiqueta y queda anotado. Te dice cómo vas, te aconseja sobre cada comida y te felicita cuando terminas la rutina.',
+    tips: ['Se vincula en Ajustes → Tu cuenta → Telegram, con un código.'],
+    mock: '<div class="gu-chat"><div class="yo">Almorcé arroz, pollo a la plancha y ensalada</div><div>✅ Quedó en el almuerzo.<br>Vas en 1.270 de 2.250 kcal y 65 de 150 g de proteína.<br>Buena proteína: 42 g, lo que toca por comida.</div></div>',
+    boton: { t: 'Vincular Telegram ahora', fn: "cerrarGuia(); irAjustes('telegram')" } },
+  { k: 'Progreso', t: 'Tu peso y tus récords', p: 'Pésate 2 o 3 veces por semana en la mañana. La app mira la tendencia, no el día. Aquí también están tus récords por ejercicio y tus fotos de progreso.',
+    tips: ['El peso sube 0,5 a 1 kg las primeras semanas con creatina: es agua, no grasa.'],
+    mock: '<div class="gu-kpi"><div><b>72,0 kg</b><small>−0,3 kg por semana</small></div><div><b>66 kg</b><small>Récord: press plano</small></div></div>' },
+  { k: 'Coach', t: 'Consejos de hoy', p: 'Cada día te dice qué subir, qué comer y cuándo descansar, con tus propios datos. Si el dueño te activa la IA, también puedes chatear con el Coach.',
+    tips: ['Ajustes → Salud: cuéntale tus condiciones y medicamentos y todo se ajusta a eso.', 'Este recorrido queda en Ajustes → "Cómo funciona Enfoque".'],
+    mock: '<div class="gu-tip"><i></i><span>Press plano: te quedó fácil. Pasa a 97,5 kg.</span></div><div class="gu-tip"><i></i><span>Vas en 65 g de proteína: una pechuga en la cena te acerca.</span></div>' }
+];
+var guiaPaso = 0, guiaDesde = '';
+function guiaVista() { try { return localStorage.getItem('guiaVista') === '1'; } catch (e) { return false; } }
+function mostrarGuia(desde) {
+  guiaDesde = desde || ''; guiaPaso = 0;
+  var g = $('guia'); if (!g) return;
+  g.classList.remove('hidden'); pintarGuia(); window.scrollTo(0, 0);
+}
+function cerrarGuia() {
+  try { localStorage.setItem('guiaVista', '1'); } catch (e) {}
+  var g = $('guia'); if (g) g.classList.add('hidden');
+}
+function guiaIr(d) {
+  var n = guiaPaso + d;
+  if (n >= GUIA.length) { cerrarGuia(); if (guiaDesde === 'bv' || guiaDesde === 'pasos') toast('Listo. Cuando quieras verlo otra vez: Ajustes → Cómo funciona Enfoque'); return; }
+  guiaPaso = Math.max(0, n); pintarGuia();
+  var w = $('guia'); if (w) w.scrollTo(0, 0);
+}
+function pintarGuia() {
+  var p = GUIA[guiaPaso], ult = guiaPaso === GUIA.length - 1;
+  $('guDots').innerHTML = GUIA.map(function (_, i) { return '<i' + (i <= guiaPaso ? ' class="on"' : '') + '></i>'; }).join('');
+  $('guCuerpo').innerHTML = '<div class="kicker">' + (guiaPaso + 1) + ' de ' + GUIA.length + ' · ' + esc(p.k) + '</div><h1 class="bv-h">' + esc(p.t) + '</h1><p class="bv-p">' + esc(p.p) + '</p>' +
+    '<div class="gu-mock">' + p.mock + '</div>' +
+    (p.tips && p.tips.length ? '<div style="margin-top:14px">' + p.tips.map(function (t) { return '<div class="gu-tip"><i></i><span>' + esc(t) + '</span></div>'; }).join('') + '</div>' : '') +
+    (p.boton ? '<button type="button" class="gu-link" onclick="' + p.boton.fn + '">' + esc(p.boton.t) + '</button>' : '');
+  $('guAtras').style.visibility = guiaPaso === 0 ? 'hidden' : 'visible';
+  $('guSig').textContent = ult ? 'Empezar' : 'Siguiente';
+  $('guSaltar').style.visibility = ult ? 'hidden' : 'visible';
+}
+/* Tarjeta "Primeros pasos" en Hoy: lo que la persona nueva aún no ha hecho (getEstado().inicio). Se va sola al completar los 4 o al tocar Ocultar. */
+var PASOS = [
+  { id: 'sesion', t: 'Haz tu primera sesión', fn: 'irRutina()' },
+  { id: 'comida', t: 'Anota tu primera comida', fn: "irA('comida')" },
+  { id: 'cierre', t: 'Cierra tu primer día de comida', fn: "irA('comida')" },
+  { id: 'telegram', t: 'Vincula el bot de Telegram', fn: "irAjustes('telegram')" }
+];
+function pasosOcultos() { try { return localStorage.getItem('pasosOcultos') === '1'; } catch (e) { return false; } }
+function pasosOcultar() { try { localStorage.setItem('pasosOcultos', '1'); } catch (e) {} var b = $('pasosBox'); if (b) b.innerHTML = ''; }
+function pintarPasos(e) {
+  var box = $('pasosBox'); if (!box) return;
+  var ini = e && e.inicio, pg = (e && e.programa) || {};
+  if (!ini || ini.todo || pasosOcultos() || pg.bienvenida || e.fecha !== hoyISO()) { box.innerHTML = ''; return; }
+  var hechos = PASOS.filter(function (p) { return ini[p.id]; }).length;
+  box.innerHTML = '<div class="card pasos" id="pasosCard"><div class="pasos-h"><b>Primeros pasos</b><span>' + hechos + ' de ' + PASOS.length + '</span></div>' +
+    PASOS.map(function (p) {
+      var ok = !!ini[p.id];
+      return '<button type="button" class="pasos-it' + (ok ? ' ok' : '') + '" onclick="' + p.fn + '"><span class="ck">' + (ok ? '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>' : '') + '</span><span>' + esc(p.t) + '</span>' + (ok ? '' : '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>') + '</button>';
+    }).join('') +
+    '<div class="pasos-f"><button type="button" onclick="mostrarGuia(\'pasos\')">Ver cómo funciona</button><button type="button" onclick="pasosOcultar()">Ocultar</button></div></div>';
+}
 </script>
 </body>
 </html>
