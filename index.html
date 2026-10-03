@@ -1401,7 +1401,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610030157', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610031456', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1828,8 +1828,8 @@ function pintarEstado(e, codigo) {
   $('cicloCard').innerHTML = e.cicloTerminado ? '<div class="card"><h2>¡Terminaste ' + esc(pg.nombre || 'el programa') + '!</h2><div class="meta">Puedes repetirlo desde el principio con tus cargas de ahora (nuevo ciclo) o cambiar de programa en Ajustes. Elige el lunes en que empiezas.</div>' +
     '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
   pintarEntrenador(e.entrenador);
-  pintarPasos(e);
-  if (guiaAlLlegar) { guiaAlLlegar = false; mostrarGuia('bv'); }   // la persona nueva ve el recorrido una vez, justo al llegar a Hoy
+  try { pintarPasos(e); } catch (xP) { console.error(xP); }   // nunca puede tumbar Hoy (03/10: PASOS aún sin cargar al abrir dejaba Hoy en "…")
+  try { if (guiaAlLlegar) { guiaAlLlegar = false; mostrarGuia('bv'); } } catch (xG) { console.error(xG); }   // la persona nueva ve el recorrido una vez, justo al llegar a Hoy
   pintarCardio(e);
   var sel = $('sesion');
   sel.innerHTML = e.sesiones.map(function (s) { return '<option value="' + s.codigo + '">' + esc(s.nombre) + '</option>'; }).join('');
@@ -5530,7 +5530,7 @@ function vacioHTML(titulo, texto, botonTexto, accion) {
 /* ===== fin Tanda visual 2 ===== */
 
 /* ===== Inducción (03/10/2026): recorrido "Cómo funciona Enfoque" y tarjeta "Primeros pasos" ===== */
-var GUIA = [
+function guiaLista() { return [
   { k: 'Hoy', t: 'Tu rutina del día', p: 'Toca el ejercicio, escribe el peso y las repeticiones y dale a Listo. El descanso se cuenta solo arriba y la app te dice cuánto poner la próxima vez.',
     tips: ['Las casillas van vacías: el número gris es el sugerido.', 'Si no alcanzas a terminar, "Terminar aquí" guarda lo que hiciste.'],
     mock: '<div class="gu-set"><span class="n">1</span><span class="v">95</span><span class="u">kg</span><span class="v">10</span><span class="u">reps</span><span class="b">Listo</span></div><span class="gu-pill">1:58 · descanso</span>' },
@@ -5547,7 +5547,8 @@ var GUIA = [
   { k: 'Coach', t: 'Consejos de hoy', p: 'Cada día te dice qué subir, qué comer y cuándo descansar, con tus propios datos. Si el dueño te activa la IA, también puedes chatear con el Coach.',
     tips: ['Ajustes → Salud: cuéntale tus condiciones y medicamentos y todo se ajusta a eso.', 'Este recorrido queda en Ajustes → "Cómo funciona Enfoque".'],
     mock: '<div class="gu-tip"><i></i><span>Press plano: te quedó fácil. Pasa a 97,5 kg.</span></div><div class="gu-tip"><i></i><span>Vas en 65 g de proteína: una pechuga en la cena te acerca.</span></div>' }
-];
+]; }
+var GUIA = guiaLista();
 var guiaPaso = 0, guiaDesde = '';
 function guiaVista() { try { return localStorage.getItem('guiaVista') === '1'; } catch (e) { return false; } }
 function mostrarGuia(desde) {
@@ -5560,13 +5561,13 @@ function cerrarGuia() {
   var g = $('guia'); if (g) g.classList.add('hidden');
 }
 function guiaIr(d) {
-  var n = guiaPaso + d;
+  var GUIA = guiaLista(), n = guiaPaso + d;
   if (n >= GUIA.length) { cerrarGuia(); if (guiaDesde === 'bv' || guiaDesde === 'pasos') toast('Listo. Cuando quieras verlo otra vez: Ajustes → Cómo funciona Enfoque'); return; }
   guiaPaso = Math.max(0, n); pintarGuia();
   var w = $('guia'); if (w) w.scrollTo(0, 0);
 }
 function pintarGuia() {
-  var p = GUIA[guiaPaso], ult = guiaPaso === GUIA.length - 1;
+  var GUIA = guiaLista(), p = GUIA[guiaPaso], ult = guiaPaso === GUIA.length - 1;
   $('guDots').innerHTML = GUIA.map(function (_, i) { return '<i' + (i <= guiaPaso ? ' class="on"' : '') + '></i>'; }).join('');
   $('guCuerpo').innerHTML = '<div class="kicker">' + (guiaPaso + 1) + ' de ' + GUIA.length + ' · ' + esc(p.k) + '</div><h1 class="bv-h">' + esc(p.t) + '</h1><p class="bv-p">' + esc(p.p) + '</p>' +
     '<div class="gu-mock">' + p.mock + '</div>' +
@@ -5577,19 +5578,19 @@ function pintarGuia() {
   $('guSaltar').style.visibility = ult ? 'hidden' : 'visible';
 }
 /* Tarjeta "Primeros pasos" en Hoy: lo que la persona nueva aún no ha hecho (getEstado().inicio). Se va sola al completar los 4 o al tocar Ocultar. */
-var PASOS = [
+function pasosLista() { return [
   { id: 'sesion', t: 'Haz tu primera sesión', fn: 'irRutina()' },
   { id: 'comida', t: 'Anota tu primera comida', fn: "irA('comida')" },
   { id: 'cierre', t: 'Cierra tu primer día de comida', fn: "irA('comida')" },
   { id: 'telegram', t: 'Vincula el bot de Telegram', fn: "irAjustes('telegram')" }
-];
+]; }
 function pasosOcultos() { try { return localStorage.getItem('pasosOcultos') === '1'; } catch (e) { return false; } }
 function pasosOcultar() { try { localStorage.setItem('pasosOcultos', '1'); } catch (e) {} var b = $('pasosBox'); if (b) b.innerHTML = ''; }
 function pintarPasos(e) {
   var box = $('pasosBox'); if (!box) return;
   var ini = e && e.inicio, pg = (e && e.programa) || {};
   if (!ini || ini.todo || pasosOcultos() || pg.bienvenida || e.fecha !== hoyISO()) { box.innerHTML = ''; return; }
-  var hechos = PASOS.filter(function (p) { return ini[p.id]; }).length;
+  var PASOS = pasosLista(), hechos = PASOS.filter(function (p) { return ini[p.id]; }).length;
   box.innerHTML = '<div class="card pasos" id="pasosCard"><div class="pasos-h"><b>Primeros pasos</b><span>' + hechos + ' de ' + PASOS.length + '</span></div>' +
     PASOS.map(function (p) {
       var ok = !!ini[p.id];
