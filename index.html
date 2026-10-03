@@ -1355,7 +1355,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610021254', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610030146', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2467,11 +2467,13 @@ function mostrarCierre() {
     var hoy = []; Object.keys(x.variantes).forEach(function (v) { hoy = hoy.concat(x.variantes[v].hoy || []); });
     hechas += Math.min(hoy.length, n);
     hoy.forEach(function (sr) { kg += (Number(sr.carga) || 0) * (Number(sr.reps) || 0); });
-    if (x._record) recs.push({ nombre: x.variantes[x.varianteHoy || x._var || 'principal'].nombre, hoy: x._record.hoy });
+    if (x._record) recs.push({ nombre: x.variantes[x.varianteHoy || x._var || 'principal'].nombre, hoy: x._record.hoy, antes: x._record.antes });
   });
   var pct = presc ? Math.round(100 * hechas / presc) : 0;
   var t0 = Number(gGet('inicio')) || aperturaApp, min = Math.max(1, Math.round((Date.now() - t0) / 60000));
   var nProx = proximaSes && Array.isArray(proximaSes.ejercicios) ? proximaSes.ejercicios.length : 0;
+  // El bot de Telegram (si está vinculado) felicita o anima según cómo fue; avisarSesion es idempotente por fecha + sesión
+  try { enviar('avisarSesion', { id: 'ses-' + s.fecha + '-' + s.codigo, fecha: s.fecha, sesion: s.codigo, pct: pct, hechas: hechas, presc: presc, kg: Math.round(kg), min: min, records: recs }).catch(function () {}); } catch (eTg) {}
   var box = $('cierre');
   box.innerHTML = '<div class="bv-wrap g-cierre">' +
     '<div class="g-eye"><span>' + esc(fechaEyebrow(s.fecha)) + ' · ' + min + ' min</span></div>' +
