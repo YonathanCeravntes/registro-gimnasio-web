@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Enfoque</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -905,6 +906,36 @@
   .pasos-it .chev{margin-left:auto;width:18px;height:18px;stroke:var(--dim);fill:none;stroke-width:2}
   .pasos-f{display:flex;gap:16px;margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
   .pasos-f button{background:none;border:0;padding:4px 0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--body)}
+  /* ===== Fotos de ejercicios (03/10/2026): visor a pantalla completa (#fvOv) ===== */
+  .g-th:not(.none),.imgs img,#proximaBox .prox img.g-th,.mp-row img.mp-thumb{cursor:zoom-in}
+  .imgs{flex-wrap:wrap;row-gap:0;background:transparent;border-radius:0;overflow:visible}
+  .imgs img{border-radius:10px;background:#fff}
+  .imgs::after{content:'Toca una foto para verla en grande';flex-basis:100%;color:var(--faint);font-size:12px;padding:6px 2px 0}
+  .fv-x:focus{outline:none} .fv-x:focus-visible{outline:2px solid var(--faint);outline-offset:2px}
+  body.fv-abierto{overflow:hidden}
+  .fv-ov{position:fixed;inset:0;z-index:80;background:#000;display:none;flex-direction:column;color:var(--ink);
+    padding:calc(8px + env(safe-area-inset-top)) 0 calc(12px + env(safe-area-inset-bottom));-webkit-user-select:none;user-select:none}
+  .fv-ov.on{display:flex}
+  .fv-top{display:flex;align-items:center;gap:10px;padding:4px 16px 8px}
+  .fv-tit{flex:1;min-width:0}
+  .fv-tit .fv-k{display:block;color:var(--faint);font-size:12px;letter-spacing:.4px;text-transform:uppercase}
+  .fv-tit b{display:block;font-family:var(--disp);font-weight:800;font-size:22px;line-height:1.05;text-transform:uppercase;text-wrap:balance}
+  .fv-x{flex-shrink:0;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--raise2);color:var(--ink);font:600 15px var(--body);cursor:pointer}
+  .fv-area{flex:1;min-height:0;position:relative;overflow:hidden;touch-action:none;display:flex;align-items:center;justify-content:center}
+  .fv-area img{max-width:100%;max-height:100%;width:auto;height:auto;display:block;transform-origin:center center;will-change:transform;transition:opacity .15s ease;-webkit-user-drag:none}
+  .fv-area img.fv-mov{transition:none}
+  .fv-area img.fv-fade{opacity:0}
+  .fv-flecha{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:22px;line-height:44px;cursor:pointer;display:none}
+  .fv-flecha.prev{left:6px} .fv-flecha.next{right:6px}
+  .fv-ov.dos .fv-flecha{display:block}
+  .fv-ov.zoom .fv-flecha{display:none}
+  .fv-seg{display:none;margin:12px auto 0;background:var(--card2);border-radius:999px;padding:3px;gap:3px}
+  .fv-ov.dos .fv-seg{display:flex}
+  .fv-seg button{min-width:104px;min-height:40px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:600 15px var(--body);cursor:pointer}
+  .fv-seg button[aria-pressed="true"]{background:var(--raise2);color:var(--ink)}
+  .fv-clave{margin:12px 16px 0;color:var(--ink);font-size:15px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .fv-clave:empty{display:none}
+  .fv-ayuda{margin:6px 16px 0;color:var(--faint);font-size:12px;text-align:center}
 </style>
 </head>
 <body>
@@ -1401,7 +1432,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610031456', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610032352', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1958,7 +1989,7 @@ function proximaHTML(p) {
   return '<div class="sec-h g-rut-h"><b>Lo que viene</b><span>' + esc(diaLargoEtiqueta(p.etiqueta)) + ' · ' + esc(String(p.nombre || '').split(' · ')[0]) + '</span></div>' +
     lista.map(function (x) {
       var v = x.variantes.principal || {}, img = (v.imagenes || [])[0] || '';
-      return '<div class="ex g-ex prox"><div class="ex-row g-row" style="cursor:default">' + (img ? '<img class="thumb g-th" alt="" loading="lazy" decoding="async" src="' + esc(img) + '">' : '<div class="thumb g-th"></div>') +
+      return '<div class="ex g-ex prox"><div class="ex-row g-row" style="cursor:default">' + (img ? '<img class="thumb g-th" alt="' + esc(v.nombre || x.nombres[0]) + '" loading="lazy" decoding="async" src="' + esc(img) + '">' : '<div class="thumb g-th"></div>') +
         '<div class="ex-info"><div class="g-l1">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') + '<span class="g-dosis">' + prescCorta(x.prescripcion, x.unidad) + '</span></div>' +
         '<div class="ex-name">' + esc(v.nombre || x.nombres[0]) + '</div>' +
         (v.sugerencia && v.sugerencia.carga ? '<div class="ex-sug">Empieza con ≈ ' + fmtNum(v.sugerencia.carga) + ' kg</div>' : '') + '</div></div></div>';
@@ -2269,8 +2300,8 @@ function pintar(i, v) {
   else { res.className = 'ex-sug'; res.textContent = sg.carga != null ? 'Sugerido: ' + fmtNum(sg.carga) + ' kg' : String(sg.texto || '').split('. ')[0]; }
   $('exNo' + i).textContent = e.estado === 'omitido' ? 'Reabrir ›' : 'No lo hice ›';
   var th = $('exThumb' + i);
-  if (d.imagenes.length) { th.src = d.imagenes[0]; th.className = 'thumb g-th'; } else th.className = 'thumb g-th none';
-  $('exImg' + i).innerHTML = d.imagenes.map(function (u) { return '<img loading="lazy" decoding="async" alt="" src="' + esc(u) + '">'; }).join('');
+  if (d.imagenes.length) { th.src = d.imagenes[0]; th.alt = d.nombre + ' (toca para ampliar)'; th.className = 'thumb g-th'; } else th.className = 'thumb g-th none';
+  $('exImg' + i).innerHTML = d.imagenes.map(function (u, k) { return '<img loading="lazy" decoding="async" alt="' + esc(d.nombre + (d.imagenes.length > 1 ? (k ? ': posición final' : ': posición inicial') : '')) + '" src="' + esc(u) + '">'; }).join('');
   $('exImg' + i).style.display = d.imagenes.length ? 'flex' : 'none';
   // Capa simple: UNA línea de dosis "3 series · 10 a 12 reps · 2:00" (+ "para con 2 de sobra") y UNA línea "Hoy: 80 kg, busca 12 reps"
   var rirN = Number(p.rir), rirTxt = p.rir === '' || p.rir == null || isNaN(rirN) ? '' : rirN === 0 ? 'hasta el fallo' : 'para con ' + rirN + ' de sobra';
@@ -3335,7 +3366,7 @@ $('btnAjustes').onclick = function () { irA('ajustes'); };
 var DIAS_N = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
 /* =================== AVISOS EN EL CELULAR =================== */
 function b64aBytes(b64) { var p = '='.repeat((4 - b64.length % 4) % 4), s = atob((b64 + p).replace(/-/g, '+').replace(/_/g, '/')), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
-function soportaPush() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+function soportaPush() { return !enApk() && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
 /* El service worker de la app instalada (si en 4 s no está, la app no está instalada o no cargó sw.js) */
 function swListo() { return Promise.race([navigator.serviceWorker.ready, new Promise(function (ok) { setTimeout(function () { ok(null); }, 4000); })]); }
 var pushInfo = null;
@@ -3343,7 +3374,7 @@ function cargarPushUI(p) {
   if (!$('pushEstado')) return;
   if (!soportaPush()) {
     var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    $('pushEstado').innerHTML = ios ? 'Para recibir avisos en el iPhone: abre Enfoque desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
+    $('pushEstado').innerHTML = enApk() ? 'En la app de Android los avisos en el celular aún no llegan. Usa los recordatorios por correo o el bot de Telegram.' : ios ? 'Para recibir avisos en el iPhone: abre Enfoque desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
     $('pushActivar').style.display = 'none'; $('pushOpc').style.display = 'none'; return;
   }
   Promise.all([p || api('getPush'), swListo().then(function (r) { return r ? r.pushManager.getSubscription() : null; }).catch(function () { return null; })]).then(function (x) {
@@ -4942,7 +4973,7 @@ function pintarArmar() {
     if (!s.ejercicios.length) h += '<div class="meta">Sin ejercicios todavía.</div>';
     s.ejercicios.forEach(function (e, j) {
       var img = e.img || (mpBib[e.ejercicio] && mpBib[e.ejercicio].img) || '', k = i + '|' + j;
-      h += '<div class="mp-row">' + (img ? '<img class="mp-thumb" loading="lazy" decoding="async" alt="" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
+      h += '<div class="mp-row">' + (img ? '<img class="mp-thumb" loading="lazy" decoding="async" alt="' + esc(e.ejercicio) + '" src="' + esc(img) + '">' : '<div class="mp-thumb"></div>') +
         '<button type="button" class="mp-row-b" onclick="mpAbrirNums(\'' + k + '\')"><b>' + esc(e.ejercicio) + '</b><small>' + mpSub(e) + (e.alternativa ? ' · o ' + esc(e.alternativa) : ' · <span class="amber">falta la alternativa</span>') + '</small></button>' +
         '<button type="button" class="mp-more" aria-label="Opciones" onclick="mpMenu(' + i + ',' + j + ')">···</button></div>';
       if (e.superserie && j < s.ejercicios.length - 1) h += '<div class="mp-ss">Superserie con el siguiente</div>';
@@ -5597,6 +5628,190 @@ function pintarPasos(e) {
       return '<button type="button" class="pasos-it' + (ok ? ' ok' : '') + '" onclick="' + p.fn + '"><span class="ck">' + (ok ? '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>' : '') + '</span><span>' + esc(p.t) + '</span>' + (ok ? '' : '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>') + '</button>';
     }).join('') +
     '<div class="pasos-f"><button type="button" onclick="mostrarGuia(\'pasos\')">Ver cómo funciona</button><button type="button" onclick="pasosOcultar()">Ocultar</button></div></div>';
+}
+/* ===== Fotos de ejercicios (03/10/2026): visor a pantalla completa =====
+ * Tocar la miniatura o una foto del ejercicio (Hoy: tarjeta y "Más"; "Lo que viene"; Armar mi plan) abre #fvOv: la foto lo más grande
+ * posible, "Inicio" / "Final" (deslizar, flechas o tocar), zoom con pellizco, doble toque o rueda (el viewport bloquea el zoom de la
+ * página: el del visor va con transform) y la técnica clave debajo. Cierra con "Cerrar", Escape o el gesto atrás (history). Las fotos
+ * vienen de urlsImagen() (Code.gs), que ya aplica las correcciones de la auditoría (FOTOS_CORREGIDAS / FOTOS_ORDEN_INVERTIDO). */
+var fvEstado = { abierto: false, fotos: [], nombre: '', i: 0, z: 1, x: 0, y: 0, hist: false, t: null };
+/** Las dos fotos (posición inicial y final) a partir de una: en free-exercise-db son <carpeta>/0.jpg y 1.jpg. */
+function fvPar(u) {
+  var m = /^(.*\/exercises\/[^\/]+\/)([01])\.jpg$/.exec(String(u || ''));
+  return m ? [u, m[1] + (m[2] === '0' ? '1' : '0') + '.jpg'] : (u ? [u] : []);
+}
+/** Qué foto se tocó: { nombre, fotos, clave, i } o null si no es una foto de ejercicio. */
+function fvDatosDe(img) {
+  if (!img || img.tagName !== 'IMG' || !img.getAttribute('src') || img.classList.contains('none')) return null;
+  var m = /^exThumb(\d+)$/.exec(img.id || ''), cont = img.closest ? img.closest('[id^="exImg"]') : null;
+  try {
+    if (m || cont) {
+      var i = Number(m ? m[1] : cont.id.slice(5)), e = sesionActual && sesionActual.ejercicios[i];
+      if (!e) return null;
+      var d = e.variantes[e._var] || e.variantes.principal;
+      var fotos = (d.imagenes || []).slice(), k = cont ? Array.prototype.indexOf.call(cont.querySelectorAll('img'), img) : 0;
+      return { nombre: d.nombre || e.nombres[0], fotos: fotos.length ? fotos : fvPar(img.src), clave: d.clave || e.clave || '', i: Math.max(0, k) };
+    }
+    var fila = img.closest ? img.closest('#proximaBox .prox') : null;
+    if (fila && typeof proximaSes !== 'undefined' && proximaSes && proximaSes.ejercicios) {
+      var j = Array.prototype.indexOf.call(document.querySelectorAll('#proximaBox .prox'), fila), x = proximaSes.ejercicios[j];
+      var v = x && (x.variantes.principal || {});
+      if (v) return { nombre: v.nombre || x.nombres[0], fotos: (v.imagenes || []).length ? v.imagenes.slice() : fvPar(img.src), clave: v.clave || x.clave || '', i: 0 };
+    }
+    var mr = img.classList.contains('mp-thumb') && img.closest ? img.closest('.mp-row') : null;
+    if (mr) {
+      var b = mr.querySelector('.mp-row-b b'), nom = b ? b.textContent : '', bib = (typeof mpBib !== 'undefined' && mpBib[nom]) || {};
+      return { nombre: nom, fotos: fvPar(img.src), clave: bib.clave || '', i: 0 };
+    }
+  } catch (err) {}
+  return null;
+}
+function fvNodo() {
+  var ov = $('fvOv'); if (ov) return ov;
+  ov = document.createElement('div'); ov.id = 'fvOv'; ov.className = 'fv-ov';
+  ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'fvNom');
+  ov.innerHTML = '<div class="fv-top"><div class="fv-tit"><span class="fv-k">Así se hace</span><b id="fvNom"></b></div>' +
+    '<button type="button" class="fv-x" id="fvX" onclick="fvCerrar()">Cerrar ✕</button></div>' +
+    '<div class="fv-area" id="fvArea"><img id="fvImg" alt="" draggable="false">' +
+    '<button type="button" class="fv-flecha prev" aria-label="Foto anterior" onclick="fvIr(fvEstado.i - 1)">‹</button>' +
+    '<button type="button" class="fv-flecha next" aria-label="Foto siguiente" onclick="fvIr(fvEstado.i + 1)">›</button></div>' +
+    '<div class="fv-seg" id="fvSeg" role="group" aria-label="Posición"><button type="button" aria-pressed="true" onclick="fvIr(0)">Inicio</button><button type="button" aria-pressed="false" onclick="fvIr(1)">Final</button></div>' +
+    '<div class="fv-clave" id="fvClave"></div><div class="fv-ayuda" id="fvAyuda">Pellizca o toca dos veces para acercar</div>';
+  document.body.appendChild(ov);
+  fvGestos($('fvArea'));
+  return ov;
+}
+function fvAbrir(d) {
+  if (!d || !d.fotos || !d.fotos.length) return;
+  var ov = fvNodo();
+  fvEstado.abierto = true; fvEstado.fotos = d.fotos.slice(0, 2); fvEstado.nombre = d.nombre || 'Ejercicio';
+  $('fvNom').textContent = fvEstado.nombre;
+  $('fvClave').textContent = d.clave ? 'Clave: ' + d.clave : '';
+  ov.classList.toggle('dos', fvEstado.fotos.length > 1);
+  fvEstado.fotos.forEach(function (u) { var im = new Image(); im.decoding = 'async'; im.src = u; });   // precarga la otra posición
+  fvIr(Math.min(d.i || 0, fvEstado.fotos.length - 1), true);
+  ov.classList.add('on'); document.body.classList.add('fv-abierto');
+  if (!fvEstado.hist) { try { history.pushState({ fv: 1 }, ''); fvEstado.hist = true; } catch (e) {} }
+  try { $('fvX').focus({ preventScroll: true }); } catch (e) {}
+}
+function fvCerrar(desdeHistorial) {
+  if (!fvEstado.abierto) return;
+  fvEstado.abierto = false;
+  var ov = $('fvOv'); if (ov) ov.classList.remove('on', 'zoom');
+  document.body.classList.remove('fv-abierto');
+  if (fvEstado.hist) { fvEstado.hist = false; if (!desdeHistorial) { try { history.back(); } catch (e) {} } }
+}
+function fvIr(i, sinFundido) {
+  var n = fvEstado.fotos.length; if (!n) return;
+  i = (i + n) % n;
+  var im = $('fvImg'), cambia = i !== fvEstado.i || im.getAttribute('src') !== fvEstado.fotos[i];
+  fvEstado.i = i; fvZoom(1, 0, 0);
+  var pos = n > 1 ? (i === 0 ? 'posición inicial' : 'posición final') : 'cómo se hace';
+  function poner() { im.src = fvEstado.fotos[i]; im.alt = fvEstado.nombre + ': ' + pos; im.classList.remove('fv-fade'); }
+  if (cambia && !sinFundido) { im.classList.add('fv-fade'); setTimeout(poner, 120); } else poner();
+  var bs = $('fvSeg').querySelectorAll('button');
+  for (var k = 0; k < bs.length; k++) bs[k].setAttribute('aria-pressed', String(k === i));
+}
+/** Zoom con transform (1 a 4×) sin que la foto se salga del marco. */
+function fvZoom(z, x, y) {
+  var im = $('fvImg'), area = $('fvArea'); if (!im || !area) return;
+  z = Math.max(1, Math.min(4, z));
+  var w = im.offsetWidth || area.clientWidth, h = im.offsetHeight || area.clientHeight;
+  var mx = Math.max(0, (w * z - area.clientWidth) / 2), my = Math.max(0, (h * z - area.clientHeight) / 2);
+  if (z === 1) { x = 0; y = 0; }
+  fvEstado.z = z; fvEstado.x = Math.max(-mx, Math.min(mx, x)); fvEstado.y = Math.max(-my, Math.min(my, y));
+  im.style.transform = z === 1 ? '' : 'translate(' + fvEstado.x + 'px,' + fvEstado.y + 'px) scale(' + z + ')';
+  $('fvOv').classList.toggle('zoom', z > 1);
+  var ay = $('fvAyuda');
+  if (ay) ay.textContent = z > 1 ? 'Arrastra para mover · toca dos veces para alejar' : fvEstado.fotos.length > 1 ? 'Desliza para ver Inicio y Final · pellizca o toca dos veces para acercar' : 'Pellizca o toca dos veces para acercar';
+}
+/** Acerca 2,5× hacia el punto tocado (o vuelve a 1×). */
+function fvDobleToque(cx, cy) {
+  if (fvEstado.z > 1) { fvZoom(1, 0, 0); return; }
+  var r = $('fvArea').getBoundingClientRect(), z = 2.5;
+  fvZoom(z, -(cx - (r.left + r.width / 2)) * (z - 1), -(cy - (r.top + r.height / 2)) * (z - 1));
+}
+function fvGestos(area) {
+  var t = null, ultimoToque = 0, ultX = 0, ultY = 0;
+  function dist(a, b) { return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
+  area.addEventListener('touchstart', function (ev) {
+    fvEstado.t = Date.now();
+    if (ev.target.closest && ev.target.closest('button')) { t = null; return; }   // las flechas son botones: su toque no es gesto
+    var ts = ev.touches, im = $('fvImg');
+    im.classList.add('fv-mov');
+    if (ts.length === 2) t = { modo: 'pinza', d0: dist(ts[0], ts[1]), z0: fvEstado.z, x0: fvEstado.x, y0: fvEstado.y };
+    else if (ts.length === 1) t = { modo: 'uno', sx: ts[0].clientX, sy: ts[0].clientY, x0: fvEstado.x, y0: fvEstado.y, t0: Date.now(), movio: false };
+  }, { passive: true });
+  area.addEventListener('touchmove', function (ev) {
+    if (!t) return;
+    var ts = ev.touches;
+    if (t.modo === 'pinza' && ts.length === 2) {
+      ev.preventDefault();
+      var z = t.z0 * dist(ts[0], ts[1]) / (t.d0 || 1);
+      fvZoom(z, t.x0 * z / (t.z0 || 1), t.y0 * z / (t.z0 || 1));
+    } else if (t.modo === 'uno' && ts.length === 1) {
+      var dx = ts[0].clientX - t.sx, dy = ts[0].clientY - t.sy;
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) t.movio = true;
+      if (fvEstado.z > 1) { ev.preventDefault(); fvZoom(fvEstado.z, t.x0 + dx, t.y0 + dy); }
+      else if (fvEstado.fotos.length > 1) { ev.preventDefault(); $('fvImg').style.transform = 'translateX(' + dx + 'px)'; }
+    }
+  }, { passive: false });
+  area.addEventListener('touchend', function (ev) {
+    var im = $('fvImg'); im.classList.remove('fv-mov');
+    if (!t) return;
+    var c = ev.changedTouches[0];
+    if (t.modo === 'uno' && c) {
+      var dx = c.clientX - t.sx, dy = c.clientY - t.sy;
+      if (fvEstado.z === 1 && fvEstado.fotos.length > 1 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { im.style.transform = ''; fvIr(fvEstado.i + (dx < 0 ? 1 : -1)); }
+      else if (fvEstado.z === 1) im.style.transform = '';
+      if (!t.movio && Date.now() - t.t0 < 300) {   // toque corto: ¿es el segundo de un doble toque?
+        var ahora = Date.now();
+        if (ahora - ultimoToque < 320 && Math.hypot(c.clientX - ultX, c.clientY - ultY) < 40) { ev.preventDefault(); fvDobleToque(c.clientX, c.clientY); ultimoToque = 0; }
+        else { ultimoToque = ahora; ultX = c.clientX; ultY = c.clientY; }
+      }
+    }
+    if (ev.touches.length === 1) { var u = ev.touches[0]; t = { modo: 'uno', sx: u.clientX, sy: u.clientY, x0: fvEstado.x, y0: fvEstado.y, t0: 0, movio: true }; }
+    else t = null;
+  });
+  area.addEventListener('dblclick', function (ev) { ev.preventDefault(); if (fvEstado.t && Date.now() - fvEstado.t < 800) return; if (ev.target.closest && ev.target.closest('button')) return; fvDobleToque(ev.clientX, ev.clientY); });
+  area.addEventListener('wheel', function (ev) { ev.preventDefault(); var z = fvEstado.z * (ev.deltaY < 0 ? 1.15 : 1 / 1.15); fvZoom(z, fvEstado.x * z / fvEstado.z, fvEstado.y * z / fvEstado.z); }, { passive: false });
+}
+(function () {
+  try {
+    // En captura: la miniatura está dentro de la fila que abre/cierra la tarjeta; tocar la foto abre el visor y nada más
+    document.addEventListener('click', function (ev) {
+      var d = fvDatosDe(ev.target); if (!d) return;
+      ev.preventDefault(); ev.stopPropagation(); fvAbrir(d);
+    }, true);
+    document.addEventListener('keydown', function (ev) {
+      if (!fvEstado.abierto) return;
+      if (ev.key === 'Escape') { ev.stopPropagation(); ev.preventDefault(); fvCerrar(); }
+      else if (ev.key === 'ArrowRight') fvIr(fvEstado.i + 1);
+      else if (ev.key === 'ArrowLeft') fvIr(fvEstado.i - 1);
+    }, true);
+    window.addEventListener('popstate', function () { if (fvEstado.abierto) { fvEstado.hist = false; fvCerrar(true); } });
+    window.addEventListener('resize', function () { if (fvEstado.abierto) fvZoom(1, 0, 0); });
+  } catch (e) {}
+})();
+/* ===== fin Fotos de ejercicios ===== */
+/* ===== App de Android (APK, carpeta movil/) =====
+   La APK es una WebView con esta misma página; su user agent termina en "EnfoqueAndroid/<versión>" y le agrega window.ENFOQUE_APK
+   (compartir, copiar y descargas van al celular: movil/src/puente.ts). Aquí solo: sin avisos web (la WebView no los recibe) y el
+   botón atrás de Android (atrasApp: true = lo manejó la página; false = la APK vuelve atrás o sale). En el iPhone nada de esto cambia. */
+function enApk() { try { return /EnfoqueAndroid\//.test(navigator.userAgent || '') || !!window.ENFOQUE_APK; } catch (e) { return false; } }
+function atrasApp() {
+  var visible = function (id) { var el = $(id); return !!el && !el.classList.contains('hidden'); };
+  if (typeof fvEstado !== 'undefined' && fvEstado.abierto) { fvCerrar(); return true; }   // visor de fotos de ejercicios
+  if (typeof hojaEstado !== 'undefined' && hojaEstado.abierta) { hojaCerrar(); return true; }
+  var tj = $('tarjetaOv'); if (tj) { var tc = $('tjCerrar'); if (tc) tc.click(); else tj.remove(); return true; }
+  if (visible('coachChat')) { cerrarChat(); return true; }
+  if (visible('guia')) { cerrarGuia(); return true; }
+  if (visible('gdCierre')) { gdCerrarOverlay(); return true; }
+  if (visible('cierre')) { cerrarCierre(); return true; }
+  if (visible('vincular') || visible('bienvenida')) return false;   // entrar / primer día: atrás sale
+  if (visible('tab-ajustes') && ajSec) { ajVolver(); return true; }
+  if (!visible('tab-hoy') && estado) { irA('hoy'); return true; }
+  return false;
 }
 </script>
 </body>
