@@ -1041,6 +1041,17 @@
   .ree-pie{font-size:12.5px;color:var(--faint);margin-top:10px;line-height:1.45}
   /* ===== fin Reemplazos ===== */
 
+  /* ===== Dictado de la comida (04/10/2026): micrófono en "Con IA" ===== */
+  #cIaBox .chat-in .foto-mini{width:52px;min-width:52px;flex:none;padding:0;align-self:stretch;margin:0;min-height:52px}
+  #cIaBox .chat-in textarea{min-width:0}
+  .mic-btn.on{border-color:var(--bad);color:var(--bad)}
+  .mic-btn.on svg{animation:micLatido 1.2s ease-in-out infinite}
+  @keyframes micLatido{50%{opacity:.35}}
+  @media (prefers-reduced-motion:reduce){.mic-btn.on svg{animation:none}}
+  .mic-estado:empty{display:none}
+  .mic-estado{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .mic-estado .punto{width:8px;height:8px;border-radius:50%;background:var(--bad);flex:none}
+  .mic-estado button{background:none;border:0;padding:4px 0;color:var(--muted);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1134,12 +1145,14 @@
         <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
       <div id="cLista" style="margin-top:6px"></div>
       <div id="cComunidad"></div>
-      <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto o foto</span></div>
+      <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto, voz o foto</span></div>
       <div id="cIaOff" class="ia-off" style="display:none"></div>
       <div id="cIaBox">
-      <div class="meta">Cuéntale qué comiste, tómale una foto al plato o elige una de tu galería. Tú revisas antes de guardar.</div>
+      <div class="meta">Cuéntale qué comiste (escrito o con el micrófono), tómale una foto al plato o elige una de tu galería. Tú revisas antes de guardar.</div>
       <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
-        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato (cámara o galería)"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label></div>
+        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato (cámara o galería)"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label>
+        <button type="button" class="btn sec foto-mini mic-btn" id="cIaMicBtn" onclick="micToggle()" aria-label="Dictar lo que comiste"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button></div>
+      <div class="meta mic-estado" id="cIaMicTxt"></div>
       <input id="cIaFoto" class="oculto" type="file" accept="image/*" onchange="fotoComidaElegida(this)">
       <div class="meta" id="cIaFotoTxt"></div>
       <button class="btn sec" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular con IA</button>
@@ -1562,7 +1575,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610040337', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610041746', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -6617,6 +6630,104 @@ function reeRecargar(i, msg) {
   }).catch(errG);
 }
 /* ===== fin Reemplazos ===== */
+/* ===== Dictado de la comida (04/10/2026): micrófono en "Con IA" =====
+ * 1) Dictado del celular (SpeechRecognition, es-CO): el texto aparece en la caja mientras hablas; no gasta IA y lo corriges antes de calcular.
+ * 2) Si el celular no lo trae o falla (p. ej. iPhone con la app instalada o la APK de Android): graba la nota (MediaRecorder, máx. 60 s), la pasa a WAV 16 kHz
+ *    mono en el celular (así sirve igual el audio/mp4 del iPhone que el webm de Android) y la manda a comidaConIA({ audio }) como en Telegram (solo con Gemini).
+ * Si el dictado falla una vez, se recuerda (localStorage micDictadoRoto) y la próxima vez graba directo. Todo en function: nada de esto corre al abrir. */
+function micEst() { return window.__mic || (window.__mic = { modo: '', rec: null, mr: null, st: null, chunks: [], t0: 0, tick: null, base: '', oyo: false, pasar: false, enviar: false }); }
+function micDictadoRoto() { try { return localStorage.getItem('micDictadoRoto') === '1'; } catch (e) { return false; } }
+function micMarcarRoto() { try { localStorage.setItem('micDictadoRoto', '1'); } catch (e) {} }
+function micPuedeDictar() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition) && !(typeof enApk === 'function' && enApk()) && !micDictadoRoto(); }
+function micPuedeGrabar() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && typeof MediaRecorder !== 'undefined' && (window.AudioContext || window.webkitAudioContext)); }
+function micProveedor() { var ia = comidaDatos && comidaDatos.ia; return ia && ia.proveedor ? ia.proveedor : ''; }
+function micToggle() {
+  var m = micEst();
+  if (m.modo === 'dictado') { try { m.rec.stop(); } catch (e) {} return; }
+  if (m.modo === 'graba') { micParar(true); return; }
+  if (m.modo === 'envia') return;
+  if (micPuedeDictar()) micDictar(); else micGrabar();
+}
+function micPintar() {
+  var m = micEst(), b = $('cIaMicBtn'), t = $('cIaMicTxt'); if (!b || !t) return;
+  b.classList.toggle('on', m.modo === 'dictado' || m.modo === 'graba');
+  b.setAttribute('aria-label', m.modo ? 'Terminar' : 'Dictar lo que comiste');
+  if (m.modo === 'dictado') t.innerHTML = '<span class="punto"></span><span>Te escucho… toca el micrófono para terminar</span>';
+  else if (m.modo === 'graba') { var s = Math.floor((Date.now() - m.t0) / 1000); t.innerHTML = '<span class="punto"></span><span>Grabando ' + Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2) + ' · toca el micrófono para enviar</span><button type="button" onclick="micParar(false)">Cancelar</button>'; }
+  else if (m.modo === 'envia') t.textContent = 'Escuchando tu nota… (10–20 s)';
+  else t.innerHTML = '';
+}
+function micDictar() {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition, m = micEst(), ta = $('cIaTxt'), rec;
+  try { rec = new SR(); } catch (e) { micMarcarRoto(); micGrabar(); return; }
+  rec.lang = 'es-CO'; rec.interimResults = true; rec.continuous = true;
+  m.rec = rec; m.modo = 'dictado'; m.oyo = false; m.pasar = false; m.base = ta.value.trim() ? ta.value.trim() + ' ' : '';
+  rec.onresult = function (ev) {
+    var txt = ''; for (var i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript;
+    m.oyo = true; ta.value = (m.base + txt).replace(/\s+/g, ' ').replace(/^\s/, '');
+  };
+  rec.onerror = function (ev) {
+    var e = ev && ev.error || '';
+    if (e === 'no-speech' || e === 'aborted') return;
+    if (e === 'not-allowed' && !m.oyo) { m.permiso = true; return; }
+    if (!m.oyo) { micMarcarRoto(); m.pasar = true; }   // el dictado no sirve en este celular: grabamos la nota
+  };
+  rec.onend = function () {
+    m.modo = ''; m.rec = null; micPintar();
+    if (m.pasar) { m.pasar = false; micGrabar(); return; }
+    if (m.permiso) { m.permiso = false; toastBad('Dale permiso de micrófono a Enfoque (Ajustes del celular) o usa el micrófono del teclado'); return; }
+    if (m.oyo) toast('Listo: revisa el texto y toca Calcular con IA');
+  };
+  try { rec.start(); } catch (e) { micMarcarRoto(); m.modo = ''; m.rec = null; micGrabar(); return; }
+  micPintar();
+}
+function micGrabar() {
+  var m = micEst();
+  if (!micPuedeGrabar()) { toastBad('Este celular no deja grabar aquí: usa el micrófono del teclado'); return; }
+  if (micProveedor() && micProveedor() !== 'gemini') { toastBad('Las notas de voz necesitan Gemini: usa el micrófono del teclado para dictar'); return; }
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
+    var mr; try { mr = new MediaRecorder(st); } catch (e) { st.getTracks().forEach(function (t) { t.stop(); }); toastBad('No pude grabar: usa el micrófono del teclado'); return; }
+    m.mr = mr; m.st = st; m.chunks = []; m.modo = 'graba'; m.t0 = Date.now(); m.enviar = false;
+    mr.ondataavailable = function (e) { if (e.data && e.data.size) m.chunks.push(e.data); };
+    mr.onstop = function () {
+      st.getTracks().forEach(function (t) { t.stop(); });
+      var blob = new Blob(m.chunks, { type: mr.mimeType || 'audio/mp4' }); m.chunks = [];
+      if (m.enviar && blob.size) micEnviar(blob); else { m.modo = ''; micPintar(); }
+    };
+    mr.start(250);
+    m.tick = setInterval(function () { if (Date.now() - m.t0 >= 60000) micParar(true); else micPintar(); }, 500);
+    micPintar();
+  }).catch(function () { toastBad('Dale permiso de micrófono a Enfoque (Ajustes del celular) o usa el micrófono del teclado'); });
+}
+function micParar(enviar) {
+  var m = micEst(); clearInterval(m.tick); m.tick = null; m.enviar = !!enviar;
+  m.modo = enviar ? 'envia' : ''; micPintar();
+  try { if (m.mr && m.mr.state !== 'inactive') m.mr.stop(); } catch (e) {}
+}
+/** Audio grabado (mp4/webm) → WAV 16 kHz mono 16 bits (≈ 32 KB por segundo: 60 s ≈ 2 MB). */
+function micAWav(blob) {
+  return new Promise(function (ok, no) { var rd = new FileReader(); rd.onload = function () { ok(rd.result); }; rd.onerror = no; rd.readAsArrayBuffer(blob); }).then(function (buf) {
+    var AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
+    return new Promise(function (ok, no) { ac.decodeAudioData(buf, ok, no); }).then(function (ab) {
+      try { ac.close(); } catch (e) {}
+      var sr = 16000, n = Math.max(1, Math.floor(ab.duration * sr)), k = ab.sampleRate / sr, c0 = ab.getChannelData(0), c1 = ab.numberOfChannels > 1 ? ab.getChannelData(1) : null;
+      var dv = new DataView(new ArrayBuffer(44 + n * 2)), w = function (o, s) { for (var i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+      w(0, 'RIFF'); dv.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, sr, true); dv.setUint32(28, sr * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true); w(36, 'data'); dv.setUint32(40, n * 2, true);
+      for (var i = 0; i < n; i++) { var j = Math.min(c0.length - 1, Math.floor(i * k)), v = c1 ? (c0[j] + c1[j]) / 2 : c0[j]; v = Math.max(-1, Math.min(1, v)); dv.setInt16(44 + i * 2, v < 0 ? v * 0x8000 : v * 0x7fff, true); }
+      return new Blob([dv], { type: 'audio/wav' });
+    });
+  }).then(function (wav) { return new Promise(function (ok, no) { var rd = new FileReader(); rd.onload = function () { ok(rd.result); }; rd.onerror = no; rd.readAsDataURL(wav); }); });
+}
+function micEnviar(blob) {
+  var m = micEst(), b = $('cIaBtn'); m.modo = 'envia'; micPintar(); if (b) b.disabled = true;
+  micAWav(blob).then(function (dataUrl) {
+    return api('comidaConIA', { texto: $('cIaTxt').value.trim(), audio: dataUrl, momento: $('cMomento').value });
+  }).then(function (r) { comidaIAres = r; pintarComidaIA(); })
+    .catch(function (e) { toastBad(e && e.message ? e.message : 'No pude escuchar la nota: inténtalo otra vez o escríbelo'); })
+    .then(function () { m.modo = ''; micPintar(); if (b) b.disabled = false; });
+}
+/* ===== fin Dictado ===== */
 </script>
 </body>
 </html>
