@@ -991,6 +991,47 @@
   .lg-bad{color:var(--bad)!important}
   #lgCard .per-row small{white-space:normal}
   #acc-crear .lg-docs,#acc-crear .lg-box,#acc-crear .lg-av{background:var(--card2)} #acc-crear .lg-box{margin-top:12px}
+
+  /* ===== Días pasados (04/10/2026): franja del día que ves, aviso de 2 días y "No entrenaste" en gris ===== */
+  .dia-franja{position:sticky;top:calc(6px + env(safe-area-inset-top,0px));z-index:11;margin:calc(6px + env(safe-area-inset-top,0px)) 12px 8px;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-radius:16px;background:var(--raise);border:1px solid var(--raise2);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+  .dia-franja.hidden{display:none}
+  body.t-on .dia-franja{top:calc(48px + env(safe-area-inset-top,0px))}
+  .dia-franja .df-t{flex:1;min-width:0;font-size:13px;line-height:1.25;color:var(--muted)} .dia-franja .df-t b{display:block;font-size:15px;color:var(--ink)}
+  .dia-franja .df-b{flex-shrink:0;min-height:40px;padding:0 14px;border-radius:12px;font:800 14px var(--body);cursor:pointer;background:transparent;color:var(--ink);border:1px solid var(--faint)}
+  .dia-franja .df-b.go{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+  .dia-franja.dos{flex-wrap:wrap;padding:10px 10px 10px 14px} .dia-franja.dos .df-t{flex-basis:100%} .dia-franja.dos .df-b{flex:1}
+  .pp-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 8px 8px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line);min-height:52px}
+  .pp-row .pp-t{flex:1;min-width:0;font-size:13.5px;color:var(--muted);line-height:1.3} .pp-row .pp-t b{color:var(--ink);font-weight:700}
+  .pp-row button{flex-shrink:0;min-height:40px;padding:0 12px;border-radius:12px;font:700 13.5px var(--body);cursor:pointer;background:transparent;color:var(--ink);border:1px solid var(--raise2)}
+  .pp-row button.pp-x{border:0;color:var(--dim);padding:0 8px;font-size:16px}
+  .pp-row button:disabled{opacity:.5}
+  #semChip b.nf{color:var(--faint)}
+  .g-dia.nofui{color:var(--faint)} .g-dia.nofui i{background:var(--faint)}
+  .g-fila.nofui{opacity:.75} .g-fila.nofui .t{color:var(--dim)}
+  /* ===== Reemplazos (04/10/2026): "¿Te cuesta? Ver otros ejercicios" (tarjeta de Hoy + hoja con opciones; todo en gris: el ámbar sigue siendo solo el siguiente paso) ===== */
+  .ree-box:empty{display:none}
+  .ree-link{display:block;border:0;background:none;padding:0;margin-top:4px;min-height:40px;color:var(--muted);font:600 14px var(--body);cursor:pointer;text-align:left}
+  .ree-mas{display:block;margin-top:2px;border:0;background:none;padding:0;color:var(--muted);font:600 14px var(--body);cursor:pointer;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:2px;min-height:32px}
+  .ree-act{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;line-height:1.35;color:var(--muted);padding:8px 10px;border-radius:10px;background:var(--card2);margin:8px 0 0}
+  .ree-act span{flex:1;min-width:150px}
+  .ree-volver{border:1px solid var(--raise2);background:transparent;color:var(--ink);border-radius:999px;padding:6px 12px;font:700 13px var(--body);min-height:36px;cursor:pointer;text-align:left}
+  .ree-prop{margin:8px 0 0;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}
+  .ree-prop b{display:block;font-size:14.5px;line-height:1.4;font-weight:700} .ree-prop .s{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .ree-prop-b{display:flex;gap:8px;margin-top:10px} .ree-prop-b button{flex:1;min-height:44px;border-radius:12px;font:700 14px var(--body);cursor:pointer}
+  .ree-ver{background:var(--raise);color:var(--ink);border:0} .ree-no{background:transparent;color:var(--muted);border:1px solid var(--raise2)}
+  .ree-intro{font-size:14px;color:var(--muted);line-height:1.45;margin:0 0 4px}
+  .ree-op{padding:12px 0;border-top:1px solid var(--line)} .ree-op:first-of-type{border-top:0}
+  .ree-top{display:flex;gap:12px;align-items:flex-start}
+  .ree-th{width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--raise);flex-shrink:0;border:0;padding:0;cursor:zoom-in}
+  .ree-sinfoto{display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1.2;color:var(--faint);text-align:center;cursor:default}
+  .ree-n{flex:1;min-width:0} .ree-n b{display:block;font-size:16px;line-height:1.25}
+  .ree-n .r{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.4} .ree-n .c{font-size:13px;color:var(--ink);margin-top:4px;font-weight:600}
+  .ree-tag{display:inline-block;margin-top:5px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);border:1px solid var(--raise2);border-radius:999px;padding:1px 7px}
+  .ree-bs{display:flex;gap:8px;margin-top:10px}
+  .ree-bs button{flex:1;min-height:44px;border-radius:12px;font:700 14px var(--body);cursor:pointer;border:1px solid var(--raise2);background:transparent;color:var(--ink)}
+  .ree-bs button.fuerte{background:var(--raise);border-color:var(--raise)} .ree-bs button:disabled{opacity:.45;cursor:default}
+  .ree-pie{font-size:12.5px;color:var(--faint);margin-top:10px;line-height:1.45}
+  /* ===== fin Reemplazos ===== */
 </style>
 </head>
 <body>
@@ -1006,6 +1047,7 @@
 <main>
   <!-- HOY (boceto G: portada corta, rutina de primero) -->
   <section id="tab-hoy">
+    <div class="dia-franja hidden" id="diaFranja" role="status"></div>
     <div class="hero g-hero" id="hero">
       <img id="heroImg" alt="" decoding="async" src="">
       <div class="grad"></div>
@@ -1018,6 +1060,7 @@
       <div class="g-title" id="heroTitle">…</div>
       <div class="g-sub" id="heroChips"></div>
       <div id="ctaBox"></div>
+      <div id="pendBox"></div>
       <div class="g-chips" id="hoyChips"></div>
       <div id="entrenadorBox"></div>
       <div id="pasosBox"></div>
@@ -1510,7 +1553,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610040023', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610040247', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1897,7 +1940,7 @@ function irA(tab) {
   if (tab === 'ajustes') { cargarAjustes(); ajSeccion(''); }
   window.scrollTo(0, 0);
 }
-document.querySelectorAll('nav button').forEach(function (b) { b.onclick = function () { irA(b.dataset.tab); }; });
+document.querySelectorAll('nav button').forEach(function (b) { b.onclick = function () { if (b.dataset.tab === 'hoy') irHoy(); else irA(b.dataset.tab); }; });   // "Hoy" siempre lleva a hoy (04/10)
 function toggleSelector() {
   var sel = $('selector'); sel.classList.toggle('hidden');
   if (sel.classList.contains('hidden')) return;
@@ -1928,7 +1971,7 @@ function conCache(clave, llamada, pintarFn) {
   });
 }
 
-var ultimaCarga = Date.now();
+var ultimaCarga = Date.now(), diaVisto = hoyISO();   // diaVisto: el día de la última vez que la app estuvo a la vista
 function cargarEstado(sesionForzada) {
   var f = $('fecha').value, sel = sesionForzada || '';
   var primera = true;
@@ -2002,8 +2045,9 @@ function pintarHero() {
   var e = estado, s = sesionActual, tipo = e.tipoDia, pg = e.programa || {};
   var c = e.cumpl && e.cumpl[e.fecha];
   var esHoy = e.fecha === hoyISO();
-  if (tipo === 'sesion' && !c && e.fecha < hoyISO()) tipo = 'sinregistro';   // día pasado de pesas sin nada anotado
-  var pesas = tipo === 'sesion' || tipo === 'sinregistro' || !!c;
+  if (e.noFui && !c && e.fecha < hoyISO()) tipo = 'nofui';   // cerrado con "No fui" (aunque luego fijaras la sesión en otro día)
+  else if (tipo === 'sesion' && !c && e.fecha < hoyISO()) tipo = 'sinregistro';   // día pasado de pesas sin nada anotado
+  var pesas = tipo === 'sesion' || tipo === 'sinregistro' || !!c || (tipo === 'nofui' && $('rutina').dataset.ver === e.fecha);
   var pendientes = s ? s.ejercicios.filter(function (x) { return x.estado === 'pendiente'; }) : [];
   // Hoy ya entrenaste (nada pendiente): abajo va la sesión que sigue; la portada sigue siendo lo de hoy
   var hoyListo = !!(c && esHoy && !pendientes.length && s && s.codigo === e.sugerida);
@@ -2047,6 +2091,11 @@ function pintarHero() {
     chip = ['bad', 'No fuiste']; titulo = 'No registraste esta sesión';
     sub = nombreHoy + ' · ' + nEj + ' ejercicios';
     cta = '<div class="g-2">' + gcta('', 'Anotar lo que hice', '', 'irRutina()') + gcta('ghost', 'No fui', '', 'noFui()') + '</div>';
+  } else if (tipo === 'nofui') {
+    // "No fui" guardado: gris, sin culpa; la sesión ya pasó al siguiente día de pesas
+    chip = ['desc', 'No entrenaste']; titulo = 'No entrenaste';
+    sub = nombreCorto(nombreHoy) + ' pasó al siguiente día de pesas';
+    cta = gcta('line', 'Anotar lo que hice', 'Si sí fuiste', 'anotarNoFui()');
   } else if (tipo === 'cardio') {
     chip = ['cardio', 'Cardio']; titulo = 'Cardio suave';
     var cd = pg.cardio || { minutos: '20–30', zona: 'Zona 2' };
@@ -2068,6 +2117,7 @@ function pintarHero() {
   var barra = pg.total && !pg.terminado ? '<span class="g-prog" title="Avance del programa"><span style="width:' + Math.min(100, Math.round(100 * (pg.hechas || 0) / pg.total)) + '%"></span></span>' : '';
   $('heroChips').innerHTML = sub ? '<span>' + esc(sub) + '</span>' + barra : '';
   $('ctaBox').innerHTML = (desc ? '<div class="g-desc">' + desc + '</div>' : '') + cta;
+  try { pintarFranja(); pintarPendientePasado(e); } catch (xF) { console.error(xF); }   // franja del día que ves y aviso de 2 días (nunca tumban Hoy)
   pintarChipsHoy();
   // Día de descanso: ideas para aprovecharlo (una sola acción de cardio: el chip "Cardio" no sale ese día)
   $('descansoBox').innerHTML = (tipo === 'descanso' && !c && !e.antesDeEmpezar) ?
@@ -2092,8 +2142,8 @@ function abrirSalud() {
   var d = $('saludDet'), r = $('saludRow'); if (d) { if (!d.classList.contains('open')) gcToggle('saludDet', r); d.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
   var b = document.querySelector('.g-salud'); if (b) { var i = Number(b.dataset.i); if (!isNaN(i) && !abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); } b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 }
-/** Día pasado sin registro: lo dejas como "no fuiste" y vuelves a hoy. */
-function noFui() { $('fecha').value = hoyISO(); cargarEstado(); toast('Ese día queda como no fuiste'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+/** Día pasado sin registro: "No fui" se guarda (marcarNoFui) y vuelves a hoy con la línea de a dónde pasó la sesión. */
+function noFui() { if (estado && estado.fecha) noFuiEn(estado.fecha); }
 function diaLargoEtiqueta(et) { var p = String(et || '').split(' '); return (DIA_LARGO[p[0]] || p[0] || '') + (p[1] ? ' ' + p[1] : ''); }
 /** Descarga programada opcional: si te sientes bien, la saltas y sigues con el bloque que viene (la descarga por fatiga sigue saliendo sola). */
 function saltarDescargaUI() {
@@ -2980,8 +3030,8 @@ function pintarSemanaTab() {
   $('kSemanaG').textContent = 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '') + ' · ' + rangoSemana(e.plan).toLowerCase();
   var strip = dias.map(function (d) {
     var p = d.etiqueta.split(' ');
-    var cls = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : 'libre';
-    var lbl = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : 'libre';
+    var cls = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : 'libre';
+    var lbl = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : 'libre';
     return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
   }).join('');
   $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas · toca un día para verlo</div>';
@@ -3001,6 +3051,7 @@ function pintarSemanaTab() {
       r = d.esHoy ? 'Empezar' : '';
     } else if (d.tipo === 'cardio') { t = 'Cardio suave'; s = '20–30 min a ritmo de conversación'; r = d.esHoy ? 'Hoy' : ''; }
     else if (d.tipo === 'sinregistro') { cls += ' sinreg'; t = nombres[d.sesion] || 'Pesas'; s = 'Sin registro ese día'; r = 'No fuiste'; }
+    else if (d.tipo === 'nofui') { cls += ' nofui'; t = 'No entrenaste'; s = 'La sesión pasó al siguiente día de pesas'; }
     else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
     return '<div class="' + cls + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')"><div class="d"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b></div>' +
@@ -3282,7 +3333,7 @@ var semanaVista = null;
 function pintarSemana(plan) {
   var chip = $('semChip'); if (!chip || !plan) return;
   chip.innerHTML = plan.dias.map(function (d) {
-    var cls = d.estado === 'hecho' ? 'ok' : d.tipo === 'sinregistro' ? 'bad' : d.tipo === 'sesion' ? 'plan' : 'dim';
+    var cls = d.estado === 'hecho' ? 'ok' : d.tipo === 'sinregistro' ? 'bad' : d.tipo === 'nofui' ? 'nf' : d.tipo === 'sesion' ? 'plan' : 'dim';   // nofui: gris
     if (d.esHoy) cls += ' hoy';
     return '<b class="' + cls + '" title="' + esc(d.fecha) + '">' + esc(String(d.etiqueta || '').split(' ')[0]) + '</b>';
   }).join('');
@@ -3642,6 +3693,10 @@ setInterval(vaciarCola, 30000);
    sin pisar series que estés escribiendo. */
 function hayCambiosSinGuardar() {
   if (typeof gdFormSucio === 'function' && gdFormSucio()) return true;
+  return seriesSinGuardar();
+}
+/** Series de Hoy escritas a mano sin "Listo" (o guardándose). */
+function seriesSinGuardar() {
   if (!sesionActual) return false;
   return sesionActual.ejercicios.some(function (e, i) {
     if (e.estado === 'hecho') return false;
@@ -3655,11 +3710,14 @@ document.addEventListener('visibilitychange', function () {
   if (typeof comprobarActualizacion === 'function') comprobarActualizacion();
   var fecha = $('fecha'), hoy = hoyISO();
   if (!fecha || !fecha.value) return;
-  if (editando() || hayCambiosSinGuardar()) {
-    if (fecha.value < hoy) toast('Ya es otro día: guarda o borra lo que tienes pendiente y toca Hoy para actualizar');
-    return;
+  var cambioDia = diaVisto !== hoy; diaVisto = hoy;
+  // "Hoy" siempre es hoy: al volver con el día cambiado (o tras un rato viendo otro día) pasa a hoy; series escritas sin guardar → franja
+  if (fecha.value !== hoy && (cambioDia || Date.now() - ultimaCarga > 10 * 60000)) {
+    if (seriesSinGuardar()) { pintarFranja('guardar'); return; }
+    if (editando() || hayCambiosSinGuardar()) return;
+    volverAHoy(); return;
   }
-  if (fecha.value < hoy) { fecha.value = hoy; cargarEstado(); return; }
+  if (editando() || hayCambiosSinGuardar()) return;
   if (Date.now() - ultimaCarga > 10 * 60000) cargarEstado();
 });
 
@@ -6283,6 +6341,239 @@ function lgPedirBorrado() {
     toast(r.mensaje); lgMsg('lgAjMsg', r.mensaje, true); lgMsg('lgOvMsg', r.mensaje, true);
   }).catch(errG);
 }
+/* ===== Días pasados (04/10/2026): "Hoy" siempre es hoy, franja del día que ves, "No fui" guardado y aviso de 2 días =====
+   Todo va en function (se pinta al abrir desde pintarHero: nunca leer aquí un var del final). El estado de la franja y de la
+   línea de "No fui" vive en el propio DOM (data-*). La sesión que no hiciste NO se pierde: el servidor la pasa al siguiente día de pesas. */
+function nombreCorto(n) { return String(n || '').split(' · ')[0]; }
+function diaSemanaIso(iso) { var p = String(iso).split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][d.getDay()]; }
+/** "jueves 2 oct" */
+function fechaFranja(iso) { var p = String(iso).split('-'); return diaSemanaIso(iso) + ' ' + Number(p[2]) + ' ' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'][Number(p[1]) - 1]; }
+/** Franja fija arriba de Hoy al ver otro día: "Estás viendo el jueves 2 oct" + Volver a hoy; con series sin guardar, Guardar y volver / Descartar. */
+function pintarFranja(modo) {
+  var b = $('diaFranja'), f = $('fecha') && $('fecha').value; if (!b) return;
+  if (modo) b.dataset.modo = modo;
+  if (!f || f === hoyISO()) { b.dataset.modo = ''; b.innerHTML = ''; b.classList.add('hidden'); return; }
+  var guardarPend = b.dataset.modo === 'guardar' && seriesSinGuardar();
+  if (!guardarPend) b.dataset.modo = '';
+  b.classList.toggle('dos', guardarPend);   // con dos botones: el texto arriba y los botones abajo
+  b.innerHTML = guardarPend
+    ? '<div class="df-t">Tienes series sin guardar del<b>' + esc(fechaFranja(f)) + '</b></div><button type="button" class="df-b" onclick="volverAHoy()">Descartar</button><button type="button" class="df-b go" onclick="guardarYVolver(this)">Guardar y volver</button>'
+    : '<div class="df-t">Estás viendo el<b>' + esc(fechaFranja(f)) + '</b></div><button type="button" class="df-b" onclick="irHoy()">Volver a hoy</button>';
+  b.classList.remove('hidden');
+}
+function volverAHoy() {
+  var b = $('diaFranja'); if (b) b.dataset.modo = '';
+  ppCerrar();   // la línea de "No fui" era de antes: lo que se haya anotado desde entonces manda
+  $('fecha').value = hoyISO(); $('selector').classList.add('hidden');
+  irA('hoy'); cargarEstado();
+}
+/** Botón "Hoy" de la barra: siempre a la fecha de hoy, salvo series escritas sin guardar en el día que ves (entonces, la franja). */
+function irHoy() {
+  var f = $('fecha').value;
+  if (!f || f === hoyISO()) { irA('hoy'); return; }
+  if (seriesSinGuardar()) { irA('hoy'); pintarFranja('guardar'); window.scrollTo(0, 0); return; }
+  volverAHoy();
+}
+/** Marca "Listo" en lo escrito a mano (con reps) y lo guarda con guardar(i) (idempotente); luego a hoy. */
+function guardarYVolver(btn) {
+  if (!sesionActual) { volverAHoy(); return; }
+  var prom = [];
+  sesionActual.ejercicios.forEach(function (e, i) {
+    if (e.estado === 'hecho') return;
+    var hay = false;
+    Array.prototype.forEach.call(document.querySelectorAll('#exSets' + i + ' tr'), function (tr) {
+      if (tr.dataset.ed !== '1' || tr.dataset.done === '1') return;
+      var ins = tr.querySelectorAll('input'); if (ins.length < 2 || ins[1].value === '') return;
+      if (ins[0].value === '' && ins[0].placeholder !== '') ins[0].value = ins[0].placeholder;
+      marcarFila(tr, true); hay = true;
+    });
+    if (hay) prom.push(guardar(i));
+  });
+  if (!prom.length) { toastBad('Anota las repeticiones para guardar, o toca Descartar'); return; }
+  if (btn) btn.disabled = true;
+  Promise.all(prom).then(function (rs) {
+    if (btn) btn.disabled = false;
+    if (rs.some(function (r) { return !r; })) return;   // el error ya salió en rojo: te quedas en ese día
+    toast('Guardado: volviste a hoy'); volverAHoy();
+  });
+}
+/** "Anotar lo que hice" en un día cerrado con "No fui": muestra la rutina de ese día (al guardar una serie, gana lo hecho). */
+function anotarNoFui() { $('rutina').dataset.ver = estado ? estado.fecha : ''; irRutina(); }
+/** "No fui" (portada de un día pasado o la línea de Hoy): se guarda y la línea dice a dónde pasó la sesión. */
+function noFuiEn(f, btn) {
+  if (btn) btn.disabled = true;
+  api('marcarNoFui', { fecha: f }).then(function (r) {
+    if (!r || !r.ok) { if (btn) btn.disabled = false; toastBad((r && r.motivo) || 'No se pudo guardar'); return; }
+    invalidarTodo();
+    var box = $('pendBox'); if (box) box.dataset.res = JSON.stringify({ hoy: hoyISO(), texto: noFuiTexto(r.destino), manana: (r.destino && r.destino.manana) || null, nombre: r.destino ? nombreCorto(r.destino.nombre) : '' });
+    $('fecha').value = hoyISO(); irA('hoy'); cargarEstado();
+  }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
+}
+/** "Torso A pasa al viernes" · "pasa a hoy" · "pasa a la próxima semana (lunes 5)". */
+function noFuiTexto(d) {
+  if (!d) return 'Listo. Tu semana sigue como estaba.';
+  var n = nombreCorto(d.nombre), p = String(d.fecha).split('-'), h = hoyISO().split('-');
+  var faltan = Math.round((new Date(+p[0], +p[1] - 1, +p[2]) - new Date(+h[0], +h[1] - 1, +h[2])) / 864e5);
+  if (d.esHoy || faltan <= 0) return n + ' pasa a hoy.';
+  if (faltan === 1) return n + ' pasa a mañana.';
+  if (faltan <= 6) return n + ' pasa al ' + diaSemanaIso(d.fecha) + '.';
+  return n + ' pasa a la próxima semana (' + diaSemanaIso(d.fecha) + ' ' + Number(p[2]) + ').';
+}
+function ppCuando(f) { var a = new Date(); a.setDate(a.getDate() - 1); var ayer = a.getFullYear() + '-' + ('0' + (a.getMonth() + 1)).slice(-2) + '-' + ('0' + a.getDate()).slice(-2); return f === ayer ? 'Ayer' : 'El ' + diaSemanaIso(f); }
+/** Una línea gris bajo el botón (solo viendo hoy): el día de pesas reciente sin anotar (máx. 2 días) o a dónde pasó la sesión tras "No fui". */
+function pintarPendientePasado(e) {
+  var box = $('pendBox'); if (!box) return;
+  var hoy = hoyISO(), res = null;
+  if (!e || e.fecha !== hoy) { box.innerHTML = ''; return; }
+  try { res = box.dataset.res ? JSON.parse(box.dataset.res) : null; } catch (x) { res = null; }
+  if (res && res.hoy === hoy) {
+    box.innerHTML = '<div class="pp-row"><span class="pp-t">' + esc(res.texto) + '</span>' +
+      (res.manana ? '<button type="button" onclick="ppManana(this)">Mejor mañana</button>' : '') +
+      '<button type="button" class="pp-x" onclick="ppCerrar()" aria-label="Cerrar">✕</button></div>';
+    return;
+  }
+  var p = e.pendientePasado;
+  if (!p || !p.fecha || p.fecha >= hoy) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="pp-row"><span class="pp-t">' + esc(ppCuando(p.fecha)) + ' no anotaste <b>' + esc(nombreCorto(p.nombre)) + '</b></span>' +
+    '<button type="button" onclick="ppLoHice(\'' + esc(p.fecha) + '\')">Lo hice</button>' +
+    '<button type="button" onclick="noFuiEn(\'' + esc(p.fecha) + '\', this)">No fui</button></div>';
+}
+function ppCerrar() { var box = $('pendBox'); if (box) { delete box.dataset.res; box.innerHTML = ''; } }
+/** "Lo hice": abre ese día para anotar (con la franja "Volver a hoy"). */
+function ppLoHice(f) { ppCerrar(); $('fecha').value = f; irA('hoy'); cargarEstado(); }
+/** "Mejor mañana": mañana no es día de pesas → la sesión pendiente se fija para mañana (fijarSesion). */
+function ppManana(btn) {
+  var box = $('pendBox'), res = null; try { res = JSON.parse(box.dataset.res || 'null'); } catch (x) {}
+  var m = res && res.manana; if (!m) return;
+  if (btn) btn.disabled = true;
+  api('fijarSesion', m.fecha, m.codigo).then(function () {
+    invalidarTodo();
+    box.dataset.res = JSON.stringify({ hoy: hoyISO(), texto: (res.nombre || 'La sesión') + ' queda para mañana.', manana: null });
+    cargarEstado();
+  }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
+}
+/* ===== Reemplazos (04/10/2026): "¿Te cuesta? Ver otros ejercicios" =====
+ * Pedido de Yonathan: la sentadilla con barra se le dificulta y nadie le decía qué la reemplaza. El motor está en Reemplazos.gs (sin IA):
+ * 2–4 opciones del mismo movimiento y músculo, más fáciles de dominar, con su razón, foto y carga para empezar. Aquí:
+ *  · tarjeta de Hoy: enlace gris "¿Te cuesta? Ver otros ejercicios ›" (capa simple) y "Otros ejercicios ›" junto a "Cambiar a …" (capa Más);
+ *  · hoja (hojaAbrir) con las opciones: "Solo hoy" (la alternativa del plan cambia de variante como siempre; otro ejercicio = ajuste de un
+ *    día) y "Desde ahora" (ajuste sustituir con motivo "Me cuesta la técnica");
+ *  · reemplazo activo: "En lugar de X" + "Volver a la X" (cambiarEjercicio modo volver);
+ *  · proactivo, una vez: "No lo hice" con "Me cuesta la técnica" abre la hoja; y si el servidor manda e.reemplazo (al límite y corto de reps
+ *    dos sesiones seguidas) la tarjeta pregunta "¿Lo cambiamos por algo más fácil de dominar?" hasta que diga que no (localStorage).
+ * `pintar` se envuelve (no se edita) para no chocar con otros cambios de la tarjeta. */
+var REE_MOTIVO = 'Me cuesta la técnica', reeDatos = null;
+/** "Sentadilla con barra" → "la sentadilla con barra" (para "Volver a la…"). */
+function reeArt(n) {
+  var t = String(n || ''), w = t.split(' ')[0].toLowerCase(), art = /ión$/.test(w) ? 'la' : /as$/.test(w) ? 'las' : /(os|es)$/.test(w) ? 'los' : /a$/.test(w) ? 'la' : 'el';
+  return art + ' ' + t.charAt(0).toLowerCase() + t.slice(1);
+}
+function reeVolverTxt(n) { return ('Volver a ' + reeArt(n)).replace(/^Volver a el /, 'Volver al '); }
+function reeClave(r) { return 'ree:no:' + r.ejercicio + '|' + r.fecha + '|' + r.tipo; }
+function reeDescartado(r) { try { return !!localStorage.getItem(reeClave(r)); } catch (e) { return false; } }
+var reePintarBase = typeof pintar === 'function' ? pintar : null;   // (las pruebas evalúan solo los bloques del final: ahí no hay pintar)
+if (reePintarBase) pintar = function (i, v) { reePintarBase(i, v); try { reePintar(i); } catch (x) { console.error(x); } };
+function reePintar(i) {
+  var e = sesionActual && sesionActual.ejercicios[i]; if (!e) return;
+  var v = e._var || 'principal', d = e.variantes[v]; if (!d) return;
+  var box = $('exRee' + i);
+  if (!box) { var mas = $('exMasBtn' + i); if (!mas) return; box = document.createElement('div'); box.id = 'exRee' + i; box.className = 'ree-box'; mas.parentNode.insertBefore(box, mas); }
+  var h = '', aj = e.ajuste;
+  // Ya cambiado (por la persona o por el Coach): de dónde viene y cómo volver
+  if (aj && (aj.accion === 'sustituir' || aj.accion === 'sustituir_hoy') && e.original && v === 'principal')
+    h += '<div class="ree-act"><span>' + (aj.accion === 'sustituir_hoy' ? 'Solo hoy, en lugar de ' : 'En lugar de ') + esc(e.original) + '</span>' +
+      '<button type="button" class="ree-volver" onclick="reeVolver(' + i + ')">' + esc(reeVolverTxt(e.original)) + '</button></div>';
+  var r = e.reemplazo && e.reemplazo.variante === v ? e.reemplazo : null;
+  if (!r && e.estado === 'omitido' && e.motivo === REE_MOTIVO && d.nOtros) r = { tipo: 'tecnica', fecha: sesionActual.fecha, ejercicio: d.nombre, texto: 'Marcaste que te cuesta la técnica. ¿Lo cambiamos por algo más fácil de dominar?' };
+  if (r && e.estado !== 'hecho' && !reeDescartado(r))
+    h += '<div class="ree-prop"><b>' + esc(r.texto) + '</b><div class="s">El músculo trabaja igual con un ejercicio que te salga bien.</div>' +
+      '<div class="ree-prop-b"><button type="button" class="ree-ver" onclick="reeAbrir(' + i + ')">Ver opciones</button><button type="button" class="ree-no" onclick="reeNo(' + i + ')">No, sigo con este</button></div></div>';
+  else if (d.nOtros && e.estado !== 'hecho') h += '<button type="button" class="ree-link" onclick="reeAbrir(' + i + ')">¿Te cuesta? Ver otros ejercicios ›</button>';
+  box.innerHTML = h;
+  // El cambio lo hizo la persona (no el Coach): la línea "Ajuste del Coach: …" de la capa Más sobra (ya lo dice "En lugar de …")
+  var masC = $('exMas' + i);
+  if (masC && aj && (aj.accion === 'sustituir_hoy' || /técnica/i.test(aj.motivo || ''))) Array.prototype.forEach.call(masC.querySelectorAll('.g-line'), function (x) { if (/^Ajuste del Coach/.test(x.textContent)) x.style.display = 'none'; });
+  var alt = $('exAlt' + i);
+  if (alt && d.nOtros && e.estado !== 'hecho') alt.insertAdjacentHTML('beforeend', '<button type="button" class="ree-mas" onclick="reeAbrir(' + i + ')">Otros ejercicios ›</button>');
+  // Acaba de marcar "No lo hice · Me cuesta la técnica": se le muestran las opciones una vez, sin que tenga que buscarlas
+  if (r && r.tipo === 'tecnica' && e.estado === 'omitido' && !e._reeOfrecido && !reeDescartado(r)) {
+    e._reeOfrecido = true;
+    var k = 'ree:ofrecido:' + r.ejercicio + '|' + r.fecha, ya = false;
+    try { ya = !!localStorage.getItem(k); localStorage.setItem(k, '1'); } catch (x) {}
+    if (!ya) setTimeout(function () { if (!hojaEstado.abierta) reeAbrir(i); }, 450);
+  }
+}
+/* Coach → "Ajustes activos": el cambio de un solo día se lee como tal */
+var reeDescBase = typeof descAjuste === 'function' ? descAjuste : null;
+if (reeDescBase) descAjuste = function (a) { return a && a.accion === 'sustituir_hoy' ? 'Solo hoy: ' + esc(a.valor) : reeDescBase(a); };
+function reeNo(i) {
+  var e = sesionActual.ejercicios[i], v = e._var || 'principal', d = e.variantes[v];
+  var r = e.reemplazo && e.reemplazo.variante === v ? e.reemplazo : { tipo: 'tecnica', fecha: sesionActual.fecha, ejercicio: d.nombre };
+  try { localStorage.setItem(reeClave(r), '1'); } catch (x) {}
+  reePintar(i); toast('Listo, sigues con ' + d.nombre + '. Las opciones quedan en "Más".');
+}
+function reeAbrir(i) {
+  var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'];
+  reeDatos = null;
+  var b = hojaAbrir({ titulo: 'Otros ejercicios', kicker: 'En vez de ' + d.nombre, html: '<div class="meta">Buscando opciones…</div>' });
+  api('reemplazosEjercicio', { nombre: d.nombre, sesion: sesionActual.codigo, fecha: sesionActual.fecha, original: e.original || '' }).then(function (r) {
+    if (!hojaEstado.abierta || $('hojaB') !== b) return;
+    reeDatos = r; reeDatos.i = i; reePintarHoja(i, r);
+  }).catch(function (x) { if ($('hojaB') === b) b.innerHTML = '<div class="g-err">' + esc(x && x.message ? x.message : x) + '</div>'; });
+}
+function reePintarHoja(i, r) {
+  var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], b = $('hojaB'); if (!b) return;
+  if (!r.opciones.length) { b.innerHTML = vacioHTML('Sin opciones por ahora', r.vacio || 'No tengo otro ejercicio más fácil para este.', '', ''); return; }
+  var mus = d.musculos && d.musculos.principal && d.musculos.principal.length ? d.musculos.principal.join(' y ').toLowerCase() : '';
+  var conSeries = seriesHoy(e) > 0;
+  var h = '<p class="ree-intro">Hacen el mismo movimiento' + (mus ? ' y trabajan ' + esc(mus) : '') + ', pero son más fáciles de dominar. Van de la más estable a la menos.</p>';
+  r.opciones.forEach(function (o, k) {
+    var foto = o.imagenes && o.imagenes.length
+      ? '<img class="ree-th" src="' + esc(o.imagenes[0]) + '" alt="' + esc(o.nombre) + ' (toca para ampliar)" loading="lazy" decoding="async" onclick="reeFoto(' + k + ')">'
+      : '<div class="ree-th ree-sinfoto">Sin foto</div>';
+    h += '<div class="ree-op"><div class="ree-top">' + foto + '<div class="ree-n"><b>' + esc(o.nombre) + '</b><div class="r">' + esc(o.razon) + '</div>' +
+      (o.cargaTexto ? '<div class="c">' + esc(o.cargaTexto) + '</div>' : '') + (o.variante ? '<span class="ree-tag">Tu alternativa del plan</span>' : '') + '</div></div>' +
+      '<div class="ree-bs"><button type="button"' + (conSeries ? ' disabled' : '') + ' onclick="reeElegir(' + k + ',\'hoy\', this)">Solo hoy</button>' +
+      '<button type="button" class="fuerte"' + (conSeries ? ' disabled' : '') + ' onclick="reeElegir(' + k + ',\'siempre\', this)">Desde ahora</button></div></div>';
+  });
+  h += '<div class="ree-pie">' + (conSeries ? 'Hoy ya anotaste series de ' + esc(d.nombre) + ': cámbialo en la próxima sesión.' :
+    '"Desde ahora" lo cambia en todas tus sesiones y la carga para empezar sale de lo que ya alzas. Puedes volver cuando quieras.') + '</div>';
+  b.innerHTML = h;
+}
+function reeFoto(k) {
+  var o = reeDatos && reeDatos.opciones[k]; if (!o || !o.imagenes || !o.imagenes.length) return;
+  fvAbrir({ nombre: o.nombre, fotos: o.imagenes, clave: o.clave || '', i: 0 });
+}
+function reeElegir(k, modo, btn) {
+  if (!reeDatos) return;
+  var i = reeDatos.i, e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], o = reeDatos.opciones[k]; if (!o) return;
+  if (modo === 'hoy' && o.variante) { hojaCerrar(); cambiarVariante(i, o.variante); toast('Hoy haces ' + o.nombre); return; }
+  Array.prototype.forEach.call(document.querySelectorAll('#hojaB .ree-bs button'), function (x) { x.disabled = true; });
+  if (btn) btn.textContent = 'Cambiando…';
+  api('cambiarEjercicio', { ejercicio: e.original || e.nombres[0], nombre: d.nombre, reemplazo: o.nombre, sesion: sesionActual.codigo, fecha: sesionActual.fecha, modo: modo }).then(function () {
+    hojaCerrar();
+    reeRecargar(i, modo === 'hoy' ? 'Solo hoy: ' + o.nombre : 'Listo: ' + o.nombre + ' desde ahora. Puedes volver cuando quieras.');
+  }).catch(function (x) { errG(x); if (reeDatos) reePintarHoja(i, reeDatos); });
+}
+function reeVolver(i) {
+  var e = sesionActual.ejercicios[i];
+  if (seriesHoy(e) > 0) { toastBad('Hoy ya anotaste series de ' + e.nombres[0] + ': vuelve desde la próxima sesión.'); return; }
+  api('cambiarEjercicio', { ejercicio: e.original, nombre: e.nombres[0], sesion: sesionActual.codigo, fecha: sesionActual.fecha, modo: 'volver' })
+    .then(function () { reeRecargar(i, 'Volviste a ' + e.original); }).catch(errG);
+}
+/** Tras un cambio: el plan cambió (también en otros días), así que se olvida la caché, se trae la sesión y la tarjeta queda abierta. */
+function reeRecargar(i, msg) {
+  invalidarTodo();
+  var cod = sesionActual.codigo, f = sesionActual.fecha;
+  api('getSesion', cod, f).then(function (s) {
+    escribirCache('ses:' + f + ':' + cod, s);
+    pintarSesion(s);
+    abiertos[i] = true; var bd = $('exBody' + i); if (bd) bd.classList.add('open');
+    var el = $('ex' + i); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (msg) toast(msg);
+  }).catch(errG);
+}
+/* ===== fin Reemplazos ===== */
 </script>
 </body>
 </html>
