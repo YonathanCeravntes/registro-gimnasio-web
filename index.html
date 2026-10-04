@@ -1510,7 +1510,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610040003', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610040023', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -4743,7 +4743,9 @@ $('aProbar').onclick = function () { api('probarAvisos').then(function (r) { toa
 
 /* ---------- Inicio ---------- */
 $('fecha').value = hoyISO(); $('dFecha').value = hoyISO(); $('cFecha').value = hoyISO();
-if (CFG) { pintarCola(); vaciarCola(); cargarEstado(); } else mostrarVincular(false);
+/* El arranque espera a que termine TODO el script: lo que se pinta al abrir (pintarEstado, pintarSesion…) usa variables y listas
+ * declaradas más abajo (CHEV, bvMostrada…); si corriera aquí, las vería sin valor ("undefined" en Hoy, 04/10) o las pisaría después. */
+setTimeout(function () { if (CFG) { pintarCola(); vaciarCola(); cargarEstado(); } else mostrarVincular(false); }, 0);
 
 /* ===== G-A: primer día, entrada, programa, ajustes ===== */
 /* ---------- Primer día (3 pasos: qué quieres lograr → cuántos días → tu peso; aterriza en la primera sesión) ---------- */
