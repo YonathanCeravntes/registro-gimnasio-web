@@ -1008,6 +1008,14 @@
   #semChip b.nf{color:var(--faint)}
   .g-dia.nofui{color:var(--faint)} .g-dia.nofui i{background:var(--faint)}
   .g-fila.nofui{opacity:.75} .g-fila.nofui .t{color:var(--dim)}
+  /* ===== Telegram: recordatorios por el bot (04/10/2026; opt-in, apagados por defecto) ===== */
+  .tg-rec{margin-top:14px;border-top:1px solid var(--line)}
+  .tg-rec .per-row b{white-space:normal}
+  .tg-rec .lg-ck{padding:10px 0}
+  #tgRecOpc.off{opacity:.45}
+  #tgRecOpc.off .lg-ck{cursor:default}
+  .tg-rec .lg-aviso{margin-top:6px}
+
   /* ===== Reemplazos (04/10/2026): "¿Te cuesta? Ver otros ejercicios" (tarjeta de Hoy + hoja con opciones; todo en gris: el ámbar sigue siendo solo el siguiente paso) ===== */
   .ree-box:empty{display:none}
   .ree-link{display:block;border:0;background:none;padding:0;margin-top:4px;min-height:40px;color:var(--muted);font:600 14px var(--body);cursor:pointer;text-align:left}
@@ -1032,6 +1040,7 @@
   .ree-bs button.fuerte{background:var(--raise);border-color:var(--raise)} .ree-bs button:disabled{opacity:.45;cursor:default}
   .ree-pie{font-size:12.5px;color:var(--faint);margin-top:10px;line-height:1.45}
   /* ===== fin Reemplazos ===== */
+
 </style>
 </head>
 <body>
@@ -1553,7 +1562,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610040305', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610040337', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -5616,7 +5625,8 @@ function pintarTelegram() {
   var h;
   if (!t.bot) h = '<div class="gd-tg">El dueño aún no activó el bot de Telegram. Cuando lo haga, aquí podrás vincular tu cuenta y anotar lo que comes con un mensaje.</div>';
   else if (t.vinculado) h = '<div class="gd-ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><div class="n"><b>Vinculado como ' + esc(t.nombre || 'tú') + '</b><div class="s">' + (t.desde ? 'Desde el ' + esc(fechaCortaIso(String(t.desde).slice(0, 10))) + ' · ' : '') + '@' + esc(t.bot) + '</div></div></div>' +
-    '<div class="gd-tg" style="margin-top:10px">Escríbele al bot lo que comiste o mándale la foto de la tabla nutricional: queda anotado en tu día.</div>' +
+    '<div class="gd-tg" style="margin-top:10px">Escríbele al bot lo que comiste (o mándale una nota de voz o la foto de la tabla nutricional), tu peso ("peso 82,4"), o pregúntale /entreno y /comer.</div>' +
+    tgRecHTML(t) +
     '<button type="button" class="btn txt" onclick="gdTgDesvincular()">Desvincular</button>';
   else if (tgCodigo) h = '<div class="gd-tg">Tu código:</div><div class="gd-code">' + esc(tgCodigo.codigo) + '</div><div class="gd-code-l">Mándaselo al bot</div>' +
     (tgCodigo.enlace ? '<a class="btn gd-abrir" href="' + esc(tgCodigo.enlace) + '" target="_blank" rel="noopener">Abrir Telegram</a>' : '') +
@@ -5639,7 +5649,7 @@ function gdResumenTelegram() {
   var m = $('ajMenuTelegram'), s = $('ajSubTelegram'); if (!m) return;
   var t = tgEstado;
   m.style.display = t && t.bot ? '' : 'none';
-  if (s && t) s.textContent = t.vinculado ? 'Vinculado' + (t.nombre ? ' como ' + t.nombre : '') : 'Sin vincular · anota lo que comes con un mensaje';
+  if (s && t) s.textContent = t.vinculado ? 'Vinculado' + (t.nombre ? ' como ' + t.nombre : '') + (t.recordatorios && t.recordatorios.activo ? ' · con recordatorios' : '') : 'Sin vincular · anota lo que comes con un mensaje';
 }
 /* ===== fin G-D ===== */
 
@@ -6452,6 +6462,39 @@ function ppManana(btn) {
     cargarEstado();
   }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
 }
+/* ===== Telegram: recordatorios por el bot (04/10/2026) =====
+ * Opt-in, apagados por defecto (Config TgRecordatorios). Interruptor + 3 casillas → guardarRecordatoriosTelegram. Los manda el reloj del
+ * servidor (Telegram.gs, recordatoriosTelegramDeTodos_): mañana a la hora del aviso (sesión + comida de ahora), 4 p. m. si la proteína va por
+ * debajo de la mitad, 8:30 p. m. si no has cerrado el día. Nunca entre 9 p. m. y 6 a. m. Sin la finalidad "avisos" no llegan (se avisa aquí). */
+function tgHoraTxt(h) { h = Number(h) || 6; return h === 12 ? '12 m.' : h < 12 ? h + ' a. m.' : (h - 12) + ' p. m.'; }
+function tgRecHTML(t) {
+  var r = t.recordatorios || { activo: false, manana: true, tarde: true, noche: true }, on = !!r.activo;
+  var ck = function (id, v, titulo, linea) { return '<label class="lg-ck"><input type="checkbox" id="' + id + '"' + (v ? ' checked' : '') + (on ? '' : ' disabled') + ' onchange="tgRecGuardar()"><span><b>' + titulo + '</b><small>' + linea + '</small></span></label>'; };
+  return '<div class="tg-rec">' +
+    '<div class="per-row"><div class="n"><b>Recordatorios por Telegram</b><small>' + (on ? 'El bot te escribe lo que marques' : 'Apagados: el bot solo responde') + '</small></div>' +
+      '<label class="per-sw lg-sw" aria-label="Recordatorios por Telegram"><input type="checkbox" id="tgRecSw"' + (on ? ' checked' : '') + ' onchange="tgRecGuardar(true)"><i></i></label></div>' +
+    '<div id="tgRecOpc"' + (on ? '' : ' class="off"') + '>' +
+      ck('tgRecM', r.manana, 'Por la mañana: lo de hoy', 'A las ' + esc(tgHoraTxt(t.horaManana)) + ': tu rutina y qué comer') +
+      ck('tgRecT', r.tarde, 'En la tarde: proteína', '4 p. m., solo si vas por debajo de la mitad') +
+      ck('tgRecN', r.noche, 'En la noche: cerrar el día', '8:30 p. m., si no lo has cerrado (y tu suplemento de hoy)') +
+    '</div>' +
+    (on && t.avisos === false ? '<div class="lg-aviso"><span>Para que te lleguen, activa "Avisos" en Privacidad y datos.</span><button type="button" class="btn sec" onclick="irAjustes(\'privacidad\')">Ir</button></div>' : '') +
+    '</div>';
+}
+function tgRecGuardar(desdeSw) {
+  if (!tgEstado) return;
+  var v = function (id) { var x = $(id); return !!(x && x.checked); };
+  var p = { activo: v('tgRecSw'), manana: v('tgRecM'), tarde: v('tgRecT'), noche: v('tgRecN') };
+  if (desdeSw && p.activo && !p.manana && !p.tarde && !p.noche) p.manana = true;   // encender sin nada marcado = la mañana
+  var antes = tgEstado.recordatorios;
+  tgEstado.recordatorios = Object.assign({}, antes || {}, p); pintarTelegram();
+  api('guardarRecordatoriosTelegram', p).then(function (r) {
+    tgEstado.recordatorios = r.recordatorios; tgEstado.avisos = r.avisos; if (r.horaManana) tgEstado.horaManana = r.horaManana;
+    pintarTelegram(); toast(desdeSw ? (p.activo ? 'Recordatorios por Telegram activados' : 'Recordatorios por Telegram apagados') : 'Guardado');
+  }).catch(function (e) { tgEstado.recordatorios = antes; pintarTelegram(); errG(e); });
+}
+/* ===== fin Telegram: recordatorios ===== */
+
 /* ===== Reemplazos (04/10/2026): "¿Te cuesta? Ver otros ejercicios" =====
  * Pedido de Yonathan: la sentadilla con barra se le dificulta y nadie le decía qué la reemplaza. El motor está en Reemplazos.gs (sin IA):
  * 2–4 opciones del mismo movimiento y músculo, más fáciles de dominar, con su razón, foto y carga para empezar. Aquí:
