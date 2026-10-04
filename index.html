@@ -936,6 +936,61 @@
   .fv-clave{margin:12px 16px 0;color:var(--ink);font-size:15px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .fv-clave:empty{display:none}
   .fv-ayuda{margin:6px 16px 0;color:var(--faint);font-size:12px;text-align:center}
+  /* ===== Comunidad (03/10/2026): "¿Dónde lo compraste?", "Lo que otros compran", personas como tú y segmentos del dueño ===== */
+  .tnd{margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+  .hoja .tnd{background:var(--card2)}
+  .tnd-h{display:flex;justify-content:space-between;align-items:center;gap:10px} .tnd-h b{font-size:15px}
+  .tnd-x{background:none;border:0;color:var(--muted);font:600 13px var(--body);padding:8px 0 8px 10px;min-height:40px;cursor:pointer}
+  .tnd-s{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.4}
+  .tnd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .tnd-chips button{border:1px solid var(--raise2);background:transparent;color:var(--ink);font:600 14px var(--body);border-radius:999px;padding:0 12px;min-height:40px;cursor:pointer}
+  .tnd-chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .tnd-chips button:disabled{opacity:.5}
+  .tnd-otra{display:flex;gap:8px;margin-top:10px;align-items:center} .tnd-otra input{flex:1;min-width:0} .tnd-otra .btn{width:auto;flex-shrink:0;padding:0 18px;margin:0}
+  .tnd.ok{display:flex;align-items:center;gap:8px;color:var(--green-ink);font-size:14px;font-weight:600;border-color:var(--green-line);background:var(--green-bg)}
+  .tnd.ok svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .com-linea{margin-top:5px;font-size:13px;line-height:1.4;color:var(--muted);padding-left:10px;border-left:2px solid var(--raise2)}
+  .com-food .meta{font-size:12.5px}
+  .com-coach{margin-top:12px} .com-coach .t{font-size:15px;line-height:1.45;margin-top:4px;color:var(--ink)} .com-coach .meta{margin-top:6px;font-size:12px}
+  .com-honesta{margin:12px 2px 0;font-size:13px;color:var(--faint)}
+  .seg-kpi{display:flex;gap:8px} .seg-kpi div{flex:1;min-width:0;padding:10px;border-radius:12px;background:var(--bg);border:1px solid var(--raise2)}
+  .seg-kpi b{display:block;font-family:var(--disp);font-size:22px;font-weight:800} .seg-kpi small{display:block;color:var(--muted);font-size:11.5px;line-height:1.3}
+  .seg-t{padding:10px 0 2px;border-top:1px solid var(--line);margin-top:12px} .seg-th{display:flex;justify-content:space-between;align-items:baseline;gap:10px} .seg-th b{font-size:16px} .seg-th span{font-size:13px;color:var(--muted)}
+  .seg-r{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0;color:var(--muted)} .seg-r b{color:var(--ink)}
+  /* ===== Legal (03/10/2026): aceptación de términos (#lgOv), Privacidad y datos (#lgCard) y avisos de permisos; también la usa la entrada (construir-web.js) ===== */
+  #lgOv{position:fixed;inset:0;z-index:25;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+  .lg-wrap{max-width:640px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
+  .lg-wrap .bv-h{margin-top:14px}
+  .lg-av{margin:0 0 14px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;line-height:1.5;color:var(--muted)}
+  .lg-av b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+  .lg-av a{font-weight:700}
+  .lg-docs{margin:0 0 14px;border-radius:14px;background:var(--card);overflow:hidden}
+  .lg-doc{display:flex;align-items:center;gap:10px;padding:12px 14px;min-height:52px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none}
+  .lg-doc:first-child{border-top:0}
+  .lg-doc span:first-child{flex:1;min-width:0} .lg-doc b{display:block;font-size:15px} .lg-doc small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .lg-doc .lg-leer{color:var(--muted);font-size:13px;font-weight:700;white-space:nowrap}
+  .lg-doc .nuevo{color:var(--amber);font-weight:700}
+  .lg-k{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin:16px 0 4px}
+  .lg-ck{display:flex;gap:12px;align-items:flex-start;margin:0;padding:11px 0;border-top:1px solid var(--line);text-transform:none;letter-spacing:0;font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;cursor:pointer;min-height:44px}
+  .lg-ck:first-of-type{border-top:0}
+  .lg-ck input{flex:0 0 22px;width:22px;height:22px;margin:1px 0 0;padding:0;accent-color:#2f7a46;cursor:pointer}
+  .lg-ck span{flex:1;min-width:0} .lg-ck b{font-weight:700} .lg-ck small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .lg-ck .sens{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);border:1px solid var(--raise2);border-radius:999px;padding:1px 6px;vertical-align:1px}
+  .lg-ck .nota{color:var(--bad)}
+  .lg-box{padding:4px 14px;border-radius:14px;background:var(--card)}
+  .lg-msg{font-size:14px;line-height:1.5;margin:10px 0 0;color:var(--bad)} .lg-msg:empty{display:none} .lg-msg.bien{color:var(--green-ink)}
+  .lg-cod{letter-spacing:6px;font-size:24px;text-align:center}
+  .lg-pie{color:var(--faint);font-size:12.5px;line-height:1.5;margin-top:16px}
+  .lg-pie .btn.txt{color:var(--muted);font-size:12.5px;min-height:32px}
+  .lg-nota{margin-top:10px;line-height:1.5}
+  .lg-sw input:checked+i{background:var(--green)}
+  .lg-aviso{display:flex;gap:10px;align-items:center;margin:8px 0 4px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:13.5px;line-height:1.45;color:var(--muted)}
+  .lg-aviso span{flex:1} .lg-aviso .btn{width:auto;min-height:40px;padding:6px 14px;font-size:16px}
+  .lg-hist{font-size:13px;color:var(--muted);line-height:1.5;padding:8px 0;border-top:1px solid var(--line)} .lg-hist:first-of-type{border-top:0}
+  .lg-hist b{color:var(--ink);font-weight:600}
+  .lg-bad{color:var(--bad)!important}
+  #lgCard .per-row small{white-space:normal}
+  #acc-crear .lg-docs,#acc-crear .lg-box,#acc-crear .lg-av{background:var(--card2)} #acc-crear .lg-box{margin-top:12px}
 </style>
 </head>
 <body>
@@ -1017,6 +1072,7 @@
       <div id="cMetaInfo" class="g-meta-info g-fold"></div>
       <div id="cMomentos"></div>
     </div>
+    <div id="cTienda"></div>
     <div id="cAgregar" class="hidden">
       <input id="cBuscar" placeholder="Buscar comida… (huevo, atún, arepa)" autocomplete="off" aria-label="Buscar comida">
       <div class="pk-chips c-chips" id="cChips"></div>
@@ -1025,6 +1081,7 @@
       <div class="row" style="margin-top:10px;align-items:center"><div class="meta">Cantidad (porciones)</div>
         <div class="toggle" id="cCant" style="margin:0"><button data-q="0.5">½</button><button data-q="1" class="on">1</button><button data-q="1.5">1½</button><button data-q="2">2</button><button data-q="3">3</button></div></div>
       <div id="cLista" style="margin-top:6px"></div>
+      <div id="cComunidad"></div>
       <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto o foto</span></div>
       <div id="cIaOff" class="ia-off" style="display:none"></div>
       <div id="cIaBox">
@@ -1035,6 +1092,7 @@
       <div class="meta" id="cIaFotoTxt"></div>
       <button class="btn sec" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular con IA</button>
       <div id="cIaRes"></div>
+      <div id="cIaTienda"></div>
       </div>
       <details style="margin-top:14px"><summary>Crear una comida nueva</summary>
         <label>Nombre</label><input id="nNombre" placeholder="Ej.: Batido de avena con banano">
@@ -1042,6 +1100,7 @@
         <div class="row"><div><label>Kcal</label><input id="nKcal" type="number" inputmode="decimal"></div><div><label>Proteína g</label><input id="nProt" type="number" inputmode="decimal"></div></div>
         <div class="row"><div><label>Carbohidratos g</label><input id="nCarb" type="number" inputmode="decimal"></div><div><label>Grasa g</label><input id="nGrasa" type="number" inputmode="decimal"></div></div>
         <button class="btn sec" style="margin-top:8px" onclick="crearComidaUI()">Guardar comida</button>
+        <div id="nTienda"></div>
         <div class="meta" style="margin-top:6px">Los valores de la etiqueta del producto o de una app de calorías.</div>
       </details>
     </div>
@@ -1077,13 +1136,15 @@
     <input type="date" id="dFecha" class="oculto" aria-hidden="true" tabindex="-1">
     <div class="card pr-peso" id="pesoCard">
       <div class="dayh"><b id="cuKick">Tu peso de hoy</b><span class="g-fecha"><button onclick="cuDia(-1)" aria-label="Día anterior">‹</button><button onclick="cuDia(1)" aria-label="Día siguiente">›</button></span></div>
-      <div class="g-peso"><input id="dPeso" type="number" inputmode="decimal" step="0.1" placeholder="0,0" aria-label="Peso en kg"><button class="btn" id="dGuardar">Guardar</button></div>
+      <div class="g-peso" id="cuPesoFila"><input id="dPeso" type="number" inputmode="decimal" step="0.1" placeholder="0,0" aria-label="Peso en kg"><button class="btn" id="dGuardar">Guardar</button></div>
+      <div id="lgPesoAviso"></div>
       <div class="g-chips" id="cuChips"></div>
       <div class="g-frase" id="cuFrase"></div>
     </div>
     <div id="panel"><div class="empty">Cargando…</div></div>
     <button class="g-row" id="fotoRow" aria-expanded="false" onclick="gcToggle('fotoBox', this)"><span class="n"><b>Foto de progreso</b><span class="s" id="fEstado">Cada 4 semanas: frente, perfil y espalda.</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="fotoBox">
+      <div id="lgFotoAviso"></div>
       <div class="g-foto" style="margin-top:0;padding:0;background:none"><div class="n"><b>Tomar una foto</b><span class="s">Misma luz y misma pose cada vez.</span></div>
         <select id="fTipo" aria-label="Tipo de foto"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select>
         <label class="btn" for="fArchivo" id="fTomar"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="fArchivoTxt">Tomar</span></label></div>
@@ -1157,6 +1218,7 @@
       <div class="aj-grupo">Tu cuenta</div>
       <div class="card aj-menu">
         <button onclick="ajSeccion('perfil')"><span><b>Perfil, avisos y contraseña</b><small id="ajSubPerfil">Edad, estatura y recordatorios</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="ajSeccion('privacidad')" id="ajMenuPrivacidad"><span><b>Privacidad y datos</b><small id="ajSubPrivacidad">Lo que aceptaste y tus permisos</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('telegram')" id="ajMenuTelegram" style="display:none"><span><b>Telegram</b><small id="ajSubTelegram">Anota lo que comes con un mensaje</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Personas, alumnos, IA y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="mostrarGuia('ajustes')"><span><b>Cómo funciona Enfoque</b><small>Un recorrido de un minuto por la app</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -1165,6 +1227,7 @@
     <div class="card aj-menu" data-sec="avanzado">
       <button onclick="ajSeccion('cuenta')" id="ajMenuCuenta"><span><b>Personas e invitaciones</b><small>Tu código, quién se registró y su IA</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <button onclick="ajSeccion('alumnos')" id="ajMenuAlumnos" style="display:none"><span><b>Alumnos</b><small>Modo entrenador: sus semanas, notas, planes y Pro</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button onclick="ajSeccion('comunidad')" id="ajMenuCom" style="display:none"><span><b>Comunidad y tiendas</b><small>Dónde compran y qué les funciona, sin nombres</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <button onclick="ajSeccion('ia')" id="ajMenuIA" style="display:none"><span><b>IA</b><small id="ajSubIA">Claude o Gemini para el Coach y los planes</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <button onclick="ajSeccion('conexion')"><span><b>Conexión</b><small>Si algo no carga, prueba aquí</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
@@ -1195,6 +1258,11 @@
       <h2>Tu código de invitación</h2>
       <div class="meta">Comparte el enlace por WhatsApp: abre la app en <b>Crear cuenta</b> con tu código ya puesto. Cada persona ve solo sus datos.</div>
       <div id="invBody" class="meta" style="margin-top:8px">Cargando…</div>
+    </div>
+    <div class="card" id="segCard" data-sec="comunidad">
+      <h2>Comunidad y tiendas</h2>
+      <div class="meta">Solo de quienes autorizaron compartir sus datos. Sin nombres ni correos; un grupo de menos de 3 personas no se muestra.</div>
+      <div id="segBody" style="margin-top:8px"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="perCard" data-sec="cuenta" style="display:none">
       <h2>Personas registradas</h2>
@@ -1237,6 +1305,7 @@
     </div>
     <div class="card" data-sec="salud">
       <h2>Tu salud</h2>
+      <div id="lgSaludAviso"></div>
       <div class="meta">Toca lo que tengas. Con esto cuidamos tu comida y tu entreno.</div>
       <div class="sl-grid" id="sGrid"></div>
       <div class="pc-sel" id="sCondSel"></div>
@@ -1281,6 +1350,9 @@
       <div class="row"><div><label for="aHora">Hora</label><select id="aHora" onchange="guardarAvisosUI()"></select></div><div><label for="aEmail">Correo</label><input id="aEmail" type="email" onchange="guardarAvisosUI()"></div></div>
       <label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:10px;text-transform:none;letter-spacing:0;font-size:14px"><input type="checkbox" id="aSemanal" style="width:auto" onchange="guardarAvisosUI()"> Informe del Coach los domingos 7 p. m.</label>
       <button class="btn sec" style="margin-top:10px" id="aProbar">Enviarme una prueba</button>
+    </div>
+    <div class="card" id="lgCard" data-sec="privacidad">
+      <div id="lgBody"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="tgCard" data-sec="perfil telegram">
       <h2>Telegram</h2>
@@ -1332,6 +1404,9 @@
     <div class="gu-acts"><button type="button" class="btn sec" id="guAtras" onclick="guiaIr(-1)">Atrás</button><button type="button" class="btn" id="guSig" onclick="guiaIr(1)">Siguiente</button></div>
   </div>
 </div>
+<div id="lgOv" class="hidden" role="dialog" aria-label="Términos y tus datos">
+  <div class="lg-wrap"><div class="gu-top"><span class="kicker" style="color:var(--amber)">ENFOQUE · TUS DATOS</span></div><div id="lgOvCuerpo"><div class="meta">Cargando…</div></div></div>
+</div>
 <div id="coachChat" class="hidden"></div>
 <div id="armar" class="hidden">
   <div class="bv-wrap">
@@ -1365,7 +1440,8 @@
   .en-hero{position:relative;height:calc(118px + env(safe-area-inset-top,0px));overflow:hidden;background:var(--card)}
   .en-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block}
   .en-hero .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,14,16,.3) 0%,rgba(14,14,16,.2) 45%,#0e0e10 100%)}
-  .en-hero .kicker{position:absolute;left:20px;bottom:6px;color:var(--amber);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+  .en-hero .kicker{position:absolute;left:20px;bottom:6px;color:var(--amber);text-shadow:0 1px 6px rgba(0,0,0,.6);display:flex;align-items:center;gap:8px}
+  .en-hero .kicker .en-logo{width:34px;height:34px;flex:none;filter:drop-shadow(0 1px 6px rgba(0,0,0,.6))}
   .en-body{max-width:640px;margin:0 auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
   .en-h1{font-family:var(--disp);font-size:36px;font-weight:800;text-transform:uppercase;line-height:.95;margin:0}
   .en-sub{color:var(--muted);font-size:14px;line-height:1.45;margin:8px 0 12px}
@@ -1375,7 +1451,7 @@
   #vincular .acc-msg:empty{display:none}
 </style>
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch">
-  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker">Enfoque</div></div>
+  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker"><svg class="en-logo" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="56 56 400 400" > <defs> <linearGradient id="enfs-disco" x1="0" y1="0" x2="1" y2="1"> <stop offset="0" stop-color="#FFC26A"/> <stop offset="1" stop-color="#FF7C1B"/> </linearGradient> <filter id="enfs-sombra" x="30" y="170" width="452" height="270" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"> <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".4"/> </filter> <filter id="enfs-borde" x="60" y="220" width="392" height="135" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"> <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-color="#000" flood-opacity=".45"/> </filter> </defs> <circle cx="256" cy="256" r="165" fill="none" stroke="#FFA046" stroke-opacity=".13" stroke-width="20"/> <path d="M215 150 256 112 297 150" fill="none" stroke="#EDEDED" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/> <g filter="url(#enfs-sombra)"> <rect x="150" y="272.5" width="212" height="29" fill="#E9EBF0"/> <rect x="110" y="216" width="45" height="142" rx="16" fill="url(#enfs-disco)"/> <rect x="357" y="216" width="45" height="142" rx="16" fill="url(#enfs-disco)"/> <g filter="url(#enfs-borde)"> <rect x="75" y="238" width="39" height="98" rx="15" fill="url(#enfs-disco)"/> <rect x="398" y="238" width="39" height="98" rx="15" fill="url(#enfs-disco)"/> </g> </g> </svg> <span>Enfoque</span></div></div>
   <div class="en-body">
   <h1 class="en-h1">Tu plan de gimnasio y comida, sin vueltas</h1>
   <p class="en-sub">Te dice qué hacer hoy, cuánto peso poner y qué comer. Todo con tu historial.</p>
@@ -1389,11 +1465,13 @@
   </form>
   <div class="card" id="acc-crear" style="display:none">
     <form id="crPaso1" novalidate onsubmit="return crearCuenta()">
+      <div id="crAviso"><div class="lg-av"><b>Tus datos, claro</b>Guardamos tus entrenos, comidas y progreso para armarte el plan. Solo tú los ves. Lo sensible (peso, salud, fotos) solo si lo autorizas, y puedes pedir verlo, corregirlo o borrarlo cuando quieras.</div></div>
       <label for="crInv" style="margin-top:0">Código de invitación</label><input id="crInv" autocapitalize="characters" autocomplete="off" placeholder="GYM-XXXXXX" style="text-transform:uppercase">
       <p class="en-ok" id="crInvOk">Llegó con tu enlace. Ya quedó puesto.</p>
       <label for="crNombre">Tu nombre</label><input id="crNombre" name="name" autocomplete="name" placeholder="Ej.: Carlos">
       <label for="crCorreo">Correo</label><input id="crCorreo" name="email" type="email" autocomplete="username" inputmode="email" placeholder="tu@correo.com">
       <label for="crClave">Contraseña (8 o más)</label><div style="display:flex;gap:8px;align-items:center"><input id="crClave" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="Una frase que recuerdes"><button type="button" class="btn txt" style="min-width:64px" onclick="verClave('crClave', this)">Ver</button></div>
+      <div id="crLegal"></div>
       <button class="btn" id="crBtn" type="submit" style="width:100%;margin-top:14px;font-size:18px">Te mandamos un código al correo</button>
     </form>
     <p id="crMsg" class="acc-msg"></p>
@@ -1432,7 +1510,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610032352', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610040003', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1640,7 +1718,41 @@ function accError(id, e, correo) {
   };
   m.appendChild(document.createElement('br')); m.appendChild(b);
 }
+/* Términos y datos al crear la cuenta (GET /legal/vigentes): aviso corto, enlaces a los documentos, casillas obligatorias (18+ y aceptar)
+   y una casilla por finalidad opcional con su línea llana. Sin las obligatorias el botón no avanza. Sin documentos publicados no se pide nada. */
+function legalRegistroActivo() { var d = window.LG_REG; return !!(d && (d.documentos || []).some(function (x) { return x.id === 'terminos'; })); }
+function cargarLegalRegistro(forzar) {
+  var box = $('crLegal'); if (!box) return;
+  if (window.LG_REG && !forzar) { pintarLegalRegistro(); return; }
+  box.innerHTML = '<p class="meta" style="margin-top:12px">Cargando los términos…</p>';
+  fetch(baseServidor() + '/legal/vigentes').then(function (r) { return r.json(); }).then(function (j) {
+    window.LG_REG = j && j.ok ? j : { documentos: [], finalidades: [] }; pintarLegalRegistro();
+  }).catch(function () {
+    window.LG_REG = null;
+    box.innerHTML = '<p class="acc-msg">No pude cargar los términos. Revisa tu conexión.</p><button type="button" class="btn sec" style="width:100%;margin-top:8px" onclick="cargarLegalRegistro(true)">Intentar de nuevo</button>';
+  });
+}
+function pintarLegalRegistro() {
+  var d = window.LG_REG, box = $('crLegal'), av = $('crAviso');
+  if (!legalRegistroActivo()) { box.innerHTML = ''; return; }
+  var url = function (id) { return baseServidor() + '/legal/' + id; };
+  var doc = function (id) { return (d.documentos || []).filter(function (x) { return x.id === id; })[0]; };
+  var aviso = doc('aviso');
+  if (aviso) av.innerHTML = '<div class="lg-av"><b>Tus datos, claro</b>' + esc(aviso.resumen || 'Guardamos tus entrenos, comidas y progreso para armarte el plan. Solo tú los ves. Lo sensible (peso, salud, fotos) solo si lo autorizas.') +
+    ' <a href="' + esc(url('aviso')) + '" target="_blank" rel="noopener">Leer el aviso de privacidad</a></div>';
+  var leer = [['terminos', 'Leer términos'], ['politica', 'Leer política'], ['autorizacion', 'Leer autorización']].filter(function (x) { return doc(x[0]); });
+  box.innerHTML = '<div class="lg-k">Tus datos y los términos</div><div class="lg-docs">' + leer.map(function (x) {
+      return '<a class="lg-doc" href="' + esc(url(x[0])) + '" target="_blank" rel="noopener"><span><b>' + esc(x[1]) + '</b><small>' + esc(doc(x[0]).titulo) + ' · versión ' + esc(doc(x[0]).version) + '</small></span><span class="lg-leer">›</span></a>';
+    }).join('') + '</div>' +
+    '<div class="lg-box">' + lgCasillaHTML('crMayor', 'Tengo 18 años o más.', '', false) +
+    lgCasillaHTML('crAcepto', 'Leí y acepto los Términos y la Política, y autorizo usar mis datos para operar mi cuenta.', 'Obligatoria: sin esto no hay app.', false) + '</div>' +
+    '<div class="lg-k">Opcional · lo cambias cuando quieras en Ajustes</div><div class="lg-box">' + (d.finalidades || []).filter(function (f) { return !f.obligatoria; }).map(function (f) {
+      return lgCasillaHTML('crFin_' + f.id, f.nombre, f.linea, !!f.defecto, { sens: f.sensible });
+    }).join('') + '</div>' +
+    '<p class="meta" style="margin-top:10px;line-height:1.5">Escribir el código que te mandamos al correo equivale a tu firma electrónica.</p>';
+}
 function accVista(v) {
+  if (v === 'crear') cargarLegalRegistro();
   ['entrar', 'crear', 'olvide'].forEach(function (x) { $('acc-' + x).style.display = x === v ? '' : 'none'; });
   document.querySelectorAll('#accTabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === v); });
   if (v === 'olvide' && !$('olCorreo').value) $('olCorreo').value = $('enCorreo').value;
@@ -1660,11 +1772,18 @@ function crearCuenta() {
   if (!correoOk(d.correo)) { accMsg('crMsg', 'Escribe un correo válido.'); return false; }
   if (d.clave.length < 8) { accMsg('crMsg', 'La contraseña debe tener al menos 8 caracteres.'); return false; }
   if (!d.invitacion) { accMsg('crMsg', 'Escribe el código de invitación.'); return false; }
+  if (legalRegistroActivo()) {
+    if (!$('crMayor').checked) { accMsg('crMsg', 'Para crear tu cuenta, confirma que tienes 18 años o más.'); return false; }
+    if (!$('crAcepto').checked) { accMsg('crMsg', 'Para crear tu cuenta, marca "Leí y acepto los Términos y la Política".'); return false; }
+    var fin = { cuenta: true };
+    (window.LG_REG.finalidades || []).forEach(function (f) { if (!f.obligatoria) { var c = $('crFin_' + f.id); fin[f.id] = !!(c && c.checked); } });
+    d.aceptacion = { documentos: window.LG_REG.documentos.map(function (x) { return { id: x.id, version: x.version, sha256: x.sha256 }; }), finalidades: fin, mayorDeEdad: true };
+  }
   ocupado(b, 'Enviando código…'); accMsg('crMsg', '');
   postCuenta('crear', d).then(function (j) {
     ocupado(b); $('crPaso1').style.display = 'none'; $('crPaso2').style.display = '';
     accMsg('crMsg', j.mensaje || 'Te mandamos un código de 6 dígitos a ' + d.correo + '. Revisa también el correo no deseado.', true); $('crCodigo').focus(); window.scrollTo(0, 0);
-  }).catch(function (e) { ocupado(b); accError('crMsg', e, d.correo); });
+  }).catch(function (e) { ocupado(b); accError('crMsg', e, d.correo); if (/cambiaron|términos/.test(e && e.message || '')) cargarLegalRegistro(true); });
   return false;
 }
 function verificarCuenta() {
@@ -1729,10 +1848,10 @@ function fechaKicker(iso) { var p = iso.split('-'); var d = new Date(Number(p[0]
 /* Ajustes por secciones: primero el menú; cada sección muestra solo sus tarjetas */
 var ajSec = '';
 /* Nombre de cada sección (dentro de una, el título es la sección y "‹ Ajustes" vuelve al menú; la salida a Hoy solo está en el menú) */
-var AJ_NOMBRES = { programa: 'Programa y días', gimnasio: 'Mi gimnasio', salud: 'Tu salud', comida: 'Objetivo y meta', perfil: 'Perfil y avisos', telegram: 'Telegram',
-  avanzado: 'Avanzado', cuenta: 'Personas e invitaciones', alumnos: 'Alumnos', ia: 'IA', conexion: 'Conexión' };
+var AJ_NOMBRES = { programa: 'Programa y días', gimnasio: 'Mi gimnasio', salud: 'Tu salud', comida: 'Objetivo y meta', perfil: 'Perfil y avisos', telegram: 'Telegram', privacidad: 'Privacidad y datos',
+  avanzado: 'Avanzado', cuenta: 'Personas e invitaciones', alumnos: 'Alumnos', ia: 'IA', conexion: 'Conexión', comunidad: 'Comunidad y tiendas' };
 /* Pila tipo iOS: cada subsección sabe de dónde viene y "‹" vuelve ahí (Avanzado → Personas e invitaciones / Alumnos / IA / Conexión) */
-var AJ_PADRE = { cuenta: 'avanzado', alumnos: 'avanzado', ia: 'avanzado', conexion: 'avanzado' };
+var AJ_PADRE = { cuenta: 'avanzado', alumnos: 'avanzado', ia: 'avanzado', conexion: 'avanzado', comunidad: 'avanzado' };
 function ajVolver() { ajSeccion(AJ_PADRE[ajSec] || ''); }
 function ajSeccion(sec) {
   ajSec = sec || '';
@@ -1752,6 +1871,8 @@ function ajSeccion(sec) {
   }
   ajOcultarH2();
   if (ajSec === 'alumnos') cargarAlumnos();
+  if (ajSec === 'comunidad') { try { comCargarSegmentos(); } catch (e) {} }
+  if (ajSec === 'privacidad') { try { lgCargarAjustes(); } catch (xL) { console.error(xL); } }
   window.scrollTo(0, 0);
 }
 /* Si la sección tiene una sola tarjeta, su título repetiría el de arriba: se oculta */
@@ -1860,7 +1981,8 @@ function pintarEstado(e, codigo) {
     '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
   pintarEntrenador(e.entrenador);
   try { pintarPasos(e); } catch (xP) { console.error(xP); }   // nunca puede tumbar Hoy (03/10: PASOS aún sin cargar al abrir dejaba Hoy en "…")
-  try { if (guiaAlLlegar) { guiaAlLlegar = false; mostrarGuia('bv'); } } catch (xG) { console.error(xG); }   // la persona nueva ve el recorrido una vez, justo al llegar a Hoy
+  try { if (guiaAlLlegar) { guiaAlLlegar = false; mostrarGuia('bv'); } } catch (xG) { console.error(xG); }
+  try { lgRevisar(e); } catch (xL) { console.error(xL); }   // términos sin aceptar: pantalla de aceptación (bloquea hasta firmar)   // la persona nueva ve el recorrido una vez, justo al llegar a Hoy
   pintarCardio(e);
   var sel = $('sesion');
   sel.innerHTML = e.sesiones.map(function (s) { return '<option value="' + s.codigo + '">' + esc(s.nombre) + '</option>'; }).join('');
@@ -2739,7 +2861,9 @@ $('dGuardar').onclick = function () {
   var d = { fecha: $('dFecha').value || hoyISO() };
   var est = numv('dEstatura');
   Object.keys(CAMPOS).forEach(function (k) { d[k] = $(CAMPOS[k]).value; });
-  if (d.peso === '' && !confirm('No escribiste el peso. ¿Guardar igual lo demás?')) return;
+  var conMedidas = lgPermiso('medidas');   // sin la finalidad medidas no se manda nada de la báscula (Legal.gs)
+  if (!conMedidas) ['peso', 'grasa', 'musculo', 'agua', 'visceral', 'hueso', 'tmb'].forEach(function (k) { if (k in d) d[k] = ''; });
+  if (conMedidas && d.peso === '' && !confirm('No escribiste el peso. ¿Guardar igual lo demás?')) return;
   var b = $('dGuardar'); b.disabled = true;
   var guardarEst = est && Math.abs((est > 3 ? est / 100 : est) - estatura) > 0.001 ? api('guardarPerfil', { EstaturaM: est > 3 ? est / 100 : est }) : Promise.resolve();
   guardarEst.then(function () { if (est) estatura = est > 3 ? est / 100 : est; return enviar('guardarDiario', d); })
@@ -3206,7 +3330,8 @@ function cargarEstadoYSemana() {
 var IDEAS_COACH = ['Quiero un plan de 3 días', 'Plan de 4 días con prioridad en glúteo', 'Solo tengo 40 minutos hoy', 'Me molesta la rodilla en la prensa', '¿Cómo voy?'];
 var opcionesCoach = [], coachOcupado = false, coachDatos = null, consejosDatos = null, ajustesActivos = [];
 function cargarCoach() {
-  if (!$('consejosBox')) $('coach').innerHTML = '<div class="meta">Salen de tus datos, sin IA. La IA es opcional, para conversar.</div><div id="consejosBox"><div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div></div></div><div id="coachRows"></div>';
+  if (!$('consejosBox')) $('coach').innerHTML = '<div class="meta">Salen de tus datos, sin IA. La IA es opcional, para conversar.</div><div id="consejosBox"><div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div></div></div><div id="comunidadBox"></div><div id="coachRows"></div>';
+  try { comCargarCoach(); } catch (e) {}
   conCache('consejos', function () { return api('getConsejos'); }, function (r) { consejosDatos = r; pintarConsejos(); pintarCoachFilas(); }).catch(err);
   api('getCoach').then(function (c) { coachDatos = c; ajustesActivos = c.ajustes || []; pintarCoachFilas(); }).catch(err);
 }
@@ -3425,6 +3550,7 @@ function cargarAjustes() {
     parte('comida').then(pintarComidaAjustes).catch(function () {});
     parte('avisos').then(function (av) { ajData.avisos = av; pintarResumenAjustes(); }).catch(function () {});
     cargarTelegram();
+    try { lgCargarAjustes(); } catch (xL) { console.error(xL); }   // Privacidad y datos (y la línea del menú)
   }).catch(function () {
     cargarPushUI(); cargarSaludUI(); cargarCuenta(); cargarAvisos(); cargarProgramas(); cargarTelegram();
     api('getPerfil').then(pintarPerfil).catch(err);
@@ -4027,7 +4153,7 @@ function guardarComidaIA() {
   var r = comidaIAres; if (!r) return;
   var items = r.items.filter(function (x) { return x.on !== false; });
   if (!items.length) { toast('Marca al menos un alimento'); return; }
-  agregarLibresUI(items.map(function (x) { return { nombre: x.nombre, kcal: x.kcal, prot: x.prot, carb: x.carb, grasa: x.grasa, cantidad: 1 }; }));
+  agregarLibresUI(items.map(function (x) { return { nombre: x.nombre, porcion: x.porcion, categoria: x.categoria, kcal: x.kcal, prot: x.prot, carb: x.carb, grasa: x.grasa, cantidad: 1 }; }));
   comidaIAres = null; fotoComida = null; $('cIaTxt').value = ''; $('cIaFoto').value = ''; $('cIaFotoTxt').textContent = ''; pintarComidaIA();
 }
 /** Agrega comidas con sus valores (IA o "lo de ayer"): se ven al instante y se envían (con cola si no hay señal). */
@@ -4040,7 +4166,12 @@ function agregarLibresUI(items) {
   });
   pintarComida(comidaDatos);
   toast(items.length === 1 ? 'Agregado: ' + items[0].nombre : items.length + ' alimentos agregados');
-  enviar('agregarComidaLibre', { fecha: fecha, momento: momento, items: items }).then(function (r) { if (!r.enCola) escribirCache('com:' + fecha, r); }).catch(err);
+  enviar('agregarComidaLibre', { fecha: fecha, momento: momento, items: items }).then(function (r) {
+    if (r.enCola) return;
+    escribirCache('com:' + fecha, r);
+    // "¿Dónde lo compraste?" para lo que no estaba en sus alimentos (Comunidad.gs); no bloquea y se puede saltar
+    try { var nuevos = (r.nuevas || []).concat(r.alCatalogo || []); if (nuevos.length) comPreguntarTienda(nuevos); } catch (e) {}
+  }).catch(err);
 }
 function repetirAyer(k) {
   var a = comidaDatos && comidaDatos.ayer || []; var lista = k === undefined ? a : [a[k]];
@@ -4084,7 +4215,7 @@ function pintarListaComidas() {
       '<button aria-label="Agregar ' + esc(c.nombre) + '" onclick="agregarComidaUI(\'' + esc(c.nombre).replace(/'/g, "\\'") + '\')">+</button></div>';
   }).join('') || '<div class="meta">' + (catComida === 'Mis comidas' ? 'Todavía no has creado comidas propias: usa "Crear una comida nueva" abajo.' : 'No hay coincidencias. Créala abajo.') + '</div>';
 }
-$('cBuscar').oninput = pintarListaComidas;
+$('cBuscar').oninput = function () { pintarListaComidas(); try { comBuscarLuego(); } catch (e) {} };
 $('cFecha').onchange = cargarComida;
 document.querySelectorAll('#cCant button').forEach(function (b) {
   b.onclick = function () { cantidad = Number(b.dataset.q); document.querySelectorAll('#cCant button').forEach(function (x) { x.classList.toggle('on', x === b); }); pintarListaComidas(); };
@@ -4107,7 +4238,10 @@ function quitarComidaUI(id) {
 }
 function crearComidaUI() {
   var c = { nombre: $('nNombre').value, porcion: $('nPorcion').value, kcal: $('nKcal').value, prot: $('nProt').value, carb: $('nCarb').value, grasa: $('nGrasa').value };
-  api('crearComida', c).then(function () { toast('Comida creada'); ['nNombre','nPorcion','nKcal','nProt','nCarb','nGrasa'].forEach(function (x) { $(x).value = ''; }); invalidarTodo(); cargarComida(); }).catch(err);
+  api('crearComida', c).then(function () {
+    toast('Comida creada'); ['nNombre','nPorcion','nKcal','nProt','nCarb','nGrasa'].forEach(function (x) { $(x).value = ''; }); invalidarTodo(); cargarComida();
+    try { comPreguntarTienda([String(c.nombre).trim()], 'nTienda'); } catch (e) {}
+  }).catch(err);
 }
 
 /* =================== PROGRESO POR EJERCICIO =================== */
@@ -4354,7 +4488,9 @@ function cargarCuenta(p) {
   $('iaCard').style.display = u.esDueno ? '' : 'none';   // las claves de la IA son del dueño: el invitado no ve ni la tarjeta ni el botón
   $('ajMenuIA').style.display = u.esDueno ? '' : 'none';
   $('ajMenuAlumnos').style.display = u.esDueno ? '' : 'none';
-  $('ajSubAvanzado').textContent = u.esDueno ? 'Personas, alumnos, IA y conexión' : 'Tu entrenador, tu plan y la conexión';
+  if ($('ajMenuCom')) $('ajMenuCom').style.display = u.esDueno ? '' : 'none';
+  if ($('segCard') && !u.esDueno) $('segCard').style.display = 'none';
+  $('ajSubAvanzado').textContent = u.esDueno ? 'Personas, alumnos, comunidad, IA y conexión' : 'Tu entrenador, tu plan y la conexión';
   var mc = $('ajMenuCuenta');
   mc.querySelector('b').textContent = u.esDueno ? 'Personas e invitaciones' : 'Tu entrenador y tu plan';
   mc.querySelector('small').textContent = u.esDueno ? 'Tu código, quién se registró y su IA' : 'Lo que te dejó tu entrenador y tu nivel';
@@ -4672,9 +4808,11 @@ function pintarBienvenida() {
     h += '<label class="sw"><span><b>Llevo más de un mes sin entrenar</b><small>Las primeras 2 semanas van suaves</small></span><input type="checkbox" id="bvEntrada"' + (bvDatos.entrada ? ' checked' : '') + ' onchange="bvDatos.entrada=this.checked"><i></i></label>';
     $('bvSig').textContent = 'Siguiente';
   } else if (bvPaso === 2) {
-    h += '<div class="kicker">Paso 3 de 3</div><h1 class="bv-h">Tu peso<br>de hoy</h1><p class="bv-p">Con tu peso, tu estatura y tu edad calculamos tus pesos de partida y tu meta de comida.</p>';
-    h += '<div class="row bv-big"><div><label for="bvPeso">Peso (kg)</label><input id="bvPeso" type="number" inputmode="decimal" step="0.1" placeholder="72" value="' + esc(bvDatos.peso) + '"></div>' +
-         '<div><label for="bvEst">Estatura (cm)</label><input id="bvEst" type="number" inputmode="numeric" placeholder="170" value="' + esc(bvDatos.estatura) + '"></div></div>';
+    var conMedidas = lgPermiso('medidas');
+    h += '<div class="kicker">Paso 3 de 3</div><h1 class="bv-h">' + (conMedidas ? 'Tu peso<br>de hoy' : 'Tus datos<br>básicos') + '</h1><p class="bv-p">' + (conMedidas ? 'Con tu peso, tu estatura y tu edad calculamos tus pesos de partida y tu meta de comida.' : 'Con tu edad armamos tu plan. La estatura es opcional.') + '</p>';
+    h += '<div class="row bv-big">' + (conMedidas ? '<div><label for="bvPeso">Peso (kg)</label><input id="bvPeso" type="number" inputmode="decimal" step="0.1" placeholder="72" value="' + esc(bvDatos.peso) + '"></div>' : '') +
+         '<div><label for="bvEst">Estatura (cm)' + (conMedidas ? '' : ' · opcional') + '</label><input id="bvEst" type="number" inputmode="numeric" placeholder="170" value="' + esc(bvDatos.estatura) + '"></div></div>';
+    if (!conMedidas) h += '<p class="meta lg-nota">Sin tu peso no podemos calcular tu meta de comida ni tus cargas iniciales. Si quieres, autorízalo después en Ajustes → Tu cuenta → Privacidad y datos.</p>';
     h += '<div class="row" style="margin-top:6px"><div><label for="bvEdad">Edad</label><input id="bvEdad" type="number" inputmode="numeric" placeholder="30" value="' + esc(bvDatos.edad) + '"></div>' +
          '<div><label>Sexo (opcional)</label><div class="sl-yn" style="margin-top:0"><button type="button" class="' + (bvDatos.sexo === 'M' ? 'on' : '') + '" onclick="bvSexo(\'M\')">Hombre</button><button type="button" class="' + (bvDatos.sexo === 'F' ? 'on' : '') + '" onclick="bvSexo(\'F\')">Mujer</button></div></div></div>';
     h += '<p class="meta" style="margin-top:14px">Salud, avisos y fotos se piden después, cuando hagan falta.</p>';
@@ -4698,11 +4836,12 @@ function guardarPasoBv(validar) {
   if (bvPaso === 1) {
     if (validar && !bvDatos.dias.length) { toast('Marca al menos un día'); return false; }
   } else if (bvPaso === 2) {
-    bvDatos.peso = $('bvPeso').value; bvDatos.estatura = $('bvEst').value; bvDatos.edad = $('bvEdad').value;
+    var conMedidas = lgPermiso('medidas');   // sin la finalidad medidas, el peso no se pide y la estatura es opcional
+    bvDatos.peso = $('bvPeso') ? $('bvPeso').value : ''; bvDatos.estatura = $('bvEst').value; bvDatos.edad = $('bvEdad').value;
     if (validar) {
       var peso = Number(String(bvDatos.peso).replace(',', '.')), est = Number(String(bvDatos.estatura).replace(',', '.'));
-      if (!(peso >= 30 && peso <= 300)) { toast('Escribe tu peso de hoy en kilos'); $('bvPeso').focus(); return false; }
-      if (!(est >= 100 && est <= 250) && !(est >= 1 && est <= 2.5)) { toast('Escribe tu estatura en centímetros (p. ej. 170)'); $('bvEst').focus(); return false; }
+      if (conMedidas && !(peso >= 30 && peso <= 300)) { toast('Escribe tu peso de hoy en kilos'); $('bvPeso').focus(); return false; }
+      if ((conMedidas || String(bvDatos.estatura).trim()) && !(est >= 100 && est <= 250) && !(est >= 1 && est <= 2.5)) { toast('Escribe tu estatura en centímetros (p. ej. 170)'); $('bvEst').focus(); return false; }
       var edad = Number(bvDatos.edad);
       if (!(edad >= 10 && edad <= 100)) { toastBad('Escribe tu edad: sin ella no podemos calcular tu meta'); $('bvEdad').focus(); return false; }
     }
@@ -4714,11 +4853,12 @@ function terminarBienvenida() {
   if (bvPreview && !confirm('Esto cambia tu programa actual a ' + nombreProg(prog, ficha.nombre) + ' desde hoy. ¿Seguir?')) return;
   var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
   var est = Number(String(bvDatos.estatura).replace(',', '.')); if (est > 3) est = est / 100;
-  var perfil = { EstaturaM: est, DiasEntreno: bvDatos.dias.join(','), Edad: bvDatos.edad };
+  var perfil = { DiasEntreno: bvDatos.dias.join(','), Edad: bvDatos.edad };
+  if (est) perfil.EstaturaM = est;
   if (bvDatos.sexo) perfil.Sexo = bvDatos.sexo;
-  var pMio = progFicha('mio'), esMio = prog === 'mio';
+  var pMio = progFicha('mio'), esMio = prog === 'mio', pesoBv = String(bvDatos.peso || '').replace(',', '.');
   api('guardarPerfil', perfil)
-    .then(function () { return api('guardarDiario', { fecha: hoyISO(), peso: String(bvDatos.peso).replace(',', '.') }); })
+    .then(function () { return pesoBv && lgPermiso('medidas') ? api('guardarDiario', { fecha: hoyISO(), peso: pesoBv }) : null; })
     .then(function () { return esMio && !(pMio && pMio.configurado) ? api('guardarMiPlan', { base: 'hipertrofia' }) : null; })   // Mi plan vacío: arranca con Hipertrofia general de base
     .then(function () { return api('cambiarPrograma', prog, { entrada: bvDatos.entrada, dias: bvDatos.dias.join(','), ajustarComida: true }); })
     .then(function () { return bvDatos.programa ? null : api('guardarSalud', { objetivo: meta.dieta }); })   // la meta elegida pone el objetivo de comida; con programa a mano, lo pone el programa
@@ -5039,7 +5179,7 @@ function gdArg(t) { return "'" + String(t == null ? '' : t).replace(/\\/g, '\\\\
 function gdItemsHTML(items, max) {
   return (items || []).slice(0, max || 4).map(function (it) {
     var info = [it.detalle, it.fuente ? 'Fuente: ' + it.fuente : ''].filter(Boolean).join(' · ');
-    return '<div class="gd-it ' + esc(it.tipo || 'habito') + '"><span class="dot"></span><div class="n">' + esc(it.texto) + '</div>' +
+    return '<div class="gd-it ' + esc(it.tipo || 'habito') + '"><span class="dot"></span><div class="n">' + esc(it.texto) + (it.comunidad && it.comunidad.texto ? '<div class="com-linea">' + esc(it.comunidad.texto) + '</div>' : '') + '</div>' +
       (info ? '<button type="button" class="g-q" aria-label="Por qué" onclick="gcInfo(' + esc(gdArg(info)) + ')">?</button>' : '') + '</div>';
   }).join('');
 }
@@ -5445,8 +5585,12 @@ function gdResumenTelegram() {
 
 /* ===== G-E: IA solo en Render (claves fuera de la app) y autorización por persona (USUARIOS[].ia) ===== */
 /* La persona actual es un invitado al que el dueño aún no le activó la IA (getEstado().usuario.ia) */
-function geIaApagada() { var u = estado && estado.usuario; return !!(u && u.esDueno === false && u.ia === false); }
-function geIaTexto() { return geIaApagada() ? 'La IA aún no está activada para tu cuenta. Pídesela al dueño de la app.' : 'La IA no está disponible por ahora; avísale al dueño de la app.'; }
+function geIaApagada() { var u = estado && estado.usuario; return !!(u && u.ia === false && (u.esDueno === false || u.iaConsentimiento === false)); }
+function geIaTexto() {
+  var u = estado && estado.usuario;
+  if (u && u.iaConsentimiento === false && (u.esDueno || u.ia === false)) return 'La IA está apagada para ti: actívala en Ajustes → Tu cuenta → Privacidad y datos.';
+  return geIaApagada() ? 'La IA aún no está activada para tu cuenta. Pídesela al dueño de la app.' : 'La IA no está disponible por ahora; avísale al dueño de la app.';
+}
 /* Comida → Agregar: sin autorización, el bloque "Con IA" se cambia por una línea */
 function geIaComida(c) {
   var off = $('cIaOff'), box = $('cIaBox'); if (!off || !box) return;
@@ -5812,6 +5956,330 @@ function atrasApp() {
   if (visible('tab-ajustes') && ajSec) { ajVolver(); return true; }
   if (!visible('tab-hoy') && estado) { irA('hoy'); return true; }
   return false;
+}
+/* ===== Comunidad (03/10/2026): "¿Dónde lo compraste?", "Lo que otros compran", personas como tú y segmentos del dueño ===== */
+/* Nada de esto se pinta al abrir la app (todo responde a una acción) y quien lo llama lo envuelve en try.
+   Las tiendas son las de TIENDAS_COMUNIDAD (Comunidad.gs) y las del bot (telegram-voz.js). */
+function comTiendas() { return [['d1', 'D1'], ['ara', 'Ara'], ['exito', 'Éxito'], ['olimpica', 'Olímpica'], ['jumbo', 'Jumbo'], ['carulla', 'Carulla'], ['makro', 'Makro'], ['pricesmart', 'PriceSmart'], ['barrio', 'Tienda de barrio'], ['plaza', 'Plaza de mercado']]; }
+var comTnd = null, comBusq = { t: null, cache: {}, q: '', items: [] };
+/* Dónde se pregunta: con la hoja de Agregar abierta, debajo de la IA (o del formulario de comida nueva); si no, en Comida bajo el día */
+function comDonde(donde) { if (donde) return donde; var a = $('cAgregar'); return a && hojaAbiertaCon(a) ? 'cIaTienda' : 'cTienda'; }
+function comLimpiarTienda() { ['cTienda', 'cIaTienda', 'nTienda'].forEach(function (id) { var b = $(id); if (b) b.innerHTML = ''; }); }
+function comPreguntarTienda(nombres, donde) {
+  nombres = (nombres || []).filter(Boolean); if (!nombres.length) return;
+  comLimpiarTienda();
+  comTnd = { nombres: nombres, donde: comDonde(donde), otra: false };
+  comPintarTienda();
+}
+function comPintarTienda() {
+  var t = comTnd; if (!t) return; var box = $(t.donde); if (!box) return;
+  var ns = t.nombres, nom = ns.length === 1 ? ns[0] : ns.slice(0, -1).join(', ') + ' y ' + ns[ns.length - 1];
+  box.innerHTML = '<div class="tnd" role="group" aria-label="¿Dónde lo compraste?"><div class="tnd-h"><b>¿Dónde lo compraste?</b><button type="button" class="tnd-x" onclick="comOmitirTienda()">Omitir</button></div>' +
+    '<div class="tnd-s">' + esc(nom) + ' · así te recomendamos opciones parecidas y dónde conseguirlas.</div>' +
+    '<div class="tnd-chips">' + comTiendas().map(function (x) { return '<button type="button" onclick="comElegirTienda(\'' + x[0] + '\')">' + esc(x[1]) + '</button>'; }).join('') +
+    '<button type="button" class="' + (t.otra ? 'on' : '') + '" aria-expanded="' + t.otra + '" onclick="comOtraTienda()">Otra</button><button type="button" onclick="comElegirTienda(\'nose\')">No sé</button></div>' +
+    (t.otra ? '<div class="tnd-otra"><input id="tndOtra" maxlength="30" placeholder="Nombre de la tienda" autocomplete="off" aria-label="Nombre de la tienda"><button type="button" class="btn sec" onclick="comElegirTienda(\'otra\')">Guardar</button></div>' : '') + '</div>';
+  if (t.otra) { var i = $('tndOtra'); if (i) { try { i.focus({ preventScroll: true }); } catch (e) { i.focus(); } i.onkeydown = function (ev) { if (ev.key === 'Enter') comElegirTienda('otra'); }; } }
+}
+function comOtraTienda() { if (!comTnd) return; comTnd.otra = !comTnd.otra; comPintarTienda(); }
+function comOmitirTienda() { comTnd = null; comLimpiarTienda(); }
+function comElegirTienda(id) {
+  var t = comTnd; if (!t) return;
+  if (id === 'nose') { comOmitirTienda(); return; }
+  var otra = id === 'otra' ? (($('tndOtra') || {}).value || '').trim() : '';
+  if (id === 'otra' && otra.length < 2) { toastBad('Escribe el nombre de la tienda'); var i = $('tndOtra'); if (i) i.focus(); return; }
+  var box = $(t.donde); if (!box) return;
+  box.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+  api('guardarTienda', { nombres: t.nombres, tienda: id, otra: otra }).then(function (r) {
+    if (comTnd !== t) return;
+    comTnd = null;
+    box.innerHTML = r && r.tienda ? '<div class="tnd ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span>Listo: ' + (t.nombres.length > 1 ? 'los compras' : 'lo compras') + ' en ' + esc(r.tienda) + '.</span></div>' : '';
+    setTimeout(function () { if (!comTnd) box.innerHTML = ''; }, 3500);
+  }).catch(function (e) { box.querySelectorAll('button').forEach(function (b) { b.disabled = false; }); err(e); });
+}
+/* "Lo que otros compran" en la hoja de Agregar: con 3+ letras en el buscador (k ≥ 3 y su salud: lo decide el servidor) */
+function comBuscarLuego() {
+  var box = $('cComunidad'); if (!box) return;
+  var q = ($('cBuscar').value || '').trim(), k = q.toLowerCase();
+  clearTimeout(comBusq.t);
+  if (q.length < 3 || catComida === '__ayer') { comBusq.q = ''; box.innerHTML = ''; return; }
+  comBusq.q = k;
+  if (comBusq.cache[k]) { comPintarBusq(comBusq.cache[k]); return; }
+  comBusq.t = setTimeout(function () {
+    api('comunidadBuscar', { texto: q }).then(function (r) { comBusq.cache[k] = r; if (comBusq.q === k) comPintarBusq(r); }).catch(function () { if (comBusq.q === k) box.innerHTML = ''; });
+  }, 450);
+}
+function comPintarBusq(r) {
+  var box = $('cComunidad'); if (!box) return;
+  var alts = (r && r.alternativas) || [], enc = (r && r.encontrados) || [];
+  comBusq.items = alts.concat(enc);
+  if (!comBusq.items.length) { box.innerHTML = ''; return; }
+  var fila = function (x, k, sub) {
+    return '<div class="food com-food"><div>' + esc(x.nombre) + '<div class="meta">' + sub + '</div><div class="meta">' + esc(x.porcion) + ' · ' + n1(x.kcal * cantidad, 0) + ' kcal · ' + n1(x.prot * cantidad, 0) + ' g prot' + (x.tienda ? ' · en ' + esc(x.tienda) : '') + '</div></div>' +
+      '<button aria-label="Agregar ' + esc(x.nombre) + '" onclick="comAgregar(' + k + ')">+</button></div>';
+  };
+  box.innerHTML = '<div class="sec-h"><b>Lo que otros compran</b><span>de la comunidad</span></div>' +
+    alts.map(function (x, k) { return fila(x, k, 'En vez de ' + esc(String(x.en || '').toLowerCase()) + ': ' + esc((x.razones || []).join(', '))); }).join('') +
+    enc.map(function (x, k) { return fila(x, alts.length + k, esc(x.cat || '')); }).join('');
+}
+function comAgregar(k) {
+  var x = comBusq.items[k]; if (!x) return;
+  agregarLibresUI([{ nombre: x.nombre, porcion: x.porcion, categoria: x.cat, kcal: x.kcal * cantidad, prot: x.prot * cantidad, carb: x.carb * cantidad, grasa: x.grasa * cantidad, cantidad: cantidad }]);
+}
+/* Coach: "Personas como tú…" solo con 10+ personas parecidas; si no, una línea honesta */
+function comCargarCoach() {
+  var box = $('comunidadBox'); if (!box) return;
+  api('getComunidad').then(function (r) {
+    if (!r || !r.texto) { box.innerHTML = ''; return; }
+    box.innerHTML = r.suficiente ? '<div class="card com-coach"><div class="kicker">Comunidad</div><div class="t">' + esc(r.texto) + '</div><div class="meta">Promedio de ' + r.n + ' personas que comparten sus datos sin nombres · últimas ' + r.ventana + ' semanas.</div></div>'
+      : '<div class="com-honesta">' + esc(r.texto) + '</div>';
+  }).catch(function () { box.innerHTML = ''; });
+}
+/* Ajustes → Avanzado → Comunidad y tiendas (solo el dueño): conteos por tienda × sexo × objetivo, grupos de 3+ */
+function comCargarSegmentos() {
+  var b = $('segBody'); if (!b) return;
+  b.innerHTML = '<div class="meta">Cargando…</div>';
+  api('getSegmentos').then(comPintarSegmentos).catch(function (e) { b.innerHTML = '<div class="meta">No pude cargar la comunidad: ' + esc(e.message || e) + '</div>'; });
+}
+function comPintarSegmentos(s) {
+  var b = $('segBody'); if (!b || !s) return;
+  var h = '<div class="seg-kpi"><div><b>' + (s.personas === null ? 'Menos de ' + s.menosDe : s.personas) + '</b><small>personas comparten</small></div><div><b>' + s.alimentos + '</b><small>alimentos de 3+ personas</small></div><div><b>' + s.cohortesListas + '</b><small>grupos de 10+ para comparar</small></div></div>';
+  if (!s.tiendas.length) h += '<div class="meta" style="margin-top:12px">Todavía ninguna tienda la nombran 3 o más personas. Se llena sola cuando la gente responde "¿Dónde lo compraste?".</div>';
+  else h += s.tiendas.map(function (t) {
+    return '<div class="seg-t"><div class="seg-th"><b>' + esc(t.tienda) + '</b><span>' + t.personas + ' personas</span></div>' +
+      (t.segmentos.length ? t.segmentos.map(function (g) { return '<div class="seg-r"><span>' + esc(g.sexo) + ' · ' + esc(g.objetivo) + '</span><b>' + g.personas + '</b></div>'; }).join('') : '<div class="meta" style="margin-top:4px">Sus grupos aún tienen menos de 3 personas.</div>') +
+      (t.alimentos.length ? '<div class="meta" style="margin-top:4px">Lo más comprado: ' + esc(t.alimentos.join(', ')) + '</div>' : '') + '</div>';
+  }).join('');
+  if (s.ocultas) h += '<div class="meta faint" style="margin-top:10px;font-size:12px">' + s.ocultas + (s.ocultas === 1 ? ' grupo con menos de 3 personas no se muestra.' : ' grupos con menos de 3 personas no se muestran.') + '</div>';
+  h += '<button class="btn sec" style="margin-top:12px" onclick="comActualizar(this)">Actualizar ahora</button><div class="meta faint" style="margin-top:6px;font-size:12px">Se actualiza solo cada domingo.</div>';
+  b.innerHTML = h;
+}
+function comActualizar(btn) {
+  btn.disabled = true; btn.textContent = 'Actualizando…';
+  api('mantenerComunidad').then(function (r) { comPintarSegmentos(r.segmentos); toast('Comunidad al día'); })
+    .catch(function (e) { btn.disabled = false; btn.textContent = 'Actualizar ahora'; err(e); });
+}
+/* ===== fin Comunidad ===== */
+
+/* ===== Legal (03/10/2026): aceptación de términos con firma por código al correo, Privacidad y datos en Ajustes y permisos en la app =====
+   Regla: lgRevisar corre desde pintarEstado al abrir, ANTES de que termine de cargar el script: aquí nada lee un `var` de este bloque
+   (el estado va en window.lgDatos) y todo lo que se llama al abrir va envuelto en try. */
+/** ¿La persona autorizó esta finalidad? Sin documentos publicados (o sin estado aún) se comporta como antes: sí. */
+function lgPermiso(f) { var l = estado && estado.legal; return !(l && l.configurado && l.finalidades && l.finalidades[f] === false); }
+function lgBase() { try { var c = JSON.parse(localStorage.getItem('cfg') || 'null'); return c && c.api ? String(c.api).replace(/[/]api$/, '') : ''; } catch (e) { return ''; } }
+function lgUrl(id, v) { var d = window.lgDatos, base = d && d.url ? d.url : lgBase() + '/legal/'; return base + id + (v ? '?v=' + encodeURIComponent(v) : ''); }
+function lgFecha(iso) {
+  var m = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  var d = new Date(iso); if (isNaN(d.getTime())) return '';
+  return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear();
+}
+function lgMsg(id, txt, bien) { var m = $(id); if (!m) return; m.textContent = txt || ''; m.classList.toggle('bien', !!bien); }
+/** Una casilla con su línea llana (registro, reaceptación). */
+function lgCasillaHTML(id, titulo, linea, marcada, extra) {
+  return '<label class="lg-ck"><input type="checkbox" id="' + id + '"' + (marcada ? ' checked' : '') + '><span><b>' + esc(titulo) + '</b>' + (extra && extra.sens ? '<span class="sens">sensible</span>' : '') +
+    (linea ? '<small>' + esc(linea) + '</small>' : '') + (extra && extra.nota ? '<small class="nota">' + esc(extra.nota) + '</small>' : '') + '</span></label>';
+}
+function lgNotaFinalidad(f, d) {
+  if (f.id === 'salud' && d.tieneSalud) return 'Tienes condiciones guardadas: sin esta casilla dejan de usarse.';
+  if (f.id === 'medidas' && d.tieneMedidas) return 'Tienes tu peso guardado: sin esta casilla deja de usarse.';
+  return '';
+}
+function lgEfecto(id) {
+  return { medidas: 'Tu peso deja de usarse: sin él no calculamos tu meta de comida ni tus cargas iniciales.', salud: 'Tus condiciones y medicamentos dejan de usarse en la comida y los ejercicios.',
+    ia: 'El Coach y la comida con IA quedan apagados para ti.', fotos: 'No podrás subir fotos nuevas de progreso.', comunidad: 'Tus datos dejan de sumarse, sin nombre, a las recomendaciones para otros.',
+    avisos: 'Dejas de recibir recordatorios e informes (los códigos para entrar sí te llegan).' }[id] || '';
+}
+
+/* ---------- Pantalla de aceptación (bloquea la app hasta firmar) ---------- */
+function lgRevisar(e) {
+  var ov = $('lgOv'); if (!ov) return;
+  var l = e && e.legal;
+  if (l && l.configurado && !l.vigente) { if (ov.classList.contains('hidden')) lgMostrarOv(); }
+  else if (!ov.classList.contains('hidden')) ov.classList.add('hidden');
+  lgAvisosPantalla();
+}
+function lgMostrarOv() {
+  var ov = $('lgOv'); if (!ov) return;
+  ov.classList.remove('hidden'); ov.scrollTo(0, 0);
+  $('lgOvCuerpo').innerHTML = '<div class="meta" style="margin-top:20px">Cargando los términos…</div>';
+  api('getLegal').then(lgPintarOv).catch(function (x) {
+    $('lgOvCuerpo').innerHTML = '<p class="lg-msg">No pude cargar los términos: ' + esc(x.message || x) + '</p><button type="button" class="btn sec" style="margin-top:12px" onclick="lgMostrarOv()">Intentar de nuevo</button>';
+  });
+}
+function lgPintarOv(d) {
+  window.lgDatos = d;
+  if (d.vigente || !d.configurado) { $('lgOv').classList.add('hidden'); return; }
+  var vuelve = (d.aceptados || []).length > 0, act = d.actuales;
+  var nombres = (d.documentos || []).filter(function (x) { return (d.pendientes || []).indexOf(x.id) >= 0; }).map(function (x) { return x.titulo; });
+  var aviso = (d.documentos || []).filter(function (x) { return x.id === 'aviso'; })[0];
+  var h = '<h1 class="bv-h">' + (vuelve ? 'Actualizamos<br>los términos' : 'Antes de<br>seguir') + '</h1>' +
+    '<p class="bv-p">' + (vuelve ? 'Cambió: ' + esc(nombres.join(', ')) + '. Léelo y vuelve a firmar con un código que te llega al correo.'
+      : 'Para seguir usando Enfoque, acepta los términos y decide qué datos nos dejas usar. Firmas con un código que te llega al correo.') + '</p>';
+  h += '<div class="lg-av"><b>Tus datos, claro</b>' + esc(aviso && aviso.resumen ? aviso.resumen : 'Guardamos tus entrenos, comidas y progreso para armarte el plan. Solo tú los ves. Lo sensible (peso, salud, fotos) solo si lo autorizas, y puedes pedir verlo, corregirlo o borrarlo cuando quieras.') + '</div>';
+  h += '<div class="lg-docs">' + (d.documentos || []).map(function (x) {
+    var nuevo = vuelve && (d.pendientes || []).indexOf(x.id) >= 0;
+    return '<a class="lg-doc" href="' + esc(lgUrl(x.id)) + '" target="_blank" rel="noopener"><span><b>' + esc(x.titulo) + '</b><small>Versión ' + esc(x.version) + (nuevo ? ' · <span class="nuevo">nueva</span>' : '') + '</small></span><span class="lg-leer">Leer ›</span></a>';
+  }).join('') + '</div>';
+  h += '<div class="lg-box">' + lgCasillaHTML('lgoMayor', 'Tengo 18 años o más.', '', !!d.mayorDeEdad) +
+    lgCasillaHTML('lgoAcepto', 'Leí y acepto los Términos y la Política, y autorizo usar mis datos para operar mi cuenta.', 'Obligatoria: sin esto no hay app.', false) + '</div>';
+  h += '<div class="lg-k">Opcional · lo cambias cuando quieras en Ajustes</div><div class="lg-box">' + (d.finalidades || []).filter(function (f) { return !f.obligatoria; }).map(function (f) {
+    return lgCasillaHTML('lgo_' + f.id, f.nombre, f.linea, act ? !!act[f.id] : !!f.defecto, { sens: f.sensible, nota: lgNotaFinalidad(f, d) });
+  }).join('') + '</div>';
+  h += '<p class="lg-msg" id="lgOvMsg"></p>';
+  h += '<div id="lgOvPaso1"><button type="button" class="btn" id="lgOvBtn" style="margin-top:14px" onclick="lgOvPedir()">Enviarme el código</button></div>';
+  h += '<div id="lgOvPaso2" style="display:none"><label for="lgOvCodigo">Código de 6 dígitos</label><input id="lgOvCodigo" class="lg-cod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">' +
+    '<button type="button" class="btn" id="lgOvFirmarBtn" style="margin-top:12px" onclick="lgOvFirmar()">Firmar y seguir</button>' +
+    '<button type="button" class="btn txt" style="width:100%" onclick="lgOvVolver()">¿No te llegó? Revisa el correo no deseado o vuelve a pedirlo</button></div>';
+  h += '<p class="lg-pie">Escribir el código equivale a tu firma electrónica (Ley 527 de 1999). Guardamos la prueba de lo que aceptaste: versión, fecha y desde dónde. ' +
+    '¿No quieres aceptar? <button type="button" class="btn txt" onclick="lgPedirBorrado()">Pedir que borren mi cuenta</button></p>';
+  $('lgOvCuerpo').innerHTML = h;
+}
+function lgLeerFinalidades(pref) {
+  var fin = { cuenta: true };
+  ((window.lgDatos && window.lgDatos.finalidades) || []).forEach(function (f) { if (!f.obligatoria) { var c = $(pref + f.id); fin[f.id] = !!(c && c.checked); } });
+  return fin;
+}
+function lgOvPedir() {
+  var d = window.lgDatos || {};
+  if (!$('lgoMayor').checked) { lgMsg('lgOvMsg', 'Para seguir, confirma que tienes 18 años o más.'); return; }
+  if (!$('lgoAcepto').checked) { lgMsg('lgOvMsg', 'Para seguir, marca "Leí y acepto los Términos y la Política".'); return; }
+  var b = $('lgOvBtn'); b.disabled = true; b.textContent = 'Enviando…'; lgMsg('lgOvMsg', '');
+  api('pedirFirmaLegal', { documentos: (d.documentos || []).map(function (x) { return { id: x.id, version: x.version, sha256: x.sha256 }; }), finalidades: lgLeerFinalidades('lgo_'), mayorDeEdad: true })
+    .then(function (r) {
+      b.disabled = false; b.textContent = 'Enviarme el código';
+      $('lgOvPaso1').style.display = 'none'; $('lgOvPaso2').style.display = '';
+      lgMsg('lgOvMsg', r.mensaje, true); $('lgOvCodigo').focus();
+    }).catch(function (x) {
+      b.disabled = false; b.textContent = 'Enviarme el código';
+      var t = x.message || String(x); lgMsg('lgOvMsg', t);
+      if (/cambiaron/.test(t)) setTimeout(lgMostrarOv, 1800);
+    });
+}
+function lgOvVolver() { $('lgOvPaso2').style.display = 'none'; $('lgOvPaso1').style.display = ''; lgMsg('lgOvMsg', ''); }
+function lgOvFirmar() {
+  var c = String($('lgOvCodigo').value || '').replace(/\D/g, ''), b = $('lgOvFirmarBtn');
+  if (c.length !== 6) { lgMsg('lgOvMsg', 'El código tiene 6 dígitos.'); return; }
+  b.disabled = true; b.textContent = 'Firmando…';
+  api('firmarLegal', { codigo: c }).then(function (r) {
+    window.lgDatos = r; $('lgOv').classList.add('hidden');
+    toast('Listo: quedó firmado. Lo ves en Ajustes → Privacidad y datos.');
+    lgTrasCambio();
+  }).catch(function (x) { b.disabled = false; b.textContent = 'Firmar y seguir'; lgMsg('lgOvMsg', x.message || x); });
+}
+function lgTrasCambio() { invalidarTodo(); try { cargarEstado(); } catch (e) {} if (typeof pcDatos !== 'undefined') pcDatos = null; }
+
+/* ---------- Avisos donde faltan permisos (peso, salud, fotos) ---------- */
+function lgAvisoHTML(txt, id) { return '<div class="lg-aviso"><span>' + esc(txt) + '</span><button type="button" class="btn sec" onclick="lgActivar(\'' + id + '\')">Activar</button></div>'; }
+function lgAvisosPantalla() {
+  var med = lgPermiso('medidas'), pa = $('lgPesoAviso'), fila = $('cuPesoFila');
+  if (pa) pa.innerHTML = med ? '' : lgAvisoHTML('Activa la autorización de medidas para guardar tu peso. Sin tu peso no calculamos tu meta de comida ni tus cargas iniciales.', 'medidas');
+  if (fila) fila.style.display = med ? '' : 'none';
+  var sa = $('lgSaludAviso'); if (sa) sa.innerHTML = lgPermiso('salud') ? '' : lgAvisoHTML('Para usar tus condiciones y medicamentos, autoriza Salud.', 'salud');
+  var fo = $('lgFotoAviso'); if (fo) fo.innerHTML = lgPermiso('fotos') ? '' : lgAvisoHTML('Para guardar fotos de tu cuerpo, autoriza Fotos de progreso.', 'fotos');
+}
+
+/* ---------- Activar una finalidad que pide código (hoja inferior) ---------- */
+function lgConDatos(fn) { if (window.lgDatos && window.lgDatos.finalidades) return fn(window.lgDatos); api('getLegal').then(function (d) { window.lgDatos = d; fn(d); }).catch(errG); }
+function lgActivar(id) {
+  lgConDatos(function (d) {
+    var f = (d.finalidades || []).filter(function (x) { return x.id === id; })[0]; if (!f) return;
+    if (!d.vigente) { lgMostrarOv(); return; }
+    hojaAbrir({ titulo: 'Activar ' + f.nombre, kicker: 'Privacidad y datos',
+      html: '<p class="meta" style="font-size:14px;line-height:1.5">' + esc(f.linea) + '</p><p class="meta" style="font-size:14px;line-height:1.5">Te mandamos un código a tu correo (' + esc(d.correo || '') + '). Escribirlo equivale a tu firma; puedes quitar el permiso cuando quieras.</p>' +
+        '<div id="lgAct1"><button type="button" class="btn" id="lgActBtn" onclick="lgActPedir(\'' + id + '\')">Enviarme el código</button></div>' +
+        '<div id="lgAct2" style="display:none"><label for="lgActCodigo">Código de 6 dígitos</label><input id="lgActCodigo" class="lg-cod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">' +
+        '<button type="button" class="btn" id="lgActFirmar" style="margin-top:12px" onclick="lgActFirmar(\'' + id + '\')">Firmar y activar</button></div><p class="lg-msg" id="lgActMsg"></p>' });
+  });
+}
+function lgActPedir(id) {
+  var b = $('lgActBtn'); b.disabled = true; b.textContent = 'Enviando…';
+  var p = { finalidades: {} }; p.finalidades[id] = true;
+  api('pedirFirmaLegal', p).then(function (r) { $('lgAct1').style.display = 'none'; $('lgAct2').style.display = ''; lgMsg('lgActMsg', r.mensaje, true); $('lgActCodigo').focus(); })
+    .catch(function (x) { b.disabled = false; b.textContent = 'Enviarme el código'; lgMsg('lgActMsg', x.message || x); });
+}
+function lgActFirmar(id) {
+  var c = String($('lgActCodigo').value || '').replace(/\D/g, ''), b = $('lgActFirmar');
+  if (c.length !== 6) { lgMsg('lgActMsg', 'El código tiene 6 dígitos.'); return; }
+  b.disabled = true; b.textContent = 'Firmando…';
+  api('firmarLegal', { codigo: c }).then(function (r) {
+    window.lgDatos = r; hojaCerrar();
+    var f = (r.finalidades || []).filter(function (x) { return x.id === id; })[0];
+    toast('Listo: ' + (f ? f.nombre : 'permiso') + ' activado.');
+    if ($('lgBody') && ajSec === 'privacidad') lgPintarAjustes(r);
+    lgTrasCambio();
+  }).catch(function (x) { b.disabled = false; b.textContent = 'Firmar y activar'; lgMsg('lgActMsg', x.message || x); });
+}
+
+/* ---------- Ajustes → Tu cuenta → Privacidad y datos ---------- */
+function lgCargarAjustes() {
+  var b = $('lgBody'); if (!b) return;
+  if (!window.lgDatos) b.innerHTML = '<div class="meta">Cargando…</div>';
+  api('getLegal').then(lgPintarAjustes).catch(function (x) { b.innerHTML = '<div class="meta">No pude cargar tu privacidad: ' + esc(x.message || x) + '</div>'; });
+}
+function lgPintarAjustes(d) {
+  window.lgDatos = d;
+  var b = $('lgBody'); if (!b) return;
+  var sub = $('ajSubPrivacidad');
+  if (sub) sub.textContent = !d.configurado ? 'Lo que aceptaste y tus permisos' : d.vigente ? 'Firmado el ' + lgFecha(d.fecha) + ' · ' + (d.finalidades || []).filter(function (f) { return f.activa && !f.obligatoria; }).length + ' permisos activos' : 'Tienes términos por aceptar';
+  if (!d.configurado) { b.innerHTML = '<div class="meta">Los documentos legales aún no están publicados. Cuando lo estén, aquí verás lo que aceptaste y tus permisos.</div>'; return; }
+  var h = '<h2>Lo que aceptaste</h2>';
+  if (!(d.aceptados || []).length) h += '<div class="meta">Aún no has aceptado los documentos vigentes.</div><button type="button" class="btn" style="margin-top:10px" onclick="lgMostrarOv()">Leer y aceptar</button>';
+  else h += (d.aceptados || []).map(function (x) {
+    return '<a class="lg-doc" style="padding:10px 0" href="' + esc(lgUrl(x.id, x.version)) + '" target="_blank" rel="noopener"><span><b>' + esc(x.titulo) + '</b><small>Versión ' + esc(x.version) + ' · firmado el ' + esc(lgFecha(x.fecha)) + '</small></span><span class="lg-leer">Leer ›</span></a>';
+  }).join('') + (d.vigente ? '' : '<div class="lg-aviso"><span>Hay una versión nueva por aceptar.</span><button type="button" class="btn sec" onclick="lgMostrarOv()">Ver</button></div>');
+  h += '<h2 style="margin-top:20px">Tus permisos</h2><div class="meta">Los sensibles piden un código al activarlos. Quitarlos es inmediato.</div>';
+  h += (d.finalidades || []).map(function (f) {
+    if (f.obligatoria) return '<div class="per-row"><div class="n"><b>' + esc(f.nombre) + '</b><small>' + esc(f.linea) + '</small><span class="tag">Siempre activa</span></div></div>';
+    return '<div class="per-row"><div class="n"><b>' + esc(f.nombre) + (f.sensible ? ' <span class="sens" style="font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--muted);border:1px solid var(--raise2);border-radius:999px;padding:1px 6px">SENSIBLE</span>' : '') + '</b><small>' + esc(f.linea) + '</small></div>' +
+      '<label class="per-sw lg-sw" aria-label="' + esc(f.nombre) + '"><input type="checkbox" id="lgSw_' + f.id + '"' + (f.activa ? ' checked' : '') + (d.vigente ? '' : ' disabled') + ' onchange="lgCambiar(\'' + f.id + '\', this)"><i></i></label></div>';
+  }).join('');
+  h += '<h2 style="margin-top:20px">Tus derechos</h2><div class="meta">Puedes conocer, corregir y borrar tus datos (Ley 1581 de 2012).</div>' +
+    '<button type="button" class="btn sec" id="lgDescBtn" style="margin-top:10px" onclick="lgDescargar(this)">Descargar mis datos</button>' +
+    '<button type="button" class="btn txt lg-bad" style="width:100%;margin-top:4px" onclick="lgPedirBorrado()">Pedir que borren mi cuenta</button><p class="lg-msg" id="lgAjMsg"></p>';
+  if ((d.historial || []).length) h += '<details style="margin-top:8px"><summary>Historial de firmas (' + d.historial.length + ')</summary>' + d.historial.map(function (x) {
+    var canal = { registro: 'Al crear la cuenta', reaceptacion: 'Aceptaste los términos', cambio_finalidades: 'Cambiaste permisos' }[x.canal] || x.canal;
+    var met = x.metodo === 'otp_correo' ? 'código al correo' : 'desde la app';
+    var act = Object.keys(x.finalidades || {}).filter(function (k) { return x.finalidades[k] && k !== 'cuenta'; });
+    return '<div class="lg-hist"><b>' + esc(canal) + '</b> · ' + esc(lgFecha(x.fecha)) + ' · ' + esc(met) + '<br>Permisos: ' + esc(act.length ? act.join(', ') : 'solo la cuenta') + '</div>';
+  }).join('') + '</details>';
+  b.innerHTML = h;
+  ajOcultarH2();
+}
+function lgCambiar(id, inp) {
+  var d = window.lgDatos || {}, f = (d.finalidades || []).filter(function (x) { return x.id === id; })[0]; if (!f) return;
+  var on = !!inp.checked, borrar = null;
+  if (on && f.codigo) { inp.checked = false; lgActivar(id); return; }
+  if (!on) {
+    if (!confirm('¿Quitar el permiso de ' + f.nombre + '? ' + lgEfecto(id))) { inp.checked = true; return; }
+    if (id === 'salud' && d.tieneSalud && confirm('¿Borrar también tus condiciones, medicamentos y lesiones guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { salud: true };
+    if (id === 'medidas' && d.tieneMedidas && confirm('¿Borrar también tu peso y las medidas de la báscula guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { medidas: true };
+  }
+  inp.disabled = true;
+  var p = { finalidades: {} }; p.finalidades[id] = on; if (borrar) p.borrar = borrar;
+  api('cambiarFinalidades', p).then(function (r) {
+    lgPintarAjustes(r);
+    toast(on ? f.nombre + ': activado' : f.nombre + ': permiso quitado' + (borrar ? ' y datos borrados' : ''));
+    lgTrasCambio();
+  }).catch(function (x) { inp.disabled = false; inp.checked = !on; errG(x); });
+}
+function lgDescargar(btn) {
+  btn.disabled = true; btn.textContent = 'Preparando…';
+  api('descargarMisDatos').then(function (j) {
+    btn.disabled = false; btn.textContent = 'Descargar mis datos';
+    var nombre = 'enfoque-mis-datos-' + hoyISO() + '.json', blob = new Blob([JSON.stringify(j, null, 2)], { type: 'application/json' });
+    var archivo = null; try { archivo = new File([blob], nombre, { type: 'application/json' }); } catch (e) {}
+    if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) { navigator.share({ files: [archivo], title: 'Mis datos de Enfoque' }).catch(function () {}); return; }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    lgMsg('lgAjMsg', 'Listo: se descargó ' + nombre + '.', true);
+  }).catch(function (x) { btn.disabled = false; btn.textContent = 'Descargar mis datos'; errG(x); });
+}
+function lgPedirBorrado() {
+  var motivo = prompt('Le pedimos al dueño de Enfoque que borre tu cuenta y tus datos (lo hace en máximo 15 días hábiles). ¿Quieres contarnos por qué? Es opcional.', '');
+  if (motivo === null) return;
+  api('pedirBorrarCuenta', { motivo: motivo, id: 'b' + Date.now().toString(36) }).then(function (r) {
+    toast(r.mensaje); lgMsg('lgAjMsg', r.mensaje, true); lgMsg('lgOvMsg', r.mensaje, true);
+  }).catch(errG);
 }
 </script>
 </body>
