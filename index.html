@@ -1128,10 +1128,10 @@
       <div class="sec-h" style="margin-top:14px"><b>Con IA</b><span>texto o foto</span></div>
       <div id="cIaOff" class="ia-off" style="display:none"></div>
       <div id="cIaBox">
-      <div class="meta">Cuéntale qué comiste o tómale una foto al plato. Tú revisas antes de guardar.</div>
+      <div class="meta">Cuéntale qué comiste, tómale una foto al plato o elige una de tu galería. Tú revisas antes de guardar.</div>
       <div class="chat-in" style="margin-top:8px"><textarea id="cIaTxt" rows="2" placeholder="Ej.: almorcé bandeja paisa sin chicharrón y un jugo de mora en agua"></textarea>
-        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label></div>
-      <input id="cIaFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoComidaElegida(this)">
+        <label class="btn sec foto-mini" id="cIaFotoBtn" for="cIaFoto" aria-label="Foto del plato (cámara o galería)"><svg class="g-ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label></div>
+      <input id="cIaFoto" class="oculto" type="file" accept="image/*" onchange="fotoComidaElegida(this)">
       <div class="meta" id="cIaFotoTxt"></div>
       <button class="btn sec" style="margin-top:8px" id="cIaBtn" onclick="comidaIA()">Calcular con IA</button>
       <div id="cIaRes"></div>
@@ -1191,7 +1191,7 @@
       <div class="g-foto" style="margin-top:0;padding:0;background:none"><div class="n"><b>Tomar una foto</b><span class="s">Misma luz y misma pose cada vez.</span></div>
         <select id="fTipo" aria-label="Tipo de foto"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select>
         <label class="btn" for="fArchivo" id="fTomar"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="fArchivoTxt">Tomar</span></label></div>
-      <input id="fArchivo" class="oculto" type="file" accept="image/*" capture="environment" onchange="fotoProgresoElegida(this)">
+      <input id="fArchivo" class="oculto" type="file" accept="image/*" onchange="fotoProgresoElegida(this)">
       <div id="fComparar" style="margin-top:10px"></div>
     </div>
     <button class="g-row" aria-expanded="false" onclick="gcToggle('cuMas', this)"><span class="n"><b>Más datos de la báscula</b><span class="s" id="cuMasSub">grasa, músculo, agua, visceral, ósea, metabolismo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -1553,7 +1553,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610040247', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610040305', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -5448,7 +5448,7 @@ function gdSupFormHTML(c) {
   var inp = function (k, lab, tipoI, ph, extra) { return '<div' + (extra || '') + '><label for="gds_' + k + '">' + lab + '</label><input id="gds_' + k + '" type="' + tipoI + '"' + (tipoI === 'number' ? ' inputmode="decimal" step="any" min="0"' : '') + ' placeholder="' + esc(ph) + '" value="' + esc(d[k] == null ? '' : d[k]) + '"></div>'; };
   var activos = d.activos && d.activos.length ? d.activos : [{ nombre: '', mg: '' }];
   return '<div class="gd-form sup-form" id="gdSupForm">' +
-    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" capture="environment" onchange="gdEtiquetaFoto(this)">'
+    (ia ? '<label class="btn sec" for="gdsFoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="gdsFotoTxt">Leer la etiqueta con una foto</span></label><input id="gdsFoto" class="oculto" type="file" accept="image/*" onchange="gdEtiquetaFoto(this)">'
       : (geIaApagada() ? '<div class="ia-off">' + esc(geIaTexto()) + '</div>' : '')) +
     '<label>Tipo</label><div class="sup-tipos" id="gdsTipos">' + GD_TIPOS.map(function (t) { return '<button type="button" class="chip' + (t[0] === tipo ? ' on' : '') + '" onclick="gdSupTipo(' + esc(gdArg(t[0])) + ')">' + esc(t[1]) + '</button>'; }).join('') + '</div>' +
     '<div class="row">' + inp('nombre', 'Nombre', 'text', 'Ej.: Creatina monohidrato') + inp('marca', 'Marca', 'text', 'Opcional') + '</div>' +
