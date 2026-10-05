@@ -1052,6 +1052,8 @@
   .mic-estado{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .mic-estado .punto{width:8px;height:8px;border-radius:50%;background:var(--bad);flex:none}
   .mic-estado button{background:none;border:0;padding:4px 0;color:var(--muted);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+  /* ===== Sonido del descanso (05/10/2026) ===== */
+  #pSonido{flex:1;min-width:0}
 </style>
 </head>
 <body>
@@ -1360,6 +1362,10 @@
       </div>
       <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa" onchange="ajAuto({ Equipo: this.value })">
       <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer. Se guarda solo.</div>
+      <label for="pSonido" style="margin-top:14px">Aviso del descanso</label>
+      <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="voz">Voz: te dice la siguiente serie</option><option value="tono">Solo un tono</option><option value="no">Sin sonido</option></select>
+        <button type="button" class="btn sec" style="width:auto" onclick="sonidoProbar()">Probar</button></div>
+      <div class="meta" style="margin-top:6px">Suena a los 10 s, cuenta 3, 2, 1 y te avisa al terminar; se oye por los audífonos y baja tu música un momento. Deja la app abierta: con la pantalla bloqueada el iPhone la silencia (ahí llega el aviso del celular si lo activaste).</div>
     </div>
     <div class="card" data-sec="comida">
       <h2>Objetivo y meta</h2>
@@ -1575,7 +1581,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610041746', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610051314', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2501,7 +2507,8 @@ function pintar(i, v) {
   var rirN = Number(p.rir), rirTxt = p.rir === '' || p.rir == null || isNaN(rirN) ? '' : rirN === 0 ? 'hasta el fallo' : 'para con ' + rirN + ' de sobra';
   $('exPresc' + i).textContent = prescLlana(p, e.unidad) + ' · ' + fmtSeg(p.descanso);
   $('exPrescS' + i).textContent = rirTxt;
-  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : sugLinea(sg, p, e.unidad);
+  var ajv = e._ajuste && e._ajuste.hechas === hechas && !completo ? e._ajuste : null;   // ajuste por Fácil/Bien/Al límite de la última serie hecha
+  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : (ajv ? ajv.linea : sugLinea(sg, p, e.unidad));
   $('exSug' + i).innerHTML = linea ? '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + (sg.aviso ? '<span class="warn">' + esc(sg.aviso) + '</span>' : '') + '</div>' : '';
   // Capa Más: la alternativa y la sugerencia completa con la última vez
   $('exAlt' + i).innerHTML = o ? 'Cambiar a <button type="button" class="g-alt" onclick="cambiarVariante(' + i + ',\'' + otraV + '\')">' + esc(o.nombre) + '</button>' : '';
@@ -2515,12 +2522,12 @@ function pintar(i, v) {
   Array.prototype.forEach.call(document.querySelectorAll('#exSets' + i + ' tr'), function (tr, k) {
     var ins = tr.querySelectorAll('input'); if (tr.dataset.ed === '1' && tr.dataset.done !== '1' && ins.length === 2) previas[k] = { carga: ins[0].value, reps: ins[1].value };
   });
-  var filas = '', cargaRef = e._ajustada != null ? e._ajustada : (sg.carga != null ? sg.carga : '');
+  var filas = '', cargaRef = sg.carga != null ? sg.carga : '';
   for (var k = 0; k < n; k++) {
     var h = hoy[k] || {}, done = k < hechas, pv = !done && previas[k];
     var carga = done ? (h.carga !== undefined ? h.carga : '') : (pv ? pv.carga : '');
     var reps = done ? (h.reps !== undefined ? h.reps : '') : (pv ? pv.reps : '');
-    var ant = k > 0 ? hoy[k - 1] : null, phCarga = ant && ant.carga !== '' && ant.carga != null ? ant.carga : cargaRef;   // en gris: lo de la serie anterior o el sugerido
+    var ant = k > 0 ? hoy[k - 1] : null, phCarga = !done && ajv ? ajv.carga : ant && ant.carga !== '' && ant.carga != null ? ant.carga : cargaRef;   // en gris: el ajuste por cómo se sintió, lo de la serie anterior o el sugerido
     filas += '<tr class="g-set' + (done ? ' done' : '') + '" data-done="' + (done ? 1 : 0) + '"' + (pv ? ' data-ed="1"' : '') + '><td class="n">' + (k + 1) + '</td>' +
       '<td><input type="number" inputmode="decimal" step="any" aria-label="Carga en kg" value="' + esc(carga) + '" placeholder="' + esc(phCarga) + '" onfocus="this.select()"></td><td class="u">kg</td>' +
       '<td><input type="number" inputmode="numeric" aria-label="' + (seg ? 'Segundos' : 'Repeticiones') + '" value="' + esc(reps) + '" placeholder="' + esc(p.rmin) + '" onfocus="this.select()"></td><td class="u">' + (seg ? 's' : 'reps') + '</td>' +
@@ -2533,7 +2540,6 @@ function pintar(i, v) {
   pintarCal(i);
   // RIR con palabras: el guardado (si coincide con una opción) o nada elegido todavía
   if (e._rir == null && hoy.length && hoy[hoy.length - 1].rir !== '' && hoy[hoy.length - 1].rir != null) e._rir = Number(hoy[hoy.length - 1].rir);
-  e._ajustada = null;
   pintarRir(i);
   $('exFin' + i).innerHTML = hechas && !completo && e.estado !== 'omitido' ? '<button type="button" class="g-fin-btn" onclick="terminarEj(' + i + ')">Terminar aquí con ' + hechas + ' de ' + p.series + ' series ›</button>' : '';
   if (e._histAbierto) pintarHistEj(i);
@@ -2567,31 +2573,43 @@ function elegirRir(i, r) {
   var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], sg = d.sugerencia;
   e._rir = r; e._ajusteTxt = '';
   var hechas = document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length;
-  if (hechas && e.estado !== 'omitido' && (sg.estimada || sg.inicial) && sg.carga != null) ajustarPorRir(i, sg.carga);
+  if (hechas && e.estado !== 'omitido') ajustarPorRir(i, sg.carga);
   pintarRir(i);
+  try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (x) {}   // sin casilla activa: el iPhone no ofrece "Deshacer texto escrito" al agitarlo
   if (hechas) guardar(i);   // actualiza el RIR de lo ya guardado
 }
 
 /**
- * Primera serie con carga estimada (tabla por peso o calculada de otro ejercicio): según el RIR que eliges (Fácil · Bien · Al límite)
- * se recalculan las series siguientes que aún traen la carga sugerida. RIR ≥ 5 → +10 %, 3–4 → igual, 2 → −5 %, ≤ 1 → −10 %; redondeado
- * al paso de la variante y nunca menos que la barra. Así el error de la estimación se corrige en la misma sesión (autorregulación por RIR).
+ * Autorregulación en la misma sesión (05/10/2026): cuando eliges cómo se sintió la ÚLTIMA serie hecha, las que faltan cambian su carga
+ * sugerida (el gris) y la línea "Hoy:" lo dice. Base = carga y reps de esa última serie (antes era la primera serie y solo con carga
+ * estimada, así que "Bien" con 66 · 72 · 79 kg decía "ajusté a 65"). Fácil (≥ 4 de sobra) → +10 % (mínimo un paso); Bien → igual;
+ * Al límite → −5 %, o −10 % si no llegaste al mínimo de reps (mínimo un paso). Al paso de la variante y nunca menos que la barra.
+ * Lo que ya escribiste a mano en una serie que falta no se toca. Fuente: autorregulación por RIR (Helms 2016; Zourdos 2016).
  */
 function ajustarPorRir(i, sugerida) {
-  var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], filas = document.querySelectorAll('#exSets' + i + ' tr');
-  if (!filas.length || !d || e._rir == null) return;
-  var in0 = filas[0].querySelector('input'), base = Number(String(in0.value || in0.placeholder).replace(',', '.')) || Number(sugerida) || 0; if (!base) return;
-  var r = Number(e._rir), f = r >= 5 ? 1.10 : r >= 3 ? 1 : r === 2 ? 0.95 : 0.90;
-  var paso = d.paso || 2.5, nueva = Math.max(d.barra || 0, Math.round(base * f / paso) * paso); nueva = Math.round(nueva * 100) / 100;
-  for (var k = 1; k < filas.length; k++) {
-    if (filas[k].dataset.done === '1') continue;   // las ya hechas no se tocan
-    var inp = filas[k].querySelector('input'), v = Number(String(inp.value).replace(',', '.'));
-    if (inp.value === '') inp.placeholder = nueva;   // vacía: cambia el sugerido en gris
-    else if (v === Number(sugerida) || v === e._ajustada || v === base) inp.value = nueva;   // solo las que no tocaste a mano
-  }
-  e._ajustada = nueva;
-  e._ajusteTxt = nueva === base ? 'Carga bien elegida: las siguientes series siguen con ' + fmtNum(base) + ' kg.'
-    : 'Ajusté las siguientes series a ' + fmtNum(nueva) + ' kg' + (r >= 5 ? ' (te sobraron repeticiones)' : r === 2 ? ' (iba un poco pesado)' : ' (iba muy pesado)') + '.';
+  var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], p = e.prescripcion, filas = document.querySelectorAll('#exSets' + i + ' tr');
+  e._ajuste = null; e._ajusteTxt = '';
+  if (!filas.length || !d || e._rir == null || e.unidad === 'seg') return;
+  var hechas = Array.prototype.filter.call(filas, function (t) { return t.dataset.done === '1'; });
+  if (!hechas.length || hechas.length >= filas.length) return;   // sin series hechas o ya no queda ninguna
+  var ult = hechas[hechas.length - 1].querySelectorAll('input');
+  var base = Number(String(ult[0].value || ult[0].placeholder).replace(',', '.')) || Number(sugerida) || 0, reps = Number(ult[1].value) || 0; if (!base) return;
+  var r = Number(e._rir), paso = Number(d.paso) || 2.5, nueva;
+  if (r >= 4) nueva = Math.max(base + paso, Math.round(base * 1.10 / paso) * paso);
+  else if (r >= 2) nueva = base;
+  else nueva = Math.min(base - paso, Math.round(base * (reps && reps < Number(p.rmin) ? 0.90 : 0.95) / paso) * paso);
+  nueva = Math.max(Number(d.barra) || 0, Math.round(nueva * 100) / 100); if (nueva <= 0) nueva = base;
+  Array.prototype.forEach.call(filas, function (tr) {
+    if (tr.dataset.done === '1') return;   // las hechas no se tocan
+    var inp = tr.querySelector('input');
+    if (inp.value === '' || tr.dataset.ed !== '1') { inp.value = ''; inp.placeholder = nueva; }   // lo escrito a mano se respeta
+  });
+  var busca = reps ? Math.min(Number(p.rmax) || reps, Math.max(Number(p.rmin) || reps, r >= 4 ? reps : r <= 1 ? Number(p.rmin) || reps : reps)) : Number(p.rmin) || '';
+  var linea = (nueva > base ? 'sube a ' + fmtNum(nueva) + ' kg' : nueva < base ? 'baja a ' + fmtNum(nueva) + ' kg' : 'sigue con ' + fmtNum(nueva) + ' kg') + (busca ? ', busca ' + busca + ' reps' : '') +
+    (nueva > base ? ' (la anterior te quedó fácil)' : nueva < base ? ' (la anterior fue al límite)' : ' (así va bien)');
+  e._ajuste = { hechas: hechas.length, carga: nueva, linea: linea };
+  e._ajusteTxt = 'Las que siguen van con ' + fmtNum(nueva) + ' kg.';
+  var hoyBox = $('exSug' + i); if (hoyBox) hoyBox.innerHTML = '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + '</div>';
 }
 
 function payloadBase(e) { return { fecha: sesionActual.fecha, sesion: sesionActual.codigo, nombres: e.nombres }; }
@@ -2599,6 +2617,8 @@ function marcarFila(tr, on) { tr.dataset.done = on ? '1' : '0'; tr.classList.tog
 /** "Listo" en una serie: quedan hechas esa y las anteriores, se guarda todo el ejercicio y arranca el descanso. En una hecha, deshace desde ahí. */
 function listo(i, k) {
   var e = sesionActual.ejercicios[i]; if (e._guardando) return;
+  try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (x) {}   // sin casilla activa, agitar el iPhone no ofrece "Deshacer texto escrito"
+  try { sonidoPreparar(); } catch (x) {}   // el audio del descanso solo se puede activar con un toque
   var filas = document.querySelectorAll('#exSets' + i + ' tr'), tr = filas[k]; if (!tr) return;
   var era = tr.dataset.done === '1', j;
   if (era) { for (j = k; j < filas.length; j++) marcarFila(filas[j], false); }
@@ -2845,6 +2865,7 @@ function descanso(seg, ej) {
   tFin = Date.now() + seg * 1000; clearTimeout(tCierre);
   var el = $('tEj'); if (el) el.textContent = tEj && tEj.nombre ? '· ' + tEj.nombre : '';
   $('timer').style.display = 'flex'; document.body.classList.add('t-on');
+  try { sonidoNuevoDescanso(); } catch (x) {}
   clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(seg);
 }
 /* Tocar la píldora vuelve a Hoy y a la tarjeta del ejercicio que descansa */
@@ -2864,13 +2885,14 @@ var tCierre = null;
 function tick() {
   var r = Math.max(0, Math.round((tFin - Date.now()) / 1000));
   $('tVal').textContent = fmtSeg(r);
+  try { sonidoTick(r); } catch (x) {}
   if (r === 0) {
     clearInterval(tInt); tInt = null; if (navigator.vibrate) navigator.vibrate([300, 150, 300]); $('tVal').textContent = '¡Serie!';
     // Antes "¡Serie!" se quedaba para siempre encima de todas las pestañas: ahora se va solo a los 8 s
     clearTimeout(tCierre); tCierre = setTimeout(tOcultar, 8000);
   }
 }
-function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); $('timer').style.display = 'none'; document.body.classList.remove('t-on'); }
+function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); $('timer').style.display = 'none'; document.body.classList.remove('t-on'); try { sonidoSoltarPantalla(); } catch (x) {} }
 /** La píldora se ve en cualquier pestaña mientras el descanso corre; al llegar a cero se va sola a los 8 s (tCierre). */
 function tVisible() { var t = $('timer'); if (!t) return; var on = !!(tInt && tFin > Date.now()); t.style.display = on ? 'flex' : 'none'; document.body.classList.toggle('t-on', on); }
 $('tIr').onclick = tIrEjercicio;
@@ -6728,6 +6750,82 @@ function micEnviar(blob) {
     .then(function () { m.modo = ''; micPintar(); if (b) b.disabled = false; });
 }
 /* ===== fin Dictado ===== */
+/* ===== Sonido del descanso (05/10/2026): tono o voz por los audífonos =====
+ * Preferencia por celular (localStorage tSonido: voz | tono | no; por defecto voz). Con el descanso corriendo: un tono a los 10 s, 3 · 2 · 1 y al llegar a 0
+ * dos tonos y, con voz, "Serie 3 de Prensa de piernas: 79 kilos por 8" (o el siguiente ejercicio). El iPhone solo deja sonar audio activado con un toque:
+ * `sonidoPreparar` corre en cada "Listo" (crea/reanuda el AudioContext, desbloquea la voz y pide navigator.audioSession 'transient' para bajar la música
+ * un momento en vez de cortarla). Mientras corre el descanso se pide Wake Lock para que la pantalla no se apague (si se bloquea, iOS congela la página;
+ * para eso sigue el aviso push del servidor). Todo en function: nada corre al abrir la app. */
+function sonidoModo() { try { return localStorage.getItem('tSonido') || 'voz'; } catch (e) { return 'voz'; } }
+function sonidoElegir(v) { try { localStorage.setItem('tSonido', v); } catch (e) {} toast(v === 'no' ? 'Descanso sin sonido' : v === 'tono' ? 'Descanso con tono' : 'Descanso con voz'); if (v !== 'no') { sonidoPreparar(); sonidoProbar(); } }
+function sonidoEst() { return window.__son || (window.__son = { ac: null, avisados: {}, wl: null, vozLista: false }); }
+function sonidoPreparar() {
+  var s = sonidoEst();
+  try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; } catch (e) {}
+  try {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (AC && !s.ac) s.ac = new AC();
+    if (s.ac && s.ac.state === 'suspended') s.ac.resume();
+    if (s.ac) { var b = s.ac.createBuffer(1, 1, 22050), src = s.ac.createBufferSource(); src.buffer = b; src.connect(s.ac.destination); src.start(0); }   // desbloqueo silencioso
+  } catch (e) {}
+  try { if (!s.vozLista && window.speechSynthesis && window.SpeechSynthesisUtterance) { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); s.vozLista = true; } } catch (e) {}
+}
+function sonidoTono(frec, ms, cuando) {
+  var s = sonidoEst(); if (!s.ac) return;
+  try {
+    var t = s.ac.currentTime + (cuando || 0), o = s.ac.createOscillator(), g = s.ac.createGain();
+    o.type = 'sine'; o.frequency.value = frec; o.connect(g); g.connect(s.ac.destination);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + ms / 1000);
+    o.start(t); o.stop(t + ms / 1000 + 0.05);
+  } catch (e) {}
+}
+function sonidoDecir(texto) {
+  try {
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return false;
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(texto), vs = speechSynthesis.getVoices() || [];
+    var v = vs.filter(function (x) { return /^es[-_]CO/i.test(x.lang); })[0] || vs.filter(function (x) { return /^es[-_](MX|US|419)/i.test(x.lang); })[0] || vs.filter(function (x) { return /^es/i.test(x.lang); })[0];
+    if (v) u.voice = v; u.lang = v ? v.lang : 'es-CO'; u.rate = 1.05; u.volume = 1;
+    speechSynthesis.speak(u); return true;
+  } catch (e) { return false; }
+}
+/** Lo que se dice al terminar: la siguiente serie de este ejercicio (kg y reps del gris o lo escrito) o el siguiente ejercicio. */
+function sonidoSiguienteTexto() {
+  try {
+    var i = tEj ? tEj.i : -1, e = i >= 0 && sesionActual ? sesionActual.ejercicios[i] : null; if (!e) return 'Descanso terminado.';
+    var filas = document.querySelectorAll('#exSets' + i + ' tr'), k = -1;
+    for (var j = 0; j < filas.length; j++) if (filas[j].dataset.done !== '1') { k = j; break; }
+    var nom = String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0];
+    if (k >= 0) {
+      var ins = filas[k].querySelectorAll('input'), kg = ins[0].value || ins[0].placeholder, reps = ins[1].value || ins[1].placeholder;
+      return 'Descanso terminado. Serie ' + (k + 1) + ' de ' + nom + (kg ? ': ' + String(kg).replace('.', ',') + ' kilos' : '') + (reps ? ' por ' + reps + (e.unidad === 'seg' ? ' segundos' : '') : '') + '.';
+    }
+    var sig = sesionActual.ejercicios.filter(function (x, n) { return n > i && x.estado === 'pendiente'; })[0];
+    return sig ? 'Descanso terminado. Sigue con ' + String(sig.variantes[sig._var || 'principal'].nombre || '').split(' (')[0] + '.' : 'Descanso terminado.';
+  } catch (e) { return 'Descanso terminado.'; }
+}
+function sonidoNuevoDescanso() {
+  var s = sonidoEst(); s.avisados = {};
+  if (sonidoModo() === 'no') return;
+  try { if (navigator.wakeLock && !s.wl) navigator.wakeLock.request('screen').then(function (w) { s.wl = w; w.addEventListener('release', function () { s.wl = null; }); }).catch(function () {}); } catch (e) {}
+}
+function sonidoSoltarPantalla() { var s = sonidoEst(); try { if (s.wl) s.wl.release(); } catch (e) {} s.wl = null; }
+/** Cada tick del descanso (r = segundos que faltan): un aviso por segundo como máximo. */
+function sonidoTick(r) {
+  var modo = sonidoModo(), s = sonidoEst(); if (modo === 'no' || s.avisados[r]) return;
+  if (r === 10) { s.avisados[r] = 1; if (modo === 'voz') { if (!sonidoDecir('Diez segundos')) sonidoTono(880, 160); } else sonidoTono(880, 160); }
+  else if (r >= 1 && r <= 3) { s.avisados[r] = 1; sonidoTono(660, 110); }
+  else if (r === 0) {
+    s.avisados[r] = 1; sonidoTono(988, 180); sonidoTono(1319, 260, 0.22);
+    if (modo === 'voz') { var txt = sonidoSiguienteTexto(); setTimeout(function () { sonidoDecir(txt); }, 600); }
+    setTimeout(sonidoSoltarPantalla, 9000);
+  }
+}
+function sonidoProbar() { sonidoPreparar(); var m = sonidoModo(); if (m === 'no') { toast('Está en "Sin sonido"'); return; } sonidoTono(988, 180); sonidoTono(1319, 260, 0.22); if (m === 'voz') setTimeout(function () { sonidoDecir('Descanso terminado. Serie 2 de Press de banca: 60 kilos por 10.'); }, 600); }
+try { var pSon = document.getElementById('pSonido'); if (pSon) pSon.value = sonidoModo(); } catch (e) {}
+// Si el iPhone igual ofrece "Deshacer texto escrito" (agitarlo con una casilla activa), deshacer no borra lo anotado en las series
+try { document.addEventListener('beforeinput', function (ev) { if (ev.inputType === 'historyUndo' && ev.target && ev.target.closest && ev.target.closest('.g-sets, [id^="exSets"]')) ev.preventDefault(); }, true); } catch (e) {}
+/* ===== fin Sonido del descanso ===== */
 </script>
 </body>
 </html>
