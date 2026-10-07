@@ -1054,6 +1054,15 @@
   .mic-estado button{background:none;border:0;padding:4px 0;color:var(--muted);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
   /* ===== Sonido del descanso (05/10/2026) ===== */
   #pSonido{flex:1;min-width:0}
+  /* ===== Qué músculos trabajas (07/10/2026) ===== */
+  .mt-box{margin:0 0 8px}
+  .mt-box .mt-k{display:flex;align-items:center;gap:6px}
+  .mt-fila{display:flex;gap:10px;align-items:flex-start;margin-top:8px}
+  .mt-tag{flex:0 0 96px;box-sizing:border-box;text-align:center;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-radius:999px;padding:3px 8px;border:1px solid var(--line);color:var(--dim)}
+  .mt-fila.dir .mt-tag{color:var(--ink);border-color:var(--ink)}
+  .mt-fila b{color:var(--ink);font-weight:700}
+  .mt-fila .mt-d{color:var(--dim);font-size:13px;line-height:1.35}
+  .mt-fila .mt-n{font-size:15px;line-height:1.35}
 </style>
 </head>
 <body>
@@ -1363,9 +1372,9 @@
       <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa" onchange="ajAuto({ Equipo: this.value })">
       <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer. Se guarda solo.</div>
       <label for="pSonido" style="margin-top:14px">Aviso del descanso</label>
-      <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="voz">Voz: te dice la siguiente serie</option><option value="tono">Solo un tono</option><option value="no">Sin sonido</option></select>
+      <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="tono">Tono (no pausa tu música)</option><option value="voz">Voz: te dice la siguiente serie</option><option value="no">Sin sonido</option></select>
         <button type="button" class="btn sec" style="width:auto" onclick="sonidoProbar()">Probar</button></div>
-      <div class="meta" style="margin-top:6px">Suena a los 10 s, cuenta 3, 2, 1 y te avisa al terminar; se oye por los audífonos y baja tu música un momento. Deja la app abierta: con la pantalla bloqueada el iPhone la silencia (ahí llega el aviso del celular si lo activaste).</div>
+      <div class="meta" style="margin-top:6px">Suena a los 10 s, cuenta 3, 2, 1 y te avisa al terminar, por encima de tu música y sin pausarla (con el celular en silencio no suena). La voz del iPhone puede pausar la música. Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
     </div>
     <div class="card" data-sec="comida">
       <h2>Objetivo y meta</h2>
@@ -1581,7 +1590,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610051314', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610071546', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2354,7 +2363,7 @@ function tarjeta(e, i) {
       '<div class="g-expl" id="exExpl' + i + '" style="display:none"></div>' +
       '<div id="exSug' + i + '"></div>' +
       '<table class="g-sets"><tbody id="exSets' + i + '"></tbody></table>' +
-      '<div class="g-rir-h">¿Cómo se sintió la última?</div>' +
+      '<div class="g-rir-h" id="exRirH' + i + '">¿Cómo se sintió la serie?</div>' +
       '<div class="g-rir" id="exRir' + i + '">' + RIR_OPC.map(function (r) { return '<button type="button" data-rir="' + r.rir + '" onclick="elegirRir(' + i + ',' + r.rir + ')">' + r.t + '</button>'; }).join('') + '</div>' +
       '<div class="g-ayuda" id="exAj' + i + '"></div>' +
       '<div id="exFin' + i + '"></div>' +
@@ -2484,7 +2493,7 @@ function pintar(i, v) {
   var d = e.variantes[v];
   e._var = v;
   $('exNom' + i).textContent = d.nombre;
-  $('exMus' + i).innerHTML = musculosHTML(d.musculos);
+  $('exMus' + i).innerHTML = musculosTrabajaHTML(d.musculos);
   var otraV = v === 'principal' ? 'alternativa' : 'principal', o = e.variantes[otraV];
   $('exChip' + i).innerHTML = btnEstado(e);
   $('ex' + i).className = 'ex g-ex st-' + e.estado + ($('ex' + i).classList.contains('g-next') ? ' g-next' : '');
@@ -2508,7 +2517,10 @@ function pintar(i, v) {
   $('exPresc' + i).textContent = prescLlana(p, e.unidad) + ' · ' + fmtSeg(p.descanso);
   $('exPrescS' + i).textContent = rirTxt;
   var ajv = e._ajuste && e._ajuste.hechas === hechas && !completo ? e._ajuste : null;   // ajuste por Fácil/Bien/Al límite de la última serie hecha
-  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : (ajv ? ajv.linea : sugLinea(sg, p, e.unidad));
+  // Con series hechas y sin elegir cómo se sintió la última: la línea sigue a lo que hiciste (no a la sugerencia de antes de empezar)
+  var ultC = hechas && !seg && hoy[hechas - 1] && hoy[hechas - 1].carga !== '' && hoy[hechas - 1].carga != null ? Number(hoy[hechas - 1].carga) : NaN;
+  var sigue = !ajv && !isNaN(ultC) && ultC > 0 && hechas < p.series ? 'sigue con ' + fmtNum(ultC) + ' kg; dime cómo se sintió la serie ' + hechas + ' y lo ajusto' : '';
+  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : (ajv ? ajv.linea : sigue || sugLinea(sg, p, e.unidad));
   $('exSug' + i).innerHTML = linea ? '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + (sg.aviso ? '<span class="warn">' + esc(sg.aviso) + '</span>' : '') + '</div>' : '';
   // Capa Más: la alternativa y la sugerencia completa con la última vez
   $('exAlt' + i).innerHTML = o ? 'Cambiar a <button type="button" class="g-alt" onclick="cambiarVariante(' + i + ',\'' + otraV + '\')">' + esc(o.nombre) + '</button>' : '';
@@ -2538,19 +2550,29 @@ function pintar(i, v) {
   $('exSets' + i).oninput = function (ev) { var tr = ev.target.closest('tr'); if (tr) tr.dataset.ed = '1'; };   // lo editado a mano y aún sin "Listo" cuenta como cambio sin guardar
   var c0 = document.querySelector('#exSets' + i + ' tr input'); if (c0) c0.addEventListener('input', function () { pintarCal(i); });
   pintarCal(i);
-  // RIR con palabras: el guardado (si coincide con una opción) o nada elegido todavía
-  if (e._rir == null && hoy.length && hoy[hoy.length - 1].rir !== '' && hoy[hoy.length - 1].rir != null) e._rir = Number(hoy[hoy.length - 1].rir);
+  // RIR con palabras POR SERIE (07/10/2026): lo elegido en cada una (o lo guardado, si coincide con una opción). El comentario y el ajuste son
+  // siempre de la ÚLTIMA serie hecha: antes "Al límite" de la serie 4 seguía marcado y decía "van con 10 kg" después de hacer la 5 con 12.
+  if (e._rirVar !== v || !e._rirSerie) {
+    e._rirVar = v; e._rirSerie = {};
+    hoy.forEach(function (s, k) { var x = Number(s.rir); if (s.rir !== '' && s.rir != null && RIR_OPC.some(function (o) { return o.rir === x; })) e._rirSerie[k] = x; });
+  }
+  e._rir = hechas && e._rirSerie[hechas - 1] != null ? e._rirSerie[hechas - 1] : null;
+  if (e._rir != null && !ajv && !completo && e.estado !== 'omitido' && hechas < n) ajustarPorRir(i, sg.carga);   // al volver a abrir: el peso de las que faltan según lo elegido
   pintarRir(i);
   $('exFin' + i).innerHTML = hechas && !completo && e.estado !== 'omitido' ? '<button type="button" class="g-fin-btn" onclick="terminarEj(' + i + ')">Terminar aquí con ' + hechas + ' de ' + p.series + ' series ›</button>' : '';
   if (e._histAbierto) pintarHistEj(i);
 }
 function pintarRir(i) {
-  var e = sesionActual.ejercicios[i], r = e._rir, box = $('exRir' + i); if (!box) return;
+  var e = sesionActual.ejercicios[i], box = $('exRir' + i); if (!box) return;
+  var filas = document.querySelectorAll('#exSets' + i + ' tr'), hechas = document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length;
+  var r = hechas && e._rirSerie && e._rirSerie[hechas - 1] != null ? e._rirSerie[hechas - 1] : null;   // solo cuenta lo elegido para la última serie hecha
   box.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', r != null && Number(b.dataset.rir) === Number(r)); });
+  var h = $('exRirH' + i); if (h) h.textContent = hechas ? '¿Cómo se sintió la serie ' + hechas + '?' : '¿Cómo se sintió la serie?';
   var opc = RIR_OPC.filter(function (x) { return r != null && x.rir === Number(r); })[0];
   var aj = $('exAj' + i); if (!aj) return;
-  var extra = e._ajusteTxt ? ' ' + e._ajusteTxt : '';
-  aj.textContent = (opc ? opc.h + '.' : (r != null ? 'RIR ' + r + ' guardado.' : 'Toca una: así la app ajusta la carga de la próxima vez.')) + extra;
+  var extra = r != null && e._ajusteTxt && e._ajuste && e._ajuste.hechas === hechas ? ' ' + e._ajusteTxt : '';   // "Las que siguen van con X kg" solo si es de esta serie
+  var quedan = hechas && hechas < filas.length;
+  aj.textContent = opc ? opc.h + '.' + extra : r != null ? 'RIR ' + r + ' guardado.' : quedan ? 'Toca una y ajusto el peso de las que faltan.' : 'Toca una: así la app ajusta la carga de la próxima vez.';
 }
 /** El "?" junto a la prescripción: qué significa en una línea. */
 function explicarRir(i) {
@@ -2568,13 +2590,16 @@ function toggleMas(i, abrir) {
   m.style.display = abrir ? '' : 'none';
   b.textContent = abrir ? 'Menos ⌃' : 'Más ›'; b.setAttribute('aria-expanded', abrir ? 'true' : 'false');
 }
-/** Fácil · Bien · Al límite → RIR 5 · 3 · 1 para todas las series hechas; con carga estimada corrige las que siguen. */
+/** Fácil · Bien · Al límite → RIR 5 · 3 · 1 de la ÚLTIMA serie hecha (cada serie guarda el suyo); corrige el peso de las que siguen. */
 function elegirRir(i, r) {
   var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], sg = d.sugerencia;
-  e._rir = r; e._ajusteTxt = '';
   var hechas = document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length;
-  if (hechas && e.estado !== 'omitido') ajustarPorRir(i, sg.carga);
+  if (!hechas) { toast('Primero dale "Listo" a una serie y luego me cuentas cómo se sintió'); return; }
+  if (!e._rirSerie) e._rirSerie = {};
+  e._rirSerie[hechas - 1] = r; e._rir = r; e._ajusteTxt = ''; e._ajuste = null;
+  if (e.estado !== 'omitido') ajustarPorRir(i, sg.carga);
   pintarRir(i);
+  if (tEj && tEj.i === i && tFin > Date.now() + 5000) avisoDescanso(Math.round((tFin - Date.now()) / 1000));   // el aviso del celular dice el peso nuevo
   try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (x) {}   // sin casilla activa: el iPhone no ofrece "Deshacer texto escrito" al agitarlo
   if (hechas) guardar(i);   // actualiza el RIR de lo ya guardado
 }
@@ -2633,6 +2658,7 @@ function listo(i, k) {
     }
   }
   var quedan = Array.prototype.filter.call(filas, function (t) { return t.dataset.done === '1'; }).length;
+  if (e._rirSerie) Object.keys(e._rirSerie).forEach(function (x) { if (Number(x) >= quedan) delete e._rirSerie[x]; });   // al deshacer, lo elegido para esas series se va
   if (!quedan) { reabrir(i); return; }
   e._fin = false;
   var ultima = !era && quedan >= e.prescripcion.series;
@@ -2649,11 +2675,13 @@ function listo(i, k) {
 /** Guarda TODO el ejercicio con las series marcadas como hechas (el servidor reemplaza: es idempotente). */
 function guardar(i) {
   var e = sesionActual.ejercicios[i], v = e._var || 'principal', d = e.variantes[v], p = e.prescripcion;
-  var rir = e._rir != null ? e._rir : (p.rir !== undefined && p.rir !== null && p.rir !== '' ? p.rir : '');
+  // RIR de cada serie: el que elegiste para ella, el que ya tenía guardado o el prescrito
+  var def = p.rir !== undefined && p.rir !== null && p.rir !== '' ? p.rir : '', prev = d.hoy || [], rs = e._rirSerie || {};
   var series = [];
   document.querySelectorAll('#exSets' + i + ' tr').forEach(function (tr) {
     if (tr.dataset.done !== '1') return;
-    var inp = tr.querySelectorAll('input');
+    var inp = tr.querySelectorAll('input'), k = series.length;
+    var rir = rs[k] != null ? rs[k] : prev[k] && prev[k].rir !== '' && prev[k].rir != null ? prev[k].rir : def;
     series.push({ carga: inp[0].value, reps: inp[1].value, rir: rir });
   });
   var validas = series.filter(function (s) { return s.reps !== ''; });
@@ -2879,7 +2907,8 @@ function tIrEjercicio() {
 function avisoDescanso(seg, cancelar) {
   var on = false; try { on = localStorage.getItem('pushDescanso') === '1'; } catch (e) {}
   if (!on || !navigator.onLine) return;
-  api('pushDescanso', cancelar ? { cancelar: true } : { segundos: seg }).catch(function () {});
+  var sig = ''; if (!cancelar) try { sig = sonidoSiguienteCorto(); } catch (e) {}   // "la serie 3 de Elevaciones laterales: 10 kg × 12" en la pantalla bloqueada
+  api('pushDescanso', cancelar ? { cancelar: true } : sig ? { segundos: seg, siguiente: sig } : { segundos: seg }).catch(function () {});
 }
 var tCierre = null;
 function tick() {
@@ -6750,29 +6779,42 @@ function micEnviar(blob) {
     .then(function () { m.modo = ''; micPintar(); if (b) b.disabled = false; });
 }
 /* ===== fin Dictado ===== */
-/* ===== Sonido del descanso (05/10/2026): tono o voz por los audífonos =====
- * Preferencia por celular (localStorage tSonido: voz | tono | no; por defecto voz). Con el descanso corriendo: un tono a los 10 s, 3 · 2 · 1 y al llegar a 0
- * dos tonos y, con voz, "Serie 3 de Prensa de piernas: 79 kilos por 8" (o el siguiente ejercicio). El iPhone solo deja sonar audio activado con un toque:
- * `sonidoPreparar` corre en cada "Listo" (crea/reanuda el AudioContext, desbloquea la voz y pide navigator.audioSession 'transient' para bajar la música
- * un momento en vez de cortarla). Mientras corre el descanso se pide Wake Lock para que la pantalla no se apague (si se bloquea, iOS congela la página;
- * para eso sigue el aviso push del servidor). Todo en function: nada corre al abrir la app. */
-function sonidoModo() { try { return localStorage.getItem('tSonido') || 'voz'; } catch (e) { return 'voz'; } }
+/* ===== Sonido del descanso (05/10/2026; 07/10: sin pausar la música) =====
+ * Preferencia por celular (localStorage tSonido: tono | voz | no; por defecto TONO desde el 07/10). Con el descanso corriendo: un tono a los 10 s, 3 · 2 · 1 y al
+ * llegar a 0 dos tonos y, con voz, "Serie 3 de Prensa de piernas: 79 kilos por 8" (o el siguiente ejercicio). El iPhone solo deja sonar audio activado con un toque:
+ * `sonidoPreparar` corre en cada "Listo" (crea/reanuda el AudioContext). La música NO se pausa: navigator.audioSession 'ambient' (se mezcla con la música;
+ * 'transient' la cortaba) y el AudioContext se suspende al terminar cada aviso (`sonidoDormir`), así la app no se queda con el audio del celular. La voz del
+ * iPhone (speechSynthesis) sí puede pausar la música: por eso solo se prepara en modo voz y el modo por defecto es el tono. 'ambient' respeta el
+ * interruptor de silencio. Mientras corre el descanso se pide Wake Lock; con la pantalla bloqueada o la app en segundo plano iOS congela la página: ahí
+ * avisa el push del servidor con la siguiente serie (`avisoDescanso` → `sonidoSiguienteCorto`). Todo en function: nada corre al abrir la app. */
+function sonidoModo() { try { return localStorage.getItem('tSonido') || 'tono'; } catch (e) { return 'tono'; } }
 function sonidoElegir(v) { try { localStorage.setItem('tSonido', v); } catch (e) {} toast(v === 'no' ? 'Descanso sin sonido' : v === 'tono' ? 'Descanso con tono' : 'Descanso con voz'); if (v !== 'no') { sonidoPreparar(); sonidoProbar(); } }
-function sonidoEst() { return window.__son || (window.__son = { ac: null, avisados: {}, wl: null, vozLista: false }); }
+function sonidoEst() { return window.__son || (window.__son = { ac: null, avisados: {}, wl: null, vozLista: false, dormir: null }); }
 function sonidoPreparar() {
-  var s = sonidoEst();
-  try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; } catch (e) {}
+  var s = sonidoEst(), modo = sonidoModo(); if (modo === 'no') return;
+  try { if (navigator.audioSession && navigator.audioSession.type !== 'ambient') navigator.audioSession.type = 'ambient'; } catch (e) {}   // se mezcla con tu música, no la pausa
   try {
     var AC = window.AudioContext || window.webkitAudioContext;
-    if (AC && !s.ac) s.ac = new AC();
+    if (AC && !s.ac) {
+      s.ac = new AC();
+      var b = s.ac.createBuffer(1, 1, 22050), src = s.ac.createBufferSource(); src.buffer = b; src.connect(s.ac.destination); src.start(0);   // desbloqueo silencioso (una vez)
+    }
     if (s.ac && s.ac.state === 'suspended') s.ac.resume();
-    if (s.ac) { var b = s.ac.createBuffer(1, 1, 22050), src = s.ac.createBufferSource(); src.buffer = b; src.connect(s.ac.destination); src.start(0); }   // desbloqueo silencioso
+    sonidoDormir(4000);   // si nada suena, se suelta el audio
   } catch (e) {}
-  try { if (!s.vozLista && window.speechSynthesis && window.SpeechSynthesisUtterance) { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); s.vozLista = true; } } catch (e) {}
+  try { if (modo === 'voz' && !s.vozLista && window.speechSynthesis && window.SpeechSynthesisUtterance) { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); s.vozLista = true; } } catch (e) {}
+}
+/** Suspende el AudioContext `ms` después del último aviso: la app no se queda con el audio del celular entre series. */
+function sonidoDormir(ms) {
+  var s = sonidoEst(); clearTimeout(s.dormir);
+  s.dormir = setTimeout(function () { try { if (s.ac && s.ac.state === 'running' && !(window.speechSynthesis && speechSynthesis.speaking)) s.ac.suspend(); } catch (e) {} }, ms || 1500);
 }
 function sonidoTono(frec, ms, cuando) {
   var s = sonidoEst(); if (!s.ac) return;
   try {
+    clearTimeout(s.dormir);
+    if (s.ac.state === 'suspended') s.ac.resume();   // ya se activó con un toque: reanudar está permitido
+    sonidoDormir(ms + (cuando || 0) * 1000 + 1500);
     var t = s.ac.currentTime + (cuando || 0), o = s.ac.createOscillator(), g = s.ac.createGain();
     o.type = 'sine'; o.frequency.value = frec; o.connect(g); g.connect(s.ac.destination);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + ms / 1000);
@@ -6789,20 +6831,29 @@ function sonidoDecir(texto) {
     speechSynthesis.speak(u); return true;
   } catch (e) { return false; }
 }
-/** Lo que se dice al terminar: la siguiente serie de este ejercicio (kg y reps del gris o lo escrito) o el siguiente ejercicio. */
+/** Qué sigue después del descanso: la siguiente serie de este ejercicio (kg y reps del gris o lo escrito) o el siguiente ejercicio. */
+function sonidoSiguiente() {
+  var i = tEj ? tEj.i : -1, e = i >= 0 && sesionActual ? sesionActual.ejercicios[i] : null; if (!e) return null;
+  var filas = document.querySelectorAll('#exSets' + i + ' tr'), k = -1;
+  for (var j = 0; j < filas.length; j++) if (filas[j].dataset.done !== '1') { k = j; break; }
+  var nom = String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0];
+  if (k >= 0) { var ins = filas[k].querySelectorAll('input'); return { serie: k + 1, nombre: nom, kg: ins[0].value || ins[0].placeholder, reps: ins[1].value || ins[1].placeholder, seg: e.unidad === 'seg' }; }
+  var sig = sesionActual.ejercicios.filter(function (x, n) { return n > i && x.estado === 'pendiente'; })[0];
+  return sig ? { nombre: String(sig.variantes[sig._var || 'principal'].nombre || '').split(' (')[0] } : null;
+}
+/** Lo que se dice al terminar: "Descanso terminado. Serie 3 de Prensa: 79 kilos por 8." */
 function sonidoSiguienteTexto() {
   try {
-    var i = tEj ? tEj.i : -1, e = i >= 0 && sesionActual ? sesionActual.ejercicios[i] : null; if (!e) return 'Descanso terminado.';
-    var filas = document.querySelectorAll('#exSets' + i + ' tr'), k = -1;
-    for (var j = 0; j < filas.length; j++) if (filas[j].dataset.done !== '1') { k = j; break; }
-    var nom = String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0];
-    if (k >= 0) {
-      var ins = filas[k].querySelectorAll('input'), kg = ins[0].value || ins[0].placeholder, reps = ins[1].value || ins[1].placeholder;
-      return 'Descanso terminado. Serie ' + (k + 1) + ' de ' + nom + (kg ? ': ' + String(kg).replace('.', ',') + ' kilos' : '') + (reps ? ' por ' + reps + (e.unidad === 'seg' ? ' segundos' : '') : '') + '.';
-    }
-    var sig = sesionActual.ejercicios.filter(function (x, n) { return n > i && x.estado === 'pendiente'; })[0];
-    return sig ? 'Descanso terminado. Sigue con ' + String(sig.variantes[sig._var || 'principal'].nombre || '').split(' (')[0] + '.' : 'Descanso terminado.';
+    var x = sonidoSiguiente(); if (!x) return 'Descanso terminado.';
+    if (!x.serie) return 'Descanso terminado. Sigue con ' + x.nombre + '.';
+    return 'Descanso terminado. Serie ' + x.serie + ' de ' + x.nombre + (x.kg ? ': ' + String(x.kg).replace('.', ',') + ' kilos' : '') + (x.reps ? ' por ' + x.reps + (x.seg ? ' segundos' : '') : '') + '.';
   } catch (e) { return 'Descanso terminado.'; }
+}
+/** Para el aviso del celular (pantalla bloqueada): "la serie 3 de Prensa: 79 kg × 8" o el siguiente ejercicio. */
+function sonidoSiguienteCorto() {
+  var x = sonidoSiguiente(); if (!x) return '';
+  if (!x.serie) return x.nombre;
+  return 'la serie ' + x.serie + ' de ' + x.nombre + (x.kg ? ': ' + String(x.kg).replace('.', ',') + ' kg' : '') + (x.reps ? (x.kg ? ' × ' : ': ') + x.reps + (x.seg ? ' s' : '') : '');
 }
 function sonidoNuevoDescanso() {
   var s = sonidoEst(); s.avisados = {};
@@ -6826,6 +6877,32 @@ try { var pSon = document.getElementById('pSonido'); if (pSon) pSon.value = soni
 // Si el iPhone igual ofrece "Deshacer texto escrito" (agitarlo con una casilla activa), deshacer no borra lo anotado en las series
 try { document.addEventListener('beforeinput', function (ev) { if (ev.inputType === 'historyUndo' && ev.target && ev.target.closest && ev.target.closest('.g-sets, [id^="exSets"]')) ev.preventDefault(); }, true); } catch (e) {}
 /* ===== fin Sonido del descanso ===== */
+/* ===== Qué músculos trabajas (07/10/2026) =====
+ * En "Más" de cada ejercicio: el músculo que trabaja de forma DIRECTA (el que más crece con ese ejercicio: cuenta la serie completa) y los que trabaja
+ * de forma INDIRECTA (ayudan y crecen algo: cuentan media serie, Pelland 2025). Los datos son los de musculosDe_ (Musculos.gs); aquí solo se dicen
+ * en llano, con dónde queda cada músculo. Todo en function: nada corre al abrir la app. */
+function musculoDonde(n) {
+  return ({ 'Pecho': 'pectoral', 'Espalda': 'dorsal, lo ancho de la espalda', 'Trapecio': 'entre el cuello y los hombros', 'Hombro anterior': 'frente del hombro',
+    'Hombro lateral': 'costado del hombro', 'Hombro posterior': 'atrás del hombro', 'Bíceps': 'frente del brazo', 'Tríceps': 'atrás del brazo', 'Antebrazo': 'agarre',
+    'Cuádriceps': 'frente del muslo', 'Isquiotibiales': 'atrás del muslo', 'Glúteo': 'cola', 'Aductores': 'parte interna del muslo', 'Pantorrilla': 'gemelos',
+    'Abdomen': 'zona media', 'Zona lumbar': 'parte baja de la espalda' })[n] || '';
+}
+function musculosLista(arr, minus) {
+  var xs = (arr || []).map(function (n) { var t = minus ? String(n).toLowerCase() : n, d = musculoDonde(n); return esc(t) + (d ? ' <span class="mt-d">(' + esc(d) + ')</span>' : ''); });
+  return xs.length <= 1 ? xs.join('') : xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1];
+}
+function musculosTrabajaHTML(m) {
+  if (!m || !Array.isArray(m.principal) || !Array.isArray(m.secundario) || (!m.principal.length && !m.secundario.length)) return '';
+  var dir = m.principal, ind = m.secundario;
+  return '<div class="mt-box"><div class="g-k mt-k">Qué músculos trabajas <button type="button" class="g-q" aria-label="Qué es directo e indirecto" onclick="gcInfo(' + esc(gdArg(musculosAyuda())) + ')">?</button></div>' +
+    (dir.length ? '<div class="mt-fila dir"><span class="mt-tag">Directo</span><div class="mt-n"><b>' + musculosLista(dir) + '</b><div class="mt-d">' + (dir.length > 1 ? 'Son los que más crecen' : 'Es el que más crece') + ' con este ejercicio.</div></div></div>' : '') +
+    '<div class="mt-fila"><span class="mt-tag">Indirecto</span><div class="mt-n">' + (ind.length ? musculosLista(ind, true) + '<div class="mt-d">' + (ind.length > 1 ? 'Ayudan en el movimiento y también crecen, pero menos.' : 'Ayuda en el movimiento y también crece, pero menos.') + '</div>' : '<span class="mt-d">Casi nada: este ejercicio aísla ' + (dir.length > 1 ? 'esos músculos' : 'ese músculo') + '.</span>') + '</div></div></div>';
+}
+function musculosAyuda() {
+  return 'Directo: el músculo que hace la mayor parte del trabajo; en tu semana cuenta la serie completa. Indirecto: los que ayudan; cuentan como media serie. ' +
+    'Por eso un press de pecho también suma algo al tríceps, pero para que el tríceps crezca bien necesita además su ejercicio directo.';
+}
+
 </script>
 </body>
 </html>
