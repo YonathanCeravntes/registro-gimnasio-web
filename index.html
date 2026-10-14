@@ -1063,6 +1063,32 @@
   .mt-fila b{color:var(--ink);font-weight:700}
   .mt-fila .mt-d{color:var(--dim);font-size:13px;line-height:1.35}
   .mt-fila .mt-n{font-size:15px;line-height:1.35}
+  /* ===== Días que no dependen de ti (13/10/2026): festivos y días fijos en gris (no son días fallados), la línea de Hoy y la tarjeta de Ajustes ===== */
+  #semChip b.cerr{color:var(--faint)}
+  .g-dia.cerr{color:var(--faint)} .g-dia.cerr i{background:transparent;border:1px solid var(--faint);box-sizing:border-box}
+  .g-fila.cerr{opacity:.75} .g-fila.cerr .t{color:var(--dim)} .g-fila.cerr .r{color:var(--dim)}
+  #planificador .dias label.dp-cerr{color:var(--faint);border-style:dashed;background:transparent}
+  #planificador .dias label.dp-cerr span{display:flex;flex-direction:column;line-height:1.15}
+  #planificador .dias label.dp-cerr small{font-size:10.5px;font-weight:700;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dp-linea{margin-top:10px;padding:10px 12px 12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line)}
+  .dp-linea .dp-t{font-size:13.5px;color:var(--muted);line-height:1.35} .dp-linea .dp-t b{color:var(--ink);font-weight:700}
+  .dp-linea .dp-b{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .dp-linea .dp-b button{min-height:40px;padding:0 12px;border-radius:12px;font:700 13.5px var(--body);cursor:pointer;background:transparent;color:var(--ink);border:1px solid var(--raise2)}
+  .dp-linea .dp-b button:disabled,.dp-op:disabled{opacity:.5}
+  .dp-sem{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--card2);border:1px solid var(--line)}
+  .dp-sem .c{flex:1;min-width:0} .dp-sem b{display:block;font-size:14px;color:var(--ink)} .dp-sem span{display:block;font-size:12.5px;color:var(--muted);line-height:1.3;margin-top:2px}
+  .dp-sem .dp-cambiar{flex-shrink:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--raise2);background:transparent;color:var(--ink);font:700 13.5px var(--body);cursor:pointer}
+  .dp-op{display:block;width:100%;text-align:left;padding:12px 2px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);cursor:pointer;font-family:var(--body)}
+  .dp-op:first-child{border-top:0} .dp-op b{display:block;font-size:16px} .dp-op span{display:block;font-size:13px;color:var(--muted);line-height:1.35;margin-top:3px}
+  .dp-op b small{font-size:13px;font-weight:600;color:var(--muted)}
+  .dp-sumar label:has(input:checked){background:var(--raise);border-color:var(--ink)} .dp-sumar input{accent-color:var(--ink)}
+  .dp-dias{display:flex;gap:6px;margin-top:12px}
+  .dp-dia{flex:1;min-width:0;min-height:44px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--dim);font:700 14px var(--body);cursor:pointer;padding:0}
+  .dp-dia.on{border-color:var(--ink);color:var(--ink);background:var(--raise)}
+  .dp-aviso{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:13.5px;color:var(--muted);line-height:1.35}
+  .dp-aviso .dp-cambiar{display:block;margin-top:10px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--raise2);background:transparent;color:var(--ink);font:700 14px var(--body);cursor:pointer}
+  .dp-aviso .dp-cambiar:disabled{opacity:.5}
+  .dp-sw{margin-top:8px;border-top:1px solid var(--line)}
   /* ===== Barra inferior fija en iPhone (07/10/2026) ===== */
   /* Solo actúa con body.bf-corrido: lo pone bfCorregir (JS, mismo bloque) cuando el iPhone deja la ventana visible corrida después de cerrar el
      teclado. La barra, el aviso y las capas de pantalla completa vuelven a lo que se ve; la píldora del descanso, arriba. Sin ese error no cambia nada. */
@@ -1101,6 +1127,7 @@
       <div class="g-sub" id="heroChips"></div>
       <div id="ctaBox"></div>
       <div id="pendBox"></div>
+      <div id="dpBox"></div>
       <div class="g-chips" id="hoyChips"></div>
       <div id="entrenadorBox"></div>
       <div id="pasosBox"></div>
@@ -1133,6 +1160,7 @@
     <div class="page-h"><div><div class="kicker" id="kSemanaG"></div><span id="kSemana" class="hidden"></span><div class="h-big sm">Tu semana</div></div><button class="gear" onclick="irA('ajustes')" aria-label="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
     <div class="wrap">
       <div id="semanaResumen"></div>
+      <div id="dpSemBox"></div>
       <div id="semanaRows"></div>
       <button class="g-row" id="bmRow" aria-expanded="false" onclick="gcToggle('balanceMus', this)" style="display:none"><span class="n"><b id="bmTit">Músculos</b><span class="s" id="bmSub"></span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       <div id="balanceMus" class="g-fold"></div>
@@ -1385,6 +1413,10 @@
         <button type="button" class="btn sec" style="width:auto" onclick="sonidoProbar()">Probar</button></div>
       <div class="meta" style="margin-top:6px">Suena a los 10 s, cuenta 3, 2, 1 y te avisa al terminar, por encima de tu música y sin pausarla (con el celular en silencio no suena). La voz del iPhone puede pausar la música. Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
     </div>
+    <div class="card" data-sec="gimnasio" id="dpCard">
+      <h2>Días que no puedo ir</h2>
+      <div id="dpAjustes"><div class="meta">Cargando…</div></div>
+    </div>
     <div class="card" data-sec="comida">
       <h2>Objetivo y meta</h2>
       <div class="meta">Con esto se arma tu plan de comida y la meta del día. El programa de pesas sigue igual.</div>
@@ -1599,7 +1631,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610140035', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610140204', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -3124,8 +3156,8 @@ function pintarSemanaTab() {
   $('kSemanaG').textContent = 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '') + ' · ' + rangoSemana(e.plan).toLowerCase();
   var strip = dias.map(function (d) {
     var p = d.etiqueta.split(' ');
-    var cls = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : 'libre';
-    var lbl = d.estado === 'hecho' ? 'hecho' : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : 'libre';
+    var cls = d.estado === 'hecho' ? 'hecho' : d.cerrado ? 'cerr' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : 'libre';
+    var lbl = d.estado === 'hecho' ? 'hecho' : d.cerrado ? d.cerrado.texto.toLowerCase() : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : 'libre';
     return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
   }).join('');
   $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas · toca un día para verlo</div>';
@@ -3146,6 +3178,7 @@ function pintarSemanaTab() {
     } else if (d.tipo === 'cardio') { t = 'Cardio suave'; s = '20–30 min a ritmo de conversación'; r = d.esHoy ? 'Hoy' : ''; }
     else if (d.tipo === 'sinregistro') { cls += ' sinreg'; t = nombres[d.sesion] || 'Pesas'; s = 'Sin registro ese día'; r = 'No fuiste'; }
     else if (d.tipo === 'nofui') { cls += ' nofui'; t = 'No entrenaste'; s = 'La sesión pasó al siguiente día de pesas'; }
+    else if (d.cerrado) { cls += ' cerr'; t = d.cerrado.texto; s = dpSubCerrado(d.cerrado); r = d.esHoy ? 'Hoy' : ''; }   // festivo o día fijo: gris, no es un día fallado
     else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
     return '<div class="' + cls + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')"><div class="d"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b></div>' +
@@ -3427,9 +3460,9 @@ var semanaVista = null;
 function pintarSemana(plan) {
   var chip = $('semChip'); if (!chip || !plan) return;
   chip.innerHTML = plan.dias.map(function (d) {
-    var cls = d.estado === 'hecho' ? 'ok' : d.tipo === 'sinregistro' ? 'bad' : d.tipo === 'nofui' ? 'nf' : d.tipo === 'sesion' ? 'plan' : 'dim';   // nofui: gris
+    var cls = d.estado === 'hecho' ? 'ok' : d.cerrado ? 'cerr' : d.tipo === 'sinregistro' ? 'bad' : d.tipo === 'nofui' ? 'nf' : d.tipo === 'sesion' ? 'plan' : 'dim';   // nofui y cerrado (festivo, día fijo): gris
     if (d.esHoy) cls += ' hoy';
-    return '<b class="' + cls + '" title="' + esc(d.fecha) + '">' + esc(String(d.etiqueta || '').split(' ')[0]) + '</b>';
+    return '<b class="' + cls + '" title="' + esc(d.fecha + (d.cerrado && d.estado !== 'hecho' ? ' · ' + d.cerrado.texto : '')) + '">' + esc(String(d.etiqueta || '').split(' ')[0]) + '</b>';
   }).join('');
 }
 function irFecha(f) { $('fecha').value = f; cargarEstado(); }
@@ -3444,7 +3477,8 @@ function abrirPlanificador(k) {
       '<button class="btn sec small" ' + (pl.semana >= 60 ? 'disabled' : '') + ' onclick="abrirPlanificador(' + (pl.semana + 1) + ')" aria-label="Semana siguiente">›</button></div>' +
       '<div class="meta" style="margin-top:6px">Marca los días que irás al gimnasio.</div>' +
       '<div class="dias">' + pl.dias.map(function (d) {
-        var bloq = d.estado === 'hecho';
+        var bloq = d.estado === 'hecho', cerr = d.cerrado && !bloq;   // festivo o día fijo: en gris y sin casilla activa
+        if (cerr) return '<label class="dp-cerr" title="' + esc(d.cerrado.texto) + '"><input type="checkbox" value="' + d.fecha + '" disabled><span>' + d.etiqueta + '<small>' + esc(dpCortoCerrado(d.cerrado)) + '</small></span></label>';
         return '<label><input type="checkbox" value="' + d.fecha + '"' + (d.seleccionado ? ' checked' : '') + (bloq ? ' disabled' : '') + '>' + d.etiqueta + '</label>';
       }).join('') + '</div>' +
       '<div class="meta" id="planPrev" style="margin-top:8px"></div>' +
@@ -3696,9 +3730,11 @@ function cargarAjustes() {
     parte('avisos').then(function (av) { ajData.avisos = av; pintarResumenAjustes(); }).catch(function () {});
     cargarTelegram();
     try { lgCargarAjustes(); } catch (xL) { console.error(xL); }   // Privacidad y datos (y la línea del menú)
+    parte('noPuedo').then(dpPintarAjustes).catch(function () { api('getDiasNoPuedo').then(dpPintarAjustes).catch(function () {}); });   // Días que no puedo ir
   }).catch(function () {
     cargarPushUI(); cargarSaludUI(); cargarCuenta(); cargarAvisos(); cargarProgramas(); cargarTelegram();
     api('getPerfil').then(pintarPerfil).catch(err);
+    api('getDiasNoPuedo').then(dpPintarAjustes).catch(function () {});
   });
 }
 function pintarPerfil(p) {
@@ -6942,6 +6978,159 @@ function musculosAyuda() {
   return 'Directo: el músculo que hace la mayor parte del trabajo; en tu semana cuenta la serie completa. Indirecto: los que ayudan; cuentan como media serie. ' +
     'Por eso un press de pecho también suma algo al tríceps, pero para que el tríceps crezca bien necesita además su ejercicio directo.';
 }
+/* ===== Días que no dependen de ti (13/10/2026): festivos, días fijos y la semana que se reacomoda =====
+ * Lote 0.4 (Boceto 04 aprobado por el Fundador). El servidor (DiasPerdidos.gs + planSemana) marca cada día cerrado con `cerrado`
+ * ({ tipo: 'festivo' | 'fijo', texto, nombre, motivo }) y la semana con `acomodo` (disponibles, porSemana, motivo, modo, efectivo, libres,
+ * propuestos…). Aquí: la portada de un día cerrado en gris, UNA línea en Hoy para elegir cómo acomodar la semana (A sumar días · B semana
+ * corta, por defecto · C pasarlas a la próxima), la fila de Semana para cambiarlo y la tarjeta "Días que no puedo ir" de Ajustes → Mi gimnasio.
+ * Todo en gris: el ámbar sigue siendo solo el siguiente paso. Todo va en function (nada lee un var del final al abrir); pintarHero y
+ * pintarSemanaTab se envuelven, no se editan. */
+function dpMayus(t) { t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+function dpTxtDias(n) { n = Number(n) || 0; return n + (n === 1 ? ' día' : ' días'); }
+/** Texto corto del día cerrado (planificador, chip): "Festivo" o el motivo ("Pico y placa"). */
+function dpCortoCerrado(c) { return !c ? '' : c.tipo === 'festivo' ? 'Festivo' : c.motivo ? dpMayus(c.motivo) : 'No puedes'; }
+/** Segunda línea en Semana: el nombre del festivo o "Día fijo", y que no cuenta como fallado. */
+function dpSubCerrado(c) { return !c ? '' : (c.tipo === 'festivo' ? (c.nombre || 'Festivo') : 'Día fijo') + ' · no cuenta como día fallado'; }
+function dpDiaVisto(e) { return e && e.plan ? e.plan.dias.filter(function (d) { return d.fecha === e.fecha; })[0] || null : null; }
+/** Portada de un día cerrado sin nada anotado: chip y título en gris, lo que viene y "no cuenta como día fallado". */
+function dpHero() {
+  var e = estado, d = dpDiaVisto(e), c = e && e.cumpl && e.cumpl[e.fecha];
+  if (!d || !d.cerrado || d.estado === 'hecho' || c) return;
+  var fest = d.cerrado.tipo === 'festivo', prx = proximaSesion(e);
+  $('heroPill').innerHTML = '<span class="g-tipo desc">' + esc(fest ? 'Festivo' : dpCortoCerrado(d.cerrado)) + '</span>';
+  $('heroTitle').textContent = fest ? 'Gimnasio cerrado' : 'Hoy no puedes ir';
+  $('heroChips').innerHTML = '<span>' + esc(dpSubCerrado(d.cerrado)) + '</span>';
+  $('ctaBox').innerHTML = '<div class="g-desc">Tu semana ya lo tiene en cuenta.' + (prx ? ' Próxima: <b>' + esc(prx) + '</b>.' : '') + '</div>' +
+    gcta('line', 'Quiero entrenar hoy', 'Elige la sesión', 'toggleSelector()');
+}
+/** El acomodo por el que pregunta Hoy: solo viendo hoy, con la semana corta por días cerrados y sin elegir aún. */
+function dpAcomodoHoy(e) {
+  var a = e && e.plan && e.plan.acomodo, hoy = hoyISO();
+  // Solo pregunta si la semana la acortó un festivo (con un día fijo de siempre vale la última elección) y si queda al menos un día
+  if (!a || !a.falta || a.modo || a.soloFijos || !a.disponibles || e.fecha !== hoy || e.plan.hasta < hoy) return null;
+  return a;
+}
+function dpAyuda() {
+  return 'Sumar días: te propongo días libres de esta semana. Semana corta (si no eliges, queda esta): la versión de tu programa para los días que tienes, ' +
+    'con todos los músculos; si la completas, la próxima semana arranca sin atraso. Pasarlas a la próxima: sigues el orden de siempre y lo que no cabe pasa a la otra semana. ' +
+    'Si solo te falta tu día fijo (sin festivo), no te pregunto cada semana: queda lo último que elegiste.';
+}
+/** UNA línea gris en Hoy: "Esta semana tienes 3 días (festivo y pico y placa). ¿Cómo la acomodo?" + Sumar días · Semana corta · Pasarlas a la próxima. */
+function dpPintarLinea(e) {
+  var box = $('dpBox'); if (!box) return;
+  var a = dpAcomodoHoy(e);
+  if (!a) { box.innerHTML = ''; return; }
+  var b = function (t, fn) { return '<button type="button" onclick="' + fn + '">' + esc(t) + '</button>'; };
+  box.innerHTML = '<div class="dp-linea"><div class="dp-t">Esta semana tienes <b>' + esc(dpTxtDias(a.disponibles)) + '</b> (' + esc(a.motivo) + '). ¿Cómo la acomodo?' +
+    '<button type="button" class="g-q" aria-label="Qué hace cada opción" onclick="gcInfo(dpAyuda())">?</button></div><div class="dp-b">' +
+    (a.libres && a.libres.length ? b('Sumar días', 'dpSumar()') : '') + (a.puedeCorta ? b('Semana corta', "dpElegir('corta', this)") : '') +
+    b('Pasarlas a la próxima', "dpElegir('pasar', this)") + '</div></div>';
+}
+function dpEtiqueta(f) { var d = estado && estado.plan ? estado.plan.dias.filter(function (x) { return x.fecha === f; })[0] : null; return d ? diaLargoEtiqueta(d.etiqueta) : fechaCortaIso(f); }
+function dpListaDias(fs) { var t = fs.map(function (f) { return dpEtiqueta(f).toLowerCase(); }); return t.length <= 1 ? t.join('') : t.slice(0, -1).join(', ') + ' y ' + t[t.length - 1]; }
+/** B o C: se guarda para esta semana (acomodarSemana) y la semana se vuelve a pintar. */
+function dpElegir(modo, btn) {
+  var e = estado, a = e && e.plan && e.plan.acomodo; if (!a) return;
+  if (btn) btn.disabled = true;
+  api('acomodarSemana', { semana: e.plan.semana, modo: modo }).then(function () {
+    hojaCerrar(); invalidarTodo();
+    toast(modo === 'corta' ? 'Listo: esta semana va con la versión de ' + dpTxtDias(a.disponibles) + '. La próxima sigues sin atraso.' : 'Listo: lo que no cabe pasa a la próxima semana.');
+    cargarEstadoYSemana();
+  }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
+}
+/** A: hoja con los días libres que quedan (sin festivos ni días fijos), con los propuestos marcados. Guarda como "Ajustar días". */
+function dpSumar() {
+  var e = estado, a = e && e.plan && e.plan.acomodo; if (!a || !a.libres || !a.libres.length) return;
+  var prop = a.propuestos || [];
+  var html = '<div class="meta">Te faltan ' + esc(dpTxtDias(a.faltan)) + ' para tus ' + a.porSemana + ' sesiones. Marca los que puedes ir.</div>' +
+    '<div class="dias dp-sumar">' + a.libres.map(function (f) { return '<label><input type="checkbox" value="' + esc(f) + '"' + (prop.indexOf(f) >= 0 ? ' checked' : '') + '>' + esc(dpEtiqueta(f)) + '</label>'; }).join('') + '</div>' +
+    '<div class="acts" style="margin-top:12px"><button class="btn sec" onclick="hojaCerrar()">Cerrar</button><button class="btn" id="dpSumarBtn" onclick="dpSumarGuardar(this)">Sumar</button></div>';
+  hojaAbrir({ kicker: 'Esta semana', titulo: 'Sumar días', html: html });
+}
+function dpSumarGuardar(btn) {
+  var f = []; document.querySelectorAll('.dp-sumar input:checked').forEach(function (x) { f.push(x.value); });
+  if (!f.length) { toastBad('Marca al menos un día'); return; }
+  if (btn) btn.disabled = true;
+  api('acomodarSemana', { semana: estado.plan.semana, modo: 'sumar', dias: f }).then(function () {
+    hojaCerrar(); invalidarTodo(); toast('Listo: sumaste ' + dpListaDias(f) + '.'); cargarEstadoYSemana();
+  }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
+}
+/** Semana: la fila con cómo va la semana corta y "Cambiar" (hoja con las tres opciones). */
+function dpSemanaTab() {
+  var box = $('dpSemBox'); if (!box) return;
+  var e = estado, a = e && e.plan && e.plan.acomodo;
+  if (!a || (!a.falta && a.modo !== 'sumar')) { box.innerHTML = ''; return; }
+  var abierta = e.plan.hasta >= hoyISO();
+  if (!a.falta) {   // sumó días: la semana ya tiene sus sesiones; para cambiarlo, los días se quitan en "Ajustar días"
+    box.innerHTML = '<div class="dp-sem"><div class="c"><b>' + esc('Sumaste días: ' + dpTxtDias(a.disponibles) + ' esta semana') + '</b><span>' + esc('Para quitar uno, usa Ajustar días') + '</span></div>' +
+      (abierta ? '<button type="button" class="dp-cambiar" onclick="abrirPlanificador(' + Number(e.plan.semana) + ')">Ajustar días</button>' : '') + '</div>';
+    return;
+  }
+  var corta = a.efectivo === 'corta';
+  var t = (corta ? 'Semana corta: ' : 'Esta semana: ') + dpTxtDias(a.disponibles) + ' (' + a.motivo + ')';
+  var s = (corta ? 'Va la versión de ' + dpTxtDias(a.disponibles) + ' de tu programa; la próxima sigues sin atraso' : 'Lo que no cabe pasa a la próxima semana') + (a.modo ? '' : a.heredado ? ' · como elegiste antes' : ' · si no eliges, queda así');
+  box.innerHTML = '<div class="dp-sem"><div class="c"><b>' + esc(t) + '</b><span>' + esc(s) + '</span></div>' +
+    (abierta ? '<button type="button" class="dp-cambiar" onclick="dpOpciones()">Cambiar</button>' : '') + '</div>';
+}
+function dpOpciones() {
+  var e = estado, a = e && e.plan && e.plan.acomodo; if (!a) return;
+  var it = function (t, s, on, fn) { return '<button type="button" class="dp-op' + (on ? ' on' : '') + '" onclick="' + fn + '"><b>' + esc(t) + (on ? ' <small>· así va</small>' : '') + '</b><span>' + esc(s) + '</span></button>'; };
+  var html = (a.libres && a.libres.length ? it('Sumar días', 'Te propongo ' + dpListaDias(a.propuestos && a.propuestos.length ? a.propuestos : a.libres) + '.', false, 'dpSumar()') : '') +
+    (a.puedeCorta ? it('Semana corta', 'La versión de ' + dpTxtDias(a.disponibles) + ' de tu programa: cuerpo completo, todos los músculos. Si la completas, la próxima semana arranca sin atraso.', a.efectivo === 'corta', "dpElegir('corta', this)") : '') +
+    it('Pasarlas a la próxima', 'Sigues el orden de siempre y lo que no cabe pasa a la próxima semana.', a.efectivo === 'pasar', "dpElegir('pasar', this)");
+  hojaAbrir({ kicker: 'Semana ' + e.plan.semana + ' · ' + dpTxtDias(a.disponibles), titulo: 'Acomodar', html: html });
+}
+var dpHeroBase = typeof pintarHero === 'function' ? pintarHero : null;   // (las pruebas evalúan solo los bloques del final: ahí no hay pintarHero)
+if (dpHeroBase) pintarHero = function () { dpHeroBase(); try { dpHero(); dpPintarLinea(estado); } catch (x) { console.error(x); } };
+var dpSemTabBase = typeof pintarSemanaTab === 'function' ? pintarSemanaTab : null;
+if (dpSemTabBase) pintarSemanaTab = function () { dpSemTabBase(); try { dpSemanaTab(); } catch (x) { console.error(x); } };
+/* Ajustes → Mi gimnasio → "Días que no puedo ir": días (Lu…Do), motivo corto e interruptor "Mi gimnasio cierra los festivos". Se guarda solo. */
+var dpAj = null;
+function dpNombreDia(d) { return ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][d] || ''; }
+function dpPintarAjustes(r) {
+  var box = $('dpAjustes'); if (!box || !r) return;
+  dpAj = r;
+  var N = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'];
+  var dias = '<div class="dp-dias" role="group" aria-label="Días que no puedo ir">' + [1, 2, 3, 4, 5, 6, 0].map(function (d) {
+    var on = r.dias.indexOf(d) >= 0;
+    return '<button type="button" class="dp-dia' + (on ? ' on' : '') + '" aria-pressed="' + on + '" aria-label="' + dpNombreDia(d) + '" onclick="dpToggleDia(' + d + ')">' + N[d] + '</button>';
+  }).join('') + '</div>';
+  var choque = '';
+  if (r.choques && r.choques.length) {
+    var nom = r.choques.map(dpNombreDia).join(' y '), sug = r.sugerencia;
+    choque = '<div class="dp-aviso">El ' + esc(nom) + (r.choques.length > 1 ? ' son días' : ' es uno') + ' de tus días de entreno: cada semana tendrás ' + esc(dpTxtDias(r.diasEntreno.length - r.choques.length)) + '.' +
+      (sug ? '<button type="button" class="dp-cambiar" onclick="dpCambiarDias(this)">' + esc(sug.cambios.map(function (x) { return 'Cambiar el ' + dpNombreDia(N.indexOf(x.de)) + ' por el ' + dpNombreDia(N.indexOf(x.a)); }).join(' y ')) + '</button>' : '') + '</div>';
+  }
+  var prox = (r.proximos || [])[0];
+  box.innerHTML = '<div class="meta">Esos días nunca llevan pesas ni cardio y no cuentan como fallados. Cámbialos cuando cambie tu pico y placa.</div>' + dias +
+    '<label for="dpMotivo" style="margin-top:12px">Motivo (opcional)</label><input id="dpMotivo" maxlength="30" placeholder="Ej.: pico y placa" value="' + esc(r.motivo || '') + '" onchange="dpGuardar({ motivo: this.value })">' +
+    choque +
+    '<div class="per-row dp-sw"><div class="n"><b>Mi gimnasio cierra los festivos</b><small>' + esc(prox ? 'Próximo: ' + diaSemanaIso(prox.fecha) + ' ' + fechaCortaIso(prox.fecha) + ' (' + prox.nombre + ')' : 'Festivos de Colombia') + '</small></div>' +
+      '<label class="per-sw lg-sw" aria-label="Mi gimnasio cierra los festivos"><input type="checkbox" id="dpFest"' + (r.cierraFestivos ? ' checked' : '') + ' onchange="dpGuardar({ cierraFestivos: this.checked })"><i></i></label></div>' +
+    '<div class="meta" style="margin-top:6px">Si una semana queda con menos días que tus sesiones, Hoy te pregunta cómo acomodarla.</div>';
+}
+function dpToggleDia(d) {
+  if (!dpAj) return;
+  var dias = dpAj.dias.slice(), i = dias.indexOf(d);
+  if (i >= 0) dias.splice(i, 1); else dias.push(d);
+  var antes = dpAj; dpPintarAjustes(Object.assign({}, dpAj, { dias: dias, choques: [], sugerencia: null }));   // se ve al instante; el servidor confirma
+  dpGuardar({ dias: dias }, antes);
+}
+function dpGuardar(p, antes) {
+  return api('guardarDiasNoPuedo', p).then(function (r) { dpPintarAjustes(r); toast('Guardado'); invalidarTodo(); cargarEstado(); })
+    .catch(function (x) { if (antes) dpPintarAjustes(antes); err(x); });
+}
+/** "Entrenar Lu, Mi, Ju, Vi, Sá": cambia los días de entreno (el programa sigue donde iba, como en Programa y días). */
+function dpCambiarDias(btn) {
+  var s = dpAj && dpAj.sugerencia; if (!s) return;
+  if (btn) btn.disabled = true;
+  api('guardarPerfil', { DiasEntreno: s.dias }).then(function () {
+    toast('Listo: ahora entrenas ' + s.dias.split(',').join(', ')); invalidarTodo(); cargarEstado();
+    try { cargarProgramas(); } catch (x) {}
+    return api('getDiasNoPuedo');
+  }).then(dpPintarAjustes).catch(function (x) { if (btn) btn.disabled = false; err(x); });
+}
+/* ===== fin Días que no dependen de ti ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
