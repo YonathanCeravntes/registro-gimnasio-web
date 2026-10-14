@@ -1063,6 +1063,15 @@
   .mt-fila b{color:var(--ink);font-weight:700}
   .mt-fila .mt-d{color:var(--dim);font-size:13px;line-height:1.35}
   .mt-fila .mt-n{font-size:15px;line-height:1.35}
+  /* ===== Barra inferior fija en iPhone (07/10/2026) ===== */
+  /* Solo actúa con body.bf-corrido: lo pone bfCorregir (JS, mismo bloque) cuando el iPhone deja la ventana visible corrida después de cerrar el
+     teclado. La barra, el aviso y las capas de pantalla completa vuelven a lo que se ve; la píldora del descanso, arriba. Sin ese error no cambia nada. */
+  body.bf-corrido nav,body.bf-corrido #toast{translate:0 var(--bf-abajo,0px)}
+  body.bf-corrido #timer{translate:0 var(--bf-arriba,0px)}
+  body.bf-corrido .ha-ov,body.bf-corrido #coachChat,body.bf-corrido #armar,body.bf-corrido #picker,body.bf-corrido #bienvenida,body.bf-corrido #guia,
+  body.bf-corrido #cierre,body.bf-corrido #gdCierre,body.bf-corrido #lgOv,body.bf-corrido .fv-ov,body.bf-corrido .tarjeta-ov{top:var(--bf-arriba,0px);bottom:calc(0px - var(--bf-abajo,0px))}
+  /* Entrada de la PWA (#vincular, construir-web.js): su position:fixed;inset:0 va en línea, por eso aquí va con !important */
+  body.bf-corrido #vincular{top:var(--bf-arriba,0px)!important;bottom:calc(0px - var(--bf-abajo,0px))!important}
 </style>
 </head>
 <body>
@@ -1590,7 +1599,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610140033', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610140035', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -6889,6 +6898,25 @@ try { var pSon = document.getElementById('pSonido'); if (pSon) pSon.value = soni
 // Si el iPhone igual ofrece "Deshacer texto escrito" (agitarlo con una casilla activa), deshacer no borra lo anotado en las series
 try { document.addEventListener('beforeinput', function (ev) { if (ev.inputType === 'historyUndo' && ev.target && ev.target.closest && ev.target.closest('.g-sets, [id^="exSets"]')) ev.preventDefault(); }, true); } catch (e) {}
 /* ===== fin Sonido del descanso ===== */
+/* ===== Ayer lo hiciste suave (09/10/2026): una línea gris en la tarjeta del ejercicio fuerte =====
+ * Boceto 02, opción B del Fundador: en el full body rotativo el mismo ejercicio puede ir suave un día y fuerte al siguiente (el press inclinado:
+ * suave en Isquios fuerte, fuerte en Pecho fuerte) y parecía un error. Es normal y seguro (las 48 h son entre sesiones duras); la tarjeta lo
+ * explica. El servidor decide y redacta (getSesion → e.ayerSuave, marcarAyerSuave_ en Programas.gs); aquí solo se pinta, en la capa simple,
+ * debajo de la dosis y antes de "Hoy:", en gris (información, sin ámbar). No sale con el ejercicio hecho u omitido; en días pasados sale igual
+ * (describe ese día). "Márcalo" = Fácil · Bien · Al límite (Al límite ya baja el peso de las que siguen, ajustarPorRir). `pintar` se envuelve
+ * (no se edita), como en Reemplazos; lo demás va en function (nada corre al abrir la app). */
+var aysPintarBase = typeof pintar === 'function' ? pintar : null;   // (las pruebas que evalúan solo los bloques del final no traen pintar)
+if (aysPintarBase) pintar = function (i, v) { aysPintarBase(i, v); try { aysPintar(i); } catch (x) { console.error(x); } };
+function aysVisible(e) { return !!(e && e.ayerSuave && e.ayerSuave.texto) && e.estado !== 'hecho' && e.estado !== 'omitido'; }
+function aysPintar(i) {
+  var e = sesionActual && sesionActual.ejercicios[i], sug = $('exSug' + i); if (!e || !sug) return;
+  var box = $('exAyer' + i);
+  if (!aysVisible(e)) { if (box) box.style.display = 'none'; return; }
+  if (!box) { box = document.createElement('div'); box.id = 'exAyer' + i; box.className = 'g-line ays'; sug.parentNode.insertBefore(box, sug); }
+  box.textContent = e.ayerSuave.texto;
+  box.style.display = '';
+}
+/* ===== fin Ayer lo hiciste suave ===== */
 /* ===== Qué músculos trabajas (07/10/2026) =====
  * En "Más" de cada ejercicio: el músculo que trabaja de forma DIRECTA (el que más crece con ese ejercicio: cuenta la serie completa) y los que trabaja
  * de forma INDIRECTA (ayudan y crecen algo: cuentan media serie, Pelland 2025). Los datos son los de musculosDe_ (Musculos.gs); aquí solo se dicen
@@ -6914,6 +6942,129 @@ function musculosAyuda() {
   return 'Directo: el músculo que hace la mayor parte del trabajo; en tu semana cuenta la serie completa. Indirecto: los que ayudan; cuentan como media serie. ' +
     'Por eso un press de pecho también suma algo al tríceps, pero para que el tríceps crezca bien necesita además su ejercicio directo.';
 }
+/* ===== Barra inferior fija en iPhone (07/10/2026) =====
+ * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
+ * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
+ * teclado: la ventana visible (visualViewport) queda corrida respecto a la de diseño y todo lo position:fixed (barra, aviso, píldora del
+ * descanso, hojas) se pinta donde quedó la de diseño. No es la app: <nav> es hijo directo de <body> y ni html ni body tienen
+ * transform/filter/will-change/contain.
+ * Arreglo defensivo, sin cambiar el diseño:
+ *  (1) Al soltar una casilla (focusout, si el foco no pasa a otra casilla) y cuando el teclado termina de cerrarse (visualViewport), se llama
+ *      window.scrollTo(scrollX, scrollY): no mueve la página, pero obliga al iPhone a volver a sincronizar lo que se ve con la página y los
+ *      fijos vuelven a su sitio. Se espera a que no estés tocando ni deslizando, ni la app desplazando (scrollTo frena un desplazamiento:
+ *      por eso scrollIntoView, scrollTo, scrollBy y scroll de la app marcan ultScroll, bfEnvolver); si sigue, se desiste. También al volver a la app.
+ *  (2) Si aun así la ventana visible sigue corrida (offsetTop + height > innerHeight, sin zoom y sin casilla activa) y lo sigue 300 ms
+ *      sin deslizar ni tocar (bfConfirmar: el rebote del iPhone o el dedo arrastrando también la sacan un momento y la barra temblaría),
+ *      se pone body.bf-corrido con --bf-abajo / --bf-arriba y el CSS del bloque devuelve los fijos a lo que se ve. Ya puesta, sigue a lo
+ *      que se ve sin esperar; quitarla es inmediato. Con una casilla activa (teclado abierto) no se mueve nada: la barra queda detrás del
+ *      teclado, como siempre en el iPhone.
+ *      Atada al teclado (Auditor, M2): solo puede ponerse en los 10 s siguientes a un cierre de teclado (focusout de casilla o la ventana
+ *      visible que sube ≥ 150 px de alto, bfAbrirVentana) y cuenta lo que se corrió DE MÁS respecto a la línea base (bfBase: cómo informa el
+ *      iPhone la ventana sin teclado; en uno sano, 0). Una diferencia constante desde el arranque nunca baja la barra.
+ * Todo en function y con try: al abrir solo se registran las escuchas (bfIniciar); nada lee un var del final del script. */
+function bfEst() {
+  if (!bfEst.s) bfEst.s = { pendiente: false, t: 0, tc: 0, intentos: 0, ultScroll: 0, ultVV: 0, ultToque: 0, tocando: false, hasta: 0, base: 0, baseArriba: 0, altoVV: 0 };
+  return bfEst.s;
+}
+function bfEditable(el) {
+  if (!el || !el.tagName) return false;
+  var t = String(el.tagName).toLowerCase();
+  if (t === 'textarea' || t === 'select') return true;
+  if (t === 'input') return !/^(checkbox|radio|button|submit|reset|range|color|file|hidden|image)$/i.test(el.type || 'text');
+  return !!el.isContentEditable;
+}
+function bfLeer() {
+  var vv = window.visualViewport; if (!vv || !document.body) return null;
+  var alto = window.innerHeight || 0;
+  return { alto: alto, arriba: Math.max(0, Math.round(vv.offsetTop || 0)), abajo: Math.round((vv.offsetTop || 0) + (vv.height || 0) - alto), zoom: Math.abs((vv.scale || 1) - 1) >= 0.01 };
+}
+function bfEnVentana() { return Date.now() <= bfEst().hasta; }
+function bfAbrirVentana() { bfEst().hasta = Date.now() + 10000; }   // el teclado se acaba de cerrar: 10 s en que la corrección puede ponerse
+/* Línea base: fuera de la ventana de teclado, sin corrección puesta y sin casilla activa (conCasilla: en focusin, antes de que suba el teclado) */
+function bfBase(conCasilla) {
+  var s = bfEst(), r = bfLeer(); if (!r || r.zoom || !(r.alto > 0)) return;
+  if (bfEnVentana() || document.body.classList.contains('bf-corrido')) return;
+  if (!conCasilla && bfEditable(document.activeElement)) return;
+  s.base = Math.max(0, r.abajo); s.baseArriba = r.arriba;
+}
+function bfMedir() {
+  var s = bfEst(), r = bfLeer(); if (!r) return null;
+  bfBase(false);
+  var abajo = r.abajo - s.base, arriba = Math.max(0, r.arriba - s.baseArriba), activa = document.body.classList.contains('bf-corrido');
+  return { abajo: abajo, arriba: arriba, corrido: r.alto > 0 && !r.zoom && abajo > 2 && abajo < r.alto && !bfEditable(document.activeElement) && (activa || bfEnVentana()) };
+}
+function bfAplicar(m) { var b = document.body; b.style.setProperty('--bf-abajo', m.abajo + 'px'); b.style.setProperty('--bf-arriba', m.arriba + 'px'); b.classList.add('bf-corrido'); }
+function bfQuitar() {
+  var s = bfEst(), b = document.body; clearTimeout(s.tc); s.tc = 0;
+  if (b && b.classList.contains('bf-corrido')) { b.style.removeProperty('--bf-abajo'); b.style.removeProperty('--bf-arriba'); b.classList.remove('bf-corrido'); }
+}
+function bfCorregir() {
+  var m = bfMedir(), s = bfEst(); if (!m) return;
+  if (!m.corrido) { bfQuitar(); return; }                                           // quitar: de una
+  if (document.body.classList.contains('bf-corrido')) { bfAplicar(m); return; }     // ya corregida: sigue a lo que se ve
+  if (!s.tc) s.tc = setTimeout(function () { try { bfConfirmar(); } catch (e) {} }, 300);   // poner: solo si dura 300 ms quieta
+}
+function bfConfirmar() {
+  var s = bfEst(); s.tc = 0;
+  var m = bfMedir(); if (!m || !m.corrido) { bfQuitar(); return; }
+  var quieto = Date.now() - Math.max(s.ultScroll, s.ultVV, s.ultToque);   // 300 ms sin deslizar, sin cambios de la ventana visible y desde que soltaste el dedo
+  if (s.tocando || quieto < 300) { s.tc = setTimeout(function () { try { bfConfirmar(); } catch (e) {} }, s.tocando ? 300 : 300 - quieto); return; }
+  bfAplicar(m);
+}
+function bfProgramar(ms) { var s = bfEst(); clearTimeout(s.t); s.t = setTimeout(function () { try { bfReacomodar(); } catch (e) {} }, ms); }
+function bfReacomodar() {
+  var s = bfEst();
+  if (!s.pendiente) return;
+  if (bfEditable(document.activeElement)) { s.pendiente = false; s.intentos = 0; bfCorregir(); return; }   // el teclado volvió a abrirse
+  if (s.tocando || Date.now() - s.ultScroll < 150) {                                                   // no frenar un desplazamiento (tuyo o de la app)
+    if (++s.intentos <= 10) { bfProgramar(250); return; }
+    s.pendiente = false; s.intentos = 0; bfCorregir(); return;
+  }
+  s.pendiente = false; s.intentos = 0;
+  var ir = window.scrollTo && window.scrollTo._bfOrig || window.scrollTo;   // el de verdad: el reacomodo no se marca a sí mismo como desplazamiento
+  ir.call(window, window.scrollX || window.pageXOffset || 0, window.scrollY || window.pageYOffset || 0);
+  bfCorregir();
+  requestAnimationFrame(function () { try { bfCorregir(); } catch (e) {} });
+}
+function bfPedir(ms) { var s = bfEst(); s.pendiente = true; s.intentos = 0; bfProgramar(ms); }
+/* Los desplazamientos de la app (scrollIntoView suave de siguiente(), scrollTo…) también cuentan como "desplazando": antes de su primer evento
+   scroll, el reacomodo los cortaba (Auditor, M1: guardarSeries respondía justo antes de los 400 ms) */
+function bfEnvolver(obj, nombre, deEsta) {
+  var orig = obj && obj[nombre]; if (typeof orig !== 'function' || orig._bfOrig) return;
+  var f = function () { bfEst().ultScroll = Date.now(); return orig.apply(deEsta || this, arguments); };
+  f._bfOrig = orig;
+  try { obj[nombre] = f; } catch (e) {}
+}
+function bfIniciar() {
+  if (bfIniciar.listo) return; bfIniciar.listo = true;
+  var s = bfEst(), vv = window.visualViewport, suave = { passive: true }, suaveCap = { passive: true, capture: true };
+  ['scrollTo', 'scrollBy', 'scroll'].forEach(function (n) { bfEnvolver(window, n, window); });
+  if (typeof Element !== 'undefined' && Element.prototype) bfEnvolver(Element.prototype, 'scrollIntoView');
+  document.addEventListener('focusout', function (ev) {
+    if (!bfEditable(ev.target) || bfEditable(ev.relatedTarget)) return;   // de una casilla a otra el teclado sigue abierto
+    bfAbrirVentana(); bfPedir(400);
+  }, true);
+  document.addEventListener('focusin', function (ev) { if (bfEditable(ev.target)) { try { bfBase(true); } catch (e) {} s.pendiente = false; try { bfCorregir(); } catch (e) {} } }, true);
+  // Dedos en la pantalla: los que quedan (con dos dedos, soltar uno no cuenta como soltar)
+  document.addEventListener('touchstart', function (ev) { s.tocando = ev && ev.touches ? ev.touches.length > 0 : true; }, suaveCap);
+  document.addEventListener('touchend', function (ev) { s.tocando = !!(ev && ev.touches && ev.touches.length > 0); s.ultToque = Date.now(); }, suaveCap);
+  document.addEventListener('touchcancel', function (ev) { s.tocando = !!(ev && ev.touches && ev.touches.length > 0); s.ultToque = Date.now(); }, suaveCap);
+  window.addEventListener('pagehide', function () { s.tocando = false; }, suave);   // el sistema se llevó el gesto (cambiar de app)
+  window.addEventListener('scroll', function () { s.ultScroll = Date.now(); }, suave);
+  window.addEventListener('resize', function () { try { bfCorregir(); } catch (e) {} }, suave);
+  if (vv && vv.addEventListener) {
+    s.altoVV = vv.height || 0;
+    var cambio = function () {
+      var h = vv.height || 0; if (s.altoVV && h - s.altoVV >= 150) bfAbrirVentana(); s.altoVV = h;   // el teclado se cerró (aunque no haya focusout)
+      s.ultVV = Date.now(); try { bfCorregir(); } catch (e) {} if (s.pendiente) bfProgramar(150);   // el teclado terminó de cerrarse
+    };
+    vv.addEventListener('resize', cambio); vv.addEventListener('scroll', cambio);
+  }
+  document.addEventListener('visibilitychange', function () { s.tocando = false; if (document.visibilityState === 'visible') bfPedir(300); });
+  try { bfBase(false); } catch (e) {}
+}
+try { bfIniciar(); } catch (e) {}
+/* ===== fin Barra inferior fija en iPhone ===== */
 
 </script>
 </body>
