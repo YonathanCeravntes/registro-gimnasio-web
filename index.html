@@ -1590,7 +1590,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610071546', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610140033', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2674,7 +2674,19 @@ function listo(i, k) {
 }
 /** Guarda TODO el ejercicio con las series marcadas como hechas (el servidor reemplaza: es idempotente). */
 function guardar(i) {
-  var e = sesionActual.ejercicios[i], v = e._var || 'principal', d = e.variantes[v], p = e.prescripcion;
+  var e = sesionActual.ejercicios[i];
+  // Un guardado a la vez por ejercicio (09/10/2026): "Listo" y enseguida "Al límite" mandaban dos guardados casi juntos y, con 3 trabajadores en el
+  // servidor, a veces el de "Listo" (con el RIR prescrito) llegaba de último y pisaba el "Al límite": al recargar, la tarjeta volvía al peso de antes.
+  // Si hay uno en camino, este sale cuando aquel termine y con lo que haya en pantalla en ese momento (el último estado gana).
+  if (e._guardando && e._guardado) {
+    e._otroGuardado = true;
+    return e._guardado.then(function () {
+      if (!e._otroGuardado) return e._guardado;   // otro que esperaba ya lo mandó: este espera ese mismo
+      e._otroGuardado = false;
+      return sesionActual && sesionActual.ejercicios[i] === e ? guardar(i) : null;   // si ya cambiaste de día o de sesión, la tarjeta no es la misma
+    });
+  }
+  var v = e._var || 'principal', d = e.variantes[v], p = e.prescripcion;
   // RIR de cada serie: el que elegiste para ella, el que ya tenía guardado o el prescrito
   var def = p.rir !== undefined && p.rir !== null && p.rir !== '' ? p.rir : '', prev = d.hoy || [], rs = e._rirSerie || {};
   var series = [];
@@ -2689,7 +2701,7 @@ function guardar(i) {
   var pay = payloadBase(e); pay.ejercicio = d.nombre; pay.variante = v; pay.series = validas; pay.nota = $('exNota' + i) ? $('exNota' + i).value : (e.nota || '');
   pay.fin = !!e._fin;   // "Terminar aquí" con menos series: el servidor lo recuerda (si no, al recargar volvería a salir en curso)
   e._guardando = true;
-  return enviar('guardarSeries', pay).then(function (r) {
+  return (e._guardado = enviar('guardarSeries', pay).then(function (r) {
     e._guardando = false;
     e.motivo = ''; e.varianteHoy = v; e.nota = pay.nota; invalidarDia();
     Object.keys(e.variantes).forEach(function (k) { e.variantes[k].hoy = k === v ? validas : []; });
@@ -2699,7 +2711,7 @@ function guardar(i) {
     if (r.enCola) toast('Sin conexión: guardado en tu celular, se enviará solo');
     else if (r.record) toastPR('Récord personal en ' + d.nombre + ': ' + r.mejorAntes + ' → ' + r.mejorHoy + ' (1RM estimado)');
     return r;
-  }).catch(function (x) { e._guardando = false; errG(x); return null; });
+  }).catch(function (x) { e._guardando = false; errG(x); return null; }));
 }
 /** Nota escrita después de guardar: se reenvía con las series que ya están. */
 function guardarNota(i) { var e = sesionActual.ejercicios[i]; e.nota = $('exNota' + i).value; if (document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length) guardar(i); }
