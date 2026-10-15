@@ -1006,6 +1006,13 @@
   .pp-row .pp-t{flex:1;min-width:0;font-size:13.5px;color:var(--muted);line-height:1.3} .pp-row .pp-t b{color:var(--ink);font-weight:700}
   .pp-row button{flex-shrink:0;min-height:40px;padding:0 12px;border-radius:12px;font:700 13.5px var(--body);cursor:pointer;background:transparent;color:var(--ink);border:1px solid var(--raise2)}
   .pp-row button.pp-x{border:0;color:var(--dim);padding:0 8px;font-size:16px}
+  /* Lo de todos los días (15/10/2026): todo en gris; verde solo lo anotado */
+  .pp-row.hab-ok{background:var(--green-bg);border-color:transparent} .pp-row.hab-ok .pp-t{color:var(--green-ink)}
+  .pp-row .pp-s{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+  .hab-prop{margin-top:10px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line)} .hab-prop .t{font-size:14px;color:var(--ink);line-height:1.35} .hab-prop .s{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .hab-prop .b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px} .hab-prop .b button,.hab-it button,.hab-chips button{min-height:40px;padding:0 12px;border-radius:12px;font:700 13px var(--body);cursor:pointer;background:transparent;color:var(--ink);border:1px solid var(--raise2)}
+  .hab-it{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)} .hab-it:first-child{border-top:0} .hab-it .n{flex:1;min-width:0} .hab-it .n b{display:block;font-size:14px} .hab-it .n small{color:var(--dim);font-size:12px}
+  .hab-it .ok{color:var(--green-ink);font-weight:700;font-size:13px} .hab-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
   .pp-row button:disabled{opacity:.5}
   #semChip b.nf{color:var(--faint)}
   .g-dia.nofui{color:var(--faint)} .g-dia.nofui i{background:var(--faint)}
@@ -1130,6 +1137,7 @@
       <div id="ctaBox"></div>
       <div id="pendBox"></div>
       <div id="dpBox"></div>
+      <div id="habBox"></div>
       <div class="g-chips" id="hoyChips"></div>
       <div id="entrenadorBox"></div>
       <div id="pasosBox"></div>
@@ -1221,6 +1229,7 @@
     </div>
     <div id="pcAhora"></div>
     <div id="cReco"></div>
+    <div id="habCom"></div>
     <div id="cCierreBox"></div>
     <button class="g-row" id="supRow" aria-expanded="false" onclick="gcToggle('supCard', this)"><span class="n"><b>Mis suplementos</b><span class="s" id="supSub">Creatina, proteína, vitaminas… con veredicto para ti</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="supCard"></div>
@@ -1429,6 +1438,10 @@
       <div class="meta" id="ajMeta" style="margin-top:10px"></div>
       <button class="btn txt" onclick="irA('comida')">Ver mi plan de comida →</button>
     </div>
+    <div class="card" data-sec="comida" id="habCard">
+      <h2>Lo de todos los días</h2>
+      <div id="habAj"><div class="meta">Cargando…</div></div>
+    </div>
     <div class="card" data-sec="salud">
       <h2>Tu salud</h2>
       <div id="lgSaludAviso"></div>
@@ -1636,7 +1649,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610151335', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610151350', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2878,7 +2891,7 @@ function mostrarCierre() {
       '<div><b' + (recs.length ? ' class="ok-t"' : '') + '>' + (recs.length ? '+' + recs.length : '0') + '</b><span>' + (recs.length ? 'récord: ' + esc(recs[0].nombre.split(' (')[0]) : 'récords hoy') + '</span></div>' +
       '<div><b>' + n1(Math.round(kg), 0) + '</b><span>kg movidos</span></div></div>' +
     '<div class="g-box"><div class="t">La próxima vez</div><div class="g-list" id="cierreProx"><div class="meta">Calculando…</div></div></div>' +
-    '<div class="g-box green" id="cierreCome"><b>Ahora come.</b> Mirando tu proteína de hoy…</div><div id="cierreSup"></div>' +
+    '<div class="g-box green" id="cierreCome"><b>Ahora come.</b> Mirando tu proteína de hoy…</div><div id="cierreSup"></div><div id="cierreHab"></div>' +
     (dc ? dcCierreHTML(dc) : '') +
     (e.proxima ? '<div class="g-viene"><div><div class="g-eye-s">Lo que viene</div><b>' + esc(diaLargoEtiqueta(e.proxima.etiqueta)) + ' · ' + esc(String(e.proxima.nombre || '').split(' · ')[0]) + '</b></div>' + (nProx ? '<span class="g-chip st">' + nProx + ' ejercicios</span>' : '') + '</div>' : '') +
     '<div class="g-grow"></div>' +
@@ -2909,6 +2922,7 @@ function mostrarCierre() {
     var falta = Math.round((c.objetivos.prot || 0) - ((c.totales && c.totales.prot) || 0));
     b.innerHTML = falta > 0 ? '<b>Ahora come.</b> Te faltan ' + falta + ' g de proteína hoy.' + (falta >= 25 ? ' Por ejemplo: pechuga 150 g, 4 huevos o atún con arroz.' : '') : '<b>Proteína al día.</b> Ya cumpliste tu meta de hoy (' + Math.round(c.objetivos.prot || 0) + ' g). Come y descansa.';
     if (typeof gdSupPendEn === 'function') gdSupPendEn('cierreSup', c);
+    try { habPintarCierre(); } catch (xH) { console.error(xH); }
   };
   var cc = leerCache('com:' + s.fecha); if (cc) pintarCome(cc);
   api('getComida', s.fecha).then(function (c) { escribirCache('com:' + s.fecha, c); pintarCome(c); }).catch(function () { var b = $('cierreCome'); if (b && !cc) b.innerHTML = '<b>Ahora come.</b> Proteína en la siguiente comida: pechuga, huevos, atún o lentejas.'; });
@@ -4240,7 +4254,7 @@ function pcDat(r, i) { var c = r.comidas[i]; return (pcOpc[i] || 'a') === 'a' ? 
 function pcEstado(r) {
   var f = $('cFecha').value || hoyISO(), esHoy = f === hoyISO();
   var regs = comidaDatos && comidaDatos.fecha === f ? comidaDatos.registros : [];
-  var hecha = r.comidas.map(function (c) { return regs.some(function (x) { return x.momento === c.momento; }); });
+  var hecha = r.comidas.map(function (c) { return regs.some(function (x) { return x.momento === c.momento && String(x.id || '').indexOf('hab-') !== 0; }); });   // lo de todos los días suma, pero no hace el momento (hallazgo B)
   var mi = esHoy ? ORDEN_MOM.indexOf(momentoPorHora()) : 0, ahora = -1;
   r.comidas.forEach(function (c, i) { if (ahora < 0 && !hecha[i] && ORDEN_MOM.indexOf(c.momento) >= mi) ahora = i; });
   if (ahora < 0) ahora = hecha.indexOf(false);
@@ -7346,6 +7360,162 @@ function dpCambiarDias(btn) {
   }).then(dpPintarAjustes).catch(function (x) { if (btn) btn.disabled = false; err(x); });
 }
 /* ===== fin Días que no dependen de ti ===== */
+/* ===== Lo de todos los días (15/10/2026, PR B; informe docs/diseno/2026-10-15-habitos-y-descanso.md §3; servidor TodosLosDias.gs) =====
+ * Solo comida y suplementos de una lista blanca (nunca medicamentos). Hoy: UNA línea gris #habBox (si no hay aviso de días que no dependen de
+ * ti ni "Ayer no anotaste", y nada desde la primera serie). Cierre: lo de después en #cierreHab. Comida: la propuesta y el pliegue #habCom.
+ * Ajustes → Tu comida: #habCard. Todo en function; los datos se piden con getTodosLosDias (máx. una vez por minuto salvo tras responder). */
+var habDatos = null, habT = 0, habPidiendo = false;
+function habCargar(forzar, luego) {
+  if (habPidiendo || (!forzar && habDatos && Date.now() - habT < 60000)) { if (luego && habDatos) luego(habDatos); return; }
+  habPidiendo = true;
+  api('getTodosLosDias', { fecha: hoyISO() }).then(function (d) { habPidiendo = false; habDatos = d; habT = Date.now(); habRepintar(); if (luego) luego(d); }).catch(function () { habPidiendo = false; });
+}
+function habRepintar() { try { habPintarHoy(); habPintarComida(); habPintarAjustes(); } catch (x) { console.error(x); } }
+function habSerieHoy() { var s = sesionActual; return !!(s && s.fecha === hoyISO() && s.ejercicios.some(function (x) { return Object.keys(x.variantes).some(function (v) { return (x.variantes[v].hoy || []).length; }); })); }
+function habPintarHoy() {
+  var box = $('habBox'); if (!box) return;
+  if (box.dataset.ok) return;   // "anotado · Deshacer" durante 4 s
+  var otro = ($('dpBox') && $('dpBox').innerHTML.trim()) || ($('pendBox') && $('pendBox').innerHTML.trim());
+  var d = habDatos, l = d && d.linea;
+  if (!estado || estado.fecha !== hoyISO() || otro || habSerieHoy() || !l) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="pp-row"><span class="pp-t"><b>' + esc(l.texto) + '</b><span class="pp-s">' + esc(l.sub) + '</span></span>' +
+    '<button type="button" onclick="habResponder(\'' + esc(l.id) + '\', \'s\', this)">Sí</button><button type="button" onclick="habResponder(\'' + esc(l.id) + '\', \'n\', this)">Hoy no</button></div>';
+}
+function habNombre(id) { var h = habDatos && habDatos.habitos.filter(function (x) { return x.id === id; })[0]; return h ? String(h.nombre || '').split(' · ')[0] : ''; }
+function habResponder(id, resp, btn) {
+  if (btn) btn.disabled = true;
+  enviar('responderHabito', { id: id, fecha: hoyISO(), resp: resp, canal: 'app' }).then(function (r) {
+    if (resp === 's' && r && (r.estado === 'anotado' || r.estado === 'ya')) {
+      var box = $('habBox'); if (box && box.innerHTML) {
+        box.dataset.ok = '1';
+        box.innerHTML = '<div class="pp-row hab-ok"><span class="pp-t">' + esc(habNombre(id)) + ' anotado</span><button type="button" onclick="habDeshacer(\'' + esc(id) + '\')">Deshacer</button></div>';
+        setTimeout(function () { delete box.dataset.ok; habPintarHoy(); }, 4000);
+      }
+      try { invalidarDia(); } catch (x) {}
+    } else if (r && r.estado === 'yaAnotado') {
+      hojaAbrir({ titulo: 'Ya estaba anotado', html: '<div class="meta">' + esc(r.texto) + '</div><button class="btn sec" style="margin-top:12px" onclick="hojaCerrar(); habDeshacer(\'' + esc(id) + '\')">Quitar</button>' });
+    } else if (r && r.seguir) {
+      hojaAbrir({ titulo: 'Lo de todos los días', html: '<div class="meta">' + esc(r.textoSeguir) + '</div><div class="hab-chips"><button onclick="hojaCerrar()">Sí, sigue</button><button onclick="hojaCerrar(); habApagar(\'' + esc(id) + '\')">Quítalo</button></div>' });
+    } else if (r && r.texto) toast(r.texto);
+    habCargar(true);
+  }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
+}
+function habDeshacer(id) { var box = $('habBox'); if (box) delete box.dataset.ok; enviar('quitarHabitoHoy', { id: id, fecha: hoyISO() }).then(function () { toast('Quitado'); try { invalidarDia(); } catch (x) {} habCargar(true); }).catch(errG); }
+function habApagar(id) { enviar('guardarHabito', { id: id, activo: false }).then(function () { toast('Listo, ya no te lo pregunto'); habCargar(true); }).catch(errG); }
+/* Cierre de la sesión: "Para cerrar: ¿te tomas tu café de después?" */
+function habPintarCierre() {
+  var b = $('cierreHab'); if (!b) return;
+  habCargar(false, function (d) {
+    var x = d && d.despues; if (!x || !$('cierreHab')) { if ($('cierreHab')) $('cierreHab').innerHTML = ''; return; }
+    $('cierreHab').innerHTML = '<div class="pp-row"><span class="pp-t">' + esc(x.texto) + '</span><button type="button" onclick="habCierreResp(\'' + esc(x.id) + '\', \'s\', this)">Sí, anótalo</button><button type="button" onclick="habCierreResp(\'' + esc(x.id) + '\', \'n\', this)">Hoy no</button></div>';
+  });
+}
+function habCierreResp(id, resp, btn) {
+  if (btn) btn.disabled = true;
+  enviar('responderHabito', { id: id, fecha: hoyISO(), resp: resp, canal: 'app' }).then(function (r) {
+    var b = $('cierreHab'); if (b) b.innerHTML = '<div class="pp-row' + (resp === 's' ? ' hab-ok' : '') + '"><span class="pp-t">' + esc(resp === 's' ? habNombre(id) + ' anotado' : 'Va, hoy no.') + '</span></div>';
+    habCargar(true);
+  }).catch(function (x) { if (btn) btn.disabled = false; errG(x); });
+}
+/* Comida: la propuesta (justo después de registrar la 4.ª vez) y el pliegue "Lo de todos los días" */
+function habPintarComida() {
+  var box = $('habCom'); if (!box) return;
+  var f = $('cFecha') ? $('cFecha').value || hoyISO() : hoyISO(), d = habDatos;
+  if (!d || f !== hoyISO()) { box.innerHTML = ''; return; }
+  var h = '';
+  if (d.propuesta) {
+    var p = d.propuesta;
+    h += '<div class="hab-prop"><div class="t">' + esc(p.texto) + '</div><div class="s">' + esc(p.sub) + ' Uso tus registros de los últimos 7 días; solo comida y suplementos, nunca medicamentos.</div>' +
+      '<div class="b"><button type="button" onclick="habPropuesta(\'si\')">Sí, pregúntame</button><button type="button" onclick="habPropuesta(\'ahora_no\')">Ahora no</button><button type="button" onclick="habPropuesta(\'nunca\')">No me preguntes esto</button></div></div>';
+  }
+  (d.avisos || []).forEach(function (a) { h += '<div class="pp-row"><span class="pp-t">' + esc(a.texto) + '</span></div>'; });
+  var act = d.habitos.filter(function (x) { return x.activo && !x.pausado; });
+  if (act.length) {
+    var todo = d.anotados >= d.activos;
+    h += '<button class="g-row" id="habRow" aria-expanded="false" onclick="gcToggle(\'habFold\', this)"><span class="n"><b>Lo de todos los días</b><span class="s"' + (todo ? ' style="color:var(--green-ink)"' : '') + '>' +
+      (todo ? 'Todo anotado hoy' : d.anotados + ' de ' + d.activos + ' anotados') + '</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><div class="g-fold" id="habFold">' +
+      act.map(function (x) {
+        var lado = x.hoy === 's' ? '<span class="ok">anotado</span>' : x.hoy === 'n' ? '<span class="meta">hoy no</span>' :
+          '<button type="button" onclick="habResponder(\'' + esc(x.id) + '\', \'s\', this)">Tomé</button><button type="button" onclick="habResponder(\'' + esc(x.id) + '\', \'n\', this)">Hoy no</button>';
+        return '<div class="hab-it"><div class="n"><b>' + esc(String(x.nombre).split(' · ')[0]) + '</b><small>' + esc(x.cuando) + '</small></div>' + lado + '</div>';
+      }).join('') + '</div>';
+  }
+  var abierto = $('habFold') && $('habFold').classList.contains('open');
+  box.innerHTML = h;
+  if (abierto && $('habFold')) { $('habFold').classList.add('open'); $('habRow').setAttribute('aria-expanded', 'true'); }
+}
+function habPropuesta(resp) {
+  var p = habDatos && habDatos.propuesta; if (!p) return;
+  enviar('responderPropuesta', { clave: p.clave, resp: resp, desde: 'propuesta' }).then(function (r) {
+    if (resp === 'si') { toast(r.texto || 'Listo. Te lo pregunto cada día.'); if (r.pideHoraGym) habHoraGym(); }
+    habCargar(true);
+  }).catch(errG);
+}
+/* Hora del gimnasio (§3.3): con sesiones, "Entrenas hacia las 6:00 a. m. ¿Es así?"; sin sesiones, "¿A qué hora entrenas?" */
+function habHoraGym() {
+  var d = habDatos || {}, ded = d.horaGymDeducida, inp = '<input type="time" id="habHora" value="' + esc(d.horaGym || ded || '06:00') + '" style="margin-top:10px">';
+  var html = ded ? '<div class="meta">Entrenas hacia las ' + esc(d.horaGymDeducidaTxt) + '. ¿Es así?</div><div class="hab-chips"><button onclick="habGuardarHora(\'' + esc(ded) + '\')">Sí, ' + esc(d.horaGymDeducidaTxt) + '</button><button onclick="document.getElementById(\'habHoraOtra\').style.display=\'block\'">Cambiar hora</button></div><div id="habHoraOtra" style="display:none">' + inp + '<button class="btn" style="margin-top:10px" onclick="habGuardarHora($(\'habHora\').value)">Guardar</button></div>'
+    : '<div class="meta">¿A qué hora entrenas? Así te pregunto en el momento justo.</div>' + inp + '<button class="btn" style="margin-top:10px" onclick="habGuardarHora($(\'habHora\').value)">Guardar</button>';
+  hojaAbrir({ titulo: 'Tu hora del gimnasio', html: html });
+}
+function habGuardarHora(v) { enviar('guardarHoraGym', { hora: v }).then(function (r) { hojaCerrar(); toast(r.horaGymTxt ? 'Listo: ' + r.horaGymTxt : 'Quité tu hora del gimnasio'); habCargar(true); }).catch(errG); }
+/* Ajustes → Tu comida → Lo de todos los días */
+var HAB_CHIPS = [['Café antes de entrenar', 'comida', 'antes', { nombre: 'Café con leche', kcal: 90, prot: 4, carb: 9, grasa: 4 }], ['Café después de entrenar', 'comida', 'despues', { nombre: 'Café con leche', kcal: 90, prot: 4, carb: 9, grasa: 4 }], ['Proteína en polvo', 'proteina', 'hora'], ['Creatina', 'creatina', 'hora']];
+function habCargarAjustes() { if ($('habAj')) habCargar(false, function () { habPintarAjustes(); }); }
+function habPintarAjustes() {
+  var box = $('habAj'); if (!box || !habDatos) return;
+  var d = habDatos, h = '';
+  if (!d.habitos.length) h += '<div class="meta">Aquí van tu café, tu proteína, tu creatina… lo que repites cada día. Enfoque te pregunta con un toque y lo anota por ti. También lo aprendo solo: si repites algo varios días, te propongo preguntarlo.</div>';
+  else h += d.habitos.map(function (x) {
+    return '<div class="hab-it"><div class="n"><b>' + esc(String(x.nombre).split(' · ')[0]) + '</b><small>' + esc(x.cuando + (x.pausado ? ' · en pausa' : '')) + '</small></div>' +
+      '<button type="button" onclick="habEditar(\'' + esc(x.id) + '\')">' + (x.activo ? 'Ajustar' : 'Activar') + '</button></div>';
+  }).join('');
+  h += '<div class="hab-chips">' + HAB_CHIPS.map(function (c, i) { return '<button type="button" onclick="habAgregarChip(' + i + ')">' + esc(c[0]) + '</button>'; }).join('') + '</div>';
+  h += '<div class="meta" style="margin-top:10px">' + (d.horaGym ? 'Entrenas hacia las ' + esc(d.horaGymTxt) + '. ' : '') + '<a href="#" onclick="habHoraGym(); return false">' + (d.horaGym ? 'Cambiar hora' : 'Decir a qué hora entreno') + '</a>' + (d.horaGym ? ' · <a href="#" onclick="habGuardarHora(\'\'); return false">Quitar mi hora</a>' : '') + '</div>';
+  if (d.horaGymCambio) h += '<div class="pp-row"><span class="pp-t">Últimamente empiezas hacia las ' + esc(d.horaGymCambio.replace(/^0/, '')) + '. ¿Cambio tu hora?</span><button type="button" onclick="habGuardarHora(\'' + esc(d.horaGymCambio) + '\')">Sí</button></div>';
+  if (d.preguntaMadrugada) h += '<div class="hab-prop"><div class="t">¿Quieres que también te escriba por Telegram? Sale a las 5:30 a. m., sin sonido.</div>' +
+    '<div class="b"><button type="button" onclick="habMadrugada(true)">Sí, por Telegram</button><button type="button" onclick="habMadrugada(false)">Solo en la app</button></div></div>';
+  else if (d.madrugada) h += '<div class="meta" style="margin-top:8px">Por Telegram te escribo a las 5:30 a. m., sin sonido. <a href="#" onclick="habMadrugada(false); return false">No más por Telegram a esa hora</a></div>';
+  h += '<div class="meta" style="margin-top:8px">Solo comida y suplementos como proteína, creatina o café; nunca medicamentos. Lo apagas cuando quieras.</div>';
+  box.innerHTML = h;
+}
+function habAgregarChip(i) {
+  var c = HAB_CHIPS[i], p;
+  if (c[1] === 'comida') p = { tipo: 'comida', item: c[3], ancla: c[2], desde: 'manual' };
+  else {
+    api('getSuplementos').then(function (l) {
+      var sup = (l || []).filter(function (s) { return s.tipo === c[1]; })[0];
+      if (!sup) { toast('Primero agrega tu ' + c[0].toLowerCase() + ' en Comida → Mis suplementos'); return; }
+      habAgregar({ tipo: 'suplemento', supId: sup.id, ancla: 'hora', hora: c[1] === 'proteina' ? '16:00' : '20:30', desde: 'manual' });
+    }).catch(errG);
+    return;
+  }
+  habAgregar(p);
+}
+function habAgregar(p) {
+  enviar('guardarHabito', p).then(function () { toast('Listo. Te lo pregunto cada día.'); habCargar(true, function (d) { if (p.ancla !== 'hora' && !d.horaGym) habHoraGym(); }); }).catch(errG);
+}
+function habEditar(id) {
+  var x = habDatos.habitos.filter(function (y) { return y.id === id; })[0]; if (!x) return;
+  var anc = [['antes', 'Antes de entrenar'], ['despues', 'Después de entrenar'], ['hora', 'A una hora']];
+  hojaAbrir({ titulo: String(x.nombre).split(' · ')[0], html:
+    '<div class="meta">' + esc(x.detalle) + '</div><div class="hab-chips">' + anc.map(function (a) { return '<button type="button" onclick="habGuardar(\'' + esc(id) + '\', { ancla: \'' + a[0] + '\' })"' + (x.ancla === a[0] ? ' style="border-color:var(--ink)"' : '') + '>' + a[1] + '</button>'; }).join('') + '</div>' +
+    '<input type="time" id="habHoraEd" value="' + esc(x.hora || '08:00') + '" style="margin-top:10px" onchange="habGuardar(\'' + esc(id) + '\', { ancla: \'hora\', hora: this.value })">' +
+    (habDatos.tgDisponible && x.tgPuede ? '<div class="meta" style="margin-top:12px">Dónde te pregunto</div><div class="hab-chips">' + [['app', 'App'], ['telegram', 'Telegram'], ['ambos', 'Los dos']].map(function (c) { return '<button type="button" onclick="habCanal(\'' + esc(id) + '\', \'' + c[0] + '\')"' + ((x.canal || 'app') === c[0] ? ' style="border-color:var(--ink)"' : '') + '>' + c[1] + '</button>'; }).join('') + '</div><div class="meta">Por Telegram va sin sonido y con un nombre genérico («tu creatina»). Telegram es un servicio aparte.</div>' : '') +
+    '<div class="hab-chips">' + (x.activo ? '<button type="button" onclick="habGuardar(\'' + esc(id) + '\', { activo: false })">Apagar</button><button type="button" onclick="habGuardar(\'' + esc(id) + '\', { pausaDias: 7 })">Pausar una semana</button>' : '<button type="button" onclick="habGuardar(\'' + esc(id) + '\', { activo: true, pausaDias: 0 })">Activar</button>') +
+    '<button type="button" onclick="habQuitar(\'' + esc(id) + '\')">Quitar</button></div>' });
+}
+function habMadrugada(si) { enviar('guardarMadrugadaTg', { si: !!si }).then(function (r) { toast(r.texto); habCargar(true); }).catch(errG); }
+function habCanal(id, canal) { enviar('guardarCanalHabito', { id: id, canal: canal }).then(function () { hojaCerrar(); toast(canal === 'app' ? 'Solo en la app' : 'Listo: también por Telegram, sin sonido'); habCargar(true); }).catch(errG); }
+function habGuardar(id, cambio) { cambio.id = id; enviar('guardarHabito', cambio).then(function () { hojaCerrar(); toast('Guardado'); habCargar(true); }).catch(errG); }
+function habQuitar(id) { if (!confirm('¿Quitar esto de «Lo de todos los días»?')) return; enviar('quitarHabito', { id: id }).then(function () { hojaCerrar(); habCargar(true); }).catch(errG); }
+var habHeroBase = typeof pintarHero === 'function' ? pintarHero : null;
+if (habHeroBase) pintarHero = function () { habHeroBase(); try { if (habDatos) habPintarHoy(); habCargar(false); } catch (x) { console.error(x); } };
+var habComidaBase = typeof gdPintarComida === 'function' ? gdPintarComida : null;
+if (habComidaBase) gdPintarComida = function (c) { habComidaBase(c); try { habCargar(true); } catch (x) { console.error(x); } };
+var habAjBase = typeof pintarComidaAjustes === 'function' ? pintarComidaAjustes : null;
+if (habAjBase) pintarComidaAjustes = function (c) { habAjBase(c); try { habCargarAjustes(); } catch (x) { console.error(x); } };
+/* ===== fin Lo de todos los días ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
