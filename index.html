@@ -1631,7 +1631,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610140204', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610151237', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2098,7 +2098,7 @@ function pintarEstado(e, codigo) {
   var kick = nombreProg(pg.id, pg.nombre || 'Mi plan') + (pg.bloque ? ' · ' + pg.bloque.nombre : '');
   document.querySelectorAll('.kick-sem').forEach(function (x) { x.textContent = kick; });
   $('kSemana').textContent = (pg.bloque ? pg.bloque.nombre + ' · ' : '') + 'Semana ' + e.semana + ' · ' + rangoSemana(e.plan);
-  $('cicloCard').innerHTML = e.cicloTerminado ? '<div class="card"><h2>¡Terminaste ' + esc(pg.nombre || 'el programa') + '!</h2><div class="meta">Puedes repetirlo desde el principio con tus cargas de ahora (nuevo ciclo) o cambiar de programa en Ajustes. Elige el lunes en que empiezas.</div>' +
+  $('cicloCard').innerHTML = e.cicloTerminado && e.fecha !== hoyISO() ? '<div class="card"><h2>¡Terminaste ' + esc(pg.nombre || 'el programa') + '!</h2><div class="meta">Puedes repetirlo desde el principio con tus cargas de ahora (nuevo ciclo) o cambiar de programa en Ajustes. Elige el lunes en que empiezas.</div>' +
     '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
   pintarEntrenador(e.entrenador);
   try { pintarPasos(e); } catch (xP) { console.error(xP); }   // nunca puede tumbar Hoy (03/10: PASOS aún sin cargar al abrir dejaba Hoy en "…")
@@ -2140,7 +2140,7 @@ function pintarHero() {
   if (!img) img = IMG_DIA[tipo === 'cardio' ? 'cardio' : 'descanso'];
   if ($('heroImg').getAttribute('src') !== img) $('heroImg').src = img;
   $('heroKickerTxt').textContent = fechaEyebrow(e.fecha) + (semanaPrograma(e) ? ' · ' + semanaPrograma(e) : '');
-  var chip, titulo, sub = '', cta = '', desc = '';
+  var chip, titulo, sub = '', cta = '', desc = '', fin = false;
   var nEj = s ? s.ejercicios.length : 0, min = s ? minutosSesion(s) : 0;
   var nombreHoy = s ? s.nombre : (e.nombres[e.sugerida] || 'Sesión');
   if (hoyListo) {
@@ -2157,6 +2157,12 @@ function pintarHero() {
     chip = ['ok', 'Fuiste · ' + c.pct + ' %']; titulo = nombreHoy;
     sub = c.hechas + ' de ' + c.presc + ' series · ' + c.ejHechos + ' de ' + c.ej + ' ejercicios';
     cta = gcta('ok', c.pct >= 90 ? 'Sesión completa' : 'Te faltó parte', 'Ver o completar', 'irRutina()');
+  } else if (e.cicloTerminado && esHoy) {
+    // Terminó el último bloque (15/10/2026): en vez de repetir la descarga, la portada ofrece el ciclo nuevo del mismo programa
+    fin = true; chip = ['ok', 'Ciclo completo']; titulo = 'Terminaste el programa';
+    sub = 'Tus cargas y tu historial se quedan';
+    desc = 'El ciclo nuevo empieza hoy por la primera semana, con los pesos que ya manejas.';
+    cta = gcta('', 'Empezar otro ciclo', '', 'empezarOtroCicloUI()') + gcta('line', 'Cambiar de programa', '', "irAjustes('programa')");
   } else if (tipo === 'sesion') {
     chip = ['pesas', 'Día de pesas']; titulo = nombreHoy;
     sub = nEj + ' ejercicios · ' + min + ' min';
@@ -2205,8 +2211,8 @@ function pintarHero() {
     '<div class="tip-row" onclick="irA(\'cuerpo\')"><div class="ic">' + SVG.food + '</div><div><div class="t">Registra tu peso</div><div class="s">Y la comida de hoy en Comida</div></div></div>' : '';
   $('proximaBox').innerHTML = prox ? proximaHTML(prox) : '';
   // La rutina solo se muestra si el día es de pesas (o si eliges entrenar); con la próxima a la vista, lo de hoy se oculta
-  $('rutina').classList.toggle('hidden', (!pesas || !!prox) && $('selector').classList.contains('hidden'));
-  $('sesionAviso').classList.toggle('hidden', !!prox);
+  $('rutina').classList.toggle('hidden', (!pesas || !!prox || fin) && $('selector').classList.contains('hidden'));
+  $('sesionAviso').classList.toggle('hidden', !!prox || fin);
 }
 /** Fila de chips bajo el botón, en una sola línea: la semana en 7 letras y Cardio (Salud va como fila abajo; los días, en Semana → Ajustar días). */
 function pintarChipsHoy() {
@@ -2663,6 +2669,8 @@ function ajustarPorRir(i, sugerida) {
   var r = Number(e._rir), paso = Number(d.paso) || 2.5, nueva;
   if (r >= 4) nueva = Math.max(base + paso, Math.round(base * 1.10 / paso) * paso);
   else if (r >= 2) nueva = base;
+  // "Al límite" no castiga cuando era la meta (15/10/2026): si la serie pedía dejar 1 o 0 y llegaste al mínimo de reps, sigues igual
+  else if (Number(p.rirMin) <= 1 && reps >= Number(p.rmin)) nueva = base;
   else nueva = Math.min(base - paso, Math.round(base * (reps && reps < Number(p.rmin) ? 0.90 : 0.95) / paso) * paso);
   nueva = Math.max(Number(d.barra) || 0, Math.round(nueva * 100) / 100); if (nueva <= 0) nueva = base;
   Array.prototype.forEach.call(filas, function (tr) {
@@ -2672,7 +2680,7 @@ function ajustarPorRir(i, sugerida) {
   });
   var busca = reps ? Math.min(Number(p.rmax) || reps, Math.max(Number(p.rmin) || reps, r >= 4 ? reps : r <= 1 ? Number(p.rmin) || reps : reps)) : Number(p.rmin) || '';
   var linea = (nueva > base ? 'sube a ' + fmtNum(nueva) + ' kg' : nueva < base ? 'baja a ' + fmtNum(nueva) + ' kg' : 'sigue con ' + fmtNum(nueva) + ' kg') + (busca ? ', busca ' + busca + ' reps' : '') +
-    (nueva > base ? ' (la anterior te quedó fácil)' : nueva < base ? ' (la anterior fue al límite)' : ' (así va bien)');
+    (nueva > base ? ' (la anterior te quedó fácil)' : nueva < base ? ' (la anterior fue al límite)' : r <= 1 ? ' (al límite era la meta)' : ' (así va bien)');
   e._ajuste = { hechas: hechas.length, carga: nueva, linea: linea };
   e._ajusteTxt = 'Las que siguen van con ' + fmtNum(nueva) + ' kg.';
   var hoyBox = $('exSug' + i); if (hoyBox) hoyBox.innerHTML = '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + '</div>';
@@ -3853,6 +3861,11 @@ document.addEventListener('visibilitychange', function () {
 
 function toastPR(msg) { var t = $('toast'); t.classList.add('pr'); toast(msg); setTimeout(function () { t.classList.remove('pr'); }, 4000); if (navigator.vibrate) navigator.vibrate([100, 60, 100, 60, 200]); }
 function proximoLunesISO() { var d = new Date(); d.setDate(d.getDate() + ((8 - d.getDay()) % 7 || 7)); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+/** "Empezar otro ciclo" de la portada: el mismo programa vuelve a la semana 1 desde hoy, sin borrar historial ni cargas (empezarOtroCiclo). */
+function empezarOtroCicloUI() {
+  if (!confirm('¿Empezar otro ciclo del programa desde hoy? Tus registros y tus cargas se conservan.')) return;
+  api('empezarOtroCiclo').then(function (r) { if (!r || !r.ok) { toastBad((r && r.motivo) || 'No pude empezar el ciclo nuevo'); invalidarTodo(); cargarEstado(); return; } toast('Ciclo ' + r.ciclo + ' listo'); invalidarTodo(); $('fecha').value = hoyISO(); cargarEstado(); }).catch(err);
+}
 function nuevoCiclo() {
   var f = $('cicloFecha').value; if (!f) return;
   if (!confirm('¿Empezar el nuevo ciclo el ' + f + '? Tus registros anteriores se conservan.')) return;
@@ -7018,7 +7031,7 @@ function dpAyuda() {
 /** UNA línea gris en Hoy: "Esta semana tienes 3 días (festivo y pico y placa). ¿Cómo la acomodo?" + Sumar días · Semana corta · Pasarlas a la próxima. */
 function dpPintarLinea(e) {
   var box = $('dpBox'); if (!box) return;
-  var a = dpAcomodoHoy(e);
+  var a = e && e.cicloTerminado ? null : dpAcomodoHoy(e);   // programa terminado: la portada solo ofrece el ciclo nuevo
   if (!a) { box.innerHTML = ''; return; }
   var b = function (t, fn) { return '<button type="button" onclick="' + fn + '">' + esc(t) + '</button>'; };
   box.innerHTML = '<div class="dp-linea"><div class="dp-t">Esta semana tienes <b>' + esc(dpTxtDias(a.disponibles)) + '</b> (' + esc(a.motivo) + '). ¿Cómo la acomodo?' +
