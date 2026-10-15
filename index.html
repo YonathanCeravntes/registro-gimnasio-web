@@ -321,6 +321,8 @@
   #timer #tEj{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85;min-width:0}
   #timer .t-acts{display:flex;gap:4px;flex-shrink:0}
   #timer .t-acts button{border:0;border-radius:999px;height:28px;padding:0 10px;font:700 12px var(--body);background:var(--amber-ink);color:var(--amber);cursor:pointer}
+  #timer.t-pasado{background:#2a2a2e;color:var(--ink)}   /* pasó el descanso: gris oscuro; el ámbar queda solo en el Listo de la fila (15/10/2026) */
+  #timer.t-pasado .t-acts button{background:#3a3a40;color:var(--ink)}
   body.t-on main{padding-top:48px} body.t-on .g-ex,body.t-on #pesoCard,body.t-on #cardioCard{scroll-margin-top:52px}
   #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom));background:var(--card2);color:var(--ink);border:1px solid var(--line);padding:11px 15px;border-radius:12px;font-size:14px;display:none;z-index:9;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.4)}
   #toast.pr{background:linear-gradient(90deg,#f5b700,#eb6834);color:#151208;border-color:transparent}
@@ -1411,6 +1413,9 @@
       <label for="pSonido" style="margin-top:14px">Aviso del descanso</label>
       <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="tono">Tono (no pausa tu música)</option><option value="voz">Voz: te dice la siguiente serie</option><option value="no">Sin sonido</option></select>
         <button type="button" class="btn sec" style="width:auto" onclick="sonidoProbar()">Probar</button></div>
+      <label for="pPasado" style="margin-top:14px">Cuando pasa el descanso</label>
+      <select id="pPasado" onchange="tPasadoElegir(this.value)"><option value="avisar">Avisarme si no anoto la serie</option><option value="contar">Solo contar</option></select>
+      <div class="meta" style="margin-top:6px">El reloj sigue contando en gris. Con «Avisarme», si pasa un rato y no anotas la serie, te pregunta una vez si ya la hiciste.</div>
       <div class="meta" style="margin-top:6px">Suena a los 10 s, cuenta 3, 2, 1 y te avisa al terminar, por encima de tu música y sin pausarla (con el celular en silencio no suena). La voz del iPhone puede pausar la música. Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
     </div>
     <div class="card" data-sec="gimnasio" id="dpCard">
@@ -1508,7 +1513,7 @@
 </main>
 
 <div id="timer" role="status" aria-live="off"><button type="button" class="t-ir" id="tIr" aria-label="Volver al ejercicio"><b id="tVal">0:00</b><span id="tEj"></span></button>
-  <div class="t-acts"><button type="button" id="tMas">+30 s</button><button type="button" id="tStop">Listo</button></div></div>
+  <div class="t-acts"><button type="button" id="tMas">+30 s</button><button type="button" id="tStop">Ya voy</button><button type="button" id="tAnotar" style="display:none">Anotar</button></div></div>
 <div id="bienvenida" class="hidden">
   <div class="bv-wrap">
     <div class="bv-top"><span class="kicker" style="color:var(--amber)">ENFOQUE</span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -1631,7 +1636,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610151237', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610151335', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2600,7 +2605,8 @@ function pintar(i, v) {
   // RIR con palabras POR SERIE (07/10/2026): lo elegido en cada una (o lo guardado, si coincide con una opción). El comentario y el ajuste son
   // siempre de la ÚLTIMA serie hecha: antes "Al límite" de la serie 4 seguía marcado y decía "van con 10 kg" después de hacer la 5 con 12.
   if (e._rirVar !== v || !e._rirSerie) {
-    e._rirVar = v; e._rirSerie = {};
+    e._rirVar = v; e._rirSerie = {}; e._hora = {};
+    hoy.forEach(function (s, k) { var t = horaMs(s.hora); if (t) e._hora[k] = t; });
     hoy.forEach(function (s, k) { var x = Number(s.rir); if (s.rir !== '' && s.rir != null && RIR_OPC.some(function (o) { return o.rir === x; })) e._rirSerie[k] = x; });
   }
   e._rir = hechas && e._rirSerie[hechas - 1] != null ? e._rirSerie[hechas - 1] : null;
@@ -2695,7 +2701,8 @@ function listo(i, k) {
   try { sonidoPreparar(); } catch (x) {}   // el audio del descanso solo se puede activar con un toque
   var filas = document.querySelectorAll('#exSets' + i + ' tr'), tr = filas[k]; if (!tr) return;
   var era = tr.dataset.done === '1', j;
-  if (era) { for (j = k; j < filas.length; j++) marcarFila(filas[j], false); }
+  if (!e._hora) e._hora = {};
+  if (era) { for (j = k; j < filas.length; j++) { marcarFila(filas[j], false); delete e._hora[j]; } }
   else {
     var reps = tr.querySelectorAll('input')[1];
     if (reps.value === '') { reps.focus(); toastBad('Anota las repeticiones de la serie ' + (k + 1)); return; }
@@ -2705,6 +2712,8 @@ function listo(i, k) {
       if (ins[0].value === '' && ins[0].placeholder !== '') ins[0].value = ins[0].placeholder;   // kg vacíos = el sugerido que se veía en gris
       marcarFila(filas[j], true);
     }
+    // Hora de la serie (15/10/2026): solo la del "Listo" que tocaste; las de antes marcadas de golpe quedan sin hora (no sirven para medir el descanso)
+    e._hora[k] = Date.now();
   }
   var quedan = Array.prototype.filter.call(filas, function (t) { return t.dataset.done === '1'; }).length;
   if (e._rirSerie) Object.keys(e._rirSerie).forEach(function (x) { if (Number(x) >= quedan) delete e._rirSerie[x]; });   // al deshacer, lo elegido para esas series se va
@@ -2715,8 +2724,9 @@ function listo(i, k) {
   guardar(i).then(function (r) {
     if (!r || era) return;
     var ej = { i: i, nombre: String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0] };
-    if (ultima) { siguiente(i); if (!comprobarCierre()) descanso(e.prescripcion.descanso, ej); return; }
-    if (e.ss && e.ss.pos === 1) { toast('Superserie: sin descanso, sigue con ' + e.ss.con); siguienteSuperserie(i); return; }
+    try { dcCorto(i, k); } catch (xC) { console.error(xC); }   // descanso corto en el ejercicio fuerte (una línea gris)
+    if (ultima) { siguiente(i); if (!comprobarCierre()) descanso(e.prescripcion.descanso, ej); else tParar(); return; }
+    if (e.ss && e.ss.pos === 1) { tParar(); toast('Superserie: sin descanso, sigue con ' + e.ss.con); siguienteSuperserie(i); return; }
     descanso(e.prescripcion.descanso, ej);
     if (e.ss && e.ss.pos === 2 && i > 0 && sesionActual.ejercicios[i - 1].estado === 'pendiente') { abiertos[i - 1] = true; $('exBody' + (i - 1)).classList.add('open'); $('ex' + (i - 1)).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
@@ -2743,7 +2753,8 @@ function guardar(i) {
     if (tr.dataset.done !== '1') return;
     var inp = tr.querySelectorAll('input'), k = series.length;
     var rir = rs[k] != null ? rs[k] : prev[k] && prev[k].rir !== '' && prev[k].rir != null ? prev[k].rir : def;
-    series.push({ carga: inp[0].value, reps: inp[1].value, rir: rir });
+    var hs = e._hora && e._hora[k] ? e._hora[k] : prev[k] && prev[k].hora ? horaMs(prev[k].hora) : '';
+    series.push({ carga: inp[0].value, reps: inp[1].value, rir: rir, hora: hs || '' });
   });
   var validas = series.filter(function (s) { return s.reps !== ''; });
   if (!validas.length) { toastBad('Marca "Listo" en al menos una serie, o usa "No lo hice"'); return Promise.resolve(null); }
@@ -2767,6 +2778,7 @@ function guardarNota(i) { var e = sesionActual.ejercicios[i]; e.nota = $('exNota
 /** Hiciste menos series de las prescritas y paras ahí: el ejercicio queda hecho con lo que hay. */
 function terminarEj(i) {
   var e = sesionActual.ejercicios[i]; e._fin = true; e.estado = 'hecho';
+  try { tEjercicioCerrado(i); } catch (xT) {}   // si descansaba de este ejercicio: ya no hay "serie que sigue" que preguntar
   pintar(i, e._var); progreso(); actualizarCumplLocal();
   // Se vuelve a guardar con fin: true (idempotente) para que el servidor también lo dé por terminado
   guardar(i).then(function () { siguiente(i); comprobarCierre(); });
@@ -2802,6 +2814,7 @@ function omitir(i) {
   var p = payloadBase(e); p.motivo = mot; p.nota = $('exNota' + i).value;
   enviar('marcarOmitido', p).then(function () {
     e.estado = 'omitido'; e.motivo = p.motivo; e._fin = false; invalidarDia();
+    try { tEjercicioCerrado(i); } catch (xT) {}
     Object.keys(e.variantes).forEach(function (k) { e.variantes[k].hoy = []; });
     $('exOmit' + i).style.display = 'none';
     pintar(i, e._var); progreso(); toast('Marcado como no hecho: ' + p.motivo); siguiente(i); comprobarCierre();
@@ -2852,7 +2865,8 @@ function mostrarCierre() {
     if (x._record) recs.push({ nombre: x.variantes[x.varianteHoy || x._var || 'principal'].nombre, hoy: x._record.hoy, antes: x._record.antes });
   });
   var pct = presc ? Math.round(100 * hechas / presc) : 0;
-  var t0 = Number(gGet('inicio')) || aperturaApp, min = Math.max(1, Math.round((Date.now() - t0) / 60000));
+  var t0 = dcInicioSesion(ej) || Number(gGet('inicio')) || aperturaApp, min = Math.max(1, Math.round((Date.now() - t0) / 60000));   // la primera serie anotada manda (antes, la apertura de la app)
+  var dc = null; try { dc = dcResumen(ej, min, minutosSesion(s)); } catch (xD) { console.error(xD); }
   var nProx = proximaSes && Array.isArray(proximaSes.ejercicios) ? proximaSes.ejercicios.length : 0;
   // El bot de Telegram (si está vinculado) felicita o anima según cómo fue; avisarSesion es idempotente por fecha + sesión
   try { enviar('avisarSesion', { id: 'ses-' + s.fecha + '-' + s.codigo, fecha: s.fecha, sesion: s.codigo, pct: pct, hechas: hechas, presc: presc, kg: Math.round(kg), min: min, records: recs }).catch(function () {}); } catch (eTg) {}
@@ -2865,6 +2879,7 @@ function mostrarCierre() {
       '<div><b>' + n1(Math.round(kg), 0) + '</b><span>kg movidos</span></div></div>' +
     '<div class="g-box"><div class="t">La próxima vez</div><div class="g-list" id="cierreProx"><div class="meta">Calculando…</div></div></div>' +
     '<div class="g-box green" id="cierreCome"><b>Ahora come.</b> Mirando tu proteína de hoy…</div><div id="cierreSup"></div>' +
+    (dc ? dcCierreHTML(dc) : '') +
     (e.proxima ? '<div class="g-viene"><div><div class="g-eye-s">Lo que viene</div><b>' + esc(diaLargoEtiqueta(e.proxima.etiqueta)) + ' · ' + esc(String(e.proxima.nombre || '').split(' · ')[0]) + '</b></div>' + (nProx ? '<span class="g-chip st">' + nProx + ' ejercicios</span>' : '') + '</div>' : '') +
     '<div class="g-grow"></div>' +
     '<button type="button" class="btn" onclick="cerrarCierre()">Listo por hoy</button></div>';
@@ -2898,7 +2913,7 @@ function mostrarCierre() {
   var cc = leerCache('com:' + s.fecha); if (cc) pintarCome(cc);
   api('getComida', s.fecha).then(function (c) { escribirCache('com:' + s.fecha, c); pintarCome(c); }).catch(function () { var b = $('cierreCome'); if (b && !cc) b.innerHTML = '<b>Ahora come.</b> Proteína en la siguiente comida: pechuga, huevos, atún o lentejas.'; });
 }
-function cerrarCierre() { tOcultar();
+function cerrarCierre() { tParar();
   $('cierre').classList.add('hidden');
   verHoy = false;
   cargarEstado();
@@ -2947,15 +2962,51 @@ function quitarFijada() {
   }).catch(err);
 }
 
-/* ---------- Temporizador: píldora global arriba (se ve en todas las pestañas mientras corre) ---------- */
-var tFin = 0, tInt = null, tEj = null;
+/* ---------- Temporizador: píldora global arriba (se ve en todas las pestañas mientras corre) ----------
+ * Estados (15/10/2026, informe de diseño §4.2): `cuenta` = descansando, en ámbar, "1:58 · Prensa" con "+30 s" · "Ya voy"; al llegar a 0 pasa a
+ * `pasado` = gris oscuro y sigue en positivo, "+0:12 · Serie 3" (antes decía "¡Serie!" y se iba a los 8 s); "Ya voy" = `yendo`, "Serie 3 · 0:08"
+ * con "Anotar" y el umbral cuenta desde ahí. Al umbral (serieUmbral) un solo aviso por descanso: "+0:41 · ¿Ya hiciste la serie 3?" con solo
+ * "Anotar" (lleva a la casilla de reps). No avisa si lo que sigue no es otra serie del mismo ejercicio (primera serie de otro, superserie,
+ * ejercicio terminado) ni con "Solo contar" (localStorage tPasado). A +10:00 se va sin sonido. Descansar de más no frena la hipertrofia
+ * (Singer 2024, DOI 10.3389/fspor.2024.1429789; Henselmans y Schoenfeld 2014): el aviso es de ritmo, para que la serie quede anotada. */
+var tFin = 0, tInt = null, tEj = null, tModo = 'cuenta', tBase = 0, tUmbral = 0, tAvisado = false, tSerieN = 0, tSeriePend = false, tSuelta = false;
+var T_SOLTAR_PANTALLA = 180;   // sin aviso de serie, la pantalla se suelta a +3:00 (con aviso, al avisar)
+var T_PASADO_MAX = 600;
+/** Umbral del aviso de serie (s): 3 s por repetición esperada (punto medio del rango) + 10 s, entre 30 y 75; por tiempo, los segundos + 10. */
+function serieUmbral(p, unidad) {
+  p = p || {}; var mid = (Number(p.rmin) + Number(p.rmax || p.rmin)) / 2;
+  if (!(mid > 0)) return 40;
+  if (unidad === 'seg') return Math.round(mid + 10);
+  return Math.max(30, Math.min(75, Math.round(3 * mid + 10)));
+}
+function tPasadoModo() { try { return localStorage.getItem('tPasado') === 'contar' ? 'contar' : 'avisar'; } catch (e) { return 'avisar'; } }
+/** Lo que sigue tras descansar el ejercicio i: otra serie del mismo (n) o nada que avisar. */
+function tSiguienteSerie(i) {
+  var e = sesionActual && sesionActual.ejercicios && sesionActual.ejercicios[i]; if (!e) return 0;
+  if (e.ss || e._fin || e.estado === 'omitido' || e.estado === 'hecho') return 0;
+  var hechas = document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length, n = e.prescripcion ? Number(e.prescripcion.series) || 0 : 0;
+  return hechas > 0 && hechas < n ? hechas + 1 : 0;
+}
 function descanso(seg, ej) {
   if (ej) tEj = ej;
   tFin = Date.now() + seg * 1000; clearTimeout(tCierre);
-  var el = $('tEj'); if (el) el.textContent = tEj && tEj.nombre ? '· ' + tEj.nombre : '';
+  tModo = 'cuenta'; tAvisado = false; tBase = 0; tSuelta = false;
+  var e = tEj && sesionActual && sesionActual.ejercicios[tEj.i];
+  tSerieN = tEj ? tSiguienteSerie(tEj.i) : 0;
+  tUmbral = e ? serieUmbral(e.prescripcion, e.unidad) : 40;
+  tPintarModo();
   $('timer').style.display = 'flex'; document.body.classList.add('t-on');
   try { sonidoNuevoDescanso(); } catch (x) {}
   clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(seg);
+}
+/** Clase y botones de la píldora según el estado (en el aviso solo cabe "Anotar"). */
+function tPintarModo() {
+  var t = $('timer'); if (!t) return;
+  t.classList.toggle('t-pasado', tModo !== 'cuenta');
+  var aviso = tModo !== 'cuenta' && tAvisado, yendo = tModo === 'yendo';
+  $('tMas').style.display = aviso || yendo ? 'none' : '';
+  $('tStop').style.display = aviso || yendo ? 'none' : '';
+  $('tAnotar').style.display = (aviso || yendo) && tSerieN ? '' : 'none';
 }
 /* Tocar la píldora vuelve a Hoy y a la tarjeta del ejercicio que descansa */
 function tIrEjercicio() {
@@ -2964,30 +3015,84 @@ function tIrEjercicio() {
   if (!abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); }
   setTimeout(function () { $('ex' + i).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
 }
-/* Con avisos activos: el servidor manda un aviso al terminar el descanso (sirve con el celular bloqueado) */
-function avisoDescanso(seg, cancelar) {
+/** "Anotar": a la casilla de reps de la serie que sigue; la píldora se va. */
+function tAnotar() {
+  var i = tEj ? tEj.i : -1; tParar();
+  tIrEjercicio();
+  setTimeout(function () {
+    var tr = document.querySelector('#exSets' + i + ' tr:not([data-done="1"])'), inp = tr && tr.querySelectorAll('input')[1];
+    if (inp) { inp.focus(); try { inp.scrollIntoView({ block: 'center' }); } catch (x) {} }
+  }, 120);
+}
+/* Con avisos activos: el servidor manda un aviso al terminar el descanso (sirve con el celular bloqueado) y, si toca, el de la serie
+ * sin anotar a descanso + umbral (tag 'serie'). Los dos se reemplazan con cada envío y se cancelan con Listo, +30 s, Ya voy, parar y cerrar. */
+function avisoDescanso(seg, cancelar, soloSerie) {
   var on = false; try { on = localStorage.getItem('pushDescanso') === '1'; } catch (e) {}
   if (!on || !navigator.onLine) return;
-  var sig = ''; if (!cancelar) try { sig = sonidoSiguienteCorto(); } catch (e) {}   // "la serie 3 de Elevaciones laterales: 10 kg × 12" en la pantalla bloqueada
-  api('pushDescanso', cancelar ? { cancelar: true } : sig ? { segundos: seg, siguiente: sig } : { segundos: seg }).catch(function () {});
+  if (cancelar) { tSeriePend = false; api('pushDescanso', soloSerie ? { soloSerie: true } : { cancelar: true }).catch(function () {}); return; }
+  var pay = soloSerie ? { soloSerie: true } : { segundos: seg };
+  if (!soloSerie) { var sig = ''; try { sig = sonidoSiguienteCorto(); } catch (e) {} if (sig) pay.siguiente = sig; }   // "la serie 3 de Elevaciones laterales: 10 kg × 12" en la pantalla bloqueada
+  if (tSerieN && tPasadoModo() === 'avisar' && tEj) pay.serie = { n: tSerieN, nombre: tEj.nombre || '', retraso: (soloSerie ? 0 : seg) + tUmbral, umbral: tUmbral };
+  tSeriePend = !!pay.serie;
+  api('pushDescanso', pay).catch(function () {});
 }
 var tCierre = null;
 function tick() {
-  var r = Math.max(0, Math.round((tFin - Date.now()) / 1000));
-  $('tVal').textContent = fmtSeg(r);
-  try { sonidoTick(r); } catch (x) {}
-  if (r === 0) {
-    clearInterval(tInt); tInt = null; if (navigator.vibrate) navigator.vibrate([300, 150, 300]); $('tVal').textContent = '¡Serie!';
-    // Antes "¡Serie!" se quedaba para siempre encima de todas las pestañas: ahora se va solo a los 8 s
-    clearTimeout(tCierre); tCierre = setTimeout(tOcultar, 8000);
+  if (tModo === 'cuenta') {
+    var r = Math.max(0, Math.round((tFin - Date.now()) / 1000));
+    $('tVal').textContent = fmtSeg(r);
+    $('tEj').textContent = tEj && tEj.nombre ? '· ' + tEj.nombre : '';
+    try { sonidoTick(r); } catch (x) {}
+    if (r > 0) return;
+    if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
+    tModo = 'pasado'; tBase = tFin; tPintarModo();
   }
+  var el = Math.max(0, Math.round((Date.now() - tBase) / 1000));
+  if (el >= T_PASADO_MAX) { tOcultar(); return; }   // a +10:00 se va sin sonido
+  if (!tAvisado && tSerieN && tPasadoModo() === 'avisar' && el >= tUmbral) {
+    tAvisado = true; tPintarModo();
+    try { sonidoAvisoSerie(); } catch (x) {}
+    if (navigator.vibrate) navigator.vibrate(120);
+    tPintarPasa(true);
+    tSoltarPantalla();   // ya avisó: la pantalla puede apagarse
+  }
+  if (!tSuelta && el >= T_SOLTAR_PANTALLA) tSoltarPantalla();
+  var nTxt = tSerieN ? 'Serie ' + tSerieN : '';
+  if (tAvisado) { $('tVal').textContent = '+' + fmtSeg(el); $('tEj').textContent = '· ¿Ya hiciste la serie ' + tSerieN + '?'; }
+  else if (tModo === 'yendo') { $('tVal').textContent = nTxt || 'Vamos'; $('tEj').textContent = '· ' + fmtSeg(el); }
+  else { $('tVal').textContent = '+' + fmtSeg(el); $('tEj').textContent = nTxt ? '· ' + nTxt : (tEj && tEj.nombre ? '· ' + tEj.nombre : ''); }
 }
-function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); $('timer').style.display = 'none'; document.body.classList.remove('t-on'); try { sonidoSoltarPantalla(); } catch (x) {} }
-/** La píldora se ve en cualquier pestaña mientras el descanso corre; al llegar a cero se va sola a los 8 s (tCierre). */
-function tVisible() { var t = $('timer'); if (!t) return; var on = !!(tInt && tFin > Date.now()); t.style.display = on ? 'flex' : 'none'; document.body.classList.toggle('t-on', on); }
+/** El ejercicio que descansa se cerró ("Terminar aquí" o "No lo hice"): sin aviso de serie y sin su push; si ya pasó el 0, la píldora se va. */
+function tEjercicioCerrado(i) {
+  if (!tEj || tEj.i !== i || !tInt) return;
+  tSerieN = 0; tAvisado = false; tPintarPasa(false); tPintarModo();
+  if (tModo === 'cuenta' && tFin > Date.now() + 2000) avisoDescanso(Math.round((tFin - Date.now()) / 1000));   // reprograma el del descanso y cancela el de la serie
+  else tParar();
+}
+/** Línea gris en la tarjeta mientras el aviso de serie está a la vista. */
+function tPintarPasa(on) {
+  document.querySelectorAll('.g-pasa').forEach(function (x) { x.remove(); });
+  if (!on || !tEj) return;
+  var sug = $('exSug' + tEj.i); if (!sug) return;
+  sug.insertAdjacentHTML('afterend', '<div class="g-line g-pasa">Si ya la hiciste, anótala: así la próxima carga sale bien. Si sigues descansando, tómate lo que necesites.</div>');
+}
+function tOcultar() { clearInterval(tInt); tInt = null; clearTimeout(tCierre); tModo = 'cuenta'; tAvisado = false; tPintarPasa(false); $('timer').style.display = 'none'; $('timer').classList.remove('t-pasado'); document.body.classList.remove('t-on'); try { sonidoSoltarPantalla(); } catch (x) {} }
+function tSoltarPantalla() { tSuelta = true; try { sonidoSoltarPantalla(); } catch (x) {} }
+/** Parar del todo: la píldora se va y se cancelan los avisos programados del celular. */
+function tParar() { var habia = !!tInt || tSeriePend; tOcultar(); if (habia) avisoDescanso(0, true); }
+/** La píldora se ve en cualquier pestaña mientras corre (cuenta atrás o en positivo hasta +10:00). */
+function tVisible() { var t = $('timer'); if (!t) return; var on = !!tInt; t.style.display = on ? 'flex' : 'none'; document.body.classList.toggle('t-on', on); }
 $('tIr').onclick = tIrEjercicio;
-$('tMas').onclick = function () { tFin = Math.max(tFin, Date.now()) + 30000; clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(Math.round((tFin - Date.now()) / 1000)); };
-$('tStop').onclick = function () { var corria = tFin > Date.now() + 2000; tOcultar(); if (corria) avisoDescanso(0, true); };
+$('tMas').onclick = function () {   // +30 s: suma a la cuenta atrás; en positivo, la reinicia con 30 s
+  tFin = (tModo === 'cuenta' ? Math.max(tFin, Date.now()) : Date.now()) + 30000; tModo = 'cuenta'; tPintarModo();
+  clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(Math.round((tFin - Date.now()) / 1000));
+};
+$('tStop').onclick = function () {   // "Ya voy": el descanso termina aquí y el umbral cuenta desde ahora
+  if (!tSerieN) { tParar(); return; }
+  tModo = 'yendo'; tBase = Date.now(); tAvisado = false; tPintarModo(); tick();
+  avisoDescanso(0, false, true);
+};
+$('tAnotar').onclick = tAnotar;
 function fmtSeg(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
 
 /* =================== CUERPO (boceto G: el peso primero) =================== */
@@ -6991,6 +7096,103 @@ function musculosAyuda() {
   return 'Directo: el músculo que hace la mayor parte del trabajo; en tu semana cuenta la serie completa. Indirecto: los que ayudan; cuentan como media serie. ' +
     'Por eso un press de pecho también suma algo al tríceps, pero para que el tríceps crezca bien necesita además su ejercicio directo.';
 }
+/* ===== Descanso y serie (15/10/2026): hora de cada serie, descanso corto y pliegue "Descansos" del cierre =====
+ * Encargo del Fundador (informe de diseño docs/diseno/2026-10-15-habitos-y-descanso.md, §4). La píldora (estados y aviso de serie) vive en el
+ * temporizador; aquí van las piezas que lo rodean, todas en function (nada corre al abrir la app salvo poner el valor del ajuste):
+ *  · horaMs: la hora de cada serie llega del servidor como texto ISO (columna Hora de Registro) o queda en memoria como ms.
+ *  · Descanso real entre dos "Listo" seguidos del mismo ejercicio = tiempo entre ellos − lo que dura la serie (3 s por rep + 10 s). Solo
+ *    pares marcados de a uno: una serie marcada de golpe (Listo en una fila más abajo) no tiene hora y no entra.
+ *  · Corto en un ejercicio fuerte (o con 2:00 o más previstos): real < 60 % de lo previsto Y la serie bajó 2 reps o más → una línea gris, una
+ *    vez por ejercicio, sin rojo ni culpa. Descansar poco puede bajar las reps en personas entrenadas (Schoenfeld 2016, J Strength Cond Res
+ *    30(7); Grgic 2018, Sports Med 48(1)); descansar de más no frena la hipertrofia (Singer 2024).
+ *  · Cierre: pliegue gris "Descansos" con real contra previsto; las pausas de más del doble van aparte; con menos de 3 pares no sale. */
+function horaMs(h) { if (!h) return 0; if (typeof h === 'number') return h; var t = Date.parse(h); return isNaN(t) ? 0 : t; }
+function dcSerieSeg(reps) { return 3 * (Number(reps) || 0) + 10; }
+function tPasadoElegir(v) { try { localStorage.setItem('tPasado', v === 'contar' ? 'contar' : 'avisar'); } catch (e) {} toast(v === 'contar' ? 'El reloj solo cuenta' : 'Te aviso si no anotas la serie'); }
+try { if ($('pPasado')) $('pPasado').value = tPasadoModo(); } catch (xP) {}
+/** Tono más bajo para "¿Ya hiciste la serie?"; en modo voz no habla, y sin sonido no suena. */
+function sonidoAvisoSerie() { var m = sonidoModo(); if (m === 'no') return; sonidoTono(440, 220); }
+/** Primera serie de la sesión con hora (ms), descontando lo que dura esa serie. */
+function dcInicioSesion(ej) {
+  var t = 0;
+  (ej || []).forEach(function (x) {
+    var d = x.variantes[x.varianteHoy || x._var || 'principal'] || {}, hoy = d.hoy || [];
+    hoy.forEach(function (sr) { var h = horaMs(sr.hora); if (h) { h -= dcSerieSeg(sr.reps) * 1000; if (!t || h < t) t = h; } });
+  });
+  return t;
+}
+/** Pares (serie anterior → serie) con hora de los dos lados, por ejercicio. */
+function dcPares(ej) {
+  var out = [];
+  (ej || []).forEach(function (x, i) {
+    var d = x.variantes[x.varianteHoy || x._var || 'principal'] || {}, hoy = d.hoy || [], prev = Number(x.prescripcion && x.prescripcion.descanso) || 0;
+    if (!prev || x.ss) return;
+    for (var k = 1; k < hoy.length; k++) {
+      var t0 = horaMs(hoy[k - 1].hora), t1 = horaMs(hoy[k].hora);
+      if (!t0 || !t1 || t1 <= t0) continue;
+      var real = Math.max(0, Math.round((t1 - t0) / 1000 - dcSerieSeg(hoy[k].reps)));
+      out.push({ i: i, nombre: String(d.nombre || '').split(' (')[0], previsto: prev, real: real, larga: real > 2 * prev });
+    }
+  });
+  return out;
+}
+/** Resumen para el cierre; null con menos de 3 pares normales. */
+function dcResumen(ej, minReal, minPrev) {
+  var pares = dcPares(ej), norm = pares.filter(function (p) { return !p.larga; });
+  if (norm.length < 3) return null;
+  var media = function (a, f) { return a.reduce(function (t, x) { return t + f(x); }, 0) / a.length; };
+  var prom = Math.round(media(norm, function (p) { return p.real; })), prev = Math.round(media(norm, function (p) { return p.previsto; }));
+  var porEj = [];
+  norm.forEach(function (p) { var f = porEj.filter(function (y) { return y.i === p.i; })[0]; if (!f) porEj.push(f = { i: p.i, nombre: p.nombre, previsto: p.previsto, reales: [] }); f.reales.push(p.real); });
+  porEj.forEach(function (f) { f.real = Math.round(f.reales.reduce(function (t, x) { return t + x; }, 0) / f.reales.length); });
+  var r = prom / (prev || 1), tipo = r > 1.2 ? 'largos' : r < 0.8 ? 'cortos' : 'ok';
+  var corto = (ej || []).filter(function (x) { return x._corto; })[0];
+  return { prom: prom, previsto: prev, tipo: tipo, filas: porEj, largas: pares.length - norm.length,
+           descansando: Math.round(pares.reduce(function (t, p) { return t + p.real; }, 0) / 60), minReal: minReal, minPrev: minPrev,
+           corto: corto ? corto._corto : null };
+}
+function dcSubtitulo(dc) {
+  return dc.tipo === 'ok' ? 'En lo previsto · promedio ' + fmtSeg(dc.prom)
+    : dc.tipo === 'largos' ? 'Un poco más largos · promedio ' + fmtSeg(dc.prom) + ' de ' + fmtSeg(dc.previsto) + ' previstos'
+    : 'Más cortos de lo previsto · promedio ' + fmtSeg(dc.prom) + ' de ' + fmtSeg(dc.previsto);
+}
+function dcCortoTexto(c) {
+  return 'En ' + c.nombre + (c.fuerte ? ', tu ejercicio fuerte de hoy,' : '') + ' descansaste ' + fmtSeg(c.real) + ' de ' + fmtSeg(c.previsto) +
+    '. Si quieres sostener el peso en todas las series, espera un poco más.';
+}
+function dcCierreHTML(dc) {
+  var filas = dc.filas.map(function (f) { return '<div><b>' + esc(f.nombre) + '</b> · previsto ' + fmtSeg(f.previsto) + ' · real ' + fmtSeg(f.real) + '</div>'; }).join('');
+  return '<button type="button" class="g-row" id="dcRow" aria-expanded="false" onclick="gcToggle(\'dcFold\', this)"><span class="n"><b>Descansos</b><span class="s">' + esc(dcSubtitulo(dc)) + '</span></span>' +
+    '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>' +
+    '<div class="g-fold" id="dcFold"><div class="g-list">' + filas + '</div>' +
+    '<div class="meta" style="margin-top:8px">' + dc.minReal + ' min en total · ' + dc.descansando + ' min descansando' + '</div>' +
+    (dc.largas ? '<div class="meta">' + (dc.largas === 1 ? '1 pausa larga no cuenta' : dc.largas + ' pausas largas no cuentan') + ' en el promedio.</div>' : '') +
+    (dc.minPrev ? '<div class="meta">Previsto ~' + dc.minPrev + ' min · real ' + dc.minReal + ' min.</div>' : '') +
+    (dc.corto ? '<div class="g-line" style="margin-top:8px">' + esc(dcCortoTexto(dc.corto)) + '</div>' : '') + '</div>';
+}
+/** Tras el "Listo" de la serie k: ¿fue corto el descanso en un ejercicio fuerte y bajaron las reps? (una vez por ejercicio) */
+function dcCorto(i, k) {
+  var e = sesionActual && sesionActual.ejercicios[i]; if (!e || k < 1 || e._cortoVisto || !e._hora) return;
+  var prev = Number(e.prescripcion && e.prescripcion.descanso) || 0; if (!(e.rol === 'F' || prev >= 120)) return;
+  var t0 = e._hora[k - 1], t1 = e._hora[k]; if (!t0 || !t1 || t1 <= t0) return;
+  var filas = document.querySelectorAll('#exSets' + i + ' tr'), r0 = Number(filas[k - 1].querySelectorAll('input')[1].value) || 0, r1 = Number(filas[k].querySelectorAll('input')[1].value) || 0;
+  var real = Math.max(0, Math.round((t1 - t0) / 1000 - dcSerieSeg(r1)));
+  if (!(real < 0.6 * prev && r0 - r1 >= 2)) return;
+  var d = e.variantes[e._var || 'principal'] || {};
+  e._cortoVisto = true;
+  e._corto = { nombre: String(d.nombre || '').split(' (')[0], real: real, previsto: prev, de: r0, a: r1, fuerte: e.rol === 'F' };
+  dcPintar(i);
+}
+function dcLinea(c) { return 'Descansaste ' + fmtSeg(c.real) + ' de ' + fmtSeg(c.previsto) + ' previstos. Esta serie bajó de ' + c.de + ' a ' + c.a + ' reps; con el descanso completo suele salir mejor.'; }
+function dcPintar(i) {
+  var e = sesionActual && sesionActual.ejercicios[i], sug = $('exSug' + i); if (!e || !sug) return;
+  var y = $('exCorto' + i); if (y) y.remove();
+  if (!e._corto || e.estado === 'hecho' || e.estado === 'omitido') return;
+  sug.insertAdjacentHTML('afterend', '<div class="g-line" id="exCorto' + i + '">' + esc(dcLinea(e._corto)) + '</div>');
+}
+var dcPintarBase = typeof pintar === 'function' ? pintar : null;
+if (dcPintarBase) pintar = function (i, v) { dcPintarBase(i, v); try { dcPintar(i); if (tAvisado && tEj && tEj.i === i) tPintarPasa(true); } catch (x) { console.error(x); } };
+/* ===== fin Descanso y serie ===== */
 /* ===== Días que no dependen de ti (13/10/2026): festivos, días fijos y la semana que se reacomoda =====
  * Lote 0.4 (Boceto 04 aprobado por el Fundador). El servidor (DiasPerdidos.gs + planSemana) marca cada día cerrado con `cerrado`
  * ({ tipo: 'festivo' | 'fijo', texto, nombre, motivo }) y la semana con `acomodo` (disponibles, porSemana, motivo, modo, efectivo, libres,
