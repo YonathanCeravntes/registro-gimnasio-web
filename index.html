@@ -1649,7 +1649,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610151352', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610151355', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2726,7 +2726,8 @@ function listo(i, k) {
       marcarFila(filas[j], true);
     }
     // Hora de la serie (15/10/2026): solo la del "Listo" que tocaste; las de antes marcadas de golpe quedan sin hora (no sirven para medir el descanso)
-    e._hora[k] = Date.now();
+    // Un día pasado anotado de a una no tiene horas reales (las de ahora no miden ese descanso): ni hora ni línea de descanso corto (bajo de #14)
+    if (sesionActual.fecha === hoyISO()) e._hora[k] = Date.now();
   }
   var quedan = Array.prototype.filter.call(filas, function (t) { return t.dataset.done === '1'; }).length;
   if (e._rirSerie) Object.keys(e._rirSerie).forEach(function (x) { if (Number(x) >= quedan) delete e._rirSerie[x]; });   // al deshacer, lo elegido para esas series se va
@@ -3042,7 +3043,9 @@ function tAnotar() {
  * sin anotar a descanso + umbral (tag 'serie'). Los dos se reemplazan con cada envío y se cancelan con Listo, +30 s, Ya voy, parar y cerrar. */
 function avisoDescanso(seg, cancelar, soloSerie) {
   var on = false; try { on = localStorage.getItem('pushDescanso') === '1'; } catch (e) {}
-  if (!on || !navigator.onLine) return;
+  if (!on) return;
+  if (!navigator.onLine) { tPushSinSenal = true; return; }   // sin señal: al volver se reprograma o se cancela el que quedó en el servidor (B3 de #14)
+  tPushSinSenal = false;
   if (cancelar) { tSeriePend = false; api('pushDescanso', soloSerie ? { soloSerie: true } : { cancelar: true }).catch(function () {}); return; }
   var pay = soloSerie ? { soloSerie: true } : { segundos: seg };
   if (!soloSerie) { var sig = ''; try { sig = sonidoSiguienteCorto(); } catch (e) {} if (sig) pay.siguiente = sig; }   // "la serie 3 de Elevaciones laterales: 10 kg × 12" en la pantalla bloqueada
@@ -3050,6 +3053,15 @@ function avisoDescanso(seg, cancelar, soloSerie) {
   tSeriePend = !!pay.serie;
   api('pushDescanso', pay).catch(function () {});
 }
+var tPushSinSenal = false;
+/** Volvió la señal tras un cambio que no llegó: el aviso viejo del servidor se reemplaza por el de ahora (o se cancela si ya no hay descanso). */
+function tPushAlVolver() {
+  if (!tPushSinSenal) return;
+  if (tInt && tModo === 'cuenta' && tFin > Date.now() + 2000) avisoDescanso(Math.round((tFin - Date.now()) / 1000));
+  else if (tInt && tModo === 'yendo' && tSerieN) avisoDescanso(0, false, true);
+  else avisoDescanso(0, true);
+}
+try { window.addEventListener('online', tPushAlVolver); } catch (x) {}
 var tCierre = null;
 function tick() {
   if (tModo === 'cuenta') {
@@ -3099,6 +3111,7 @@ function tVisible() { var t = $('timer'); if (!t) return; var on = !!tInt; t.sty
 $('tIr').onclick = tIrEjercicio;
 $('tMas').onclick = function () {   // +30 s: suma a la cuenta atrás; en positivo, la reinicia con 30 s
   tFin = (tModo === 'cuenta' ? Math.max(tFin, Date.now()) : Date.now()) + 30000; tModo = 'cuenta'; tPintarModo();
+  if (tSuelta) { tSuelta = false; try { sonidoNuevoDescanso(); } catch (x) {} }   // la pantalla ya se había soltado: se vuelve a pedir (bajo de #14)
   clearInterval(tInt); tInt = setInterval(tick, 250); tick(); avisoDescanso(Math.round((tFin - Date.now()) / 1000));
 };
 $('tStop').onclick = function () {   // "Ya voy": el descanso termina aquí y el umbral cuenta desde ahora
@@ -7186,7 +7199,7 @@ function dcCierreHTML(dc) {
 }
 /** Tras el "Listo" de la serie k: ¿fue corto el descanso en un ejercicio fuerte y bajaron las reps? (una vez por ejercicio) */
 function dcCorto(i, k) {
-  var e = sesionActual && sesionActual.ejercicios[i]; if (!e || k < 1 || e._cortoVisto || !e._hora) return;
+  var e = sesionActual && sesionActual.ejercicios[i]; if (!e || k < 1 || e._cortoVisto || !e._hora || sesionActual.fecha !== hoyISO()) return;
   var prev = Number(e.prescripcion && e.prescripcion.descanso) || 0; if (!(e.rol === 'F' || prev >= 120)) return;
   var t0 = e._hora[k - 1], t1 = e._hora[k]; if (!t0 || !t1 || t1 <= t0) return;
   var filas = document.querySelectorAll('#exSets' + i + ' tr'), r0 = Number(filas[k - 1].querySelectorAll('input')[1].value) || 0, r1 = Number(filas[k].querySelectorAll('input')[1].value) || 0;
