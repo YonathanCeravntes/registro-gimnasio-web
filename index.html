@@ -1419,13 +1419,16 @@
       </div>
       <label for="pEquipo" style="margin-top:10px">Equipo que tienes</label><input id="pEquipo" maxlength="60" placeholder="Ej.: gimnasio completo · mancuernas en casa" onchange="ajAuto({ Equipo: this.value })">
       <div class="meta" style="margin-top:6px">El Coach y el diseñador de planes lo usan para no proponerte lo que no puedes hacer. Se guarda solo.</div>
+      <label for="pDescanso" style="margin-top:14px">Descanso entre series</label>
+      <select id="pDescanso" onchange="ajAuto({ PrefDescanso: this.value })"><option value="rapido">Rápido (menos espera)</option><option value="normal">Normal (lo recomendado)</option><option value="calma">Con calma (más fuerza)</option></select>
+      <div class="meta" style="margin-top:6px">Si tienes poco tiempo, «Rápido» acorta los descansos; «Con calma» los alarga para buscar fuerza. En ejercicios pesados nunca baja de lo seguro.</div>
       <label for="pSonido" style="margin-top:14px">Aviso del descanso</label>
       <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="tono">Tono (no pausa tu música)</option><option value="voz">Voz: te dice la siguiente serie</option><option value="no">Sin sonido</option></select>
         <button type="button" class="btn sec" style="width:auto" onclick="sonidoProbar()">Probar</button></div>
       <label for="pPasado" style="margin-top:14px">Cuando pasa el descanso</label>
       <select id="pPasado" onchange="tPasadoElegir(this.value)"><option value="avisar">Avisarme si no anoto la serie</option><option value="contar">Solo contar</option></select>
       <div class="meta" style="margin-top:6px">El reloj sigue contando en gris. Con «Avisarme», si pasa un rato y no anotas la serie, te pregunta una vez si ya la hiciste.</div>
-      <div class="meta" style="margin-top:6px">Suena a los 10 s, cuenta 3, 2, 1 y te avisa al terminar, por encima de tu música y sin pausarla (con el celular en silencio no suena). La voz del iPhone puede pausar la música. Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
+      <div class="meta" style="margin-top:6px">A los 10 s te avisa («Faltan diez segundos para la siguiente serie» en modo voz, o un tono), cuenta 3, 2, 1 y te avisa al terminar, por encima de tu música y sin pausarla (con el celular en silencio no suena). La voz del iPhone puede pausar la música. Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
     </div>
     <div class="card" data-sec="gimnasio" id="dpCard">
       <h2>Días que no puedo ir</h2>
@@ -1649,7 +1652,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610151355', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610191259', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2668,6 +2671,9 @@ function elegirRir(i, r) {
   if (tEj && tEj.i === i && tFin > Date.now() + 5000) avisoDescanso(Math.round((tFin - Date.now()) / 1000));   // el aviso del celular dice el peso nuevo
   try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (x) {}   // sin casilla activa: el iPhone no ofrece "Deshacer texto escrito" al agitarlo
   if (hechas) guardar(i);   // actualiza el RIR de lo ya guardado
+  // Si acabas de calificar la ÚLTIMA serie de un ejercicio que quedó completo, ahora sí pasamos al siguiente (o al cierre). Así la
+  // calificación de la última serie ya no se pierde porque la tarjeta se cerraba sola al dar "Listo" (bug 19/10/2026).
+  if (e._avanzarAlRir && hechas >= e.prescripcion.series) avanzarDesde(i);
 }
 
 /**
@@ -2710,6 +2716,7 @@ function marcarFila(tr, on) { tr.dataset.done = on ? '1' : '0'; tr.classList.tog
 /** "Listo" en una serie: quedan hechas esa y las anteriores, se guarda todo el ejercicio y arranca el descanso. En una hecha, deshace desde ahí. */
 function listo(i, k) {
   var e = sesionActual.ejercicios[i]; if (e._guardando) return;
+  e._avanzarAlRir = false;   // se vuelve a activar solo si esta es la última serie (abajo), para no saltar antes de calificarla
   try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (x) {}   // sin casilla activa, agitar el iPhone no ofrece "Deshacer texto escrito"
   try { sonidoPreparar(); } catch (x) {}   // el audio del descanso solo se puede activar con un toque
   var filas = document.querySelectorAll('#exSets' + i + ' tr'), tr = filas[k]; if (!tr) return;
@@ -2739,7 +2746,18 @@ function listo(i, k) {
     if (!r || era) return;
     var ej = { i: i, nombre: String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0] };
     try { dcCorto(i, k); } catch (xC) { console.error(xC); }   // descanso corto en el ejercicio fuerte (una línea gris)
-    if (ultima) { siguiente(i); if (!comprobarCierre()) descanso(e.prescripcion.descanso, ej); else tParar(); return; }
+    if (ultima) {
+      // Última serie del ejercicio: NO saltamos todavía al siguiente. Dejamos la tarjeta abierta para que puedas calificar la última
+      // serie (Fácil/Bien/Al límite); el salto al siguiente ejercicio (o el cierre del día) ocurre al calificar, en elegirRir →
+      // avanzarDesde. Antes la app saltaba apenas dabas "Listo" y la calificación quedaba en la tarjeta ya cerrada (bug 19/10/2026).
+      e._avanzarAlRir = true;
+      // Solo arranca el descanso (y su aviso/push) si la sesión NO terminó: si este era el último ejercicio del día, no hay "siguiente serie"
+      // que anunciar ni push de una sesión acabada; `tParar` corta cualquier aviso pendiente (como hacía antes al mostrar el cierre).
+      if (cierrePendiente()) tParar(); else descanso(e.prescripcion.descanso, ej);
+      var rh = $('exRirH' + i); if (rh) { try { rh.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (xR) {} }
+      if (e._rirSerie && e._rirSerie[quedan - 1] != null) avanzarDesde(i);   // ya la habías calificado antes de dar "Listo": pasa de una
+      return;
+    }
     if (e.ss && e.ss.pos === 1) { tParar(); toast('Superserie: sin descanso, sigue con ' + e.ss.con); siguienteSuperserie(i); return; }
     descanso(e.prescripcion.descanso, ej);
     if (e.ss && e.ss.pos === 2 && i > 0 && sesionActual.ejercicios[i - 1].estado === 'pendiente') { abiertos[i - 1] = true; $('exBody' + (i - 1)).classList.add('open'); $('ex' + (i - 1)).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
@@ -2852,14 +2870,25 @@ function siguiente(i) {
     $('ex' + k).scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
 }
+/** Terminaste un ejercicio y ya calificaste su última serie: ahora sí pasamos al siguiente pendiente (o mostramos el cierre del día). */
+function avanzarDesde(i) {
+  var e = sesionActual && sesionActual.ejercicios[i]; if (!e) return;
+  e._avanzarAlRir = false;
+  siguiente(i);
+  if (comprobarCierre()) tParar();
+}
 
 /* ---------- Cierre de la sesión (boceto G_Cierre) ---------- */
-/** Si ya no queda nada pendiente hoy (todo hecho o no hecho), muestra el cierre una sola vez por sesión. */
-function comprobarCierre() {
+/** ¿La sesión de hoy quedó completa y falta mostrar el cierre? (sin efectos: no abre nada). */
+function cierrePendiente() {
   var s = sesionActual; if (!s || !estado || s.fecha !== hoyISO()) return false;
   var ej = s.ejercicios;
   if (!ej.length || ej.some(function (x) { return x.estado === 'pendiente'; }) || !ej.some(function (x) { return x.estado === 'hecho'; })) return false;
-  if (gGet('cierre')) return false;
+  return !gGet('cierre');
+}
+/** Si ya no queda nada pendiente hoy (todo hecho o no hecho), muestra el cierre una sola vez por sesión. */
+function comprobarCierre() {
+  if (!cierrePendiente()) return false;
   gSet('cierre', '1');
   mostrarCierre();
   return true;
@@ -3882,6 +3911,7 @@ function pintarPerfil(p) {
   $('pEdad').value = p.Edad || ''; $('pSexo').value = p.Sexo || 'M'; $('pEstatura').value = p.EstaturaM || '';
   $('pPasoM').value = String(p.PasoMancuernas || 2); $('pDisco').value = String(p.DiscoMinimo || 1.25);
   $('pNivel').value = p.Nivel || ''; $('pEquipo').value = p.Equipo || ''; $('pMin').value = p.MinutosSesion || '';
+  if ($('pDescanso')) $('pDescanso').value = ['rapido', 'normal', 'calma'].indexOf(p.PrefDescanso) >= 0 ? p.PrefDescanso : 'normal';
   $('pCond').value = p.Condiciones || ''; $('pMed').value = p.Medicamentos || ''; $('pLes').value = p.Lesiones || ''; $('pOtros').value = p.OtrosSalud || '';
   if (p.Condiciones || p.Medicamentos || p.Lesiones || p.OtrosSalud) $('pCond').closest('details').open = true;
   var ia = p.ia || {};
@@ -3912,7 +3942,7 @@ function ajAuto(campos) {
   return api('guardarPerfil', campos).then(function (r) {
     if (r && typeof r === 'object') { ajData.perfil = r; pintarResumenAjustes(); if (r.ia) gePintarEstadoIA(r.ia); }
     toast('Guardado'); invalidarTodo();
-    if (campos.Sexo !== undefined || campos.Nivel !== undefined || campos.PasoMancuernas !== undefined || campos.DiscoMinimo !== undefined) cargarEstado();   // cambian las cargas sugeridas
+    if (campos.Sexo !== undefined || campos.Nivel !== undefined || campos.PasoMancuernas !== undefined || campos.DiscoMinimo !== undefined || campos.PrefDescanso !== undefined) cargarEstado();   // cambian las cargas o los descansos sugeridos
   }).catch(err).then(function () { ajAutoPendientes--; });
 }
 /* Prueba la IA con una llamada mínima (solo el dueño): así se sabe al instante si la clave de Render sirve */
@@ -5092,7 +5122,8 @@ var BV_METAS = [   // meta → programa + objetivo de comida (PlanComida.gs: OBJ
 var BV_SEMANA = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
 var DIAS_POR_N = { 3: 'Lu,Mi,Vi', 4: 'Lu,Ma,Ju,Vi', 5: 'Lu,Ma,Mi,Ju,Vi' };
 var bvDatos = {};
-function bvReset() { bvDatos = { meta: 'musculo', programa: '', n: 3, dias: ['Lu', 'Mi', 'Vi'], entrada: false, edad: '', sexo: '', estatura: '', peso: '' }; }
+function bvReset() { bvDatos = { meta: 'musculo', programa: '', n: 3, dias: ['Lu', 'Mi', 'Vi'], entrada: false, descanso: 'normal', edad: '', sexo: '', estatura: '', peso: '' }; }
+var BV_DESC = [{ id: 'rapido', t: 'Rápido', s: 'Menos espera, entrenas más rápido' }, { id: 'normal', t: 'Normal', s: 'El descanso recomendado' }, { id: 'calma', t: 'Con calma', s: 'Más descanso, buscas fuerza' }];
 function bvMeta() { return BV_METAS.filter(function (m) { return m.id === bvDatos.meta; })[0] || BV_METAS[0]; }
 function bvPrograma() { return bvDatos.programa || bvMeta().programa; }
 function mostrarBienvenida(preview) {
@@ -5141,6 +5172,9 @@ function pintarBienvenida() {
     h += '<div class="toggle bv-n">' + [3, 4, 5].map(function (n) { return '<button type="button" class="' + (n === bvDatos.n ? 'on' : '') + '" onclick="bvElegirN(' + n + ')">' + n + ' días</button>'; }).join('') + '</div>';
     h += '<div class="kicker" style="margin-top:14px">Días sugeridos (tócalos para cambiar)</div><div class="bv-sem">' + BV_SEMANA.map(function (d) { return '<button type="button" class="' + (bvDatos.dias.indexOf(d) >= 0 ? 'on' : '') + '" onclick="bvToggleDia(\'' + d + '\')">' + d + '</button>'; }).join('') + '</div>';
     h += '<label class="sw"><span><b>Llevo más de un mes sin entrenar</b><small>Las primeras 2 semanas van suaves</small></span><input type="checkbox" id="bvEntrada"' + (bvDatos.entrada ? ' checked' : '') + ' onchange="bvDatos.entrada=this.checked"><i></i></label>';
+    h += '<div class="kicker" style="margin-top:14px">Descanso entre series</div><div class="toggle bv-desc">' +
+      BV_DESC.map(function (d) { return '<button type="button" class="' + (d.id === bvDatos.descanso ? 'on' : '') + '" onclick="bvDesc(\'' + d.id + '\')">' + esc(d.t) + '</button>'; }).join('') + '</div>' +
+      '<p class="meta bv-desc-s">' + esc((BV_DESC.filter(function (d) { return d.id === bvDatos.descanso; })[0] || BV_DESC[1]).s) + '. Lo cambias cuando quieras en Ajustes → Mi gimnasio. En ejercicios pesados nunca baja de lo seguro.</p>';
     $('bvSig').textContent = 'Siguiente';
   } else if (bvPaso === 2) {
     var conMedidas = lgPermiso('medidas');
@@ -5161,6 +5195,7 @@ function pintarBienvenida() {
 function bvAbrirProg() { progSel.bv.id = bvPrograma(); progSel.bv.n = bvDatos.n; bvPaso = 'prog'; pintarBienvenida(); repintarCarrusel('bv'); }
 function bvElegirMeta(id) { bvDatos.meta = id; bvDatos.programa = ''; pintarBienvenida(); }
 function bvElegirN(n) { bvDatos.n = n; bvDatos.dias = DIAS_POR_N[n].split(','); pintarBienvenida(); }
+function bvDesc(v) { bvDatos.descanso = v; pintarBienvenida(); }
 function bvToggleDia(d) {
   var i = bvDatos.dias.indexOf(d); if (i >= 0) bvDatos.dias.splice(i, 1); else bvDatos.dias.push(d);
   bvDatos.dias = BV_SEMANA.filter(function (x) { return bvDatos.dias.indexOf(x) >= 0; });
@@ -5188,7 +5223,7 @@ function terminarBienvenida() {
   if (bvPreview && !confirm('Esto cambia tu programa actual a ' + nombreProg(prog, ficha.nombre) + ' desde hoy. ¿Seguir?')) return;
   var b = $('bvSig'); b.disabled = true; b.textContent = 'Preparando tu plan…';
   var est = Number(String(bvDatos.estatura).replace(',', '.')); if (est > 3) est = est / 100;
-  var perfil = { DiasEntreno: bvDatos.dias.join(','), Edad: bvDatos.edad };
+  var perfil = { DiasEntreno: bvDatos.dias.join(','), Edad: bvDatos.edad, PrefDescanso: bvDatos.descanso || 'normal' };
   if (est) perfil.EstaturaM = est;
   if (bvDatos.sexo) perfil.Sexo = bvDatos.sexo;
   var pMio = progFicha('mio'), esMio = prog === 'mio', pesoBv = String(bvDatos.peso || '').replace(',', '.');
@@ -6982,8 +7017,9 @@ function micEnviar(blob) {
 }
 /* ===== fin Dictado ===== */
 /* ===== Sonido del descanso (05/10/2026; 07/10: sin pausar la música) =====
- * Preferencia por celular (localStorage tSonido: tono | voz | no; por defecto TONO desde el 07/10). Con el descanso corriendo: un tono a los 10 s, 3 · 2 · 1 y al
- * llegar a 0 dos tonos y, con voz, "Serie 3 de Prensa de piernas: 79 kilos por 8" (o el siguiente ejercicio). El iPhone solo deja sonar audio activado con un toque:
+ * Preferencia por celular (localStorage tSonido: tono | voz | no; por defecto TONO desde el 07/10). Con el descanso corriendo: a los 10 s un tono (modo tono) o la voz
+ * "Faltan diez segundos para la siguiente serie" (modo voz, 19/10/2026), 3 · 2 · 1 y al llegar a 0 dos tonos y, con voz, "Serie 3 de Prensa de piernas: 79 kilos por 8"
+ * (o el siguiente ejercicio). El iPhone solo deja sonar audio activado con un toque:
  * `sonidoPreparar` corre en cada "Listo" (crea/reanuda el AudioContext). La música NO se pausa: navigator.audioSession 'ambient' (se mezcla con la música;
  * 'transient' la cortaba) y el AudioContext se suspende al terminar cada aviso (`sonidoDormir`), así la app no se queda con el audio del celular. La voz del
  * iPhone (speechSynthesis) sí puede pausar la música: por eso solo se prepara en modo voz y el modo por defecto es el tono. 'ambient' respeta el
@@ -7043,6 +7079,13 @@ function sonidoSiguiente() {
   var sig = sesionActual.ejercicios.filter(function (x, n) { return n > i && x.estado === 'pendiente'; })[0];
   return sig ? { nombre: String(sig.variantes[sig._var || 'principal'].nombre || '').split(' (')[0] } : null;
 }
+/** Aviso de VOZ a los 10 s (modo voz): claro y corto; el detalle con kg y reps lo dice al llegar a 0 (sonidoSiguienteTexto). */
+function sonidoDiezTexto() {
+  var x = null; try { x = sonidoSiguiente(); } catch (e) {}
+  if (x && x.serie) return 'Faltan diez segundos para la siguiente serie.';
+  if (x && x.nombre) return 'Faltan diez segundos, luego ' + x.nombre + '.';
+  return 'Faltan diez segundos.';   // no hay serie ni ejercicio siguiente (último del día): sin mención de "siguiente serie"
+}
 /** Lo que se dice al terminar: "Descanso terminado. Serie 3 de Prensa: 79 kilos por 8." */
 function sonidoSiguienteTexto() {
   try {
@@ -7066,7 +7109,7 @@ function sonidoSoltarPantalla() { var s = sonidoEst(); try { if (s.wl) s.wl.rele
 /** Cada tick del descanso (r = segundos que faltan): un aviso por segundo como máximo. */
 function sonidoTick(r) {
   var modo = sonidoModo(), s = sonidoEst(); if (modo === 'no' || s.avisados[r]) return;
-  if (r === 10) { s.avisados[r] = 1; if (modo === 'voz') { if (!sonidoDecir('Diez segundos')) sonidoTono(880, 160); } else sonidoTono(880, 160); }
+  if (r === 10) { s.avisados[r] = 1; if (modo === 'voz') { if (!sonidoDecir(sonidoDiezTexto())) sonidoTono(880, 160); } else sonidoTono(880, 160); }
   else if (r >= 1 && r <= 3) { s.avisados[r] = 1; sonidoTono(660, 110); }
   else if (r === 0) {
     s.avisados[r] = 1; sonidoTono(988, 180); sonidoTono(1319, 260, 0.22);
