@@ -850,6 +850,7 @@
   /* Tarjeta de ejercicio en dos capas: simple (dosis · Hoy · series · Listo) y "Más" plegada (músculos, aviso completo, alternativa, técnica…) */
   .g-pl{margin-top:8px;display:flex;align-items:center;gap:8px} .g-pl .n{flex:1;min-width:0} .g-pl b{font-size:16px;font-weight:700;display:block;line-height:1.3} .g-pl .s{font-size:12px;color:var(--muted);margin-top:1px}
   .g-hoy{margin-top:8px;font-size:14px;color:var(--ink);line-height:1.4} .g-hoy b{color:var(--amber)} .g-hoy .warn{display:block;font-size:12px;color:var(--amber);margin-top:2px}
+  .g-hoy .nota{display:block;font-size:12px;color:var(--muted);margin-top:2px}   /* aviso informativo del motor (estancamiento "Tú decides"): gris, no ámbar (21/10/2026) */
   .g-salud{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--ink);min-height:28px}
   .g-salud svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--bad);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
   .g-salud span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .g-salud .g-q{margin:0}
@@ -1652,7 +1653,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610191259', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610211901', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2230,10 +2231,17 @@ function pintarHero() {
     '<div class="tip-row" onclick="abrirCardio()"><div class="ic">' + SVG.walk + '</div><div><div class="t">Camina o cardio suave 20–40 min</div><div class="s">A un ritmo en el que puedas hablar</div></div></div>' +
     '<div class="tip-row"><div class="ic">' + SVG.stretch + '</div><div><div class="t">Movilidad 10 min</div><div class="s">Cadera, hombros y espalda alta</div></div></div>' +
     '<div class="tip-row" onclick="irA(\'cuerpo\')"><div class="ic">' + SVG.food + '</div><div><div class="t">Registra tu peso</div><div class="s">Y la comida de hoy en Comida</div></div></div>' : '';
-  $('proximaBox').innerHTML = prox ? proximaHTML(prox) : '';
-  // La rutina solo se muestra si el día es de pesas (o si eliges entrenar); con la próxima a la vista, lo de hoy se oculta
-  $('rutina').classList.toggle('hidden', (!pesas || !!prox || fin) && $('selector').classList.contains('hidden'));
-  $('sesionAviso').classList.toggle('hidden', !!prox || fin);
+  // Día completo HOY con una tarjeta de ESTA carga de página esperando calificación (e._avanzarAlRir, en memoria): la rutina sigue a la vista
+  // para calificar la última serie, usar el botón «Terminar el día ›» (#exFin) y disparar el cierre. Antes, al cargar `proximaSes`, #rutina se
+  // ocultaba y todo eso quedaba inalcanzable (bug ALTO del probador, 21/10/2026). Se gatea por el estado EN MEMORIA, NO por la marca g:cierre:
+  // (que vive solo en localStorage): así, al RECARGAR o en otro dispositivo con el día ya completo, la rutina NO se queda pegada y aparece
+  // «Lo que viene», como antes del lote (regresión MEDIA del probador, 21/10/2026).
+  var esperaCalif = !!(s && s.ejercicios && s.ejercicios.some(function (x) { return x._avanzarAlRir; }));
+  var cierrePend = esHoy && hoyListo && esperaCalif;
+  $('proximaBox').innerHTML = (prox && !cierrePend) ? proximaHTML(prox) : '';
+  // La rutina solo se muestra si el día es de pesas (o si eliges entrenar); con la próxima a la vista, lo de hoy se oculta (salvo que falte el cierre)
+  $('rutina').classList.toggle('hidden', (!pesas || !!prox || fin) && !cierrePend && $('selector').classList.contains('hidden'));
+  $('sesionAviso').classList.toggle('hidden', (!!prox || fin) && !cierrePend);
 }
 /** Fila de chips bajo el botón, en una sola línea: la semana en 7 letras y Cardio (Salud va como fila abajo; los días, en Semana → Ajustar días). */
 function pintarChipsHoy() {
@@ -2472,6 +2480,7 @@ function sugLinea(sg, p, unidad) {
   var ref = sg && sg.ref, maxRep = 0;
   var r = /Última vez: (?:[\d.,]+ kg × )?([\d/]+)/.exec(t) || (ref && ref.resumen && !ref.parecido ? /×\s*([\d/]+)/.exec(ref.resumen) : null);
   if (r) maxRep = Math.max.apply(null, r[1].split('/').map(Number));
+  if (sg && sg.ampliar) return c + ', busca hasta ' + sg.ampliarA + u + ' (aún no subas el peso)';   // salto grande: amplía las reps antes de subir
   if (/^Descarga:/.test(t)) return (c || 'La misma variante') + ', suave: semana de descarga';
   if (/^¡Sube!/.test(t)) return c + ', vuelve a ' + p.rmin + u;
   if (/^Baja un poco/.test(t)) return c + ', un poco menos que la última vez';
@@ -2589,7 +2598,7 @@ function pintar(i, v) {
   var ultC = hechas && !seg && hoy[hechas - 1] && hoy[hechas - 1].carga !== '' && hoy[hechas - 1].carga != null ? Number(hoy[hechas - 1].carga) : NaN;
   var sigue = !ajv && !isNaN(ultC) && ultC > 0 && hechas < p.series ? 'sigue con ' + fmtNum(ultC) + ' kg; dime cómo se sintió la serie ' + hechas + ' y lo ajusto' : '';
   var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : (ajv ? ajv.linea : sigue || sugLinea(sg, p, e.unidad));
-  $('exSug' + i).innerHTML = linea ? '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + (sg.aviso ? '<span class="warn">' + esc(sg.aviso) + '</span>' : '') + '</div>' : '';
+  $('exSug' + i).innerHTML = linea ? '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + (sg.aviso ? '<span class="nota">' + esc(sg.aviso) + '</span>' : '') + '</div>' : '';
   // Capa Más: la alternativa y la sugerencia completa con la última vez
   $('exAlt' + i).innerHTML = o ? 'Cambiar a <button type="button" class="g-alt" onclick="cambiarVariante(' + i + ',\'' + otraV + '\')">' + esc(o.nombre) + '</button>' : '';
   $('exSugFull' + i).innerHTML = (sg.texto ? '<div class="g-k">Por qué</div>' + sugHTML(humanizarSug(sg.texto)) : '') +
@@ -2600,7 +2609,9 @@ function pintar(i, v) {
   // Fácil/Bien/Al límite o dar "Listo" en otra serie volvía a pintar la tarjeta y borraba lo que ya ibas anotando en las series que seguían.
   var previas = {};
   Array.prototype.forEach.call(document.querySelectorAll('#exSets' + i + ' tr'), function (tr, k) {
-    var ins = tr.querySelectorAll('input'); if (tr.dataset.ed === '1' && tr.dataset.done !== '1' && ins.length === 2) previas[k] = { carga: ins[0].value, reps: ins[1].value };
+    // Conserva lo que hay en una fila que NO está "Hecha" al repintar: lo editado a mano (data-ed) y también una serie que acabas de DESHACER
+    // (tenía valores reales, no un gris). Así, deshacer una serie "Hecha" y volver a "Listo" no obliga a reescribir las reps (bug 1.3, 21/10/2026).
+    var ins = tr.querySelectorAll('input'); if (tr.dataset.done !== '1' && ins.length === 2 && (tr.dataset.ed === '1' || ins[0].value !== '' || ins[1].value !== '')) previas[k] = { carga: ins[0].value, reps: ins[1].value };
   });
   var filas = '', cargaRef = sg.carga != null ? sg.carga : '';
   for (var k = 0; k < n; k++) {
@@ -2623,12 +2634,19 @@ function pintar(i, v) {
   if (e._rirVar !== v || !e._rirSerie) {
     e._rirVar = v; e._rirSerie = {}; e._hora = {};
     hoy.forEach(function (s, k) { var t = horaMs(s.hora); if (t) e._hora[k] = t; });
-    hoy.forEach(function (s, k) { var x = Number(s.rir); if (s.rir !== '' && s.rir != null && RIR_OPC.some(function (o) { return o.rir === x; })) e._rirSerie[k] = x; });
+    // Solo se carga como "calificado" el RIR que la persona SÍ calificó (s.sentido !== false): si no, tras recargar un RIR prescrito del rotativo
+    // (fuerte 1, suave 3) quedaría como calificado y ensuciaría RirSentido / A3 (M1 del Auditor, 21/10). Datos viejos (sentido undefined) cuentan como antes.
+    hoy.forEach(function (s, k) { var x = Number(s.rir); if (s.sentido !== false && s.rir !== '' && s.rir != null && RIR_OPC.some(function (o) { return o.rir === x; })) e._rirSerie[k] = x; });
   }
   e._rir = hechas && e._rirSerie[hechas - 1] != null ? e._rirSerie[hechas - 1] : null;
   if (e._rir != null && !ajv && !completo && e.estado !== 'omitido' && hechas < n) ajustarPorRir(i, sg.carga);   // al volver a abrir: el peso de las que faltan según lo elegido
   pintarRir(i);
-  $('exFin' + i).innerHTML = hechas && !completo && e.estado !== 'omitido' ? '<button type="button" class="g-fin-btn" onclick="terminarEj(' + i + ')">Terminar aquí con ' + hechas + ' de ' + p.series + ' series ›</button>' : '';
+  // Ejercicio terminado y a la espera de calificar la última serie (e._avanzarAlRir): un botón gris de red de seguridad por si no quieres
+  // calificar. "Terminar el día" si ya no queda nada pendiente, si no "Siguiente ejercicio"; ambos llaman a avanzarDesde (el mismo salto que
+  // hace elegirRir al calificar). No cambia el flujo normal (21/10/2026, punto 1.2).
+  $('exFin' + i).innerHTML = e.estado === 'omitido' ? '' :
+    (e._avanzarAlRir && completo ? '<button type="button" class="g-fin-btn" onclick="avanzarDesde(' + i + ')">' + (cierrePendiente() ? 'Terminar el día' : 'Siguiente ejercicio') + ' ›</button>'
+     : hechas && !completo ? '<button type="button" class="g-fin-btn" onclick="terminarEj(' + i + ')">Terminar aquí con ' + hechas + ' de ' + p.series + ' series ›</button>' : '');
   if (e._histAbierto) pintarHistEj(i);
 }
 function pintarRir(i) {
@@ -2724,8 +2742,13 @@ function listo(i, k) {
   if (!e._hora) e._hora = {};
   if (era) { for (j = k; j < filas.length; j++) { marcarFila(filas[j], false); delete e._hora[j]; } }
   else {
-    var reps = tr.querySelectorAll('input')[1];
+    var ins0 = tr.querySelectorAll('input'), reps = ins0[1];
     if (reps.value === '') { reps.focus(); toastBad('Anota las repeticiones de la serie ' + (k + 1)); return; }
+    // Topes razonables (21/10/2026): reps 1–200 (o segundos 1–600 en ejercicios por tiempo), kg 0–1000; respeta decimales y el peso corporal (kg vacío = el sugerido en gris)
+    var repsN = Number(String(reps.value).replace(',', '.')), seg = e.unidad === 'seg', topeReps = seg ? 600 : 200;
+    if (!(repsN > 0) || repsN > topeReps) { reps.focus(); toastBad('Revisa ' + (seg ? 'los segundos' : 'las repeticiones') + ' de la serie ' + (k + 1) + ' (entre 1 y ' + topeReps + ')'); return; }
+    var kgN = ins0[0].value === '' ? 0 : Number(String(ins0[0].value).replace(',', '.'));
+    if (isNaN(kgN) || kgN < 0 || kgN > 1000) { ins0[0].focus(); toastBad('Revisa el peso de la serie ' + (k + 1) + ' (entre 0 y 1000 kg)'); return; }
     for (j = 0; j <= k; j++) {
       var ins = filas[j].querySelectorAll('input');
       if (ins[1].value === '') continue;
@@ -2751,6 +2774,7 @@ function listo(i, k) {
       // serie (Fácil/Bien/Al límite); el salto al siguiente ejercicio (o el cierre del día) ocurre al calificar, en elegirRir →
       // avanzarDesde. Antes la app saltaba apenas dabas "Listo" y la calificación quedaba en la tarjeta ya cerrada (bug 19/10/2026).
       e._avanzarAlRir = true;
+      pintar(i, e._var || 'principal');   // repinta para mostrar ya el botón de red de seguridad "Siguiente ejercicio ›" / "Terminar el día ›" (#exFin)
       // Solo arranca el descanso (y su aviso/push) si la sesión NO terminó: si este era el último ejercicio del día, no hay "siguiente serie"
       // que anunciar ni push de una sesión acabada; `tParar` corta cualquier aviso pendiente (como hacía antes al mostrar el cierre).
       if (cierrePendiente()) tParar(); else descanso(e.prescripcion.descanso, ej);
@@ -2786,12 +2810,15 @@ function guardar(i) {
     var inp = tr.querySelectorAll('input'), k = series.length;
     var rir = rs[k] != null ? rs[k] : prev[k] && prev[k].rir !== '' && prev[k].rir != null ? prev[k].rir : def;
     var hs = e._hora && e._hora[k] ? e._hora[k] : prev[k] && prev[k].hora ? horaMs(prev[k].hora) : '';
-    series.push({ carga: inp[0].value, reps: inp[1].value, rir: rir, hora: hs || '' });
+    // sentido (Fase 1): true si calificaste esta serie (Fácil/Bien/Al límite); conserva lo ya guardado; false si quedó el RIR prescrito
+    var sentido = rs[k] != null ? true : prev[k] && prev[k].sentido != null ? prev[k].sentido : false;
+    series.push({ carga: inp[0].value, reps: inp[1].value, rir: rir, hora: hs || '', sentido: sentido });
   });
   var validas = series.filter(function (s) { return s.reps !== ''; });
   if (!validas.length) { toastBad('Marca "Listo" en al menos una serie, o usa "No lo hice"'); return Promise.resolve(null); }
   var pay = payloadBase(e); pay.ejercicio = d.nombre; pay.variante = v; pay.series = validas; pay.nota = $('exNota' + i) ? $('exNota' + i).value : (e.nota || '');
   pay.fin = !!e._fin;   // "Terminar aquí" con menos series: el servidor lo recuerda (si no, al recargar volvería a salir en curso)
+  pay.unidad = e.unidad || 'reps';   // para el tope de validación del servidor: en ejercicios por tiempo la casilla son segundos (B4)
   e._guardando = true;
   return (e._guardado = enviar('guardarSeries', pay).then(function (r) {
     e._guardando = false;
