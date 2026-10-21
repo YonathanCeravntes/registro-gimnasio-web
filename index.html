@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Enfoque</title>
+<title>MilloFit</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Enfoque">
+<meta name="apple-mobile-web-app-title" content="MilloFit">
 <meta name="theme-color" content="#0e0e10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,6 +39,7 @@
   ::selection{background:var(--amber);color:var(--amber-ink)}
   /* Tipografía de sistema */
   .kicker{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+  .kbrand{text-transform:none;letter-spacing:.3px}   /* el nombre de la app en caja mixta "MilloFit" dentro de un kicker en mayúsculas */
   .h-big{font-family:var(--disp);font-weight:800;font-size:52px;line-height:.92;letter-spacing:.5px;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.6)}
   .h-big.sm{font-size:42px;text-shadow:none}
   .meta{color:var(--muted);font-size:13px}
@@ -873,7 +874,7 @@
   .g-vacio b{display:block;font-size:16px} .g-vacio .s{margin-top:6px;font-size:14px;color:var(--muted);line-height:1.45}
   .g-vacio .btn{margin:12px auto 0;width:auto;padding:0 20px;min-height:44px;font-size:17px}
   #cMomentos .g-vacio{margin:10px 0 8px}
-  /* ===== Inducción (03/10/2026): recorrido "Cómo funciona Enfoque" (#guia) y tarjeta "Primeros pasos" en Hoy (#pasosBox) ===== */
+  /* ===== Inducción (03/10/2026): recorrido "Cómo funciona MilloFit" (#guia) y tarjeta "Primeros pasos" en Hoy (#pasosBox) ===== */
   #guia{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
   .gu-wrap{max-width:640px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px))}
   .gu-top{display:flex;justify-content:space-between;align-items:center;min-height:36px}
@@ -1346,7 +1347,7 @@
         <button onclick="ajSeccion('privacidad')" id="ajMenuPrivacidad"><span><b>Privacidad y datos</b><small id="ajSubPrivacidad">Lo que aceptaste y tus permisos</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('telegram')" id="ajMenuTelegram" style="display:none"><span><b>Telegram</b><small id="ajSubTelegram">Anota lo que comes con un mensaje</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button onclick="ajSeccion('avanzado')"><span><b>Avanzado</b><small id="ajSubAvanzado">Personas, alumnos, IA y conexión</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-        <button onclick="mostrarGuia('ajustes')"><span><b>Cómo funciona Enfoque</b><small>Un recorrido de un minuto por la app</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button onclick="mostrarGuia('ajustes')"><span><b>Cómo funciona MilloFit</b><small>Un recorrido de un minuto por la app</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
     <div class="card aj-menu" data-sec="avanzado">
@@ -1376,7 +1377,7 @@
       <div id="alumnosBody" style="margin-top:6px"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" data-sec="alumnos" id="proCard">
-      <h2>Enfoque Pro</h2>
+      <h2><span class="kbrand">MilloFit</span> Pro</h2>
       <div id="proBody"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" id="invCard" data-sec="cuenta" style="display:none">
@@ -1533,22 +1534,22 @@
   <div class="t-acts"><button type="button" id="tMas">+30 s</button><button type="button" id="tStop">Ya voy</button><button type="button" id="tAnotar" style="display:none">Anotar</button></div></div>
 <div id="bienvenida" class="hidden">
   <div class="bv-wrap">
-    <div class="bv-top"><span class="kicker" style="color:var(--amber)">ENFOQUE</span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="bv-top"><span class="kicker" style="color:var(--amber)"><span class="kbrand">MilloFit</span></span><button class="gear" id="bvCerrar" aria-label="Cerrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="bv-pasos"><i></i><i></i><i></i></div>
     <div id="bvCuerpo"></div>
     <div class="acts bv-acts"><button class="btn sec" id="bvAtras">Atrás</button><button class="btn" id="bvSig">Siguiente</button></div>
   </div>
 </div>
-<div id="guia" class="hidden" role="dialog" aria-label="Cómo funciona Enfoque">
+<div id="guia" class="hidden" role="dialog" aria-label="Cómo funciona MilloFit">
   <div class="gu-wrap">
-    <div class="gu-top"><span class="kicker" style="color:var(--amber)">ENFOQUE</span><button type="button" class="gu-skip" id="guSaltar" onclick="cerrarGuia()">Saltar</button></div>
+    <div class="gu-top"><span class="kicker" style="color:var(--amber)"><span class="kbrand">MilloFit</span></span><button type="button" class="gu-skip" id="guSaltar" onclick="cerrarGuia()">Saltar</button></div>
     <div class="gu-dots" id="guDots"></div>
     <div class="gu-body" id="guCuerpo"></div>
     <div class="gu-acts"><button type="button" class="btn sec" id="guAtras" onclick="guiaIr(-1)">Atrás</button><button type="button" class="btn" id="guSig" onclick="guiaIr(1)">Siguiente</button></div>
   </div>
 </div>
 <div id="lgOv" class="hidden" role="dialog" aria-label="Términos y tus datos">
-  <div class="lg-wrap"><div class="gu-top"><span class="kicker" style="color:var(--amber)">ENFOQUE · TUS DATOS</span></div><div id="lgOvCuerpo"><div class="meta">Cargando…</div></div></div>
+  <div class="lg-wrap"><div class="gu-top"><span class="kicker" style="color:var(--amber)"><span class="kbrand">MilloFit</span> · tus datos</span></div><div id="lgOvCuerpo"><div class="meta">Cargando…</div></div></div>
 </div>
 <div id="coachChat" class="hidden"></div>
 <div id="armar" class="hidden">
@@ -1583,8 +1584,8 @@
   .en-hero{position:relative;height:calc(118px + env(safe-area-inset-top,0px));overflow:hidden;background:var(--card)}
   .en-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block}
   .en-hero .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,14,16,.3) 0%,rgba(14,14,16,.2) 45%,#0e0e10 100%)}
-  .en-hero .kicker{position:absolute;left:20px;bottom:6px;color:var(--amber);text-shadow:0 1px 6px rgba(0,0,0,.6);display:flex;align-items:center;gap:8px}
-  .en-hero .kicker .en-logo{width:34px;height:34px;flex:none;filter:drop-shadow(0 1px 6px rgba(0,0,0,.6))}
+  .en-hero .kicker{position:absolute;left:20px;bottom:8px;display:flex;align-items:center}
+  .en-hero .kicker .en-logo{height:34px;width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.6))}
   .en-body{max-width:640px;margin:0 auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
   .en-h1{font-family:var(--disp);font-size:36px;font-weight:800;text-transform:uppercase;line-height:.95;margin:0}
   .en-sub{color:var(--muted);font-size:14px;line-height:1.45;margin:8px 0 12px}
@@ -1594,7 +1595,7 @@
   #vincular .acc-msg:empty{display:none}
 </style>
 <div id="vincular" class="hidden" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch">
-  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker"><svg class="en-logo" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="56 56 400 400" > <defs> <linearGradient id="enfs-disco" x1="0" y1="0" x2="1" y2="1"> <stop offset="0" stop-color="#FFC26A"/> <stop offset="1" stop-color="#FF7C1B"/> </linearGradient> <filter id="enfs-sombra" x="30" y="170" width="452" height="270" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"> <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".4"/> </filter> <filter id="enfs-borde" x="60" y="220" width="392" height="135" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"> <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-color="#000" flood-opacity=".45"/> </filter> </defs> <circle cx="256" cy="256" r="165" fill="none" stroke="#FFA046" stroke-opacity=".13" stroke-width="20"/> <path d="M215 150 256 112 297 150" fill="none" stroke="#EDEDED" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/> <g filter="url(#enfs-sombra)"> <rect x="150" y="272.5" width="212" height="29" fill="#E9EBF0"/> <rect x="110" y="216" width="45" height="142" rx="16" fill="url(#enfs-disco)"/> <rect x="357" y="216" width="45" height="142" rx="16" fill="url(#enfs-disco)"/> <g filter="url(#enfs-borde)"> <rect x="75" y="238" width="39" height="98" rx="15" fill="url(#enfs-disco)"/> <rect x="398" y="238" width="39" height="98" rx="15" fill="url(#enfs-disco)"/> </g> </g> </svg> <span>Enfoque</span></div></div>
+  <div class="en-hero"><img alt="" decoding="async" onerror="this.style.display='none'" src="https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg"><div class="grad"></div><div class="kicker"><svg class="en-logo" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 459.91 120" role="img" aria-label="MilloFit"> <svg x="0" y="0" width="120" height="120" viewBox="100 100 824 824"><g> <g transform="translate(512 448) scale(1.75)"><polyline points="-110,100 -110,-100 0,30 110,-100 110,100" fill="none" stroke="#FFB21A" stroke-width="62" stroke-linecap="round" stroke-linejoin="round" /></g> <line x1="140" y1="709" x2="884" y2="709" stroke="#FFB21A" stroke-width="26" stroke-linecap="round"/> <rect x="207" y="614" width="40" height="190" rx="18" fill="#3DB389"/><rect x="777" y="614" width="40" height="190" rx="18" fill="#3DB389"/><rect x="162" y="645" width="34" height="128" rx="15" fill="#3DB389"/><rect x="828" y="645" width="34" height="128" rx="15" fill="#3DB389"/> </g></svg> <svg x="142" y="22" width="317.91" height="76" viewBox="0 -125.2 603.2 144.2"><g transform="translate(13 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 0V-100L55 -35L110 -100V0" stroke="#F5F3EE"/></g><g transform="translate(164.6 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 0V-66" stroke="#F5F3EE"/><circle cx="0" cy="-103.6" r="15.6" fill="#3DB389" stroke="none"/></g><g transform="translate(206.2 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 0V-100" stroke="#F5F3EE"/></g><g transform="translate(247.8 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 0V-100" stroke="#F5F3EE"/></g><g transform="translate(289.4 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><circle cx="33" cy="-33" r="33" stroke="#F5F3EE"/></g><g transform="translate(397 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 0V-100H58" stroke="#FFB21A"/><path d="M0 -54H46" stroke="#FFB21A"/></g><g transform="translate(496.6 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 0V-66" stroke="#FFB21A"/><circle cx="0" cy="-103.6" r="15.6" fill="#3DB389" stroke="none"/></g><g transform="translate(560.2 0)" fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"><path d="M0 -90V-22Q0 0 22 0H28" stroke="#FFB21A"/><path d="M-22 -66H30" stroke="#FFB21A"/></g></svg> </svg> </div></div>
   <div class="en-body">
   <h1 class="en-h1">Tu plan de gimnasio y comida, sin vueltas</h1>
   <p class="en-sub">Te dice qué hacer hoy, cuánto peso poner y qué comer. Todo con tu historial.</p>
@@ -1653,7 +1654,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610211901', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610212022', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -3537,7 +3538,7 @@ function dibujarTarjeta(d) {
     g.fillStyle = '#0e0e10'; g.fillRect(0, 0, W, H);
     g.fillStyle = AMB; g.fillRect(0, 0, W, 16);
     g.textBaseline = 'alphabetic';
-    g.fillStyle = AMB; g.font = '700 34px ' + BODY; g.fillText(('Enfoque · semana ' + d.semana).toUpperCase(), 80, 130);
+    g.fillStyle = AMB; g.font = '700 34px ' + BODY; g.fillText('MilloFit · ' + ('semana ' + d.semana).toUpperCase(), 80, 130);
     g.fillStyle = INK; g.font = '800 170px ' + DISP; g.fillText('MI SEMANA', 76, 300);
     g.fillStyle = MUT; g.font = '500 36px ' + BODY;
     g.fillText(corto(fecha(d.desde) + ' – ' + fecha(d.hasta) + (d.bloque ? ' · ' + d.bloque : '') + (d.nombre ? ' · ' + d.nombre : ''), W - 160), 80, 362);
@@ -3565,7 +3566,7 @@ function dibujarTarjeta(d) {
       g.fillText('Peso ' + n1(d.peso) + ' kg' + (d.cambioPeso !== null && d.cambioPeso !== undefined ? ' (' + (d.cambioPeso > 0 ? '+' : '') + n1(d.cambioPeso) + ' esta semana)' : ''), 80, Math.min(1190, yFin + 110));
     }
     g.fillStyle = AMB; g.fillRect(80, 1250, 90, 8);
-    g.fillStyle = INK; g.font = '800 44px ' + DISP; g.fillText('HECHO CON ENFOQUE', 80, 1310);
+    g.fillStyle = INK; g.font = '800 44px ' + DISP; g.fillText('HECHO CON MilloFit', 80, 1310);
     return new Promise(function (ok) { cv.toBlob(ok, 'image/png'); });
   });
 }
@@ -3580,7 +3581,7 @@ function abrirTarjeta(blob) {
   document.body.appendChild(ov);
   var cerrar = function () { ov.remove(); URL.revokeObjectURL(url); };
   $('tjCerrar').onclick = cerrar; ov.onclick = function (ev) { if (ev.target === ov) cerrar(); };
-  if (puede) $('tjCompartir').onclick = function () { navigator.share({ files: [file], title: 'Mi semana', text: 'Mi semana en Enfoque 💪' }).catch(function () {}); };
+  if (puede) $('tjCompartir').onclick = function () { navigator.share({ files: [file], title: 'Mi semana', text: 'Mi semana en MilloFit 💪' }).catch(function () {}); };
 }
 
 /* ---------- Gráficos SVG ---------- */
@@ -3874,12 +3875,12 @@ function cargarPushUI(p) {
   if (!$('pushEstado')) return;
   if (!soportaPush()) {
     var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    $('pushEstado').innerHTML = enApk() ? 'En la app de Android los avisos en el celular aún no llegan. Usa los recordatorios por correo o el bot de Telegram.' : ios ? 'Para recibir avisos en el iPhone: abre Enfoque desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
+    $('pushEstado').innerHTML = enApk() ? 'En la app de Android los avisos en el celular aún no llegan. Usa los recordatorios por correo o el bot de Telegram.' : ios ? 'Para recibir avisos en el iPhone: abre MilloFit desde el ícono de tu pantalla de inicio (Compartir → Agregar a inicio), con iOS 16.4 o más nuevo, y vuelve aquí.' : 'Este navegador no permite avisos. Abre Mi plan instalada desde el ícono.';
     $('pushActivar').style.display = 'none'; $('pushOpc').style.display = 'none'; return;
   }
   Promise.all([p || api('getPush'), swListo().then(function (r) { return r ? r.pushManager.getSubscription() : null; }).catch(function () { return null; })]).then(function (x) {
     pushInfo = x[0]; var sub = x[1], activo = !!sub && Notification.permission === 'granted';
-    $('pushEstado').innerHTML = activo ? '✓ Activos en este celular.' : Notification.permission === 'denied' ? 'Bloqueaste los avisos: actívalos en Ajustes del celular → Notificaciones → Enfoque.' : 'Apagados en este celular.';
+    $('pushEstado').innerHTML = activo ? '✓ Activos en este celular.' : Notification.permission === 'denied' ? 'Bloqueaste los avisos: actívalos en Ajustes del celular → Notificaciones → MilloFit.' : 'Apagados en este celular.';
     $('pushActivar').style.display = activo || Notification.permission === 'denied' ? 'none' : '';
     $('pushOpc').style.display = activo ? '' : 'none';
     $('pushRec').checked = !!pushInfo.recordatorio; $('pushDesc').checked = !!pushInfo.descanso;
@@ -3889,10 +3890,10 @@ function cargarPushUI(p) {
 function activarPush() {
   var b = $('pushActivar'); b.disabled = true;
   Notification.requestPermission().then(function (perm) {
-    if (perm !== 'granted') throw new Error('Sin permiso para avisos. Actívalo en Ajustes del celular → Notificaciones → Enfoque.');
+    if (perm !== 'granted') throw new Error('Sin permiso para avisos. Actívalo en Ajustes del celular → Notificaciones → MilloFit.');
     return (pushInfo ? Promise.resolve(pushInfo) : api('getPush')).then(function (info) {
       if (!info.clave) throw new Error('El servicio de avisos no está listo. Intenta en un momento.');
-      return swListo().then(function (reg) { if (!reg) throw new Error('Abre Enfoque desde el ícono de la pantalla de inicio para activar los avisos.'); return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(info.clave) }); });
+      return swListo().then(function (reg) { if (!reg) throw new Error('Abre MilloFit desde el ícono de la pantalla de inicio para activar los avisos.'); return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(info.clave) }); });
     });
   }).then(function (sub) { return api('guardarPush', { sub: sub.toJSON(), recordatorio: true, descanso: true }); })
     .then(function () { toast('Avisos activados en este celular'); cargarPushUI(); })
@@ -4114,7 +4115,7 @@ function pintarComida(c) {
   comidaDatos = c;
   geIaComida(c);
   var fotoOk = !c.ia || c.ia.foto !== false, fb = $('cIaFotoBtn');
-  if (fb) { fb.classList.toggle('bloq', !fotoOk); fb.onclick = fotoOk ? null : function (ev) { ev.preventDefault(); toast('La comida por foto es de Enfoque Pro (Ajustes → Cuenta)'); }; }
+  if (fb) { fb.classList.toggle('bloq', !fotoOk); fb.onclick = fotoOk ? null : function (ev) { ev.preventDefault(); toast('La comida por foto es de MilloFit Pro (Ajustes → Cuenta)'); }; }
   var sel = $('cMomento'), prev = sel.value;
   sel.innerHTML = c.momentos.map(function (m) { return '<option>' + m + '</option>'; }).join('');
   sel.value = prev || momentoPorHora();
@@ -5041,7 +5042,7 @@ function alumnoDetalleHTML(a) {
   } else if (!a.error) {
     h += '<div class="meta">' + esc(a.nombre) + ' no comparte su progreso. Si quiere que lo acompañes, lo activa en su app: Ajustes → Cuenta y entrenador.</div>';
   }
-  h += '<label style="margin-top:14px">Enfoque Pro</label><div class="meta">' + (a.pro.vigente ? 'Pro hasta el ' + fechaCortaIso(a.pro.hasta) + '.' : 'Plan gratis' + (alumnosDatos.pro.activo ? '.' : ' (el cobro está apagado: por ahora tiene todo).')) +
+  h += '<label style="margin-top:14px"><span class="kbrand">MilloFit</span> Pro</label><div class="meta">' + (a.pro.vigente ? 'Pro hasta el ' + fechaCortaIso(a.pro.hasta) + '.' : 'Plan gratis' + (alumnosDatos.pro.activo ? '.' : ' (el cobro está apagado: por ahora tiene todo).')) +
     (a.pro.pedido && !a.pro.vigente ? ' Pidió Pro el ' + fechaCortaIso(a.pro.pedido) + '.' : '') + '</div>' +
     '<div class="acts" style="margin-top:6px"><select aria-label="Meses de Pro"><option value="1">1 mes</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option></select>' +
     '<button class="btn sec" onclick="darPro(\'' + id + '\', this)">' + (a.pro.vigente ? 'Sumar' : 'Darle Pro') + '</button></div>' +
@@ -5289,7 +5290,7 @@ function aterrizajeHTML(r) {
   return h;
 }
 var bvAbrirPrimera = false;   // al aterrizar, la primera tarjeta de Hoy se abre sola en modo simple
-var guiaAlLlegar = false;     // tras el primer día, el recorrido "Cómo funciona Enfoque" se muestra una vez
+var guiaAlLlegar = false;     // tras el primer día, el recorrido "Cómo funciona MilloFit" se muestra una vez
 function bvEmpezar(hoy) {
   try { localStorage.setItem('bvComo', '1'); } catch (x) {}
   var r = bvAterr, e = r && r.estado;
@@ -6102,7 +6103,7 @@ function vacioHTML(titulo, texto, botonTexto, accion) {
 }
 /* ===== fin Tanda visual 2 ===== */
 
-/* ===== Inducción (03/10/2026): recorrido "Cómo funciona Enfoque" y tarjeta "Primeros pasos" ===== */
+/* ===== Inducción (03/10/2026): recorrido "Cómo funciona MilloFit" y tarjeta "Primeros pasos" ===== */
 function guiaLista() { return [
   { k: 'Hoy', t: 'Tu rutina del día', p: 'Toca el ejercicio, escribe el peso y las repeticiones y dale a Listo. El descanso se cuenta solo arriba y la app te dice cuánto poner la próxima vez.',
     tips: ['Las casillas van vacías: el número gris es el sugerido.', 'Si no alcanzas a terminar, "Terminar aquí" guarda lo que hiciste.'],
@@ -6118,7 +6119,7 @@ function guiaLista() { return [
     tips: ['El peso sube 0,5 a 1 kg las primeras semanas con creatina: es agua, no grasa.'],
     mock: '<div class="gu-kpi"><div><b>72,0 kg</b><small>−0,3 kg por semana</small></div><div><b>66 kg</b><small>Récord: press plano</small></div></div>' },
   { k: 'Coach', t: 'Consejos de hoy', p: 'Cada día te dice qué subir, qué comer y cuándo descansar, con tus propios datos. Si el dueño te activa la IA, también puedes chatear con el Coach.',
-    tips: ['Ajustes → Salud: cuéntale tus condiciones y medicamentos y todo se ajusta a eso.', 'Este recorrido queda en Ajustes → "Cómo funciona Enfoque".'],
+    tips: ['Ajustes → Salud: cuéntale tus condiciones y medicamentos y todo se ajusta a eso.', 'Este recorrido queda en Ajustes → "Cómo funciona MilloFit".'],
     mock: '<div class="gu-tip"><i></i><span>Press plano: te quedó fácil. Pasa a 97,5 kg.</span></div><div class="gu-tip"><i></i><span>Vas en 65 g de proteína: una pechuga en la cena te acerca.</span></div>' }
 ]; }
 var GUIA = guiaLista();
@@ -6135,7 +6136,7 @@ function cerrarGuia() {
 }
 function guiaIr(d) {
   var GUIA = guiaLista(), n = guiaPaso + d;
-  if (n >= GUIA.length) { cerrarGuia(); if (guiaDesde === 'bv' || guiaDesde === 'pasos') toast('Listo. Cuando quieras verlo otra vez: Ajustes → Cómo funciona Enfoque'); return; }
+  if (n >= GUIA.length) { cerrarGuia(); if (guiaDesde === 'bv' || guiaDesde === 'pasos') toast('Listo. Cuando quieras verlo otra vez: Ajustes → Cómo funciona MilloFit'); return; }
   guiaPaso = Math.max(0, n); pintarGuia();
   var w = $('guia'); if (w) w.scrollTo(0, 0);
 }
@@ -6512,7 +6513,7 @@ function lgPintarOv(d) {
   var aviso = (d.documentos || []).filter(function (x) { return x.id === 'aviso'; })[0];
   var h = '<h1 class="bv-h">' + (vuelve ? 'Actualizamos<br>los términos' : 'Antes de<br>seguir') + '</h1>' +
     '<p class="bv-p">' + (vuelve ? 'Cambió: ' + esc(nombres.join(', ')) + '. Léelo y vuelve a firmar con un código que te llega al correo.'
-      : 'Para seguir usando Enfoque, acepta los términos y decide qué datos nos dejas usar. Firmas con un código que te llega al correo.') + '</p>';
+      : 'Para seguir usando MilloFit, acepta los términos y decide qué datos nos dejas usar. Firmas con un código que te llega al correo.') + '</p>';
   h += '<div class="lg-av"><b>Tus datos, claro</b>' + esc(aviso && aviso.resumen ? aviso.resumen : 'Guardamos tus entrenos, comidas y progreso para armarte el plan. Solo tú los ves. Lo sensible (peso, salud, fotos) solo si lo autorizas, y puedes pedir verlo, corregirlo o borrarlo cuando quieras.') + '</div>';
   h += '<div class="lg-docs">' + (d.documentos || []).map(function (x) {
     var nuevo = vuelve && (d.pendientes || []).indexOf(x.id) >= 0;
@@ -6664,16 +6665,16 @@ function lgDescargar(btn) {
   btn.disabled = true; btn.textContent = 'Preparando…';
   api('descargarMisDatos').then(function (j) {
     btn.disabled = false; btn.textContent = 'Descargar mis datos';
-    var nombre = 'enfoque-mis-datos-' + hoyISO() + '.json', blob = new Blob([JSON.stringify(j, null, 2)], { type: 'application/json' });
+    var nombre = 'millofit-mis-datos-' + hoyISO() + '.json', blob = new Blob([JSON.stringify(j, null, 2)], { type: 'application/json' });
     var archivo = null; try { archivo = new File([blob], nombre, { type: 'application/json' }); } catch (e) {}
-    if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) { navigator.share({ files: [archivo], title: 'Mis datos de Enfoque' }).catch(function () {}); return; }
+    if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) { navigator.share({ files: [archivo], title: 'Mis datos de MilloFit' }).catch(function () {}); return; }
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
     lgMsg('lgAjMsg', 'Listo: se descargó ' + nombre + '.', true);
   }).catch(function (x) { btn.disabled = false; btn.textContent = 'Descargar mis datos'; errG(x); });
 }
 function lgPedirBorrado() {
-  var motivo = prompt('Le pedimos al dueño de Enfoque que borre tu cuenta y tus datos (lo hace en máximo 15 días hábiles). ¿Quieres contarnos por qué? Es opcional.', '');
+  var motivo = prompt('Le pedimos al dueño de MilloFit que borre tu cuenta y tus datos (lo hace en máximo 15 días hábiles). ¿Quieres contarnos por qué? Es opcional.', '');
   if (motivo === null) return;
   api('pedirBorrarCuenta', { motivo: motivo, id: 'b' + Date.now().toString(36) }).then(function (r) {
     toast(r.mensaje); lgMsg('lgAjMsg', r.mensaje, true); lgMsg('lgOvMsg', r.mensaje, true);
@@ -6990,7 +6991,7 @@ function micDictar() {
   rec.onend = function () {
     m.modo = ''; m.rec = null; micPintar();
     if (m.pasar) { m.pasar = false; micGrabar(); return; }
-    if (m.permiso) { m.permiso = false; toastBad('Dale permiso de micrófono a Enfoque (Ajustes del celular) o usa el micrófono del teclado'); return; }
+    if (m.permiso) { m.permiso = false; toastBad('Dale permiso de micrófono a MilloFit (Ajustes del celular) o usa el micrófono del teclado'); return; }
     if (m.oyo) toast('Listo: revisa el texto y toca Calcular con IA');
   };
   try { rec.start(); } catch (e) { micMarcarRoto(); m.modo = ''; m.rec = null; micGrabar(); return; }
@@ -7012,7 +7013,7 @@ function micGrabar() {
     mr.start(250);
     m.tick = setInterval(function () { if (Date.now() - m.t0 >= 60000) micParar(true); else micPintar(); }, 500);
     micPintar();
-  }).catch(function () { toastBad('Dale permiso de micrófono a Enfoque (Ajustes del celular) o usa el micrófono del teclado'); });
+  }).catch(function () { toastBad('Dale permiso de micrófono a MilloFit (Ajustes del celular) o usa el micrófono del teclado'); });
 }
 function micParar(enviar) {
   var m = micEst(); clearInterval(m.tick); m.tick = null; m.enviar = !!enviar;
@@ -7548,7 +7549,7 @@ function habCargarAjustes() { if ($('habAj')) habCargar(false, function () { hab
 function habPintarAjustes() {
   var box = $('habAj'); if (!box || !habDatos) return;
   var d = habDatos, h = '';
-  if (!d.habitos.length) h += '<div class="meta">Aquí van tu café, tu proteína, tu creatina… lo que repites cada día. Enfoque te pregunta con un toque y lo anota por ti. También lo aprendo solo: si repites algo varios días, te propongo preguntarlo.</div>';
+  if (!d.habitos.length) h += '<div class="meta">Aquí van tu café, tu proteína, tu creatina… lo que repites cada día. MilloFit te pregunta con un toque y lo anota por ti. También lo aprendo solo: si repites algo varios días, te propongo preguntarlo.</div>';
   else h += d.habitos.map(function (x) {
     return '<div class="hab-it"><div class="n"><b>' + esc(String(x.nombre).split(' · ')[0]) + '</b><small>' + esc(x.cuando + (x.pausado ? ' · en pausa' : '')) + '</small></div>' +
       '<button type="button" onclick="habEditar(\'' + esc(x.id) + '\')">' + (x.activo ? 'Ajustar' : 'Activar') + '</button></div>';
