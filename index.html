@@ -1425,12 +1425,12 @@
       <select id="pDescanso" onchange="ajAuto({ PrefDescanso: this.value })"><option value="rapido">Rápido (menos espera)</option><option value="normal">Normal (lo recomendado)</option><option value="calma">Con calma (más fuerza)</option></select>
       <div class="meta" style="margin-top:6px">Si tienes poco tiempo, «Rápido» acorta los descansos; «Con calma» los alarga para buscar fuerza. En ejercicios pesados nunca baja de lo seguro.</div>
       <label for="pSonido" style="margin-top:14px">Aviso del descanso</label>
-      <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="tono">Tono (no pausa tu música)</option><option value="voz">Voz: te dice la siguiente serie</option><option value="no">Sin sonido</option></select>
+      <div class="row"><select id="pSonido" onchange="sonidoElegir(this.value)"><option value="tono">Tono (no pausa tu música)</option><option value="voz">Voz: tono + te dice la siguiente serie al final</option><option value="no">Sin sonido</option></select>
         <button type="button" class="btn sec" style="width:auto" onclick="sonidoProbar()">Probar</button></div>
       <label for="pPasado" style="margin-top:14px">Cuando pasa el descanso</label>
       <select id="pPasado" onchange="tPasadoElegir(this.value)"><option value="avisar">Avisarme si no anoto la serie</option><option value="contar">Solo contar</option></select>
       <div class="meta" style="margin-top:6px">El reloj sigue contando en gris. Con «Avisarme», si pasa un rato y no anotas la serie, te pregunta una vez si ya la hiciste.</div>
-      <div class="meta" style="margin-top:6px">A los 10 s te avisa («Faltan diez segundos para la siguiente serie» en modo voz, o un tono), cuenta 3, 2, 1 y te avisa al terminar, por encima de tu música y sin pausarla (con el celular en silencio no suena). La voz del iPhone puede pausar la música. Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
+      <div class="meta" style="margin-top:6px">A los 10 s, en la cuenta 3, 2, 1 y al terminar suena un tono puntual que se mezcla con tu música sin pausarla (con el celular en silencio no suena). En modo «Voz», al terminar el descanso el iPhone además te dice lo que sigue; la voz del iPhone puede pausar tu música (a veces tendrás que volver a darle play). Si no quieres que se pause nunca, usa «Tono». Deja la app abierta en pantalla: bloqueada o en segundo plano, el iPhone no la deja sonar; ahí te llega el aviso del celular con la siguiente serie si lo activaste en Avisos.</div>
     </div>
     <div class="card" data-sec="gimnasio" id="dpCard">
       <h2>Días que no puedo ir</h2>
@@ -1654,7 +1654,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610212022', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610221151', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -7044,21 +7044,27 @@ function micEnviar(blob) {
     .then(function () { m.modo = ''; micPintar(); if (b) b.disabled = false; });
 }
 /* ===== fin Dictado ===== */
-/* ===== Sonido del descanso (05/10/2026; 07/10: sin pausar la música) =====
- * Preferencia por celular (localStorage tSonido: tono | voz | no; por defecto TONO desde el 07/10). Con el descanso corriendo: a los 10 s un tono (modo tono) o la voz
- * "Faltan diez segundos para la siguiente serie" (modo voz, 19/10/2026), 3 · 2 · 1 y al llegar a 0 dos tonos y, con voz, "Serie 3 de Prensa de piernas: 79 kilos por 8"
- * (o el siguiente ejercicio). El iPhone solo deja sonar audio activado con un toque:
+/* ===== Sonido del descanso (05/10/2026; 07/10: sin pausar la música; 22/10: cues fijas por tono también en voz) =====
+ * Preferencia por celular (localStorage tSonido: tono | voz | no; por defecto TONO desde el 07/10). Con el descanso corriendo las CUES FIJAS y puntuales (10 s, 3 · 2 · 1 y
+ * los dos tonos del 0) suenan SIEMPRE por el AudioContext (tono), en todos los modos: son puntuales y se mezclan con la música. En modo VOZ, además, al llegar a 0 se dice la
+ * siguiente serie ("Serie 3 de Prensa de piernas: 79 kilos por 8"). El iPhone solo deja sonar audio activado con un toque:
  * `sonidoPreparar` corre en cada "Listo" (crea/reanuda el AudioContext). La música NO se pausa: navigator.audioSession 'ambient' (se mezcla con la música;
- * 'transient' la cortaba) y el AudioContext se suspende al terminar cada aviso (`sonidoDormir`), así la app no se queda con el audio del celular. La voz del
- * iPhone (speechSynthesis) sí puede pausar la música: por eso solo se prepara en modo voz y el modo por defecto es el tono. 'ambient' respeta el
- * interruptor de silencio. Mientras corre el descanso se pide Wake Lock; con la pantalla bloqueada o la app en segundo plano iOS congela la página: ahí
+ * 'transient'/'auto' la cortaban) RE-AFIRMADO antes de cada aviso (`sonidoAmbient`), porque al suspender/reanudar el AudioContext iOS puede perder el modo;
+ * el AudioContext se suspende al terminar cada aviso (`sonidoDormir`), así la app no se queda con el audio del celular.
+ * LÍMITE de iOS (22/10): `speechSynthesis` (la VOZ) usa su propia sesión de audio: NO respeta 'ambient' (pausa la música un momento) y su primera locución llega con latencia.
+ * Por eso las cues que deben ser puntuales son tonos (nunca voz) y la voz quedó SOLO en la frase del final (una pausa breve por descanso, no dos). Para una voz puntual y que
+ * no pause la música harían falta clips pregrabados reproducidos por el AudioContext (assets + decisión de producto; `sonidoDiezTexto` quedó reservado para eso).
+ * 'ambient' respeta el interruptor de silencio. Mientras corre el descanso se pide Wake Lock; con la pantalla bloqueada o la app en segundo plano iOS congela la página: ahí
  * avisa el push del servidor con la siguiente serie (`avisoDescanso` → `sonidoSiguienteCorto`). Todo en function: nada corre al abrir la app. */
 function sonidoModo() { try { return localStorage.getItem('tSonido') || 'tono'; } catch (e) { return 'tono'; } }
 function sonidoElegir(v) { try { localStorage.setItem('tSonido', v); } catch (e) {} toast(v === 'no' ? 'Descanso sin sonido' : v === 'tono' ? 'Descanso con tono' : 'Descanso con voz'); if (v !== 'no') { sonidoPreparar(); sonidoProbar(); } }
 function sonidoEst() { return window.__son || (window.__son = { ac: null, avisados: {}, wl: null, vozLista: false, dormir: null }); }
+/** iOS: deja el audio en modo 'ambient' (se MEZCLA con tu música, no la pausa; 'auto'/'transient' la cortan). Se re-afirma ANTES de cada aviso porque al
+ * suspender/reanudar el AudioContext (lo hace sonidoDormir entre avisos) el iPhone puede devolver la sesión al modo por defecto; poner el mismo valor es inofensivo. */
+function sonidoAmbient() { try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) {} }
 function sonidoPreparar() {
   var s = sonidoEst(), modo = sonidoModo(); if (modo === 'no') return;
-  try { if (navigator.audioSession && navigator.audioSession.type !== 'ambient') navigator.audioSession.type = 'ambient'; } catch (e) {}   // se mezcla con tu música, no la pausa
+  sonidoAmbient();   // se mezcla con tu música, no la pausa (se re-afirma en cada aviso)
   try {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (AC && !s.ac) {
@@ -7079,6 +7085,7 @@ function sonidoTono(frec, ms, cuando) {
   var s = sonidoEst(); if (!s.ac) return;
   try {
     clearTimeout(s.dormir);
+    sonidoAmbient();   // re-afirmar ANTES de reanudar: tras un suspend iOS puede perder el 'ambient' y el aviso cortaría la música
     if (s.ac.state === 'suspended') s.ac.resume();   // ya se activó con un toque: reanudar está permitido
     sonidoDormir(ms + (cuando || 0) * 1000 + 1500);
     var t = s.ac.currentTime + (cuando || 0), o = s.ac.createOscillator(), g = s.ac.createGain();
@@ -7090,6 +7097,7 @@ function sonidoTono(frec, ms, cuando) {
 function sonidoDecir(texto) {
   try {
     if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return false;
+    sonidoAmbient();   // re-afirmar el modo mezcla antes de hablar (la voz del iPhone puede pausar igual: por eso el modo por defecto es el tono)
     speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(texto), vs = speechSynthesis.getVoices() || [];
     var v = vs.filter(function (x) { return /^es[-_]CO/i.test(x.lang); })[0] || vs.filter(function (x) { return /^es[-_](MX|US|419)/i.test(x.lang); })[0] || vs.filter(function (x) { return /^es/i.test(x.lang); })[0];
@@ -7107,7 +7115,7 @@ function sonidoSiguiente() {
   var sig = sesionActual.ejercicios.filter(function (x, n) { return n > i && x.estado === 'pendiente'; })[0];
   return sig ? { nombre: String(sig.variantes[sig._var || 'principal'].nombre || '').split(' (')[0] } : null;
 }
-/** Aviso de VOZ a los 10 s (modo voz): claro y corto; el detalle con kg y reps lo dice al llegar a 0 (sonidoSiguienteTexto). */
+/** Texto del aviso de los 10 s. RESERVADO (22/10): ya NO se habla a los 10 s (la cue es un tono puntual); queda listo para los clips de voz pregrabados, si se graban. */
 function sonidoDiezTexto() {
   var x = null; try { x = sonidoSiguiente(); } catch (e) {}
   if (x && x.serie) return 'Faltan diez segundos para la siguiente serie.';
@@ -7131,13 +7139,14 @@ function sonidoSiguienteCorto() {
 function sonidoNuevoDescanso() {
   var s = sonidoEst(); s.avisados = {};
   if (sonidoModo() === 'no') return;
+  sonidoAmbient();
   try { if (navigator.wakeLock && !s.wl) navigator.wakeLock.request('screen').then(function (w) { s.wl = w; w.addEventListener('release', function () { s.wl = null; }); }).catch(function () {}); } catch (e) {}
 }
 function sonidoSoltarPantalla() { var s = sonidoEst(); try { if (s.wl) s.wl.release(); } catch (e) {} s.wl = null; }
 /** Cada tick del descanso (r = segundos que faltan): un aviso por segundo como máximo. */
 function sonidoTick(r) {
   var modo = sonidoModo(), s = sonidoEst(); if (modo === 'no' || s.avisados[r]) return;
-  if (r === 10) { s.avisados[r] = 1; if (modo === 'voz') { if (!sonidoDecir(sonidoDiezTexto())) sonidoTono(880, 160); } else sonidoTono(880, 160); }
+  if (r === 10) { s.avisados[r] = 1; sonidoTono(880, 160); }   // 10 s: SIEMPRE un tono (cue fija, puntual y SIN cortar la música). En voz antes hablaba aquí y llegaba tarde + pausaba la música; la frase va solo al final (0). `sonidoDiezTexto` queda para los clips de voz pregrabados (ver comentario del bloque).
   else if (r >= 1 && r <= 3) { s.avisados[r] = 1; sonidoTono(660, 110); }
   else if (r === 0) {
     s.avisados[r] = 1; sonidoTono(988, 180); sonidoTono(1319, 260, 0.22);
