@@ -1654,7 +1654,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610221332', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610221438', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1701,8 +1701,6 @@ if ('serviceWorker' in navigator) {
 var estado = null, sesionActual = null, abiertos = {};
 var proximaSes = null, proxPedida = false, verHoy = false;   // si hoy ya entrenaste, la portada muestra la sesión que sigue
 var $ = function (id) { return document.getElementById(id); };
-var IMG_DIA = { cardio: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Walking_Treadmill/0.jpg',
-                descanso: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Trail_Running_Walking/0.jpg' };
 var DIA_LARGO = { Lu: 'Lunes', Ma: 'Martes', Mi: 'Miércoles', Ju: 'Jueves', Vi: 'Viernes', 'Sá': 'Sábado', Do: 'Domingo' };
 var DIA_3 = { Lu: 'LUN', Ma: 'MAR', Mi: 'MIÉ', Ju: 'JUE', Vi: 'VIE', 'Sá': 'SÁB', Do: 'DOM' };
 var MES_3 = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
@@ -2157,10 +2155,12 @@ function pintarHero() {
     api('getSesion', e.proxima.codigo, e.proxima.fecha).then(function (r) { r.etiqueta = e.proxima.etiqueta; proximaSes = r; pintarHero(); }).catch(function () {});
   }
   var prox = hoyListo && !verHoy && proximaSes && Array.isArray(proximaSes.ejercicios) ? proximaSes : null;
-  var img = '';
+  // La portada del hero es una ILUSTRACIÓN del set V1 por el foco del día (ver "Portada ilustrada del hero" al final del JS).
+  // NO usa la foto del primer ejercicio: esas fotos y su visor quedan intactos.
+  // Si hay sesión en curso o hecha hoy (c), es un día de ENTRENO aunque el plan marcara descanso/cardio (entrenaste desde "Quiero entrenar hoy"):
+  // forzamos tipo 'sesion' para no mostrar la luna de descanso ni el cardio (B2 del Auditor).
   var sImg = pesas && s ? s : (prox || s);
-  if ((pesas || prox) && sImg && sImg.ejercicios.length) { var v0 = sImg.ejercicios[0].variantes; img = (v0.principal.imagenes || [])[0] || (v0.alternativa && v0.alternativa.imagenes[0]) || ''; }
-  if (!img) img = IMG_DIA[tipo === 'cardio' ? 'cardio' : 'descanso'];
+  var img = portadaHero(c ? 'sesion' : tipo, (pesas || prox) ? sImg : null);
   if ($('heroImg').getAttribute('src') !== img) $('heroImg').src = img;
   $('heroKickerTxt').textContent = fechaEyebrow(e.fecha) + (semanaPrograma(e) ? ' · ' + semanaPrograma(e) : '');
   var chip, titulo, sub = '', cta = '', desc = '', fin = false;
@@ -7615,6 +7615,24 @@ if (habComidaBase) gdPintarComida = function (c) { habComidaBase(c); try { habCa
 var habAjBase = typeof pintarComidaAjustes === 'function' ? pintarComidaAjustes : null;
 if (habAjBase) pintarComidaAjustes = function (c) { habAjBase(c); try { habCargarAjustes(); } catch (x) { console.error(x); } };
 /* ===== fin Lo de todos los días ===== */
+/* ===== Portada ilustrada del hero (22/10/2026, set V1; aprobada por el Fundador) =====
+ * El fondo grande de "Hoy" es una ILUSTRACIÓN del set V1 (cuerpo + mapa de calor, marca/portadas/v1-*.svg) elegida por el foco del día,
+ * NO la foto del primer ejercicio (antes el hero reusaba `ejercicios[0].variantes.principal.imagenes[0]`, que salía borrosa).
+ * Las fotos de cada ejercicio y su visor (#fvOv) quedan EXACTAMENTE igual: este bloque solo decide el fondo del hero.
+ * Mapeo simple y seguro: en el full body rotativo, por el músculo protagonista (código RTx-PE/ES/PI/HO/IS); cardio → v1-cardio;
+ * descanso y "No fui" → v1-descanso; cualquier otro caso (otros programas, Mi plan, día mixto o foco no determinable) → v1-cuerpo.
+ * Los SVG se publican en portadas/ del sitio (construir-web.js). `portadaUrl`/`portadaHero` son function (hoisted): existen
+ * cuando `pintarHero` corre al abrir; no leen ningún `var` del final del script. */
+function portadaUrl(nombre) { return 'portadas/v1-' + nombre + '.svg' + (typeof APP_VERSION !== 'undefined' ? '?v=' + APP_VERSION : ''); }
+function portadaHero(tipo, sImg) {
+  var musc = { PE: 'pecho', ES: 'espalda', PI: 'pierna', HO: 'hombro', IS: 'isquios' };
+  if (tipo === 'cardio') return portadaUrl('cardio');
+  if (tipo === 'descanso' || tipo === 'nofui') return portadaUrl('descanso');
+  var cod = sImg && sImg.codigo ? String(sImg.codigo) : '';
+  var m = cod.match(/^RT\d?-(PE|ES|PI|HO|IS)$/);   // full body rotativo: el sufijo es el músculo protagonista del día
+  return portadaUrl(m ? musc[m[1]] : 'cuerpo');     // default seguro: nunca se queda sin imagen ni con la foto vieja
+}
+/* ===== fin Portada ilustrada del hero ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
