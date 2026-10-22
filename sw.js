@@ -1,5 +1,5 @@
-/* Service worker — MilloFit (versión 202610221151) */
-var V = 'gym-202610221151', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
+/* Service worker — MilloFit (versión 202610221332) */
+var V = 'gym-202610221332', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
 // './' es lo que pide la app al abrir (start_url); './index.html' era lo mismo bajado dos veces
 var SHELL = ['./', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {

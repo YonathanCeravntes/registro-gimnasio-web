@@ -1654,7 +1654,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610221151', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610221332', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2765,9 +2765,15 @@ function listo(i, k) {
   if (!quedan) { reabrir(i); return; }
   e._fin = false;
   var ultima = !era && quedan >= e.prescripcion.series;
+  // (22/10/2026, bug del Fundador) El salto al cierre del día / «Lo que viene» se difiere a elegirRir, PERO `guardar` llama a
+  // actualizarCumplLocal() → pintarHero() DENTRO de su propio .then, ANTES de que corra el .then de abajo. Si para ese repintado
+  // `e._avanzarAlRir` aún fuera false y la próxima sesión ya estuviera cargada (p. ej. retomas un entreno casi terminado y rematas
+  // el último ejercicio), pintarHero ocultaría la rutina y mostraría «Lo que viene» —y en el código viejo el cierre— sin dejarte
+  // calificar la última serie. Por eso marcamos el estado "esperando calificación" AQUÍ, antes de guardar (lo vuelve a afirmar el .then).
+  if (ultima) e._avanzarAlRir = true;
   if (!gGet('inicio')) gSet('inicio', Date.now());
   guardar(i).then(function (r) {
-    if (!r || era) return;
+    if (!r || era) { if (ultima) e._avanzarAlRir = false; return; }   // guardado fallido (!r): no dejamos el estado "esperando calificación" colgado (con `era`/deshacer el flag ya venía apagado desde el inicio de listo)
     var ej = { i: i, nombre: String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0] };
     try { dcCorto(i, k); } catch (xC) { console.error(xC); }   // descanso corto en el ejercicio fuerte (una línea gris)
     if (ultima) {
