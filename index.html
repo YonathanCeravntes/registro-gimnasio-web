@@ -1109,6 +1109,10 @@
   body.bf-corrido #cierre,body.bf-corrido #gdCierre,body.bf-corrido #lgOv,body.bf-corrido .fv-ov,body.bf-corrido .tarjeta-ov{top:var(--bf-arriba,0px);bottom:calc(0px - var(--bf-abajo,0px))}
   /* Entrada de la PWA (#vincular, construir-web.js): su position:fixed;inset:0 va en línea, por eso aquí va con !important */
   body.bf-corrido #vincular{top:var(--bf-arriba,0px)!important;bottom:calc(0px - var(--bf-abajo,0px))!important}
+  /* ===== Vista previa de días futuros (22/10/2026) ===== */
+  /* En la hoja de vista previa (Semana → día futuro) las miniaturas NO abren el visor (fvDatosDe solo lo hace dentro de #proximaBox):
+     por eso no deben parecer tocables. El visor de las fotos de ejercicio queda intacto en Hoy y en "Lo que viene". */
+  #hojaOv .prox,#hojaOv .prox img.g-th{cursor:default}
 </style>
 </head>
 <body>
@@ -1654,7 +1658,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610221438', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610221656', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2268,19 +2272,17 @@ function saltarDescargaUI() {
   }).catch(errG);
 }
 function verLoDeHoy(si) { verHoy = !!si; pintarHero(); if (si) irRutina(); else window.scrollTo({ top: 0, behavior: 'smooth' }); }
-/** Vista previa corta de la sesión que sigue: 4 filas como las de la rutina y "y N más". */
+/** Vista previa corta de la sesión que sigue: las 4 primeras filas de solo lectura y "y N más" que despliega el resto EN EL SITIO.
+ *  `p.ejercicios` YA viene completo del servidor (no se pide nada más; solo se muestra). Todo de solo lectura: las tarjetas `prox`
+ *  no tienen "Listo"/calificar/guardar (ver vpEjCard). Las N restantes se renderizan en orden dentro de #proximaBox para que el
+ *  visor de fotos (fvDatosDe, por índice en #proximaBox .prox) siga funcionando igual para ellas; se muestran/ocultan con vpMas(). */
 function proximaHTML(p) {
   if (!p || !Array.isArray(p.ejercicios)) return '';
-  var lista = p.ejercicios.slice(0, 4), resto = p.ejercicios.length - lista.length;
+  var lista = p.ejercicios.slice(0, 4), resto = p.ejercicios.slice(4);
   return '<div class="sec-h g-rut-h"><b>Lo que viene</b><span>' + esc(diaLargoEtiqueta(p.etiqueta)) + ' · ' + esc(String(p.nombre || '').split(' · ')[0]) + '</span></div>' +
-    lista.map(function (x) {
-      var v = x.variantes.principal || {}, img = (v.imagenes || [])[0] || '';
-      return '<div class="ex g-ex prox"><div class="ex-row g-row" style="cursor:default">' + (img ? '<img class="thumb g-th" alt="' + esc(v.nombre || x.nombres[0]) + '" loading="lazy" decoding="async" src="' + esc(img) + '">' : '<div class="thumb g-th"></div>') +
-        '<div class="ex-info"><div class="g-l1">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') + '<span class="g-dosis">' + prescCorta(x.prescripcion, x.unidad) + '</span></div>' +
-        '<div class="ex-name">' + esc(v.nombre || x.nombres[0]) + '</div>' +
-        (v.sugerencia && v.sugerencia.carga ? '<div class="ex-sug">Empieza con ≈ ' + fmtNum(v.sugerencia.carga) + ' kg</div>' : '') + '</div></div></div>';
-    }).join('') +
-    (resto > 0 ? '<div class="meta" style="margin:0 2px 6px">y ' + resto + ' más</div>' : '') +
+    lista.map(vpEjCard).join('') +
+    (resto.length ? '<div id="proxMas" style="display:none">' + resto.map(vpEjCard).join('') + '</div>' +
+      '<button type="button" class="g-mas-btn" id="proxMasBtn" data-n="' + resto.length + '" aria-expanded="false" aria-controls="proxMas" onclick="vpMas()">y ' + resto.length + ' más ›</button>' : '') +
     '<div class="meta" style="margin:2px 2px 12px">Se registra ese día. Para adelantarla, toca la fecha de arriba.</div>';
 }
 function minutosSesion(s) {
@@ -3357,11 +3359,13 @@ function pintarSemanaTab() {
   var e = estado, dias = e.plan.dias, nombres = e.nombres, pg = e.programa || {};
   var totalSem = pg.total && pg.porSemana ? Math.ceil(pg.total / pg.porSemana) : 0;
   $('kSemanaG').textContent = 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '') + ' · ' + rangoSemana(e.plan).toLowerCase();
+  var hoy = hoyISO();   // "futuro" = después de HOY de verdad (no del día que estés viendo): tocar un día futuro solo lo muestra, no recalcula ni escribe (vpDia)
   var strip = dias.map(function (d) {
     var p = d.etiqueta.split(' ');
     var cls = d.estado === 'hecho' ? 'hecho' : d.cerrado ? 'cerr' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : 'libre';
     var lbl = d.estado === 'hecho' ? 'hecho' : d.cerrado ? d.cerrado.texto.toLowerCase() : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : 'libre';
-    return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
+    var act = d.fecha > hoy ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';
+    return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="' + act + '" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
   }).join('');
   $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas · toca un día para verlo</div>';
   $('semanaRows').innerHTML = dias.map(function (d) {
@@ -3384,7 +3388,8 @@ function pintarSemanaTab() {
     else if (d.cerrado) { cls += ' cerr'; t = d.cerrado.texto; s = dpSubCerrado(d.cerrado); r = d.esHoy ? 'Hoy' : ''; }   // festivo o día fijo: gris, no es un día fallado
     else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
-    return '<div class="' + cls + '" onclick="irFecha(\'' + d.fecha + '\');irA(\'hoy\')"><div class="d"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b></div>' +
+    var act = d.fecha > hoy ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';   // futuro: vista previa de solo lectura; hoy y pasados navegan como siempre
+    return '<div class="' + cls + '" onclick="' + act + '"><div class="d"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b></div>' +
       '<div class="c"><div class="t">' + esc(t) + '</div><div class="s">' + esc(s) + '</div></div>' + (r ? '<div class="r">' + esc(r) + '</div>' : '') + '</div>';
   }).join('');
 }
@@ -7633,6 +7638,68 @@ function portadaHero(tipo, sImg) {
   return portadaUrl(m ? musc[m[1]] : 'cuerpo');     // default seguro: nunca se queda sin imagen ni con la foto vieja
 }
 /* ===== fin Portada ilustrada del hero ===== */
+/* ===== Vista previa de días futuros (22/10/2026) =====
+ * Bug del Fundador (iPhone, "Tu semana"): tocar un día que VIENE (p. ej. hoy jueves 24, toca el sábado 26) no dejaba ver los ejercicios y,
+ * peor, el día intermedio salía como "No fuiste". Causa: la tira y las filas de pintarSemanaTab llamaban a irFecha(f)+irA('hoy') para TODOS
+ * los días; irFecha recalcula el estado con ctx.hoy = f (getInicio→getEstado→planSemana), y planSemana pinta los días de pesas con f < ctx.hoy
+ * y sin registro como 'sinregistro' ("No fuiste"). Era SOLO display (no se escribe NoFui: eso solo lo hace marcarNoFui).
+ * Arreglo (decisión del Fundador: "solo verlo"): tocar un día FUTURO (d.fecha > hoyISO()) abre una vista previa de SOLO LECTURA en la hoja
+ * inferior (hojaAbrir), SIN irFecha, SIN irA('hoy'), SIN recalcular estado, SIN tocar $('fecha').value y SIN escribir nada. getSesion es una
+ * lectura pura (lee config/registros/ajustes/plan y calcula; la Fase 2 sombra solo se calcula/guarda en guardarSeries, no aquí). Hoy y los
+ * días pasados quedan igual (navegan a Hoy; la franja de "Días pasados" maneja el volver y el anotar).
+ * vpEjCard es el helper COMPARTIDO: la misma tarjeta de solo lectura que usa "Lo que viene" (proximaHTML). No tiene casillas, "Listo",
+ * calificar ni guardar. Las fotos de cada ejercicio y su visor (#fvOv) no se tocan. */
+function vpEjCard(x) {
+  var v = (x && x.variantes && x.variantes.principal) || {}, img = (v.imagenes || [])[0] || '', nom = v.nombre || (x.nombres && x.nombres[0]) || '';
+  return '<div class="ex g-ex prox"><div class="ex-row g-row" style="cursor:default">' +
+    (img ? '<img class="thumb g-th" alt="' + esc(nom) + '" loading="lazy" decoding="async" src="' + esc(img) + '">' : '<div class="thumb g-th"></div>') +
+    '<div class="ex-info"><div class="g-l1">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') + '<span class="g-dosis">' + prescCorta(x.prescripcion, x.unidad) + '</span></div>' +
+    '<div class="ex-name">' + esc(nom) + '</div>' +
+    (v.sugerencia && v.sugerencia.carga ? '<div class="ex-sug">Empieza con ≈ ' + fmtNum(v.sugerencia.carga) + ' kg</div>' : '') + '</div></div></div>';
+}
+/** "Lo que viene": muestra/oculta los ejercicios restantes EN EL SITIO (no pide nada; p.ejercicios ya está completo). Re-plegable. */
+function vpMas() {
+  var box = $('proxMas'), btn = $('proxMasBtn'); if (!box || !btn) return;
+  var abre = box.style.display === 'none';
+  box.style.display = abre ? '' : 'none';
+  btn.setAttribute('aria-expanded', abre ? 'true' : 'false');
+  btn.textContent = abre ? 'Ver menos ⌃' : 'y ' + (btn.dataset.n || '') + ' más ›';
+}
+/** Vista previa de un día futuro desde "Tu semana": solo lo muestra en la hoja inferior; nunca navega ni recalcula el estado. */
+function vpDia(fecha) {
+  if (!estado || !estado.plan || !Array.isArray(estado.plan.dias)) return;
+  var d = estado.plan.dias.filter(function (x) { return x.fecha === fecha; })[0];
+  if (!d) return;
+  if (fecha <= hoyISO()) { irFecha(fecha); irA('hoy'); return; }   // seguridad: hoy y pasados navegan como siempre (no deberían llegar aquí)
+  var kicker = fechaEyebrow(fecha) + ' · vista previa';
+  if (d.tipo === 'sesion' && !d.cerrado) {
+    var titulo = (estado.nombres && estado.nombres[d.sesion]) || d.sesion || 'Sesión';
+    hojaAbrir({ titulo: String(titulo).split(' · ')[0], kicker: kicker, html: '<div id="vpBody" data-f="' + esc(fecha) + '"><div class="empty">Cargando…</div></div>' });
+    var pintado = false;   // con caché (conCache pinta lo guardado primero) o red OK ya hay contenido: el fallo de red no debe borrarlo (4G del Fundador)
+    conCache('ses:' + fecha + ':' + d.sesion, function () { return api('getSesion', d.sesion, fecha); }, function (s) {
+      var b = $('vpBody'); if (!b || b.dataset.f !== fecha) return;   // la hoja se cerró o ya es de otro día
+      pintado = true; b.innerHTML = vpSesionHTML(s);
+    }).catch(function () { var b = $('vpBody'); if (b && b.dataset.f === fecha && !pintado) b.innerHTML = '<div class="meta" style="padding:8px 2px">No se pudo cargar la vista previa. Revisa tu conexión e inténtalo de nuevo.</div>'; });
+  } else {
+    var tit = d.cerrado ? (d.cerrado.texto || 'Gimnasio cerrado') : d.tipo === 'cardio' ? 'Cardio suave' : 'Descanso';
+    hojaAbrir({ titulo: tit, kicker: kicker, html: vpSimpleHTML(d) });
+  }
+}
+/** Vista previa de una sesión de pesas: todos los ejercicios de solo lectura (vpEjCard), sin nada interactivo. */
+function vpSesionHTML(s) {
+  if (!s || !Array.isArray(s.ejercicios) || !s.ejercicios.length) return '<div class="meta" style="padding:8px 2px">Esta sesión no tiene ejercicios por ahora.</div>';
+  return '<div class="meta" style="margin:2px 2px 10px">Vista previa · no registra nada</div>' +
+    s.ejercicios.map(vpEjCard).join('') +
+    '<div class="meta" style="margin:8px 2px 4px">Se registra el día que toca. Para adelantarla, toca la fecha de arriba en Hoy y elígela.</div>';
+}
+/** Vista previa breve de cardio, descanso o día cerrado (festivo/fijo): solo texto, sin acción. */
+function vpSimpleHTML(d) {
+  var txt = d.cerrado ? (dpSubCerrado(d.cerrado) || 'No cuenta como día fallado') :
+    d.tipo === 'cardio' ? 'Cardio suave 20–30 min a ritmo de conversación.' : 'Descanso · camina 30 min o movilidad.';
+  return '<div class="meta" style="margin:2px 2px 10px">Vista previa · no registra nada</div>' +
+    '<div class="g-line">' + esc(txt) + '</div>';
+}
+/* ===== fin Vista previa de días futuros ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
