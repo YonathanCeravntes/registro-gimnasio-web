@@ -1150,11 +1150,12 @@
       <div id="selector" class="hidden">
         <div class="card">
           <div class="row">
-            <div><label for="fecha">Día</label><input type="date" id="fecha"></div>
+            <div><label for="selDia">Día</label><input type="date" id="selDia"><input type="hidden" id="fecha"></div>
             <div><label for="sesion">Sesión</label><select id="sesion"></select></div>
           </div>
           <div class="meta" style="margin-top:8px">Elige el día y la sesión; al confirmar, la semana se reacomoda sola.</div>
           <div class="acts" style="margin-top:10px"><button class="btn sec" id="selQuitar" onclick="quitarFijada()" style="display:none">Quitar</button><button class="btn" id="selFijar" onclick="fijarElegida()">Entrenar esta sesión hoy</button></div>
+          <div class="meta hidden" id="selNota" style="margin-top:8px"></div>
         </div>
       </div>
       <div id="cicloCard"></div>
@@ -1658,7 +1659,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610221744', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610221850', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1985,6 +1986,10 @@ function registrar() {
 function toast(msg) { var t = $('toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function(){ t.style.display='none'; }, 2600); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 function hoyISO() { var d = new Date(); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); }
+/** ¿Es un día que aún no llega en este celular? (22/10/2026, #77; §32: la ÚNICA comparación de la app con hoy para no "estar" en el futuro.
+ *  La usan irFecha, editarDia, la vista previa, el selector, «Tu semana», la portada, la vuelta a la app, el nuevo ciclo y los ‹ › de Comida y
+ *  Progreso.) Hoy NO es un día que viene. El límite del SERVIDOR para anotar es otro, con tolerancia de zona horaria: limiteAnotar_ (Code.gs). */
+function esDiaQueViene(f) { return !!f && String(f) > hoyISO(); }
 function n1(v, d) { return v == null || v === '' ? '—' : Number(v).toLocaleString('es-CO', { maximumFractionDigits: d == null ? 1 : d, minimumFractionDigits: d == null ? 0 : d }); }
 function signo(v, d, u) { return v == null ? '' : (v > 0 ? '+' : '') + n1(v, d) + (u || ''); }
 function err(e) { console.error(e); toast('Error: ' + (e && e.message ? e.message : e)); }
@@ -2047,6 +2052,10 @@ document.querySelectorAll('nav button').forEach(function (b) { b.onclick = funct
 function toggleSelector() {
   var sel = $('selector'); sel.classList.toggle('hidden');
   if (sel.classList.contains('hidden')) return;
+  // El "Día" del selector arranca en el día que ves (22/10/2026, opción B); si quedó una sesión elegida para planear otro día, vuelve a la que ves
+  $('selDia').value = $('fecha').value;
+  if (selPlan && sesionActual && sesionActual.codigo) $('sesion').value = sesionActual.codigo;
+  selPlan = false;
   // En un día sin pesas, propone la próxima sesión pendiente del plan
   if (estado && estado.tipoDia !== 'sesion' && estado.plan) {
     var prox = estado.plan.dias.filter(function (x) { return x.tipo === 'sesion' && x.estado !== 'hecho' && x.fecha > estado.fecha; })[0];
@@ -2063,7 +2072,7 @@ function toggleSelector() {
 var CACHE_V = 'v5:' + (function () { try { var c = JSON.parse(localStorage.getItem('cfg') || 'null'), t = c && c.t ? String(c.t) : '', h = 0; for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0; return t ? h.toString(36) + ':' : ''; } catch (e) { return ''; } })();
 function leerCache(k) { try { var v = localStorage.getItem(CACHE_V + k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
 function escribirCache(k, v) { try { localStorage.setItem(CACHE_V + k, JSON.stringify(v)); } catch (e) {} }
-function editando() { var a = document.activeElement; return a && /INPUT|SELECT|TEXTAREA/.test(a.tagName) && a.id !== 'fecha' && a.id !== 'sesion'; }
+function editando() { var a = document.activeElement; return a && /INPUT|SELECT|TEXTAREA/.test(a.tagName) && a.id !== 'fecha' && a.id !== 'selDia' && a.id !== 'sesion'; }
 function conCache(clave, llamada, pintarFn) {
   var c = leerCache(clave), pintado = c ? JSON.stringify(c) : null;
   if (c) pintarFn(c, true);
@@ -2134,6 +2143,7 @@ function pintarEstado(e, codigo) {
   sel.innerHTML = e.sesiones.map(function (s) { return '<option value="' + s.codigo + '">' + esc(s.nombre) + '</option>'; }).join('');
   sel.value = codigo;
   pintarHero();
+  selSincronizar();   // el «Día» del selector nunca se queda en otro día que el que pintas (hallazgo del probador, #77)
   actualizarSelector();
 }
 function rangoSemana(plan) {
@@ -2194,7 +2204,7 @@ function pintarHero() {
     chip = ['pesas', 'Día de pesas']; titulo = nombreHoy;
     sub = nEj + ' ejercicios · ' + min + ' min';
     var ligera = pg.descargaPuntual || (s && s.bloque && s.bloque.descarga) || (s && s.suave);
-    if (!esHoy && e.fecha > hoyISO()) cta = gcta('', 'Ver la sesión', 'Se registra ese día', 'irRutina()');
+    if (!esHoy && esDiaQueViene(e.fecha)) cta = gcta('', 'Ver la sesión', 'Se registra ese día', 'irRutina()');
     else cta = gcta('', 'Empezar', ligera ? 'Hoy toca suave: ya viene marcado' : 'Calienta 5 min primero', 'irRutina()');
     // Descarga programada (no la de fatiga): se puede saltar si te sientes bien (Coleman 2024)
     if (s && s.bloque && s.bloque.programada && !pg.descargaPuntual) cta += gcta('line', 'Me siento bien', 'Saltar la descarga', 'saltarDescargaUI()');
@@ -2283,7 +2293,8 @@ function proximaHTML(p) {
     lista.map(vpEjCard).join('') +
     (resto.length ? '<div id="proxMas" style="display:none">' + resto.map(vpEjCard).join('') + '</div>' +
       '<button type="button" class="g-mas-btn" id="proxMasBtn" data-n="' + resto.length + '" aria-expanded="false" aria-controls="proxMas" onclick="vpMas()">y ' + resto.length + ' más ›</button>' : '') +
-    '<div class="meta" style="margin:2px 2px 12px">Se registra ese día. Para adelantarla, toca la fecha de arriba.</div>';
+    // Solo sale con la sesión de HOY ya hecha: no invita a una segunda sesión el mismo día (48 h por músculo; M2 del Auditor, #77)
+    '<div class="meta" style="margin:2px 2px 12px">Se registra ese día.</div>';
 }
 function minutosSesion(s) {
   var seg = 0;
@@ -3000,44 +3011,78 @@ function cerrarCierre() { tParar();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-$('fecha').onchange = function () { cargarEstado(); };
+/* Selector "Día · Sesión" (22/10/2026, encargo #77, opción B del Director): el "Día" del selector (#selDia) va SEPARADO de la fecha que ve la app
+ * (#fecha, oculto; todo lo que lee "el día que veo" sigue leyendo #fecha). Hoy o un día PASADO en el selector → la app va a ese día, como siempre
+ * (Días pasados, anotar lo que hice). Un día que VIENE → la app NO va (Hoy sigue en hoy, sin rutina futura con "Listo"): solo sirve para «Fijar para ese
+ * día»; «Sesión» no carga ninguna rutina y una nota gris dice qué hace cada botón. «Entrenar esta sesión hoy» usa hoy; «Fijar para ese día», el día elegido. */
+var selPlan = false;   // se cambió «Sesión» para planear un día que viene (sin cargar rutina): al reabrir, vuelve a la sesión que ves
+function selDiaValor() { var s = $('selDia'); return (s && s.value) || $('fecha').value; }
+function selDiaCambio() {
+  var s = $('selDia'), f = s.value;
+  if (!f) { s.value = $('fecha').value; actualizarSelector(); return; }
+  if (!esDiaQueViene(f)) { selPlan = false; irFecha(f); return; }   // hoy o un día pasado: la app va a ese día, como siempre
+  // Un día que viene: no se navega. Se propone la sesión que el plan tiene ese día (si está en la semana cargada); «Fijar» decide.
+  var d = diaSeleccionado();
+  if (d && d.tipo === 'sesion' && d.sesion && estado.sesiones.some(function (x) { return x.codigo === d.sesion; })) { $('sesion').value = d.sesion; selPlan = true; }
+  actualizarSelector();
+}
+$('selDia').onchange = selDiaCambio;
 $('sesion').onchange = function () {
+  if (esDiaQueViene(selDiaValor())) { selPlan = true; actualizarSelector(); return; }   // planeando un día que viene: no se carga ninguna rutina
   cargarSesion();
   $('rutina').classList.remove('hidden');
   actualizarSelector();
 };
+/** Al pintar un día (navegar desde «Tu semana», Días pasados, «Volver a hoy», la vuelta a la app…), el «Día» del selector pasa al día que ves y
+ *  se deja de planear (hallazgo del probador, #77): antes, con el selector abierto en el sábado, navegar a un día pasado dejaba #selDia en el
+ *  sábado y «Fijar» actuaba sobre un día que ya no estaba a la vista. pintarEstado también pone «Sesión» en la del día que ves. */
+function selSincronizar() {
+  var sd = $('selDia'), f = $('fecha') && $('fecha').value; if (!sd || !f) return;
+  sd.value = f; selPlan = false;
+}
 function diaSeleccionado() {
-  var f = $('fecha').value;
+  var f = selDiaValor();
   return estado && estado.plan ? estado.plan.dias.filter(function (d) { return d.fecha === f; })[0] : null;
 }
-/** Estado del botón "Entrenar esta sesión": según el día elegido y lo que ya tiene el plan. */
+/** Estado del botón "Entrenar esta sesión": según el día elegido en el selector y lo que ya tiene el plan. */
 function actualizarSelector() {
   var b = $('selFijar'), q = $('selQuitar'); if (!b || !estado) return;
-  var f = $('fecha').value, cod = $('sesion').value, d = diaSeleccionado(), hoy = f === hoyISO();
+  var f = selDiaValor(), cod = $('sesion').value, d = diaSeleccionado(), hoy = f === hoyISO(), futuro = esDiaQueViene(f);
   var esaYa = !!(d && d.tipo === 'sesion' && d.sesion === cod);
   b.disabled = f < hoyISO() || esaYa || !cod;
   b.textContent = f < hoyISO() ? 'Ese día ya pasó' : esaYa ? (hoy ? 'Ya es la sesión de hoy' : 'Ya está en ese día') : hoy ? 'Entrenar esta sesión hoy' : 'Fijar para ese día';
-  q.style.display = d && d.fijada && d.estado !== 'hecho' ? '' : 'none';
+  var quitar = !!(d && d.fijada && d.estado !== 'hecho');
+  q.style.display = quitar ? '' : 'none';
+  // Día que viene: qué hace cada botón, en gris (la app sigue en el día que ves)
+  var nota = $('selNota');
+  if (nota) {
+    nota.textContent = !futuro ? '' : 'Ese día aún no llega: ' +
+      (esaYa ? 'esta sesión ya está planeada ahí; para cambiarla, elige otra y toca «Fijar para ese día»' : '«Fijar para ese día» solo deja la sesión planeada en tu semana') +
+      (quitar ? '; «Quitar» devuelve ese día a su plan' : '') + '. La app sigue en el día que ves; se anota cuando llegue el día.';
+    nota.classList.toggle('hidden', !futuro);
+  }
 }
-/** Confirma la sesión elegida para el día elegido: la semana se reacomoda en el servidor. */
+/** Confirma la sesión elegida para el día elegido en el selector: la semana se reacomoda en el servidor. */
 function fijarElegida() {
-  var f = $('fecha').value, cod = $('sesion').value, b = $('selFijar');
+  var f = selDiaValor(), cod = $('sesion').value, b = $('selFijar'), futuro = esDiaQueViene(f);
   if (!cod) return;
   b.disabled = true; b.textContent = 'Guardando…';
   api('fijarSesion', f, cod).then(function () {
     invalidarTodo();
     $('selector').classList.add('hidden');
-    toast((f === hoyISO() ? 'Hoy: ' : 'Fijado: ') + (estado.nombres[cod] || cod) + ' · la semana se reacomodó');
-    cargarEstado(cod);
+    toast((f === hoyISO() ? 'Hoy: ' : futuro ? 'Planeada para el ' + fechaEyebrow(f).toLowerCase() + ': ' : 'Fijado: ') + (estado.nombres[cod] || cod) + ' · la semana se reacomodó');
+    selPlan = false;
+    if (futuro) cargarEstado(); else cargarEstado(cod);   // un día que viene: la app sigue en el día que ves (no fuerza esa sesión aquí)
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }).catch(function (e) { b.disabled = false; actualizarSelector(); err(e); });
 }
-/** Deshace una sesión fijada: el día vuelve a lo que diga el plan. */
+/** Deshace una sesión fijada en el día elegido en el selector: ese día vuelve a lo que diga el plan. */
 function quitarFijada() {
-  var f = $('fecha').value;
+  var f = selDiaValor();
   api('fijarSesion', f, '').then(function () {
     invalidarTodo(); $('selector').classList.add('hidden');
     toast('Día liberado: la semana volvió a su plan');
+    selPlan = false;
     cargarEstado();
   }).catch(err);
 }
@@ -3202,7 +3247,7 @@ function cargarDiario() {
     calc();
   }).catch(err);
 }
-function cuDia(n) { var d = gcSumarDias($('dFecha').value || hoyISO(), n); if (d > hoyISO()) return; $('dFecha').value = d; cargarDiario(); }
+function cuDia(n) { var d = gcSumarDias($('dFecha').value || hoyISO(), n); if (esDiaQueViene(d)) return; $('dFecha').value = d; cargarDiario(); }
 function gcCuerpoKicker() { var f = $('dFecha').value; $('cuKick').textContent = f === hoyISO() ? 'Tu peso de hoy' : 'Tu peso · ' + gcFechaCorta(f).toLowerCase(); }
 function gcHabitosSub(d) {
   var t = [];
@@ -3359,12 +3404,12 @@ function pintarSemanaTab() {
   var e = estado, dias = e.plan.dias, nombres = e.nombres, pg = e.programa || {};
   var totalSem = pg.total && pg.porSemana ? Math.ceil(pg.total / pg.porSemana) : 0;
   $('kSemanaG').textContent = 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '') + ' · ' + rangoSemana(e.plan).toLowerCase();
-  var hoy = hoyISO();   // "futuro" = después de HOY de verdad (no del día que estés viendo): tocar un día futuro solo lo muestra, no recalcula ni escribe (vpDia)
+  // "futuro" = esDiaQueViene: después de HOY de verdad (hoyISO, no del día que estés viendo): tocar un día futuro solo lo muestra, no recalcula ni escribe (vpDia)
   var strip = dias.map(function (d) {
     var p = d.etiqueta.split(' ');
     var cls = d.estado === 'hecho' ? 'hecho' : d.cerrado ? 'cerr' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : 'libre';
     var lbl = d.estado === 'hecho' ? 'hecho' : d.cerrado ? d.cerrado.texto.toLowerCase() : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : 'libre';
-    var act = d.fecha > hoy ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';
+    var act = esDiaQueViene(d.fecha) ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';
     return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="' + act + '" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
   }).join('');
   $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas · toca un día para verlo</div>';
@@ -3388,7 +3433,7 @@ function pintarSemanaTab() {
     else if (d.cerrado) { cls += ' cerr'; t = d.cerrado.texto; s = dpSubCerrado(d.cerrado); r = d.esHoy ? 'Hoy' : ''; }   // festivo o día fijo: gris, no es un día fallado
     else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
-    var act = d.fecha > hoy ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';   // futuro: vista previa de solo lectura; hoy y pasados navegan como siempre
+    var act = esDiaQueViene(d.fecha) ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';   // futuro: vista previa de solo lectura; hoy y pasados navegan como siempre
     return '<div class="' + cls + '" onclick="' + act + '"><div class="d"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b></div>' +
       '<div class="c"><div class="t">' + esc(t) + '</div><div class="s">' + esc(s) + '</div></div>' + (r ? '<div class="r">' + esc(r) + '</div>' : '') + '</div>';
   }).join('');
@@ -3423,7 +3468,8 @@ function pintarHistorial(dias) {
     }).join('');
   }).join('');
 }
-function editarDia(fecha, ses) { $('fecha').value = fecha; irA('hoy'); cargarEstado(ses); }
+/** "Abrir este día →" del historial. Un día que viene nunca se "abre" (B1 del Auditor, #77): va a la vista previa, como irFecha. */
+function editarDia(fecha, ses) { if (esDiaQueViene(fecha)) { vpDia(fecha); return; } $('fecha').value = fecha; irA('hoy'); cargarEstado(ses); }
 
 /* =================== PANEL / PROGRESO (boceto G: tres cifras llanas; lo demás en "Récords y cada ejercicio") =================== */
 var faltanGraficas = [], armandoPanel = false, gcPanelDet = false;
@@ -3673,7 +3719,13 @@ function pintarSemana(plan) {
     return '<b class="' + cls + '" title="' + esc(d.fecha + (d.cerrado && d.estado !== 'hecho' ? ' · ' + d.cerrado.texto : '')) + '">' + esc(String(d.etiqueta || '').split(' ')[0]) + '</b>';
   }).join('');
 }
-function irFecha(f) { $('fecha').value = f; cargarEstado(); }
+/* Ir a un día. Nunca se "entra" a un día que viene (22/10/2026, encargo #77): ahí solo se VE (vista previa de solo lectura, vpDia), sin tocar
+ * $('fecha') ni recalcular el estado; si no, el servidor tomaría ese día como "hoy" (días de en medio como "No fuiste", "Empezar" guardando en
+ * el futuro). Cubre a cualquier llamador de irFecha. Hoy y los días pasados navegan como siempre. */
+function irFecha(f) {
+  if (esDiaQueViene(f)) { vpDia(f); return; }
+  $('fecha').value = f; cargarEstado();
+}
 
 $('btnPlanificar').onclick = function () { abrirPlanificador(estado.semana); };
 /* Planificador ("Ajustar días") en la hoja inferior: ‹ semana ›, casillas, una línea con el resultado y Guardar */
@@ -3998,30 +4050,66 @@ $('pProbarIA').onclick = probarIAUI;
 function leerCola() { try { return JSON.parse(localStorage.getItem('cola') || '[]'); } catch (e) { return []; } }
 function guardarCola(c) { try { localStorage.setItem('cola', JSON.stringify(c)); } catch (e) {} pintarCola(); }
 function pintarCola() {
-  var n = leerCola().length, b = $('cola');
+  var c = leerCola(), n = c.length, b = $('cola'), nl = c.filter(function (x) { return x && x.noLlega; }).length;
   b.style.display = n ? 'block' : 'none';
-  b.textContent = n ? '📶 ' + n + ' cambio(s) guardados en tu celular: se enviarán cuando haya conexión.' : '';
+  b.textContent = !n ? '' : !nl ? '📶 ' + n + ' cambio(s) guardados en tu celular: se enviarán cuando haya conexión.'
+    : '📶 ' + n + ' cambio(s) guardados en tu celular. ' + (nl === 1 ? '1 es' : nl + ' son') + ' de un día que para el servidor aún no llega: '
+      + (nl === 1 ? 'se envía solo' : 'se envían solos') + ' cuando llegue (revisa la fecha y la hora de tu celular).';
 }
 function esErrorDeRed(e) { return !navigator.onLine || /network|conexi|connection|timeout|failed to fetch|load failed|http 0/i.test(String(e && e.message || e)); }
+/* Fecha local del celular (22/10/2026, #77, M1 del Auditor): las 4 escrituras con candado de fecha (Code.gs noFechaFutura_) la llevan
+   como `hoyCliente`, puesta AL MANDAR (también al reintentar desde la cola: así lo que espera su día pasa cuando el celular llega a él).
+   El servidor tolera un día de zona horaria y nunca más allá de la fecha del celular. En la cola se guarda el pedido sin ella. */
+function conHoyCliente(fn, p) {
+  if (!/^(guardarSeries|marcarOmitido|reabrirEjercicio|guardarCardio)$/.test(fn) || !p || typeof p !== 'object') return p;
+  var q = {}; for (var k in p) q[k] = p[k];
+  q.hoyCliente = hoyISO(); return q;
+}
 function enviar(fn, payload) {
   if (!navigator.onLine) { var c = leerCola(); c.push({ fn: fn, p: payload }); guardarCola(c); return Promise.resolve({ enCola: true, ok: true }); }
-  return api(fn, payload).catch(function (e) {
+  return api(fn, conHoyCliente(fn, payload)).catch(function (e) {
     if (!esErrorDeRed(e)) throw e;
     var c = leerCola(); c.push({ fn: fn, p: payload }); guardarCola(c);
     return { enCola: true, ok: true };
   });
 }
-var vaciando = false;
-function vaciarCola() {
+/** El servidor rechazó porque ese día aún no llega (reloj del celular adelantado más de un día): eso NO se descarta, espera en el celular. */
+function esNoLlega(e) { return /aún no llega/i.test(String(e && e.message || e)); }
+/** Índice del próximo envío de la cola (-1 = nada que mandar ahora). Lo que espera su día (`noLlega` = día del celular en que se rechazó,
+ *  `tNL` = cuándo) se reintenta si cambió el día del celular, a los 15 min, al abrir la app o al volver a ella (vaciarCola(true));
+ *  lo de un mismo día va en orden: nada de ese día se adelanta a uno que espera. */
+function colaSiguiente(c) {
+  var hoy = hoyISO(), ahora = Date.now(), espera = {};
+  for (var i = 0; i < c.length; i++) {
+    var it = c[i] || {}, f = it.p && it.p.fecha;
+    if (f && espera[f]) continue;
+    if (it.noLlega && it.noLlega === hoy && ahora - (it.tNL || 0) < 15 * 60000 && !((it.tNL || 0) < colaForzadaDesde)) { if (f) espera[f] = 1; continue; }
+    return i;
+  }
+  return -1;
+}
+var vaciando = false, colaForzadaDesde = Date.now();   // al abrir la app se reintenta una vez lo que esperaba su día
+function vaciarCola(forzar) {
+  if (forzar === true) colaForzadaDesde = Date.now();   // ('online' pasa un evento: no fuerza)
   var c = leerCola(); if (!c.length || vaciando || !navigator.onLine) return;
+  var i = colaSiguiente(c); if (i < 0) return;
   vaciando = true;
-  var item = c[0];
-  api(item.fn, item.p).then(function () {
-    var r = leerCola(); r.shift(); guardarCola(r); vaciando = false;
-    if (!leerCola().length) { toast('Cambios pendientes enviados ✓'); invalidarTodo(); } else vaciarCola();
+  var item = c[i];
+  api(item.fn, conHoyCliente(item.fn, item.p)).then(function () {
+    var r = leerCola(); r.splice(i, 1); guardarCola(r); vaciando = false;
+    if (colaSiguiente(r) >= 0) { vaciarCola(); return; }
+    invalidarTodo();
+    toast(r.length ? 'Cambios pendientes enviados ✓ · ' + r.length + ' sigue(n) en tu celular: para el servidor su día aún no llega (revisa la fecha y la hora del celular).' : 'Cambios pendientes enviados ✓');
   }).catch(function (e) {
     vaciando = false;
-    if (!esErrorDeRed(e)) { var r = leerCola(); r.shift(); guardarCola(r); toast('No se pudo enviar un cambio: ' + (e.message || e)); vaciarCola(); }
+    if (esErrorDeRed(e)) return;
+    var r = leerCola();
+    if (esNoLlega(e)) {   // nunca perder series en silencio: queda en la cola y se dice por qué
+      if (r[i]) { var nuevo = !r[i].noLlega; r[i].noLlega = hoyISO(); r[i].tNL = Date.now(); guardarCola(r);
+        if (nuevo) toast('Lo del ' + (fechaEyebrow(item.p && item.p.fecha) || 'día que anotaste').toLowerCase() + ' sigue guardado en tu celular: para el servidor ese día aún no llega. Se envía solo cuando llegue; revisa la fecha y la hora del celular.'); }
+      vaciarCola(); return;
+    }
+    r.splice(i, 1); guardarCola(r); toast('No se pudo enviar un cambio: ' + (e.message || e)); vaciarCola();
   });
 }
 function invalidarTodo() { try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(CACHE_V) === 0) localStorage.removeItem(k); }); } catch (e) {} }
@@ -4045,11 +4133,14 @@ function seriesSinGuardar() {
 }
 document.addEventListener('visibilitychange', function () {
   if (document.visibilityState !== 'visible') return;
-  vaciarCola();
+  vaciarCola(true);   // al volver a la app también se reintenta lo que esperaba su día (#77, M1)
   if (typeof comprobarActualizacion === 'function') comprobarActualizacion();
   var fecha = $('fecha'), hoy = hoyISO();
   if (!fecha || !fecha.value) return;
   var cambioDia = diaVisto !== hoy; diaVisto = hoy;
+  // Una fecha que viene en memoria (estado viejo, 22/10/2026): nunca se "está" en el futuro, se vuelve a hoy de una (ahí no hay nada que guardar:
+  // el servidor rechaza anotar en un día que aún no llega). Solo se espera si estás escribiendo en una casilla.
+  if (esDiaQueViene(fecha.value)) { if (!editando()) volverAHoy(); return; }
   // "Hoy" siempre es hoy: al volver con el día cambiado (o tras un rato viendo otro día) pasa a hoy; series escritas sin guardar → franja
   if (fecha.value !== hoy && (cambioDia || Date.now() - ultimaCarga > 10 * 60000)) {
     if (seriesSinGuardar()) { pintarFranja('guardar'); return; }
@@ -4070,7 +4161,9 @@ function empezarOtroCicloUI() {
 function nuevoCiclo() {
   var f = $('cicloFecha').value; if (!f) return;
   if (!confirm('¿Empezar el nuevo ciclo el ' + f + '? Tus registros anteriores se conservan.')) return;
-  api('iniciarCiclo', f).then(function (r) { toast('Ciclo ' + r.ciclo + ' listo desde el ' + r.inicio); invalidarTodo(); $('fecha').value = r.inicio; cargarEstado(); }).catch(err);
+  // Si el ciclo arranca en un día que viene (por defecto, el próximo lunes), la app se queda en hoy ("Aún no empieza · Tu plan arranca el …"):
+  // nunca se "entra" a un día futuro (22/10/2026, encargo #77)
+  api('iniciarCiclo', f).then(function (r) { toast('Ciclo ' + r.ciclo + ' listo desde el ' + r.inicio); invalidarTodo(); $('fecha').value = esDiaQueViene(r.inicio) ? hoyISO() : r.inicio; cargarEstado(); }).catch(err);
 }
 
 /* =================== CARDIO =================== */
@@ -4104,7 +4197,7 @@ function cargarComida() {
   conCache('com:' + f, function () { return api('getComida', f); }, pintarComida).catch(err);
   cargarPlanComida();
 }
-function cDia(n) { var d = gcSumarDias($('cFecha').value || hoyISO(), n); if (d > hoyISO()) return; $('cFecha').value = d; cerrarAgregar(); cargarComida(); }
+function cDia(n) { var d = gcSumarDias($('cFecha').value || hoyISO(), n); if (esDiaQueViene(d)) return; $('cFecha').value = d; cerrarAgregar(); cargarComida(); }
 function gcHoraTexto() { var d = new Date(), h = d.getHours(), m = d.getMinutes(); return (h % 12 || 12) + ':' + ('0' + m).slice(-2) + (h < 12 ? ' a. m.' : ' p. m.'); }
 /* Título fijo "Comida"; el momento del día va en la eyebrow: "Jue 1 oct · ahora: Algo, 4:00 p. m." */
 function gcComidaKicker() {
@@ -7667,11 +7760,11 @@ function vpMas() {
 }
 /** Vista previa de un día futuro desde "Tu semana": solo lo muestra en la hoja inferior; nunca navega ni recalcula el estado. */
 function vpDia(fecha) {
-  if (!estado || !estado.plan || !Array.isArray(estado.plan.dias)) return;
-  var d = estado.plan.dias.filter(function (x) { return x.fecha === fecha; })[0];
-  if (!d) return;
-  if (fecha <= hoyISO()) { irFecha(fecha); irA('hoy'); return; }   // seguridad: hoy y pasados navegan como siempre (no deberían llegar aquí)
+  if (!esDiaQueViene(fecha)) { irFecha(fecha); irA('hoy'); return; }   // seguridad: hoy y pasados navegan como siempre (no deberían llegar aquí)
   var kicker = fechaEyebrow(fecha) + ' · vista previa';
+  var d = estado && estado.plan && Array.isArray(estado.plan.dias) ? estado.plan.dias.filter(function (x) { return x.fecha === fecha; })[0] : null;
+  // Un día que viene fuera de la semana que tienes cargada (22/10/2026: irFecha ya no entra a días futuros): se dice, sin navegar
+  if (!d) { hojaAbrir({ titulo: 'Ese día aún no llega', kicker: kicker, html: vpFueraHTML() }); return; }
   if (d.tipo === 'sesion' && !d.cerrado) {
     var titulo = (estado.nombres && estado.nombres[d.sesion]) || d.sesion || 'Sesión';
     hojaAbrir({ titulo: String(titulo).split(' · ')[0], kicker: kicker, html: '<div id="vpBody" data-f="' + esc(fecha) + '"><div class="empty">Cargando…</div></div>' });
@@ -7690,7 +7783,27 @@ function vpSesionHTML(s) {
   if (!s || !Array.isArray(s.ejercicios) || !s.ejercicios.length) return '<div class="meta" style="padding:8px 2px">Esta sesión no tiene ejercicios por ahora.</div>';
   return '<div class="meta" style="margin:2px 2px 10px">Vista previa · no registra nada</div>' +
     s.ejercicios.map(vpEjCard).join('') +
-    '<div class="meta" style="margin:8px 2px 4px">Se registra el día que toca. Para adelantarla, toca la fecha de arriba en Hoy y elígela.</div>';
+    '<div class="meta" style="margin:8px 2px 4px">' + (hoyYaEntreno() ? 'Se registra el día que toca.' :
+      vpComoHoy('Se registra el día que toca. Para hacerla hoy: en Hoy toca la fecha de arriba, ')) + '</div>';
+}
+/* Cómo hacer HOY una sesión que viene (22/10/2026, encargo #77): se elige la SESIÓN, no el día. Es el flujo real de la app: la fecha de arriba
+ * (#heroKicker) abre el selector, el día se deja en hoy, se elige la sesión en «Sesión» y «Entrenar esta sesión hoy» (fijarElegida →
+ * fijarSesion(hoy, código)). Antes decía "toca la fecha de arriba y elígela", que invitaba a elegir el DÍA futuro (justo lo que causaba el bug).
+ * Solo en la vista previa de «Tu semana» y solo si hoy aún no entrenaste (hoyYaEntreno): con la sesión de hoy hecha no se invita a otra el
+ * mismo día (48 h por músculo; M2 del Auditor). «Lo que viene» ya no lo usa: solo sale con hoy hecho. function (no var). */
+function vpComoHoy(antes) { return antes + 'deja el día en hoy, elige esta sesión y toca «Entrenar esta sesión hoy».'; }
+/** ¿HOY (el real, hoyISO) ya tiene pesas anotadas? planSemana marca el día 'hecho' en cuanto tiene series y la app suma estado.cumpl[hoy]
+ *  en vivo al dar «Listo». La vista previa solo se abre con un día de la semana cargada, que entonces incluye hoy. */
+function hoyYaEntreno() {
+  var hoy = hoyISO(), e = typeof estado !== 'undefined' ? estado : null; if (!e) return false;
+  if (e.cumpl && e.cumpl[hoy]) return true;
+  var d = e.plan && Array.isArray(e.plan.dias) ? e.plan.dias.filter(function (x) { return x.fecha === hoy; })[0] : null;
+  return !!(d && (d.estado === 'hecho' || (d.sesiones && d.sesiones.length)));
+}
+/** Un día que viene y no está en la semana cargada: solo texto (no hay datos de ese día a mano y no se navega allá). */
+function vpFueraHTML() {
+  return '<div class="meta" style="margin:2px 2px 10px">Vista previa · no registra nada</div>' +
+    '<div class="g-line">Lo verás en «Tu semana» cuando llegue su semana. Los entrenos se anotan el día que toca.</div>';
 }
 /** Vista previa breve de cardio, descanso o día cerrado (festivo/fijo): solo texto, sin acción. */
 function vpSimpleHTML(d) {
