@@ -1659,7 +1659,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610221850', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610231203', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -3094,7 +3094,7 @@ function quitarFijada() {
  * "Anotar" (lleva a la casilla de reps). No avisa si lo que sigue no es otra serie del mismo ejercicio (primera serie de otro, superserie,
  * ejercicio terminado) ni con "Solo contar" (localStorage tPasado). A +10:00 se va sin sonido. Descansar de más no frena la hipertrofia
  * (Singer 2024, DOI 10.3389/fspor.2024.1429789; Henselmans y Schoenfeld 2014): el aviso es de ritmo, para que la serie quede anotada. */
-var tFin = 0, tInt = null, tEj = null, tModo = 'cuenta', tBase = 0, tUmbral = 0, tAvisado = false, tSerieN = 0, tSeriePend = false, tSuelta = false;
+var tFin = 0, tInt = null, tEj = null, tModo = 'cuenta', tBase = 0, tUmbral = 0, tAvisado = false, tSerieN = 0, tSeriePend = false, tSuelta = false, tSig = null;
 var T_SOLTAR_PANTALLA = 180;   // sin aviso de serie, la pantalla se suelta a +3:00 (con aviso, al avisar)
 var T_PASADO_MAX = 600;
 /** Umbral del aviso de serie (s): 3 s por repetición esperada (punto medio del rango) + 10 s, entre 30 y 75; por tiempo, los segundos + 10. */
@@ -3112,12 +3112,54 @@ function tSiguienteSerie(i) {
   var hechas = document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length, n = e.prescripcion ? Number(e.prescripcion.series) || 0 : 0;
   return hechas > 0 && hechas < n ? hechas + 1 : 0;
 }
+/* Lo que sigue (23/10/2026, bug del Fundador: tras la última serie de «Curl inclinado» la píldora decía "0:24 · Curl inclinado con mancuernas"
+ * y lo leyó como lo que venía, pero venían las Elevaciones laterales). `loQueSigue` es la ÚNICA fuente de "qué sigue después del descanso" para
+ * la píldora, la voz (sonidoSiguienteTexto) y el aviso del celular (sonidoSiguienteCorto), que antes la calculaban aparte (sonidoSiguiente). */
+/** La siguiente serie de este ejercicio ({ serie, nombre, kg y reps del gris o lo escrito, seg, i }) o, si ya terminó o se cerró ("Terminar aquí",
+ *  "No lo hice"), el siguiente ejercicio pendiente de la rutina ({ nombre, i }); null si no sigue nada. */
+function loQueSigue() {
+  var i = tEj ? tEj.i : -1, e = i >= 0 && sesionActual ? sesionActual.ejercicios[i] : null; if (!e) return null;
+  var cerrado = e._fin || e.estado === 'omitido' || e.estado === 'hecho';   // sus filas vacías ya no son "la serie que sigue"
+  var filas = cerrado ? [] : document.querySelectorAll('#exSets' + i + ' tr'), k = -1;
+  for (var j = 0; j < filas.length; j++) if (filas[j].dataset.done !== '1') { k = j; break; }
+  var nom = String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0];
+  if (k >= 0) { var ins = filas[k].querySelectorAll('input'); return { serie: k + 1, nombre: nom, kg: ins[0].value || ins[0].placeholder, reps: ins[1].value || ins[1].placeholder, seg: e.unidad === 'seg', i: i }; }
+  for (var n = i + 1; n < sesionActual.ejercicios.length; n++) {
+    var x = sesionActual.ejercicios[n];
+    if (x.estado === 'pendiente') return { nombre: String(x.variantes[x._var || 'principal'].nombre || '').split(' (')[0], i: n };
+  }
+  return null;
+}
+/** La píldora guarda lo que sigue en `tSig`: se calcula al empezar el descanso y cada vez que se repinta una tarjeta (no en cada tick de 250 ms). */
+function tSigRefrescar() {
+  try { tSig = loQueSigue(); }
+  catch (x) { tSig = tEj && tEj.nombre ? { nombre: tEj.nombre, propio: true } : null; }   // si no se puede saber, el ejercicio que descansas (como antes)
+}
+/** Junto al reloj: "· Prensa" si sigue otra serie de ese ejercicio; "· Sigue: Elevaciones laterales…" si sigue otro; nada si no sigue nada. */
+function tPildoraTexto() {
+  var x = tSig; if (!x || !x.nombre) return '';
+  return x.serie || x.propio ? '· ' + x.nombre : '· Sigue: ' + x.nombre;
+}
+/** A dónde lleva tocar la píldora ({ i, rir }): otra serie de este ejercicio → su tarjeta. Terminaste el ejercicio y su última serie espera
+ *  calificación (e._avanzarAlRir, flujo del 19/10 y 22/10) → esa pregunta: al calificar, elegirRir → avanzarDesde te pasa solo al siguiente (así no se
+ *  pierde el RIR de la última serie, que usa la progresión). Ya calificada o el ejercicio cerrado → la tarjeta del siguiente pendiente. */
+function tDestinoToque() {
+  var i = tEj ? tEj.i : -1; if (i == null || i < 0) return null;
+  var e = sesionActual && sesionActual.ejercicios ? sesionActual.ejercicios[i] : null, x = null;
+  try { x = loQueSigue(); } catch (err) {}
+  if (e && e._avanzarAlRir) return { i: i, rir: true, n: document.querySelectorAll('#exSets' + i + ' tr[data-done="1"]').length, sigue: x && !x.serie ? x.nombre : '' };
+  if (x && !x.serie && x.i != null) return { i: x.i };
+  return { i: i };
+}
+var tSigPintarBase = typeof pintar === 'function' ? pintar : null;   // (las pruebas que cortan solo el temporizador no traen pintar)
+if (tSigPintarBase) pintar = function (i, v) { tSigPintarBase(i, v); if (tInt) tSigRefrescar(); };   // cambió una tarjeta (serie, estado, variante): lo que sigue puede ser otro
 function descanso(seg, ej) {
   if (ej) tEj = ej;
   tFin = Date.now() + seg * 1000; clearTimeout(tCierre);
   tModo = 'cuenta'; tAvisado = false; tBase = 0; tSuelta = false;
   var e = tEj && sesionActual && sesionActual.ejercicios[tEj.i];
   tSerieN = tEj ? tSiguienteSerie(tEj.i) : 0;
+  tSigRefrescar();
   tUmbral = e ? serieUmbral(e.prescripcion, e.unidad) : 40;
   tPintarModo();
   $('timer').style.display = 'flex'; document.body.classList.add('t-on');
@@ -3133,12 +3175,17 @@ function tPintarModo() {
   $('tStop').style.display = aviso || yendo ? 'none' : '';
   $('tAnotar').style.display = (aviso || yendo) && tSerieN ? '' : 'none';
 }
-/* Tocar la píldora vuelve a Hoy y a la tarjeta del ejercicio que descansa */
+/* Tocar la píldora vuelve a Hoy y a lo que sigue (tDestinoToque, 23/10/2026): la tarjeta de este ejercicio si queda otra serie, la calificación
+ * pendiente de su última serie o la tarjeta del siguiente ejercicio (antes llevaba siempre a la del ejercicio que descansas, aunque ya estuviera terminado). */
 function tIrEjercicio() {
   irA('hoy');
-  var i = tEj ? tEj.i : -1; if (i == null || i < 0 || !$('ex' + i)) return;
+  var d = tDestinoToque(), i = d ? d.i : -1; if (i == null || i < 0 || !$('ex' + i)) return;
   if (!abiertos[i]) { abiertos[i] = true; $('exBody' + i).classList.add('open'); }
-  setTimeout(function () { $('ex' + i).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  setTimeout(function () {
+    var rh = d.rir ? $('exRirH' + i) : null;
+    if (rh) rh.scrollIntoView({ behavior: 'smooth', block: 'center' }); else $('ex' + i).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 60);
+  if (d.rir && d.sigue) toast('Cuéntame cómo se sintió la serie ' + d.n + ' y pasas a ' + d.sigue);
 }
 /** "Anotar": a la casilla de reps de la serie que sigue; la píldora se va. */
 function tAnotar() {
@@ -3177,7 +3224,7 @@ function tick() {
   if (tModo === 'cuenta') {
     var r = Math.max(0, Math.round((tFin - Date.now()) / 1000));
     $('tVal').textContent = fmtSeg(r);
-    $('tEj').textContent = tEj && tEj.nombre ? '· ' + tEj.nombre : '';
+    $('tEj').textContent = tPildoraTexto();   // lo que sigue: "· Prensa" (otra serie) o "· Sigue: <siguiente ejercicio>" (23/10/2026)
     try { sonidoTick(r); } catch (x) {}
     if (r > 0) return;
     if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
@@ -3196,7 +3243,7 @@ function tick() {
   var nTxt = tSerieN ? 'Serie ' + tSerieN : '';
   if (tAvisado) { $('tVal').textContent = '+' + fmtSeg(el); $('tEj').textContent = '· ¿Ya hiciste la serie ' + tSerieN + '?'; }
   else if (tModo === 'yendo') { $('tVal').textContent = nTxt || 'Vamos'; $('tEj').textContent = '· ' + fmtSeg(el); }
-  else { $('tVal').textContent = '+' + fmtSeg(el); $('tEj').textContent = nTxt ? '· ' + nTxt : (tEj && tEj.nombre ? '· ' + tEj.nombre : ''); }
+  else { $('tVal').textContent = '+' + fmtSeg(el); $('tEj').textContent = nTxt ? '· ' + nTxt : tPildoraTexto(); }
 }
 /** El ejercicio que descansa se cerró ("Terminar aquí" o "No lo hice"): sin aviso de serie y sin su push; si ya pasó el 0, la píldora se va. */
 function tEjercicioCerrado(i) {
@@ -7209,16 +7256,9 @@ function sonidoDecir(texto) {
     speechSynthesis.speak(u); return true;
   } catch (e) { return false; }
 }
-/** Qué sigue después del descanso: la siguiente serie de este ejercicio (kg y reps del gris o lo escrito) o el siguiente ejercicio. */
-function sonidoSiguiente() {
-  var i = tEj ? tEj.i : -1, e = i >= 0 && sesionActual ? sesionActual.ejercicios[i] : null; if (!e) return null;
-  var filas = document.querySelectorAll('#exSets' + i + ' tr'), k = -1;
-  for (var j = 0; j < filas.length; j++) if (filas[j].dataset.done !== '1') { k = j; break; }
-  var nom = String(e.variantes[e._var || 'principal'].nombre || '').split(' (')[0];
-  if (k >= 0) { var ins = filas[k].querySelectorAll('input'); return { serie: k + 1, nombre: nom, kg: ins[0].value || ins[0].placeholder, reps: ins[1].value || ins[1].placeholder, seg: e.unidad === 'seg' }; }
-  var sig = sesionActual.ejercicios.filter(function (x, n) { return n > i && x.estado === 'pendiente'; })[0];
-  return sig ? { nombre: String(sig.variantes[sig._var || 'principal'].nombre || '').split(' (')[0] } : null;
-}
+/** Qué sigue después del descanso: la siguiente serie de este ejercicio (kg y reps del gris o lo escrito) o el siguiente ejercicio.
+ *  Desde el 23/10/2026 es la misma fuente que usa la píldora (`loQueSigue`, en el temporizador): voz, aviso del celular y píldora dicen lo mismo. */
+function sonidoSiguiente() { return loQueSigue(); }
 /** Texto del aviso de los 10 s. RESERVADO (22/10): ya NO se habla a los 10 s (la cue es un tono puntual); queda listo para los clips de voz pregrabados, si se graban. */
 function sonidoDiezTexto() {
   var x = null; try { x = sonidoSiguiente(); } catch (e) {}
