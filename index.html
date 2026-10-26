@@ -1321,7 +1321,7 @@
     <div class="wrap">
     <input type="date" id="dFecha" class="oculto" aria-hidden="true" tabindex="-1">
     <div class="card pr-peso" id="pesoCard">
-      <div class="dayh"><b id="cuKick">Tu peso de hoy</b><span class="g-fecha"><button onclick="cuDia(-1)" aria-label="Día anterior">‹</button><button onclick="cuDia(1)" aria-label="Día siguiente">›</button></span></div>
+      <div class="dayh"><b id="cuKick">Tu peso de hoy</b><span class="g-fecha" id="cuFechaSel"><button onclick="cuDia(-1)" aria-label="Día anterior">‹</button><button onclick="cuDia(1)" aria-label="Día siguiente">›</button></span></div>
       <div class="g-peso" id="cuPesoFila"><input id="dPeso" type="number" inputmode="decimal" step="0.1" placeholder="0,0" aria-label="Peso en kg"><button class="btn" id="dGuardar">Guardar</button></div>
       <div id="lgPesoAviso"></div>
       <div class="g-chips" id="cuChips"></div>
@@ -1337,7 +1337,7 @@
       <input id="fArchivo" class="oculto" type="file" accept="image/*" onchange="fotoProgresoElegida(this)">
       <div id="fComparar" style="margin-top:10px"></div>
     </div>
-    <button class="g-row" aria-expanded="false" onclick="gcToggle('cuMas', this)"><span class="n"><b>Más datos de la báscula</b><span class="s" id="cuMasSub">grasa, músculo, agua, visceral, ósea, metabolismo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="g-row" id="cuMasRow" aria-expanded="false" onclick="gcToggle('cuMas', this)"><span class="n"><b>Más datos de la báscula</b><span class="s" id="cuMasSub">grasa, músculo, agua, visceral, ósea, metabolismo</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="cuMas">
       <div class="row">
         <div><label for="dGrasa">Grasa (%)</label><input id="dGrasa" type="number" inputmode="decimal" step="0.1"></div>
@@ -1377,7 +1377,7 @@
     <button class="g-row" id="masRow" aria-expanded="false" onclick="gcToggle('masBox', this)"><span class="n"><b>Más gráficas</b><span class="s" id="masSub">grasa, masa magra, kilos movidos, comida y cardio</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="masBox"></div>
     <button class="g-row" id="shareRow" onclick="compartirSemana(this)"><span class="n"><b>Compartir mi semana</b><span class="s">Una tarjeta con tus sesiones y récords</span></span><svg class="g-ic" viewBox="0 0 24 24" style="stroke:var(--muted)"><path d="M12 3v12M7 8l5-5 5 5M5 15v4h14v-4"/></svg></button>
-    <div class="meta" style="margin:14px 4px 0;font-size:12px">Pésate en ayunas, después del baño, con la misma báscula. Un día raro no importa: mira el promedio.</div>
+    <div class="meta" id="cuPesoTip" style="margin:14px 4px 0;font-size:12px">Pésate en ayunas, después del baño, con la misma báscula. Un día raro no importa: mira el promedio.</div>
     </div>
   </section>
   <!-- COACH (boceto G: consejos sin IA + chat a pantalla completa) -->
@@ -1714,7 +1714,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610262026', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610262035', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2319,7 +2319,7 @@ function pintarHero() {
     '<div class="sec-h"><b>Aprovecha el día</b></div>' +
     '<div class="tip-row" onclick="abrirCardio()"><div class="ic">' + SVG.walk + '</div><div><div class="t">Camina o cardio suave 20–40 min</div><div class="s">A un ritmo en el que puedas hablar</div></div></div>' +
     '<div class="tip-row"><div class="ic">' + SVG.stretch + '</div><div><div class="t">Movilidad 10 min</div><div class="s">Cadera, hombros y espalda alta</div></div></div>' +
-    '<div class="tip-row" onclick="irA(\'cuerpo\')"><div class="ic">' + SVG.food + '</div><div><div class="t">Registra tu peso</div><div class="s">Y la comida de hoy en Comida</div></div></div>' : '';
+    ptTipDescansoHTML() : '';   // "Registra tu peso" solo con Medidas (bloque "Privacidad: el peso solo con Medidas")
   // Día completo HOY con una tarjeta de ESTA carga de página esperando calificación (e._avanzarAlRir, en memoria): la rutina sigue a la vista
   // para calificar la última serie, usar el botón «Terminar el día ›» (#exFin) y disparar el cierre. Antes, al cargar `proximaSes`, #rutina se
   // ocultaba y todo eso quedaba inalcanzable (bug ALTO del probador, 21/10/2026). Se gatea por el estado EN MEMORIA, NO por la marca g:cierre:
@@ -3093,7 +3093,8 @@ function mostrarCierre() {
   var pintarCome = function (c) {
     var b = $('cierreCome'); if (!b || !c || !c.objetivos) return;
     var falta = Math.round((c.objetivos.prot || 0) - ((c.totales && c.totales.prot) || 0));
-    b.innerHTML = falta > 0 ? '<b>Ahora come.</b> Te faltan ' + falta + ' g de proteína hoy.' + (falta >= 25 ? ' Por ejemplo: pechuga 150 g, 4 huevos o atún con arroz.' : '') : '<b>Proteína al día.</b> Ya cumpliste tu meta de hoy (' + Math.round(c.objetivos.prot || 0) + ' g). Come y descansa.';
+    b.innerHTML = c.objetivos.sinMeta ? '<b>Ahora come.</b> Una comida con proteína después de entrenar te ayuda a recuperar.'   // sin `medidas` no hay meta ni "ya cumpliste (0 g)"
+      : falta > 0 ? '<b>Ahora come.</b> Te faltan ' + falta + ' g de proteína hoy.' + (falta >= 25 ? ' Por ejemplo: pechuga 150 g, 4 huevos o atún con arroz.' : '') : '<b>Proteína al día.</b> Ya cumpliste tu meta de hoy (' + Math.round(c.objetivos.prot || 0) + ' g). Come y descansa.';
     if (typeof gdSupPendEn === 'function') gdSupPendEn('cierreSup', c);
     try { habPintarCierre(); } catch (xH) { console.error(xH); }
   };
@@ -3442,6 +3443,8 @@ $('dGuardar').onclick = function () {
 /* Chips (ayer, 7 días, meta), gráfica de 6 semanas y una frase llana sobre el ritmo */
 function gcCuerpoTendencia(p) {
   var box = $('cuTrend'), chipsBox = $('cuChips'), frase = $('cuFrase'); if (!box || !p) return;
+  // Sin `medidas` no hay peso que mostrar ni que pedir: sin frase, sin chips y sin gráfica (M1 del Auditor del PR #33: salía dos veces «Anota tu peso hoy…»)
+  if (!lgPermiso('medidas')) { box.innerHTML = ''; if (chipsBox) chipsBox.innerHTML = ''; if (frase) frase.textContent = ''; return; }
   var c = p.cuerpo || {}, hoy = hoyISO(), anio = Number(hoy.slice(0, 4));
   var fechaDe = function (x) { var f = anio + '-' + x; if (f > hoy) f = (anio - 1) + '-' + x; return f; };
   var pts = (c.peso || []).map(function (d) { return { f: fechaDe(d.x), y: Number(d.y) }; }).filter(function (d) { return d.f <= hoy; });
@@ -3636,16 +3639,23 @@ function pintarPanel(r) {
   var ini = r.fechaInicio || (estado && estado.fechaInicio) || '';
   $('kPanel').textContent = ini ? 'Desde el ' + gcFechaLarga(ini) : 'Tu progreso';
   var haySes = k.adherencia.hechas > 0 || (r.series || []).length > 0, hayPeso = c.actual.peso != null;
+  var tipP = $('cuPesoTip'); if (tipP) tipP.style.display = lgPermiso('medidas') ? '' : 'none';   // "Pésate en ayunas…" solo con Medidas
+  // Sin `medidas`, los subtítulos no prometen peso ni grasa que nunca se van a llenar (B3 del Auditor del PR #33)
+  var conMed = lgPermiso('medidas');
+  if ($('semSub')) $('semSub').textContent = conMed ? 'peso, sesiones, series, sueño y pasos' : 'sesiones, series, sueño y pasos';
+  if ($('masSub')) $('masSub').textContent = conMed ? 'grasa, masa magra, kilos movidos, comida y cardio' : 'kilos movidos, comida y cardio';
   ['recRow', 'semRow', 'masRow', 'shareRow'].forEach(function (id) { var el = $(id); if (el) el.style.display = haySes || hayPeso ? '' : 'none'; });
   if (!haySes && !hayPeso) {
-    $('panel').innerHTML = vacioHTML('Aquí verás cómo vas', 'Anota tu peso arriba y registra tu primera sesión en Hoy: tus cifras y gráficas se llenan solas.', 'Ir a Hoy', "irA('hoy')");
+    $('panel').innerHTML = vacioHTML('Aquí verás cómo vas', lgPermiso('medidas') ? 'Anota tu peso arriba y registra tu primera sesión en Hoy: tus cifras y gráficas se llenan solas.' : 'Registra tu primera sesión en Hoy: tus cifras y gráficas se llenan solas.', 'Ir a Hoy', "irA('hoy')");
     ['recBox', 'semBox', 'masBox'].forEach(function (id) { var el = $(id); if (el) el.innerHTML = ''; });
     return;
   }
   var tres = '<div class="g-3">' +
     '<div><b>' + k.adherencia.hechas + '</b><span>veces fuiste de ' + k.adherencia.programadas + '</span></div>' +
     '<div><b>' + (k.progreso.total ? k.progreso.mejoraron : '—') + '</b><span>ejercicios con más peso</span></div>' +
-    '<div><b>' + (c.cambio.peso != null ? signo(Math.round(c.cambio.peso * 10) / 10, 1) : '—') + '</b><span>' + (c.cambio.peso != null ? 'kg de peso corporal' : 'kg de peso · pésate 2 veces') + '</span></div></div>';
+    (lgPermiso('medidas') ? '<div><b>' + (c.cambio.peso != null ? signo(Math.round(c.cambio.peso * 10) / 10, 1) : '—') + '</b><span>' + (c.cambio.peso != null ? 'kg de peso corporal' : 'kg de peso · pésate 2 veces') + '</span></div></div>'
+      // sin `medidas` la tercera cifra nunca se llenaría ("— kg de peso corporal"): van las series hechas (mismo criterio que B3 del Auditor del PR #33)
+      : '<div><b>' + ((k.series && k.series.hechas) || 0) + '</b><span>series hechas</span></div></div>');
   var mej = (r.progreso || []).filter(function (p) { return p.cambioPct > 0.5; }).slice(0, 4);
   var maxP = mej.length ? Math.max.apply(null, mej.map(function (p) { return p.cambioPct; })) : 1;
   var mejH = mej.length ? '<div class="card" style="margin-top:12px"><b>Los que más subieron</b>' + mej.map(function (p) {
@@ -3682,11 +3692,12 @@ function gcRecordsHTML(r) {
 /* Semana a semana: la tabla (peso, grasa, sesiones, sueño, pasos) con la decisión de cada domingo */
 function gcSemanasHTML(r) {
   if (!r.semanas.length) return '<div class="meta" style="margin-top:8px">Al cerrar tu primera semana verás aquí el resumen.</div>';
-  return '<div class="scroll" style="margin-top:12px"><table class="res"><tr><th>Sem</th><th>Peso</th><th>Grasa</th><th>Ses.</th><th>Sueño</th><th>Pasos</th></tr>' +
+  var med = lgPermiso('medidas');   // sin `medidas`, sin las columnas Peso y Grasa (B3 del Auditor del PR #33)
+  return '<div class="scroll" style="margin-top:12px"><table class="res"><tr><th>Sem</th>' + (med ? '<th>Peso</th><th>Grasa</th>' : '') + '<th>Ses.</th><th>Sueño</th><th>Pasos</th></tr>' +
     r.semanas.slice().reverse().map(function (w) {
-      var pill = w.decision ? '<tr><td></td><td colspan="5" style="padding-top:0"><span class="pillx ' + (w.decision.indexOf('En rango') === 0 ? 'up' : 'warn') + '">' + esc(w.decision) + '</span></td></tr>' : '';
-      return '<tr><td><b>' + w.semana + '</b></td><td>' + (w.peso == null ? '—' : n1(w.peso)) + (w.cambio != null ? '<br><span class="meta">' + signo(Math.round(w.cambio * 10) / 10, 1, ' kg') + '</span>' : '') +
-        '</td><td>' + (w.grasa == null ? '—' : n1(w.grasa) + ' %') + '</td><td>' + w.sesiones + '</td><td>' + (w.sueno == null ? '—' : n1(w.sueno)) +
+      var pill = w.decision ? '<tr><td></td><td colspan="' + (med ? 5 : 3) + '" style="padding-top:0"><span class="pillx ' + (w.decision.indexOf('En rango') === 0 ? 'up' : 'warn') + '">' + esc(w.decision) + '</span></td></tr>' : '';
+      return '<tr><td><b>' + w.semana + '</b></td>' + (med ? '<td>' + (w.peso == null ? '—' : n1(w.peso)) + (w.cambio != null ? '<br><span class="meta">' + signo(Math.round(w.cambio * 10) / 10, 1, ' kg') + '</span>' : '') +
+        '</td><td>' + (w.grasa == null ? '—' : n1(w.grasa) + ' %') + '</td>' : '') + '<td>' + w.sesiones + '</td><td>' + (w.sueno == null ? '—' : n1(w.sueno)) +
         '</td><td>' + (w.pasos == null ? '—' : n1(w.pasos, 0)) + '</td></tr>' + pill;
     }).join('') + '</table></div>';
 }
@@ -3696,7 +3707,8 @@ function gcMasGraficasHTML(r) {
   armandoPanel = true; faltanGraficas = [];
   var tile = function (v, l, d) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div>' + (d ? '<div class="d">' + d + '</div>' : '') + '</div>'; };
   var pc = function (v) { return v == null ? '—' : v + ' %'; };
-  var html = '<div class="g-k" style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)">Cuerpo</div><div class="grid2" style="margin-top:6px">' +
+  // Sin `medidas`, sin la sección Cuerpo (peso, grasa, masa magra, IMC): nunca se va a llenar y no entra en «Aparecen con 2 registros: …» (B3 del Auditor del PR #33)
+  var html = !lgPermiso('medidas') ? '' : '<div class="g-k" style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)">Cuerpo</div><div class="grid2" style="margin-top:6px">' +
     tile(c.actual.peso != null ? n1(c.actual.peso) + ' kg' : '—', 'Peso', c.cambio.peso != null ? signo(c.cambio.peso, 1, ' kg') + ' desde el inicio' : '') +
     tile(c.actual.grasa != null ? n1(c.actual.grasa) + ' %' : '—', 'Grasa corporal', c.cambio.grasa != null ? signo(c.cambio.grasa, 1, ' puntos') + ' desde el inicio' : '') +
     tile(c.actual.magra != null ? n1(c.actual.magra) + ' kg' : '—', 'Masa magra', c.cambio.magra != null ? signo(c.cambio.magra, 1, ' kg') + ' desde el inicio' : 'Peso sin la grasa') +
@@ -3705,7 +3717,7 @@ function gcMasGraficasHTML(r) {
     chartBox('Peso (kg)', c.peso, 'line', 'var(--s1)', ' kg') +
     chartBox('Grasa corporal (%)', c.grasa, 'line', 'var(--s2)', ' %') +
     chartBox('Masa magra (kg)', c.magra, 'line', 'var(--s3)', ' kg');
-  html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);margin-top:14px">Entrenamiento</div>' + chartBox('Kilos movidos por semana', r.volumen, 'bar', 'var(--s1)', ' kg');
+  html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)' + (html ? ';margin-top:14px' : '') + '">Entrenamiento</div>' + chartBox('Kilos movidos por semana', r.volumen, 'bar', 'var(--s1)', ' kg');
   html += '<details class="mas"><summary>Más detalle</summary><div class="grid2" style="margin-top:8px">' +
     tile(pc(k.adherencia.pct), 'Asistencia', k.adherencia.hechas + ' de ' + k.adherencia.programadas + ' programadas') +
     tile(pc(k.ejercicios.pct), 'Ejercicios hechos', k.ejercicios.hechos + ' de ' + k.ejercicios.plan + ' · ' + k.ejercicios.omitidos + ' no hechos') +
@@ -3719,7 +3731,7 @@ function gcMasGraficasHTML(r) {
     tile((r.cardio ? r.cardio.minutos : 0) + ' min', 'Cardio', (r.cardio ? r.cardio.sesiones : 0) + ' sesiones') +
     tile(r.ejerciciosHechos.length, 'Ejercicios registrados', 'Su récord está en "Récords por ejercicio"') +
     '</div>' + chartBox('Calorías por día', nu.serie, 'bar', 'var(--s2)', ' kcal');
-  var faltan = faltanGraficas.length ? '<div class="meta" style="margin-bottom:10px"><b style="color:var(--ink)">Tus gráficas se llenan solas.</b> Aparecen con 2 registros: ' + faltanGraficas.map(esc).join(', ') + '. Pésate por la mañana, registra tus sesiones y lo que comes.</div>' : '';
+  var faltan = faltanGraficas.length ? '<div class="meta" style="margin-bottom:10px"><b style="color:var(--ink)">Tus gráficas se llenan solas.</b> Aparecen con 2 registros: ' + faltanGraficas.map(esc).join(', ') + '. ' + (lgPermiso('medidas') ? 'Pésate por la mañana, registra tus sesiones y lo que comes.' : 'Registra tus sesiones y lo que comes.') + '</div>' : '';
   faltanGraficas = []; armandoPanel = false;
   return faltan + html;
 }
@@ -4392,7 +4404,7 @@ function pintarComida(c) {
    Si al plan le faltan datos (pcDatos.falta), no se muestra una meta numérica: barras sin número y "Completar mi perfil". */
 function pintarMetaComida(c) {
   c = c || comidaDatos; if (!c || !$('cHoyMeta')) return;
-  var t = c.totales, o = c.objetivos, falta = !!(pcDatos && pcDatos.falta);
+  var t = c.totales, o = c.objetivos, falta = !!(pcDatos && pcDatos.falta) || !!(o && o.sinMeta);   // sin `medidas` no hay meta (objetivosNutricion_ → sinMeta)
   $('cHoyMeta').innerHTML = falta ? '<span class="faint">sin meta aún</span>'
     : n1(o.kcal, 0) + ' kcal · ' + n1(o.prot, 0) + ' g de proteína <button class="g-q" aria-label="De dónde sale la meta" onclick="gcToggle(\'cMetaInfo\', this)">?</button>';
   var barra = function (nom, v, obj, u, cls) {
@@ -4402,8 +4414,10 @@ function pintarMetaComida(c) {
   var protSup = Number(t.protSuplemento) || 0;
   $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, '', '') + barra('Proteína', t.prot, o.prot, 'g', 'prot') +
     (protSup > 0 && !falta ? '<div class="gd-sub">de comida ' + n1(Math.max(0, t.prot - protSup), 0) + ' g · proteína en polvo ' + n1(protSup, 0) + ' g</div>' : '') +
-    (falta ? '<div class="meta" style="margin-top:6px">Para calcular tu meta faltan datos.</div><button type="button" class="btn sec c-meta-btn" onclick="irAjustes(\'perfil\')">Completar mi perfil</button>' : '');
-  $('cMetaInfo').innerHTML = 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.' +
+    (falta ? (lgPermiso('medidas') ? '<div class="meta" style="margin-top:6px">Para calcular tu meta faltan datos.</div><button type="button" class="btn sec c-meta-btn" onclick="irAjustes(\'perfil\')">Completar mi perfil</button>'
+      // sin Medidas lo que falta es el peso, y es opcional (26/10/2026, dictamen de legal-gym, fila a): no se manda a Perfil, donde no se puede poner
+      : '<div class="meta" style="margin-top:6px">Para calcular tu meta necesitamos tu peso. Es opcional: si quieres, actívalo en Privacidad y datos.</div><button type="button" class="btn sec c-meta-btn" onclick="irAjustes(\'privacidad\')">Privacidad y datos</button>') : '');
+  $('cMetaInfo').innerHTML = o.sinMeta ? '' : 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.' +   // sin meta no hay de dónde sale
     (o.aviso ? '<div class="meta faint" style="margin-top:4px">' + esc(o.aviso) + '</div>' : '') + '<div id="cMetaCalc"></div>' + metaAdaptHTML(c.adaptativa);
   if (pcDatos && !falta) pintarMetaCalc(pcDatos);
 }
@@ -4417,7 +4431,7 @@ function pintarMomentos(c) {
   var st = plan ? pcEstado(plan) : null, iPlan = st && st.esHoy && st.ahora >= 0 ? st.ahora : -1;
   var momPlan = iPlan >= 0 ? plan.comidas[iPlan].momento : '';
   if (momPlan) momAhora = momPlan;   // la comida que toca ahora manda (si la de la hora ya quedó registrada, pasa a la siguiente)
-  var vacio = !c.registros.length && !plan ? vacioHTML(esHoy ? 'Nada anotado hoy' : 'Nada anotado ese día', esHoy ? 'Anota lo que comes y verás calorías y proteína contra tu meta. Si la IA está activa, basta con describirlo.' : 'Puedes anotar lo que comiste ese día; la semana se calcula con lo que haya.', '+ Agregar', "abrirAgregar(" + gdArg(esHoy ? momentoPorHora() : 'Almuerzo') + ")") : '';
+  var vacio = !c.registros.length && !plan ? vacioHTML(esHoy ? 'Nada anotado hoy' : 'Nada anotado ese día', esHoy ? 'Anota lo que comes y verás tus calorías y tu proteína del día. Si la IA está activa, basta con describirlo.' : 'Puedes anotar lo que comiste ese día; la semana se calcula con lo que haya.', '+ Agregar', "abrirAgregar(" + gdArg(esHoy ? momentoPorHora() : 'Almuerzo') + ")") : '';
   $('cMomentos').innerHTML = vacio + moms.map(function (m) {
     var items = c.registros.filter(function (x) { return (x.momento || '') === m; });
     var kc = items.reduce(function (a, x) { return a + (Number(x.kcal) || 0); }, 0), pr = items.reduce(function (a, x) { return a + (Number(x.prot) || 0); }, 0);
@@ -4627,7 +4641,8 @@ function pintarPlan(r) {
     $('pcRes').innerHTML = ''; $('pcRowSub').textContent = 'Primero elige tu objetivo arriba'; if (calc) calc.innerHTML = ''; pintarMomentos(); return;
   }
   if (r.bloqueado) { ahora.innerHTML = '<div class="pc-av consultar" style="margin-top:10px">' + esc(r.motivo) + '</div><div class="meta" style="margin-top:8px">' + esc(r.aviso) + '</div>'; $('pcRes').innerHTML = ''; $('pcRowSub').textContent = 'Sin plan con calorías por tu salud'; pintarMomentos(); return; }
-  if (r.falta) { ahora.innerHTML = ''; $('pcRes').innerHTML = '<div class="sug" style="margin-top:10px">' + esc(r.falta) + '</div>'; $('pcRowSub').textContent = 'Falta un dato para armar el plan'; pintarMetaComida(); pintarMomentos(); return; }
+  // Sin Medidas lo que falta es el peso y ya lo dice la tarjeta de arriba con su botón (pintarMetaComida): aquí no se repite (probador del PR 2, B4)
+  if (r.falta) { var sinPeso = !lgPermiso('medidas'); ahora.innerHTML = ''; $('pcRes').innerHTML = sinPeso ? '' : '<div class="sug" style="margin-top:10px">' + esc(r.falta) + '</div>'; $('pcRowSub').textContent = sinPeso ? 'Necesita tu peso: míralo arriba' : 'Falta un dato para armar el plan'; pintarMetaComida(); pintarMomentos(); return; }
   var st = pcEstado(r), m = r.metas, h = '';
   // 1) La comida de ahora va embebida en su fila del día (pintarMomentos); aquí solo "Día completo"
   ahora.innerHTML = st.ahora < 0 && st.esHoy ? '<div class="pa-ok" style="margin-top:12px">' + SVG_PA.check + 'Día completo: registraste las ' + r.comidas.length + ' comidas</div>' : '';
@@ -4743,7 +4758,7 @@ function pcRegistrar(i, b) {
 /* Lo básico de comida y descanso, con tus números (plegado por defecto) */
 function basicosHTML(b) {
   return b.items.map(function (x) { return '<div class="porque"><b>' + esc(x.titulo) + ':</b> ' + esc(x.texto) + '</div>'; }).join('') +
-    (b.peso ? '' : '<div class="meta">Registra tu peso en Progreso para ver tus números.</div>');
+    (b.peso || !lgPermiso('medidas') ? '' : '<div class="meta">Registra tu peso en Progreso para ver tus números.</div>')   // sin Medidas lo dice la tarjeta de arriba (B4 del probador);
 }
 /* Meta con tu gasto real (ingesta promedio + tendencia del peso): se ve en Comida y se activa con un toque */
 function metaAdaptHTML(ad) {
@@ -5286,7 +5301,7 @@ function alumnoDetalleHTML(a) {
       statAl('Semana', d.sesiones + '/' + d.meta, d.series + ' series') +
       statAl('Constancia', d.constancia.pct == null ? '—' : d.constancia.pct + '%', d.constancia.hechas + ' de ' + d.constancia.esperadas + ' en 4 semanas') +
       statAl('Peso', d.peso == null ? '—' : n1(d.peso), d.peso == null ? 'sin pesajes' : 'kg' + (d.cambioPeso == null ? '' : ' · ' + signo(d.cambioPeso, 1) + ' en 7 días')) +
-      statAl('Comida', d.comida.dias ? n1(d.comida.kcal, 0) : '—', d.comida.dias ? 'kcal · ' + n1(d.comida.prot, 0) + ' g prot (meta ' + n1(d.comida.metaKcal, 0) + ')' : 'no la registra') + '</div>';
+      statAl('Comida', d.comida.dias ? n1(d.comida.kcal, 0) : '—', d.comida.dias ? 'kcal · ' + n1(d.comida.prot, 0) + ' g prot' + (d.comida.metaKcal ? ' (meta ' + n1(d.comida.metaKcal, 0) + ')' : '') : 'no la registra') + '</div>';
     if (d.programa) h += '<div class="meta" style="margin-top:8px">' + esc(d.programa) + (d.bloque ? ' · ' + esc(d.bloque) : '') + '</div>';
     if (d.molestias) h += '<div class="alerta" style="margin-top:8px">Molestias: ' + esc(d.molestias) + '</div>';
     if (d.records.length) h += '<div class="kicker" style="margin-top:12px">Récords de la semana</div>' + d.records.map(function (x) { return '<div class="meta">🏆 ' + esc(x.ejercicio) + ': ' + esc(x.txt) + ' (+' + n1(x.mejora) + ' %)</div>'; }).join('');
@@ -5708,7 +5723,7 @@ function pintarResumenAjustes() {
     var med = saludSel.med.length;
     $('ajSubSalud').textContent = (nombres.length ? nombres.slice(0, 2).join(', ') + (nombres.length > 2 ? ' +' + (nombres.length - 2) : '') : 'Sin condiciones') + ' · ' + (med ? med + ' medicamento' + (med === 1 ? '' : 's') : 'sin medicamentos');
   }
-  if (c) $('ajSubComida').textContent = (c.nombre || 'Sin objetivo') + ' · ' + miles(c.kcal) + ' kcal · ' + c.prot + ' g' + (c.adaptativa ? ' · se ajusta con tu peso real' : '');
+  if (c) $('ajSubComida').textContent = (c.nombre || 'Sin objetivo') + ' · ' + (c.sinMeta ? 'sin meta (necesita tu peso)' : miles(c.kcal) + ' kcal · ' + c.prot + ' g' + (c.adaptativa ? ' · se ajusta con tu peso real' : ''));
   if (typeof gdResumenTelegram === 'function') gdResumenTelegram();
   if (p && p.ia && $('ajSubIA')) $('ajSubIA').textContent = geEstadoIATexto(p.ia);
 }
@@ -5716,7 +5731,8 @@ function pintarComidaAjustes(c) {
   ajData.comida = c; pintarResumenAjustes();
   if (!$('ajObj')) return;
   $('ajObj').innerHTML = OBJ_G.map(function (o) { return '<button type="button" class="' + (c.objetivo === o[0] ? 'on' : '') + '" aria-pressed="' + (c.objetivo === o[0]) + '" onclick="ajObjetivo(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
-  $('ajMeta').innerHTML = 'Meta de hoy: <b style="color:var(--ink)">' + miles(c.kcal) + ' kcal</b> y <b style="color:var(--ink)">' + c.prot + ' g de proteína</b>' + (c.fuente ? ' · ' + esc(c.fuente) : '') + '.' + (c.objetivo ? '' : ' Elige un objetivo para que el plan de comida se arme solo.');
+  $('ajMeta').innerHTML = c.sinMeta ? esc(c.texto || '')   // sin `medidas`: la frase de Comida, sin "0 kcal" (Auditor del PR #33, punto 7)
+    : 'Meta de hoy: <b style="color:var(--ink)">' + miles(c.kcal) + ' kcal</b> y <b style="color:var(--ink)">' + c.prot + ' g de proteína</b>' + (c.fuente ? ' · ' + esc(c.fuente) : '') + '.' + (c.objetivo ? '' : ' Elige un objetivo para que el plan de comida se arme solo.');
   if (c.aviso) $('ajMeta').innerHTML += '<div class="meta faint" id="ajSinAjuste" style="margin-top:6px">' + esc(c.aviso) + '</div>';   // sin ajuste de calorías: el objetivo se ve, con el porqué
 }
 function ajObjetivo(id) {
@@ -5907,7 +5923,7 @@ function gdMostrarCierre(r, f) {
   var protTxt = { ok: 'Meta cumplida', bajo: 'Quedaste en ' + n1(prot, 0) + ' de ' + n1(o.prot || 0, 0) + ' g', alto: 'Más de la meta: está bien' };
   var bar = function (nom, v, obj, u, estado, txts, extra) {
     var p = obj ? Math.min(100, Math.round(v / obj * 100)) : 0;
-    return '<div class="gd-bar ' + esc(estado || '') + '"><div class="l"><span>' + nom + '</span><b>' + n1(v, 0) + (u ? ' ' + u : '') + ' <small>de ' + n1(obj, 0) + '</small></b></div><div class="tr"><i style="width:' + p + '%"></i></div>' +
+    return '<div class="gd-bar ' + esc(estado || '') + '"><div class="l"><span>' + nom + '</span><b>' + n1(v, 0) + (u ? ' ' + u : '') + (obj ? ' <small>de ' + n1(obj, 0) + '</small>' : '') + '</b></div><div class="tr"><i style="width:' + p + '%"></i></div>' +   // sin meta (sin `medidas`), sin "de 0"
       (txts[estado] ? '<div class="st">' + esc(txts[estado]) + '</div>' : '') + (extra || '') + '</div>';
   };
   var bien = st.kcal === 'ok' && st.prot === 'ok', box = $('gdCierre');
@@ -5916,6 +5932,7 @@ function gdMostrarCierre(r, f) {
     '<div class="g-title big">Así te <span class="' + (bien ? 'ok' : 'amber') + '">fue</span> hoy</div>' +
     '<div class="gd-bars">' + bar('Calorías', kcal, o.kcal, '', st.kcal, kcalTxt) +
       bar('Proteína', prot, o.prot, 'g', st.prot, protTxt, ps > 0 ? '<div class="de">de comida ' + n1(pc, 0) + ' g · proteína en polvo ' + n1(ps, 0) + ' g</div>' : '') + '</div>' +
+    (o.sinMeta && o.texto ? '<div class="meta" style="margin-top:6px">' + esc(o.texto) + '</div>' : '') +
     '<div id="gdCierreSup"></div>' +
     (man.items && man.items.length ? '<div class="g-box"><div class="t">Mañana te recomiendo</div><div style="margin-top:4px">' + gdItemsHTML(man.items, 4) + '</div></div>'
       : (man.resumen ? '<div class="g-box green"><b>Mañana.</b> ' + esc(man.resumen) + '</div>' : '')) +
@@ -6217,7 +6234,7 @@ function pintarTelegram() {
   var h;
   if (!t.bot) h = '<div class="gd-tg">El dueño aún no activó el bot de Telegram. Cuando lo haga, aquí podrás vincular tu cuenta y anotar lo que comes con un mensaje.</div>';
   else if (t.vinculado) h = '<div class="gd-ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><div class="n"><b>Vinculado como ' + esc(t.nombre || 'tú') + '</b><div class="s">' + (t.desde ? 'Desde el ' + esc(fechaCortaIso(String(t.desde).slice(0, 10))) + ' · ' : '') + '@' + esc(t.bot) + '</div></div></div>' +
-    '<div class="gd-tg" style="margin-top:10px">Escríbele al bot lo que comiste (o mándale una nota de voz o la foto de la tabla nutricional), tu peso ("peso 82,4"), o pregúntale /entreno y /comer.</div>' +
+    '<div class="gd-tg" style="margin-top:10px">Escríbele al bot lo que comiste (o mándale una nota de voz o la foto de la tabla nutricional), ' + (t.medidas !== false ? 'tu peso ("peso 82,4"), ' : '') + 'o pregúntale /entreno y /comer.</div>' +   // el peso solo con `medidas` (B1 del Auditor del PR #33)
     tgRecHTML(t) +
     '<button type="button" class="btn txt" onclick="gdTgDesvincular()">Desvincular</button>';
   else if (tgCodigo) h = '<div class="gd-tg">Tu código:</div><div class="gd-code">' + esc(tgCodigo.codigo) + '</div><div class="gd-code-l">Mándaselo al bot</div>' +
@@ -6379,9 +6396,12 @@ function guiaLista() { return [
     tips: ['Se vincula en Ajustes → Tu cuenta → Telegram, con un código.'],
     mock: '<div class="gu-chat"><div class="yo">Almorcé arroz, pollo a la plancha y ensalada</div><div>✅ Quedó en el almuerzo.<br>Vas en 1.270 de 2.250 kcal y 65 de 150 g de proteína.<br>Buena proteína: 42 g, lo que toca por comida.</div></div>',
     boton: { t: 'Vincular Telegram ahora', fn: "cerrarGuia(); irAjustes('telegram')" } },
-  { k: 'Progreso', t: 'Tu peso y tus récords', p: 'Pésate 2 o 3 veces por semana en la mañana. La app mira la tendencia, no el día. Aquí también están tus récords por ejercicio y tus fotos de progreso.',
-    tips: ['El peso sube 0,5 a 1 kg las primeras semanas con creatina: es agua, no grasa.'],
-    mock: '<div class="gu-kpi"><div><b>72,0 kg</b><small>−0,3 kg por semana</small></div><div><b>66 kg</b><small>Récord: press plano</small></div></div>' },
+  { k: 'Progreso', t: lgPermiso('medidas') ? 'Tu peso y tus récords' : 'Tus récords y tu constancia',   // sin Medidas no se pide pesarse (dictamen de legal-gym)
+    p: lgPermiso('medidas') ? 'Pésate 2 o 3 veces por semana en la mañana. La app mira la tendencia, no el día. Aquí también están tus récords por ejercicio y tus fotos de progreso.'
+      : 'Aquí ves tus récords por ejercicio, cuántas veces fuiste y tus gráficas. Si quieres seguir tu peso, puedes activarlo en Ajustes → Tu cuenta → Privacidad y datos (es opcional).',
+    tips: lgPermiso('medidas') ? ['El peso sube 0,5 a 1 kg las primeras semanas con creatina: es agua, no grasa.'] : ['Tus récords salen de las series que anotas en Hoy.'],
+    mock: lgPermiso('medidas') ? '<div class="gu-kpi"><div><b>72,0 kg</b><small>−0,3 kg por semana</small></div><div><b>66 kg</b><small>Récord: press plano</small></div></div>'
+      : '<div class="gu-kpi"><div><b>12</b><small>veces fuiste</small></div><div><b>66 kg</b><small>Récord: press plano</small></div></div>' },
   { k: 'Coach', t: 'Consejos de hoy', p: 'Cada día te dice qué subir, qué comer y cuándo descansar, con tus propios datos. Si el dueño te activa la IA, también puedes chatear con el Coach.',
     tips: ['Ajustes → Salud: cuéntale tus condiciones y medicamentos y todo se ajusta a eso.', 'Este recorrido queda en Ajustes → "Cómo funciona MilloFit".'],
     mock: '<div class="gu-tip"><i></i><span>Press plano: te quedó fácil. Pasa a 97,5 kg.</span></div><div class="gu-tip"><i></i><span>Vas en 65 g de proteína: una pechuga en la cena te acerca.</span></div>' }
@@ -6791,7 +6811,7 @@ function lgPintarOv(d) {
   }).join('') + '</div>';
   h += '<p class="lg-msg" id="lgOvMsg"></p>';
   h += '<div id="lgOvPaso1"><button type="button" class="btn" id="lgOvBtn" style="margin-top:14px" onclick="lgOvPedir()">Enviarme el código</button></div>';
-  h += '<div id="lgOvPaso2" style="display:none"><label for="lgOvCodigo">Código de 6 dígitos</label><input id="lgOvCodigo" class="lg-cod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">' +
+  h += '<div id="lgOvPaso2" style="display:none"><p class="lg-msg" id="lgOvBorra" style="margin:0 0 12px;font-weight:600"></p><label for="lgOvCodigo">Código de 6 dígitos</label><input id="lgOvCodigo" class="lg-cod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">' +
     '<button type="button" class="btn" id="lgOvFirmarBtn" style="margin-top:12px" onclick="lgOvFirmar()">Firmar y seguir</button>' +
     '<button type="button" class="btn txt" style="width:100%" onclick="lgOvVolver()">¿No te llegó? Revisa el correo no deseado o vuelve a pedirlo</button></div>';
   h += '<p class="lg-pie">Escribir el código equivale a tu firma electrónica (Ley 527 de 1999). Guardamos la prueba de lo que aceptaste: versión, fecha y desde dónde. ' +
@@ -6810,11 +6830,14 @@ function lgOvPedir(borrarFotos) {
   var fin = lgLeerFinalidades('lgo_');
   // Sin la casilla Fotos y con fotos guardadas: antes del código, qué hacemos con ellas (26/10/2026, bloque "Privacidad: fotos y borrado de cuenta")
   if (borrarFotos === undefined && pfHayQuePreguntar(d, fin)) { pfPreguntar(d.tieneFotos, function (b2) { lgOvPedir(!!b2); }, null); return; }
+  var borrar = ptOvBorrar(d, fin) || {};   // sin Salud o Medidas y con datos guardados: ¿borrarlos? (dictamen, fila g)
+  if (borrarFotos) borrar.fotos = true;
   var b = $('lgOvBtn'); b.disabled = true; b.textContent = 'Enviando…'; lgMsg('lgOvMsg', '');
-  api('pedirFirmaLegal', { documentos: (d.documentos || []).map(function (x) { return { id: x.id, version: x.version, sha256: x.sha256 }; }), finalidades: fin, mayorDeEdad: true, borrar: borrarFotos ? { fotos: true } : null })
+  api('pedirFirmaLegal', { documentos: (d.documentos || []).map(function (x) { return { id: x.id, version: x.version, sha256: x.sha256 }; }), finalidades: fin, mayorDeEdad: true, borrar: borrar.salud || borrar.medidas || borrar.fotos ? borrar : null })
     .then(function (r) {
       b.disabled = false; b.textContent = 'Enviarme el código';
       $('lgOvPaso1').style.display = 'none'; $('lgOvPaso2').style.display = '';
+      lgOvBorraPintar(r.borra);   // «Al firmar borramos: …» (B6 del Auditor del PR #33): lo arma el servidor, igual que en el correo
       lgMsg('lgOvMsg', r.mensaje, true); $('lgOvCodigo').focus();
     }).catch(function (x) {
       b.disabled = false; b.textContent = 'Enviarme el código';
@@ -6843,6 +6866,8 @@ function lgAvisosPantalla() {
   var med = lgPermiso('medidas'), pa = $('lgPesoAviso'), fila = $('cuPesoFila');
   if (pa) pa.innerHTML = med ? '' : lgAvisoHTML('Activa la autorización de medidas para guardar tu peso. Sin tu peso no calculamos tu meta de comida ni tus cargas iniciales.', 'medidas');
   if (fila) fila.style.display = med ? '' : 'none';
+  // Sin Medidas, en «Tu peso de hoy» solo queda el aviso: ni el ‹ › de los días ni «Más datos de la báscula» (probador del PR 2, B5)
+  ['cuFechaSel', 'cuMasRow', 'cuMas'].forEach(function (id) { var el = $(id); if (el) el.style.display = med ? '' : 'none'; });
   var sa = $('lgSaludAviso'); if (sa) sa.innerHTML = lgPermiso('salud') ? '' : lgAvisoHTML('Para usar tus condiciones y medicamentos, autoriza Salud.', 'salud');
   var fo = $('lgFotoAviso'), ng = window._fotosGuardadas || 0;
   if (fo) fo.innerHTML = lgPermiso('fotos') ? '' : ng ? pfAvisoProgresoHTML(ng) : lgAvisoHTML('Para guardar fotos de tu cuerpo, autoriza Fotos de progreso.', 'fotos');
@@ -7912,6 +7937,30 @@ function portadaHero(tipo, sImg) {
   return portadaUrl(m ? musc[m[1]] : 'cuerpo');     // default seguro: nunca se queda sin imagen ni con la foto vieja
 }
 /* ===== fin Portada ilustrada del hero ===== */
+/* ===== Privacidad: el peso solo con Medidas (26/10/2026; dictamen de legal-gym, hallazgos 2 y 3 y filas a, b, c, g) =====
+   Sin la finalidad `medidas` el peso no se guarda ni se usa: la app deja de pedirlo ("Registra tu peso", "Pésate…", "Anota tu peso arriba") y dice que
+   es opcional. Al volver a firmar sin Salud o sin Medidas teniendo esos datos, pregunta si se borran (como al quitarlas en Ajustes). Todo va en function:
+   pintarHero (al abrir) llama ptTipDescansoHTML antes de que termine el script. */
+/** La tercera idea del día de descanso: con Medidas, "Registra tu peso"; sin ella, la comida de hoy. */
+function ptTipDescansoHTML() {
+  if (lgPermiso('medidas')) return '<div class="tip-row" onclick="irA(\'cuerpo\')"><div class="ic">' + SVG.food + '</div><div><div class="t">Registra tu peso</div><div class="s">Y la comida de hoy en Comida</div></div></div>';
+  return '<div class="tip-row" onclick="irA(\'comida\')"><div class="ic">' + SVG.food + '</div><div><div class="t">Registra la comida de hoy</div><div class="s">En Comida, con lo que comiste</div></div></div>';
+}
+/**
+ * Al firmar (#lgOv) sin la casilla Salud o Peso y medidas teniendo esos datos guardados (y si antes no estaban ya apagadas), pregunta si se
+ * borran, con las mismas preguntas de Ajustes (lgCambiar). Devuelve el `borrar` para pedirFirmaLegal ({ salud?, medidas? }) o null.
+ */
+function ptOvBorrar(d, fin) {
+  d = d || {}; fin = fin || {};
+  var antes = d.actuales || null, b = {};
+  var quita = function (f) { return !fin[f] && !(antes && antes[f] === false); };
+  if (d.tieneSalud && quita('salud') && confirm('No marcaste Salud. ¿Borrar también tus condiciones, medicamentos y lesiones guardados? Si dices que no, se quedan guardados pero no se usan.')) b.salud = true;
+  if (d.tieneMedidas && quita('medidas') && confirm('No marcaste Peso y medidas. ¿Borrar también tu peso y las medidas de la báscula guardados? Si dices que no, se quedan guardados pero no se usan.')) b.medidas = true;
+  return b.salud || b.medidas ? b : null;
+}
+/** B6 del Auditor del PR #33: el paso del código recuerda qué se borra al firmar (el texto lo arma el servidor, textoBorrara_, y va igual en el correo). */
+function lgOvBorraPintar(t) { var el = $('lgOvBorra'); if (el) el.textContent = t || ''; }   // .lg-msg: rojo (cuidado) y se esconde vacío
+/* ===== fin Privacidad: el peso solo con Medidas ===== */
 /* ===== Vista previa de días futuros (22/10/2026) =====
  * Bug del Fundador (iPhone, "Tu semana"): tocar un día que VIENE (p. ej. hoy jueves 24, toca el sábado 26) no dejaba ver los ejercicios y,
  * peor, el día intermedio salía como "No fuiste". Causa: la tira y las filas de pintarSemanaTab llamaban a irFecha(f)+irA('hoy') para TODOS
