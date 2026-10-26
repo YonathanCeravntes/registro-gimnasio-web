@@ -1124,6 +1124,11 @@
   .g-dia.antes{color:var(--faint)} .g-dia.antes i{background:transparent}
   .g-fila.antes{opacity:.75} .g-fila.antes .t{color:var(--dim)}
   /* ===== fin Antes de empezar ===== */
+  /* ===== Sin ajuste de calorías: aviso del plan del entrenador (26/10/2026) ===== */
+  /* Línea gris (información, no siguiente paso) encima del texto del entrenador cuando habla de bajar calorías o peso y la persona marcó en Salud una
+     condición que bloquea (entrenadorHoy_ / verPlanEntrenador → aviso). El texto del entrenador no cambia. */
+  .ent-card .ent-aviso{margin:8px 0 0;line-height:1.35}
+  /* ===== fin Sin ajuste de calorías: aviso del plan del entrenador ===== */
   /* ===== Abdomen (26/10/2026): ejercicios sin carga (peso corporal) sin la casilla de kg ===== */
   .g-sets.sk td.kgc,.g-sets.sk td.kgu{display:none}
   /* Desaconsejado sin reemplazo (embarazo): el "Listo" no va en ámbar (no es el siguiente paso) */
@@ -1714,7 +1719,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610262035', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610262116', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -3968,7 +3973,7 @@ function pintarCoachFilas() {
   if (tiene) h += '<button class="g-row" onclick="abrirChat()"><span class="n"><b>Pregúntale al coach (IA)</b><span class="s">' + esc(r && r.ejemplo || '"Me duele el hombro con el press, ¿qué cambio?"') + '</span></span>' + CHEV + '</button>';
   else h += vacioHTML('Pregúntale al coach (IA)', esDueno ? 'Falta la clave en Render → registro-gimnasio-servidor → Environment. Con ella puedes pedir planes y resolver dudas por chat.' : geIaTexto(), esDueno ? 'Ir a Ajustes → IA' : '', esDueno ? "irAjustes('ia')" : '');
   var ent = (estado && estado.entrenador) || (r && r.entrenador);
-  if (ent && (ent.nota || ent.plan)) h += '<button class="g-row" onclick="gcIrEntrenador()"><span class="n"><b>Tu entrenador (persona)</b><span class="s">' + esc(ent.nota ? 'Nota del ' + fechaCortaIso(String(ent.nota.fecha).slice(0, 10)) + ': "' + ent.nota.texto + '"' : (ent.nombre || 'Tu entrenador') + ' te preparó un plan') + '</span></span>' + CHEV + '</button>';
+  if (ent && (ent.nota || ent.plan)) h += '<button class="g-row" onclick="gcIrEntrenador()"><span class="n"><b>Tu entrenador (persona)</b><span class="s">' + esc(ent.nota ? 'Nota del ' + fechaCortaIso(String(ent.nota.fecha).slice(0, 10)) + (ent.nota.aviso ? ' · ' + ent.nota.aviso : ': "' + ent.nota.texto + '"') : (ent.nombre || 'Tu entrenador') + ' te preparó un plan') + '</span></span>' + CHEV + '</button>';
   if (c && c.ajustes.length) h += '<button class="g-row" aria-expanded="false" onclick="gcToggle(\'coachAjustes\', this)"><span class="n"><b>Ajustes activos (' + c.ajustes.length + ')</b><span class="s">' + esc(c.ajustes.map(function (a) { return a.ejercicio; }).join(' · ')) + '</span></span>' + CHEV + '</button>' +
     '<div class="g-fold card" id="coachAjustes">' + c.ajustes.map(function (a) {
       return '<div class="ajuste"><b>' + esc(a.ejercicio) + '</b><div class="meta">' + descAjuste(a) + (a.motivo ? ' · ' + esc(a.motivo) : '') + ' · desde ' + esc(a.desde) + '</div><button class="btn ghost small" style="margin-top:6px" onclick="quitar(' + a.fila + ')">Quitar ajuste</button></div>';
@@ -4991,7 +4996,8 @@ var mpIa = { texto: '', resp: null, ocupado: false };
 function tarjetaEntrenadorPlan() {
   var r = mpIa.resp, de = r && r.deEntrenador;
   if (!de) return '';
-  return '<div class="card ent-card"><div class="kicker">📋 Plan de ' + esc(de.nombre) + '</div>' + (de.mensaje ? '<p class="ent-txt">' + esc(de.mensaje).replace(/\n/g, '<br>') + '</p>' : '') +
+  return '<div class="card ent-card"><div class="kicker">📋 Plan de ' + esc(de.nombre) + '</div>' + (de.aviso ? '<div class="g-line ent-aviso">' + esc(de.aviso) + '</div>' : '') +
+    (de.mensaje ? '<p class="ent-txt">' + esc(de.mensaje).replace(/\n/g, '<br>') + '</p>' : '') +
     '<div class="meta"><b style="color:var(--ink)">' + esc(r.resumen) + '</b></div>' + (r.notas.length ? '<ul class="meta" style="margin:6px 0;padding-left:18px">' + r.notas.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') +
     '<div class="meta" style="margin-top:6px">Revisa los días de abajo; cambia lo que quieras y toca <b>Guardar y usar este plan</b>.</div></div>';
 }
@@ -5197,9 +5203,12 @@ function pintarEntrenador(t) {
   var box = $('entrenadorBox'); if (!box) return;
   if (!t || (!t.nota && !t.plan)) { box.innerHTML = ''; return; }
   var h = '';
+  // aviso (26/10/2026): con una condición que bloquea, si el texto habla de bajar calorías o peso, una línea gris encima (el texto no cambia)
   if (t.nota) h += '<div class="card ent-card"><div class="kicker">💬 ' + esc(t.nombre) + ' · ' + fechaCortaIso(t.nota.fecha) + '</div>' +
+    (t.nota.aviso ? '<div class="g-line ent-aviso">' + esc(t.nota.aviso) + '</div>' : '') +
     '<p class="ent-txt">' + esc(t.nota.texto).replace(/\n/g, '<br>') + '</p><button class="btn sec small" onclick="notaLeida(\'' + idSeguro(t.nota.id) + '\', this)">Listo</button></div>';
   if (t.plan) h += '<div class="card ent-card"><div class="kicker">📋 ' + esc(t.nombre) + ' te preparó un plan</div>' +
+    (t.plan.aviso ? '<div class="g-line ent-aviso">' + esc(t.plan.aviso) + '</div>' : '') +
     (t.plan.texto ? '<p class="ent-txt">' + esc(t.plan.texto).replace(/\n/g, '<br>') + '</p>' : '') +
     (t.plan.dias.length ? '<div class="meta">' + t.plan.dias.length + ' día' + (t.plan.dias.length === 1 ? '' : 's') + ': ' + esc(t.plan.dias.join(' · ')) + '</div>' : '') +
     '<div class="acts" style="margin-top:10px"><button class="btn" onclick="abrirPlanEntrenador(\'' + idSeguro(t.plan.id) + '\', this)">Ver plan</button>' +
@@ -5301,7 +5310,7 @@ function alumnoDetalleHTML(a) {
       statAl('Semana', d.sesiones + '/' + d.meta, d.series + ' series') +
       statAl('Constancia', d.constancia.pct == null ? '—' : d.constancia.pct + '%', d.constancia.hechas + ' de ' + d.constancia.esperadas + ' en 4 semanas') +
       statAl('Peso', d.peso == null ? '—' : n1(d.peso), d.peso == null ? 'sin pesajes' : 'kg' + (d.cambioPeso == null ? '' : ' · ' + signo(d.cambioPeso, 1) + ' en 7 días')) +
-      statAl('Comida', d.comida.dias ? n1(d.comida.kcal, 0) : '—', d.comida.dias ? 'kcal · ' + n1(d.comida.prot, 0) + ' g prot' + (d.comida.metaKcal ? ' (meta ' + n1(d.comida.metaKcal, 0) + ')' : '') : 'no la registra') + '</div>';
+      statAl('Comida', d.comida.dias ? n1(d.comida.kcal, 0) : '—', d.comida.dias ? 'kcal · ' + n1(d.comida.prot, 0) + ' g prot al día' : 'no la registra') + '</div>';
     if (d.programa) h += '<div class="meta" style="margin-top:8px">' + esc(d.programa) + (d.bloque ? ' · ' + esc(d.bloque) : '') + '</div>';
     if (d.molestias) h += '<div class="alerta" style="margin-top:8px">Molestias: ' + esc(d.molestias) + '</div>';
     if (d.records.length) h += '<div class="kicker" style="margin-top:12px">Récords de la semana</div>' + d.records.map(function (x) { return '<div class="meta">🏆 ' + esc(x.ejercicio) + ': ' + esc(x.txt) + ' (+' + n1(x.mejora) + ' %)</div>'; }).join('');
