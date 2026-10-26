@@ -1665,7 +1665,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610261409', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610261750', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -3342,7 +3342,7 @@ function calc() {
   var ob = gcPanel && gcPanel.nutricion && gcPanel.nutricion.objetivos;
   $('estimaciones').innerHTML = r.gasto ? 'Tu cuerpo gasta unos <b style="color:var(--ink)">' + n1(r.gasto, 0) + ' kcal</b> al día' +
     (ob && ob.kcal ? '. Tu meta de comida: <b style="color:var(--ink)">' + n1(ob.kcal, 0) + ' kcal</b> y <b style="color:var(--ink)">' + n1(ob.prot, 0) + ' g de proteína</b>, la misma que ves en Comida.' : '.') +
-    ' <button class="g-q" aria-label="Cómo se calcula" onclick="gcInfo(\'Gasto estimado con ' + r.metodo + ' y tus días de entreno. La meta de comida sale de tu plan y tu objetivo; si activas la meta con tu gasto real, se ajusta cada domingo.\')">?</button>' : '';
+    ' <button class="g-q" aria-label="Cómo se calcula" onclick="gcInfo(\'Gasto estimado con ' + r.metodo + ' y tus días de entreno. ' + (gcPanel && gcPanel.sinAjusteCalorias ? 'Con lo que marcaste en Salud, tu meta de comida no baja de ese gasto ni se ajusta por tu peso.' : 'La meta de comida sale de tu plan y tu objetivo; si activas la meta con tu gasto real, se ajusta cada domingo.') + '\')">?</button>' : '';
 }
 ['dPeso','dGrasa','dEstatura'].forEach(function (id) { $(id).oninput = calc; });
 $('dFecha').onchange = cargarDiario;
@@ -3377,7 +3377,8 @@ function gcCuerpoTendencia(p) {
   if (a.length && b.length) chips.push('<span>' + signo(Math.round((prom(a) - prom(b)) * 10) / 10, 1, ' kg') + ' en 7 días</span>');
   var obj = p.objetivoPeso || 'ganar', rit = RITMO_META[obj] || RITMO_META.ganar, peso = ult ? ult.y : 0;
   var metaKg = peso ? Math.round((rit[0] + rit[1]) / 2 * peso / 100 * 10) / 10 : 0;
-  chips.push('<span class="warn">' + (obj === 'mantener' ? 'Meta: mantener el peso' : 'Meta: ' + signo(metaKg, 1) + ' por semana') + '</span>');
+  // Sin ajuste de calorías (getPanel().sinAjusteCalorias: embarazo, TCA…; 26/10/2026): sin meta de peso ni "quita 150 kcal"
+  if (!p.sinAjusteCalorias) chips.push('<span class="warn">' + (obj === 'mantener' ? 'Meta: mantener el peso' : 'Meta: ' + signo(metaKg, 1) + ' por semana') + '</span>');
   chipsBox.innerHTML = pts.length ? chips.join('') : '';
   // Gráfica: promedio semanal de las últimas 6 semanas
   var sem = (p.semanas || []).filter(function (w) { return w.peso !== null && w.peso !== undefined; }).slice(-6);
@@ -3394,11 +3395,11 @@ function gcCuerpoTendencia(p) {
     '<text x="' + (X(n - 1) - 26) + '" y="' + (Y(last) < 26 ? Y(last) + 20 : Y(last) - 10) + '" fill="#f5f3ee" font-size="12" font-weight="700" font-family="DM Sans">' + fmtNum(Math.round(last * 10) / 10) + '</text>' +
     sem.map(function (w, i) { return '<text x="' + X(i) + '" y="84" text-anchor="middle" fill="#8d8a82" font-size="10" font-family="DM Sans">S' + w.semana + '</text>'; }).join('') + '</svg>';
   var tramo = sem.slice(-4), ritmo = (tramo[tramo.length - 1].peso - tramo[0].peso) / Math.max(1, tramo[tramo.length - 1].semana - tramo[0].semana);
-  var txt = gcFraseRitmo(obj, ritmo, rit[0] * peso / 100, rit[1] * peso / 100);
+  var txt = p.sinAjusteCalorias ? txtSinAjustePeso() : gcFraseRitmo(obj, ritmo, rit[0] * peso / 100, rit[1] * peso / 100);
   box.innerHTML = cab + svg;
   if (frase) frase.textContent = txt;
 }
-function gcFraseRitmo(obj, ritmo, lo, hi) {
+function gcFraseRitmo(obj, ritmo, lo, hi) {   // sin ajuste de calorías no se llama: va txtSinAjustePeso()
   var r = Math.round(ritmo * 10) / 10, abs = fmtNum(Math.abs(r));
   if (obj === 'ganar') {
     if (ritmo >= lo && ritmo <= hi) return 'Vas subiendo ' + abs + ' kg por semana: justo lo que buscas. Tu meta de comida sigue igual.';
@@ -4313,7 +4314,8 @@ function pintarMetaComida(c) {
   $('cTotales').innerHTML = barra('Calorías', t.kcal, o.kcal, '', '') + barra('Proteína', t.prot, o.prot, 'g', 'prot') +
     (protSup > 0 && !falta ? '<div class="gd-sub">de comida ' + n1(Math.max(0, t.prot - protSup), 0) + ' g · proteína en polvo ' + n1(protSup, 0) + ' g</div>' : '') +
     (falta ? '<div class="meta" style="margin-top:6px">Para calcular tu meta faltan datos.</div><button type="button" class="btn sec c-meta-btn" onclick="irAjustes(\'perfil\')">Completar mi perfil</button>' : '');
-  $('cMetaInfo').innerHTML = 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.<div id="cMetaCalc"></div>' + metaAdaptHTML(c.adaptativa);
+  $('cMetaInfo').innerHTML = 'Meta ' + esc(o.fuente) + '. Carbohidratos ' + n1(o.carb, 0) + ' g · grasa ' + n1(o.grasa, 0) + ' g. Valores de las comidas aproximados.' +
+    (o.aviso ? '<div class="meta faint" style="margin-top:4px">' + esc(o.aviso) + '</div>' : '') + '<div id="cMetaCalc"></div>' + metaAdaptHTML(c.adaptativa);
   if (pcDatos && !falta) pintarMetaCalc(pcDatos);
 }
 /* Los momentos del día: lo registrado en cada uno; la comida de ahora resaltada y con la sugerencia del plan embebida
@@ -5471,7 +5473,8 @@ function bvEmpezar(hoy) {
 /* ---------- Elegir programa: carrusel + un solo panel (Ajustes → Programa y primer día) ---------- */
 var PROG_LLANO = {   // lema de 4 palabras y "para quién" sin jerga (informe UX)
   hipertrofia: { lema: 'Más músculo en todo', para: 'Más músculo en todo el cuerpo. Pecho, espalda y pierna dos veces por semana. Para cualquiera; 3 a 5 días.' },
-  definicion: { lema: 'Bajar grasa sin perder', para: 'Bajar grasa sin perder músculo. Pesas con descansos cortos, caminar más y comer un poco menos. 3 a 5 días.' },
+  definicion: { lema: 'Bajar grasa sin perder', para: 'Bajar grasa sin perder músculo. Pesas con descansos cortos, caminar más y comer un poco menos. 3 a 5 días.',
+    paraSinDeficit: 'Conservar el músculo y la fuerza. Pesas con descansos cortos y caminar más. 3 a 5 días.' },   // con getProgramas().sinAjusteCalorias
   gluteo: { lema: 'Énfasis en pierna', para: 'Más glúteo y pierna; el resto se mantiene. 3 a 5 días.' },
   torso: { lema: 'Espalda ancha', para: 'Espalda, hombros y pecho; pierna de mantenimiento. Mejor con 4 o 5 días.' },
   rotativo: { lema: 'Cada día todo', para: 'Cada día trabajas todo, y un músculo va fuerte. 3 a 5 días, sesiones cortas.' },
@@ -5492,7 +5495,7 @@ function selectorProgHTML(ctx) {
       '<b>' + esc(nombreProg(p.id, p.nombre)) + '</b><small>' + esc(l.lema || p.lema) + '</small></button>';
   }).join('') + '</div></div>';
   h += '<div class="pg-panel"><div class="pg-h"><b>' + esc(nombreProg(sel.id, sel.nombre)) + '</b>' + (ctx === 'aj' && programasCache.actual === sel.id ? '<span class="chip ok">Actual</span>' : '') + '</div>';
-  h += '<div class="meta">' + esc(ll.para || sel.publico) + '</div>';
+  h += '<div class="meta">' + esc((programasCache.sinAjusteCalorias && ll.paraSinDeficit) || ll.para || sel.publico) + '</div>';   // sin ajuste de calorías: sin "comer un poco menos"
   if (sel.mio) {
     h += '<div class="meta" style="margin-top:6px">' + (sel.configurado ? sel.sesiones + ' día' + (sel.sesiones === 1 ? '' : 's') + ' armado' + (sel.sesiones === 1 ? '' : 's') + '.' : 'Todavía no tiene días.') + '</div>';
     h += '<button type="button" class="btn sec" style="margin-top:10px" onclick="' + (ctx === 'bv' ? 'cerrarBienvenida();' : '') + 'abrirArmar()">' + (sel.configurado ? 'Editar mi plan →' : 'Armar mi plan →') + '</button>';
@@ -5622,6 +5625,7 @@ function pintarComidaAjustes(c) {
   if (!$('ajObj')) return;
   $('ajObj').innerHTML = OBJ_G.map(function (o) { return '<button type="button" class="' + (c.objetivo === o[0] ? 'on' : '') + '" aria-pressed="' + (c.objetivo === o[0]) + '" onclick="ajObjetivo(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
   $('ajMeta').innerHTML = 'Meta de hoy: <b style="color:var(--ink)">' + miles(c.kcal) + ' kcal</b> y <b style="color:var(--ink)">' + c.prot + ' g de proteína</b>' + (c.fuente ? ' · ' + esc(c.fuente) : '') + '.' + (c.objetivo ? '' : ' Elige un objetivo para que el plan de comida se arme solo.');
+  if (c.aviso) $('ajMeta').innerHTML += '<div class="meta faint" id="ajSinAjuste" style="margin-top:6px">' + esc(c.aviso) + '</div>';   // sin ajuste de calorías: el objetivo se ve, con el porqué
 }
 function ajObjetivo(id) {
   api('guardarSalud', { objetivo: id }).then(function () { toast('Objetivo: ' + (OBJ_G.filter(function (o) { return o[0] === id; })[0] || [])[1]); if (typeof pcDatos !== 'undefined') pcDatos = null; invalidarTodo(); cargarAjustes(); }).catch(err);
@@ -7875,6 +7879,12 @@ function vpSimpleHTML(d) {
     '<div class="g-line">' + esc(txt) + '</div>';
 }
 /* ===== fin Vista previa de días futuros ===== */
+/* ===== Sin ajuste de calorías (26/10/2026): embarazo, TCA, riñón 4–5… =====
+ * Con una condición de Salud que «bloquea», el servidor (sinAjusteCalorias_, Nutricion.gs) manda getPanel().sinAjusteCalorias, objetivoPeso null,
+ * semanas sin decisión y getComida().adaptativa = null. Aquí: Progreso → "Tu peso de hoy" sin "Meta: −0,6 kg por semana" y con esta frase en vez de
+ * "Quita unas 150 kcal al día" (gcFraseRitmo); el "?" del gasto no ofrece la meta con el gasto real. Todo en `function` (lo pinta cargarPanel). */
+function txtSinAjustePeso() { return 'Aquí ves tu registro. Tu comida y tu peso los guía tu equipo de salud.'; }
+/* ===== fin Sin ajuste de calorías ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
