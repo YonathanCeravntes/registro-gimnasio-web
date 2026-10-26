@@ -1113,6 +1113,12 @@
   /* En la hoja de vista previa (Semana → día futuro) las miniaturas NO abren el visor (fvDatosDe solo lo hace dentro de #proximaBox):
      por eso no deben parecer tocables. El visor de las fotos de ejercicio queda intacto en Hoy y en "Lo que viene". */
   #hojaOv .prox,#hojaOv .prox img.g-th{cursor:default}
+  /* ===== Peso de mancuernas (26/10/2026): qué se anota en la casilla ("kg c/u", "kg por mano") ===== */
+  /* La etiqueta la manda el servidor por variante (getSesion → kg, etiquetaCarga_). En la fila de la serie va debajo de "kg" ("c/u", o "por" y
+     "mano" en dos renglones) para que a 360 px no empuje el botón Listo fuera de la tarjeta; la ayuda va en gris (información, no siguiente paso). */
+  .g-sets td.u .u2{display:block;font-size:10px;line-height:1.1;color:var(--dim);white-space:normal;max-width:30px}
+  .g-kg{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
+  /* ===== fin Peso de mancuernas ===== */
 </style>
 </head>
 <body>
@@ -1659,7 +1665,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610231203', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610261409', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2452,6 +2458,7 @@ function tarjeta(e, i) {
       '<div class="g-pl"><div class="n"><b id="exPresc' + i + '"></b><div class="s" id="exPrescS' + i + '"></div></div><button type="button" class="g-q" aria-label="Qué significa" onclick="explicarRir(' + i + ')">?</button></div>' +
       '<div class="g-expl" id="exExpl' + i + '" style="display:none"></div>' +
       '<div id="exSug' + i + '"></div>' +
+      '<div class="g-kg" id="exKg' + i + '" style="display:none"></div>' +   // "Anota el peso de una mancuerna…" (26/10/2026, solo con mancuernas)
       '<table class="g-sets"><tbody id="exSets' + i + '"></tbody></table>' +
       '<div class="g-rir-h" id="exRirH' + i + '">¿Cómo se sintió la serie?</div>' +
       '<div class="g-rir" id="exRir' + i + '">' + RIR_OPC.map(function (r) { return '<button type="button" data-rir="' + r.rir + '" onclick="elegirRir(' + i + ',' + r.rir + ')">' + r.t + '</button>'; }).join('') + '</div>' +
@@ -2489,8 +2496,9 @@ function saludCompleto(e) { return String(e.salud.texto || '') + (e.salud.usarAl
  * La sugerencia del motor en UNA línea de acción: "Hoy: 80 kg, busca 12 reps" / "Hoy: 22 kg, vuelve a 8 reps" / "Hoy: ≈ 30 kg para empezar".
  * El texto completo (con "La última vez hiciste…") queda en la capa Más.
  */
-function sugLinea(sg, p, unidad) {
-  var t = String(sg && sg.texto || ''), c = sg && sg.carga != null ? fmtNum(sg.carga) + ' kg' : '', u = unidad === 'seg' ? ' s' : ' reps';
+function sugLinea(sg, p, unidad, kg) {
+  // kg = qué se anota ("kg c/u" con dos mancuernas, "kg por mano" con una a una mano; 26/10/2026). Sin él, "kg" como siempre.
+  var t = String(sg && sg.texto || ''), c = sg && sg.carga != null ? fmtNum(sg.carga) + ' ' + (kg || 'kg') : '', u = unidad === 'seg' ? ' s' : ' reps';
   var ref = sg && sg.ref, maxRep = 0;
   var r = /Última vez: (?:[\d.,]+ kg × )?([\d/]+)/.exec(t) || (ref && ref.resumen && !ref.parecido ? /×\s*([\d/]+)/.exec(ref.resumen) : null);
   if (r) maxRep = Math.max.apply(null, r[1].split('/').map(Number));
@@ -2589,6 +2597,9 @@ function pintar(i, v) {
   $('exChip' + i).innerHTML = btnEstado(e);
   $('ex' + i).className = 'ex g-ex st-' + e.estado + ($('ex' + i).classList.contains('g-next') ? ' g-next' : '');
   var p = e.prescripcion, sg = d.sugerencia, hoy = d.hoy || [], seg = e.unidad === 'seg';
+  // Qué se anota en la casilla (26/10/2026, etiquetaCarga_ del servidor): "kg c/u" (dos mancuernas), "kg por mano" (una, a una mano) o "kg"
+  var kgT = (d.kg && d.kg.txt) || 'kg', kgAria = (d.kg && d.kg.aria) || 'Carga en kg';
+  var kgC = (d.kg && (d.kg.corto || d.kg.txt)) || 'kg';   // en la fila corta "kg/mano" (a 360 px "Sugerido: 22 kg por mano" se cortaba)
   var n = Math.max(p.series, hoy.length, 1), hechas = Math.min(hoy.length, n);
   var completo = e.estado === 'hecho' && (hechas >= p.series || e._fin);
   var resumenHoy = hoy.map(function (s) { return (s.carga !== '' && s.carga != null ? fmtNum(Number(s.carga)) + '×' : '') + s.reps; }).join(' · ');
@@ -2597,7 +2608,7 @@ function pintar(i, v) {
   else if (completo) { res.className = 'ex-sug ok'; res.textContent = 'Hoy: ' + resumenHoy; }
   else if (e.estado === 'omitido') { res.className = 'ex-sug dim'; res.textContent = 'No hecho · ' + e.motivo; }
   else if (hechas) { res.className = 'ex-sug'; res.textContent = hechas + ' de ' + p.series + ' · ' + resumenHoy; }
-  else { res.className = 'ex-sug'; res.textContent = sg.carga != null ? 'Sugerido: ' + fmtNum(sg.carga) + ' kg' : String(sg.texto || '').split('. ')[0]; }
+  else { res.className = 'ex-sug'; res.textContent = sg.carga != null ? 'Sugerido: ' + fmtNum(sg.carga) + ' ' + kgC : String(sg.texto || '').split('. ')[0]; }
   $('exNo' + i).textContent = e.estado === 'omitido' ? 'Reabrir ›' : 'No lo hice ›';
   var th = $('exThumb' + i);
   if (d.imagenes.length) { th.src = d.imagenes[0]; th.alt = d.nombre + ' (toca para ampliar)'; th.className = 'thumb g-th'; } else th.className = 'thumb g-th none';
@@ -2610,9 +2621,12 @@ function pintar(i, v) {
   var ajv = e._ajuste && e._ajuste.hechas === hechas && !completo ? e._ajuste : null;   // ajuste por Fácil/Bien/Al límite de la última serie hecha
   // Con series hechas y sin elegir cómo se sintió la última: la línea sigue a lo que hiciste (no a la sugerencia de antes de empezar)
   var ultC = hechas && !seg && hoy[hechas - 1] && hoy[hechas - 1].carga !== '' && hoy[hechas - 1].carga != null ? Number(hoy[hechas - 1].carga) : NaN;
-  var sigue = !ajv && !isNaN(ultC) && ultC > 0 && hechas < p.series ? 'sigue con ' + fmtNum(ultC) + ' kg; dime cómo se sintió la serie ' + hechas + ' y lo ajusto' : '';
-  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : (ajv ? ajv.linea : sigue || sugLinea(sg, p, e.unidad));
+  var sigue = !ajv && !isNaN(ultC) && ultC > 0 && hechas < p.series ? 'sigue con ' + fmtNum(ultC) + ' ' + kgT + '; dime cómo se sintió la serie ' + hechas + ' y lo ajusto' : '';
+  var ref = sg.ref, linea = completo || e.estado === 'omitido' ? '' : (ajv ? ajv.linea : sigue || sugLinea(sg, p, e.unidad, kgT));
   $('exSug' + i).innerHTML = linea ? '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + (sg.aviso ? '<span class="nota">' + esc(sg.aviso) + '</span>' : '') + '</div>' : '';
+  // Una línea gris con lo que la app supone al leer el número (solo con mancuernas y antes de la primera serie): no se migra lo ya guardado
+  var kgAy = $('exKg' + i), ayuda = d.kg && d.kg.ayuda && !seg && !completo && e.estado !== 'omitido' && !hechas ? d.kg.ayuda : '';
+  if (kgAy) { kgAy.textContent = ayuda; kgAy.style.display = ayuda ? '' : 'none'; }
   // Capa Más: la alternativa y la sugerencia completa con la última vez
   $('exAlt' + i).innerHTML = o ? 'Cambiar a <button type="button" class="g-alt" onclick="cambiarVariante(' + i + ',\'' + otraV + '\')">' + esc(o.nombre) + '</button>' : '';
   $('exSugFull' + i).innerHTML = (sg.texto ? '<div class="g-k">Por qué</div>' + sugHTML(humanizarSug(sg.texto)) : '') +
@@ -2634,7 +2648,8 @@ function pintar(i, v) {
     var reps = done ? (h.reps !== undefined ? h.reps : '') : (pv ? pv.reps : '');
     var ant = k > 0 ? hoy[k - 1] : null, phCarga = !done && ajv ? ajv.carga : ant && ant.carga !== '' && ant.carga != null ? ant.carga : cargaRef;   // en gris: el ajuste por cómo se sintió, lo de la serie anterior o el sugerido
     filas += '<tr class="g-set' + (done ? ' done' : '') + '" data-done="' + (done ? 1 : 0) + '"' + (pv ? ' data-ed="1"' : '') + '><td class="n">' + (k + 1) + '</td>' +
-      '<td><input type="number" inputmode="decimal" step="any" aria-label="Carga en kg" value="' + esc(carga) + '" placeholder="' + esc(phCarga) + '" onfocus="this.select()"></td><td class="u">kg</td>' +
+      '<td><input type="number" inputmode="decimal" step="any" aria-label="' + esc(kgAria) + '" value="' + esc(carga) + '" placeholder="' + esc(phCarga) + '" onfocus="this.select()"></td>' +
+      '<td class="u">' + (kgT === 'kg' ? 'kg' : 'kg<span class="u2">' + esc(kgT.replace(/^kg /, '')) + '</span>') + '</td>' +
       '<td><input type="number" inputmode="numeric" aria-label="' + (seg ? 'Segundos' : 'Repeticiones') + '" value="' + esc(reps) + '" placeholder="' + esc(p.rmin) + '" onfocus="this.select()"></td><td class="u">' + (seg ? 's' : 'reps') + '</td>' +
       '<td class="b"><button type="button" class="g-listo" onclick="listo(' + i + ',' + k + ')">' + (done ? 'Hecha' : 'Listo') + '</button></td></tr>';
   }
@@ -2736,10 +2751,11 @@ function ajustarPorRir(i, sugerida) {
     if (inp.value === '' || tr.dataset.ed !== '1') { inp.value = ''; inp.placeholder = nueva; }   // lo escrito a mano se respeta
   });
   var busca = reps ? Math.min(Number(p.rmax) || reps, Math.max(Number(p.rmin) || reps, r >= 4 ? reps : r <= 1 ? Number(p.rmin) || reps : reps)) : Number(p.rmin) || '';
-  var linea = (nueva > base ? 'sube a ' + fmtNum(nueva) + ' kg' : nueva < base ? 'baja a ' + fmtNum(nueva) + ' kg' : 'sigue con ' + fmtNum(nueva) + ' kg') + (busca ? ', busca ' + busca + ' reps' : '') +
+  var kgT = (d.kg && d.kg.txt) || 'kg';   // "kg c/u" / "kg por mano" (26/10/2026)
+  var linea = (nueva > base ? 'sube a ' + fmtNum(nueva) + ' ' + kgT : nueva < base ? 'baja a ' + fmtNum(nueva) + ' ' + kgT : 'sigue con ' + fmtNum(nueva) + ' ' + kgT) + (busca ? ', busca ' + busca + ' reps' : '') +
     (nueva > base ? ' (la anterior te quedó fácil)' : nueva < base ? ' (la anterior fue al límite)' : r <= 1 ? ' (al límite era la meta)' : ' (así va bien)');
   e._ajuste = { hechas: hechas.length, carga: nueva, linea: linea };
-  e._ajusteTxt = 'Las que siguen van con ' + fmtNum(nueva) + ' kg.';
+  e._ajusteTxt = 'Las que siguen van con ' + fmtNum(nueva) + ' ' + kgT + '.';
   var hoyBox = $('exSug' + i); if (hoyBox) hoyBox.innerHTML = '<div class="g-hoy"><b>Hoy:</b> ' + esc(linea) + '</div>';
 }
 
@@ -7049,7 +7065,13 @@ function reePintarHoja(i, r) {
   if (!r.opciones.length) { b.innerHTML = vacioHTML('Sin opciones por ahora', r.vacio || 'No tengo otro ejercicio más fácil para este.', '', ''); return; }
   var mus = d.musculos && d.musculos.principal && d.musculos.principal.length ? d.musculos.principal.join(' y ').toLowerCase() : '';
   var conSeries = seriesHoy(e) > 0;
-  var h = '<p class="ree-intro">Hacen el mismo movimiento' + (mus ? ' y trabajan ' + esc(mus) : '') + ', pero son más fáciles de dominar. Van de la más estable a la menos.</p>';
+  // 26/10/2026: el servidor ordena primero las que trabajan TODOS los músculos principales de este ejercicio (las parciales van después) y puede sumar
+  // una del mismo nivel que sí los trabaja: el texto lo dice tal cual (antes: "más fáciles" y "de la más estable a la menos", que ya no siempre es cierto)
+  // Bajo 2 del Auditor: "Primero las que trabajan X como este" solo si la PRIMERA opción trabaja de verdad todos sus músculos principales (si no, ninguna
+  // los trabaja: p. ej. Fondos en paralelas = pecho y tríceps, y las opciones son solo de pecho) → entonces solo "de la más estable a la menos".
+  var prin0 = d.musculos && d.musculos.principal ? d.musculos.principal : [], m0 = (r.opciones[0].musculos && r.opciones[0].musculos.principal) || [];
+  var cubre0 = !!mus && prin0.every(function (m) { return m0.indexOf(m) >= 0; });
+  var h = '<p class="ree-intro">Hacen el mismo movimiento y son igual o más fáciles de dominar. ' + (cubre0 ? 'Primero las que trabajan ' + esc(mus) + ' como este; después, de la más estable a la menos.' : 'Van de la más estable a la menos.') + '</p>';
   r.opciones.forEach(function (o, k) {
     var foto = o.imagenes && o.imagenes.length
       ? '<img class="ree-th" src="' + esc(o.imagenes[0]) + '" alt="' + esc(o.nombre) + ' (toca para ampliar)" loading="lazy" decoding="async" onclick="reeFoto(' + k + ')">'
@@ -7788,7 +7810,7 @@ function vpEjCard(x) {
     (img ? '<img class="thumb g-th" alt="' + esc(nom) + '" loading="lazy" decoding="async" src="' + esc(img) + '">' : '<div class="thumb g-th"></div>') +
     '<div class="ex-info"><div class="g-l1">' + (x.rol ? '<span class="rol rol-' + esc(x.rol) + '">' + esc(x.rolTexto) + '</span>' : '') + '<span class="g-dosis">' + prescCorta(x.prescripcion, x.unidad) + '</span></div>' +
     '<div class="ex-name">' + esc(nom) + '</div>' +
-    (v.sugerencia && v.sugerencia.carga ? '<div class="ex-sug">Empieza con ≈ ' + fmtNum(v.sugerencia.carga) + ' kg</div>' : '') + '</div></div></div>';
+    (v.sugerencia && v.sugerencia.carga ? '<div class="ex-sug">Empieza con ≈ ' + fmtNum(v.sugerencia.carga) + ' ' + esc((v.kg && (v.kg.corto || v.kg.txt)) || 'kg') + '</div>' : '') + '</div></div></div>';   // "kg c/u" (26/10/2026)
 }
 /** "Lo que viene": muestra/oculta los ejercicios restantes EN EL SITIO (no pide nada; p.ejercicios ya está completo). Re-plegable. */
 function vpMas() {
