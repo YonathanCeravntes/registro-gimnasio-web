@@ -1164,6 +1164,7 @@
   .pb-sol>span{flex:1;min-width:0} .pb-sol b{color:var(--ink);font-weight:700} .pb-sol small{display:block;margin-top:2px;color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
   .pb-sol.urge{border-color:var(--bad)} .pb-sol.urge .pb-plazo{color:var(--bad);font-weight:700}
   .pb-sol .pb-btn{width:auto;flex-shrink:0;min-height:40px;padding:6px 12px;font-size:15px;color:var(--bad)}
+  .pb-sol .pb-disp{flex-shrink:0;max-width:112px;text-align:right;font-size:12.5px;line-height:1.35;color:var(--muted)}
   .btn.txt.pf-gris{color:var(--muted)}
   .pf-hoja .hoja-h b{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.05}
   /* ===== fin Privacidad: fotos y borrado de cuenta ===== */
@@ -1713,7 +1714,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610262017', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610262026', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1786,7 +1787,7 @@ function api(fn) {
     }
     return j;
   }).then(function (j) {
-    if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true, !!j.borrada); throw new Error(j.error || 'Error del servidor'); }
+    if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true); var er = new Error(j.error || 'Error del servidor'); if (j.codigo) er.codigo = j.codigo; throw er; }
     return j.r;
   });
 }
@@ -1877,14 +1878,13 @@ function llamarDirecto(url, fn, args, t, intento) {
   });
 }
 /* Sesión que el servidor ya no reconoce (venció, se cerró o la cuenta se borró): lo que esa sesión dejó guardado en este celular (la caché de
-   las pantallas, claves CACHE_V) se borra al momento (Ley 1581; probador, Bajo 1). Con la cuenta borrada (borrada: el servidor reconoce el
-   token de una cuenta que ya no existe; no revela si un correo existe) también lo que esperaba señal (cola), la lista del mercado y el enlace (cfg). */
-function mostrarVincular(tokenMalo, borrada) {
+   las pantallas, claves CACHE_V) se borra al momento (Ley 1581; probador del PR #32, Bajo 1). El servidor no guarda nada del token de una cuenta
+   borrada (Auditor, Bajo 1 = D7), así que el texto es neutro y vale para los dos casos. */
+function mostrarVincular(tokenMalo) {
   if (tokenMalo) { try { if (typeof invalidarTodo === 'function') invalidarTodo(); } catch (e) {} }
-  if (borrada) { try { ['cola', 'mercado', 'cfg'].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {} }
   var v = $('vincular'); v.classList.remove('hidden');
-  $('vincMsg').textContent = borrada ? 'Esta cuenta ya no existe: sus datos se borraron.' : tokenMalo ? 'Tu sesión venció o no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
-  if (tokenMalo && $('enMsg')) accMsg('enMsg', borrada ? 'Esta cuenta ya no existe: sus datos se borraron. Si quieres volver a usar MilloFit, crea una cuenta nueva.' : 'Tu sesión venció: entra de nuevo con tu correo y tu contraseña.');
+  $('vincMsg').textContent = tokenMalo ? 'Tu sesión ya no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
+  if (tokenMalo && $('enMsg')) accMsg('enMsg', 'Tu sesión ya no es válida. Si pediste borrar tu cuenta, ya no existe; si no, entra de nuevo con tu correo.');
   if (!$('accTabs')) return;
   // Llegó por el enlace de invitación: Crear cuenta con el código puesto. Desde Ajustes → "Cambiar mi contraseña": el paso del código.
   if (!tokenMalo && window.INV_CODIGO) { accVista('crear'); $('crInv').value = window.INV_CODIGO; $('crInvOk').style.display = 'block'; }
@@ -2051,7 +2051,9 @@ function hoyISO() { var d = new Date(); return d.getFullYear() + '-' + ('0'+(d.g
 function esDiaQueViene(f) { return !!f && String(f) > hoyISO(); }
 function n1(v, d) { return v == null || v === '' ? '—' : Number(v).toLocaleString('es-CO', { maximumFractionDigits: d == null ? 1 : d, minimumFractionDigits: d == null ? 0 : d }); }
 function signo(v, d, u) { return v == null ? '' : (v > 0 ? '+' : '') + n1(v, d) + (u || ''); }
-function err(e) { console.error(e); toast('Error: ' + (e && e.message ? e.message : e)); }
+function err(e) { errConsola(e); toast('Error: ' + (e && e.message ? e.message : e)); }
+/** A la consola, salvo la sesión que ya no vale (codigo 'token'): es el cierre de sesión esperado y la app ya muestra la entrada (B5 del probador, 26/10/2026). */
+function errConsola(e) { if (!(e && e.codigo === 'token')) console.error(e); }
 function fechaKicker(iso) { var p = iso.split('-'); var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); var n = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'][d.getDay()]; return DIA_LARGO[n].toUpperCase() + ' ' + d.getDate() + ' ' + MES_3[d.getMonth()]; }
 
 /* ---------- Pestañas ---------- */
@@ -2167,7 +2169,7 @@ function cargarEstado(sesionForzada) {
 var aperturaApp = Date.now(), cardioAbierto = false;
 var RIR_OPC = [{ t: 'Fácil', rir: 5, h: '4 o más sobraban: sube 10 % la próxima' }, { t: 'Bien', rir: 3, h: '2–3 en reserva: así es' }, { t: 'Al límite', rir: 1, h: '0–1 en reserva: baja un poco la siguiente' }];
 function toastBad(msg) { var t = $('toast'); t.classList.add('bad'); toast(msg); setTimeout(function () { t.classList.remove('bad'); }, 2700); }
-function errG(e) { console.error(e); toastBad('Error: ' + (e && e.message ? e.message : e)); }
+function errG(e) { errConsola(e); toastBad('Error: ' + (e && e.message ? e.message : e)); }
 function fechaEyebrow(iso) { var p = String(iso || '').split('-'); if (p.length !== 3) return ''; var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); var n = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'][d.getDay()]; var t = DIA_3[n] + ' ' + d.getDate() + ' ' + MES_3[d.getMonth()]; return t.charAt(0) + t.slice(1).toLowerCase(); }
 function gKey(tipo) { return 'g:' + tipo + ':' + (sesionActual ? sesionActual.fecha + ':' + sesionActual.codigo : ''); }
 function gGet(tipo) { try { return localStorage.getItem(gKey(tipo)); } catch (e) { return null; } }
@@ -6279,19 +6281,19 @@ function gePintarEstadoIA(ia) {
 var gePersonas = null;
 function geCargarPersonas() {
   var b = $('perBody'); if (!b) return;
-  api('getPersonas').then(function (r) { gePersonas = r.personas || []; gePintarPersonas(); })
+  api('getPersonas').then(function (r) { pbGuardarLista(r); gePintarPersonas(); })
     .catch(function (e) { b.innerHTML = '<div class="meta">No pude cargar las personas: ' + esc(e.message || e) + '</div>'; });
 }
 function gePintarPersonas() {
   var b = $('perBody'); if (!b) return;
   var lista = gePersonas || [];
-  if (!lista.length) { b.innerHTML = '<div class="meta">Todavía no se ha registrado nadie con tu código.</div>'; return; }
-  b.innerHTML = pbResumenHTML(lista) + lista.map(function (u, i) {
+  if (!lista.length) { b.innerHTML = '<div class="meta">Todavía no se ha registrado nadie con tu código.</div>' + pbSinCuentaHTML(); return; }
+  b.innerHTML = pbResumenHTML(lista) + pbSinCuentaHTML() + lista.map(function (u, i) {
     return '<div class="per-row"><div class="n"><b>' + esc(u.nombre || 'Sin nombre') + '</b><small>' + esc(u.correo || '') + (u.creado ? ' · desde ' + fechaCortaIso(String(u.creado).slice(0, 10)) : '') + '</small>' +
       (u.ia ? '<span class="tag">IA activa</span>' : '') + (u.pro ? '<span class="tag" style="margin-left:8px">Pro</span>' : '') + '</div>' +
       '<label class="per-sw" aria-label="IA para ' + esc(u.nombre || '') + '"><span>IA</span><input type="checkbox" id="perIa' + i + '"' + (u.ia ? ' checked' : '') + ' onchange="geAutorizar(' + i + ', this)"><i></i></label></div>' +
       pbSolicitudHTML(u, i);   // pidió borrar su cuenta: plazo y "Borrar ahora" (bloque "Privacidad: fotos y borrado de cuenta")
-  }).join('');
+  }).join('') + pbRegistrarHTML();   // "Registrar una solicitud que llegó por correo" (bloque "Privacidad: borrado, tanda 2")
 }
 function geAutorizar(i, inp) {
   var u = (gePersonas || [])[i]; if (!u) return;
@@ -6827,7 +6829,8 @@ function lgOvFirmar() {
   b.disabled = true; b.textContent = 'Firmando…';
   api('firmarLegal', { codigo: c }).then(function (r) {
     window.lgDatos = r; $('lgOv').classList.add('hidden');
-    toast('Listo: quedó firmado. Lo ves en Ajustes → Privacidad y datos.');
+    if (r.borrado && r.borrado.fotosFallidas) toastBad('Quedó firmado. ' + pfFallidasTxt(r.borrado.fotosFallidas) + ' Lo haces en Ajustes → Privacidad y datos.');
+    else toast('Listo: quedó firmado. Lo ves en Ajustes → Privacidad y datos.');
     if (r.borrado && r.borrado.fotos) pfTrasFotos();
     lgTrasCambio();
   }).catch(function (x) { b.disabled = false; b.textContent = 'Firmar y seguir'; lgMsg('lgOvMsg', x.message || x); });
@@ -8096,9 +8099,11 @@ function pfEstadoApagado(n) { return n ? 'Apagado · ' + pfFotosTxt(n) + (pfUna(
 function pfHayQuePreguntar(d, fin) { return !!(d && fin && !fin.fotos && (d.tieneFotos || 0) > 0 && !(d.actuales && d.actuales.fotos === false)); }
 function pfToastQuitar(r, antes) {
   var b = r && r.borrado || {}, n = b.fotos ? (b.fotosBorradas || 0) : (r && r.tieneFotos) || antes || 0;
-  if (b.fotos) return 'Fotos de progreso: permiso quitado y ' + (pfUna(n) ? '1 foto borrada' : n + ' fotos borradas');
+  if (b.fotos) return 'Fotos de progreso: permiso quitado y ' + (pfUna(n) ? '1 foto borrada' : n + ' fotos borradas') + (b.fotosFallidas ? '. ' + pfFallidasTxt(b.fotosFallidas) : '');
   return 'Fotos de progreso: permiso quitado.' + (n ? (pfUna(n) ? ' Tu foto queda guardada, sin mostrarse' : ' Tus ' + n + ' fotos quedan guardadas, sin mostrarse') : '');
 }
+/** Fotos que el servidor no pudo borrar (un error de la base o de Drive): siguen guardadas y se pueden volver a borrar (Medio 1 del Auditor). */
+function pfFallidasTxt(n) { return 'No pude borrar ' + (pfUna(n) ? '1 foto' : n + ' fotos') + '; vuelve a intentarlo.'; }
 /** Después de quitar el permiso o borrar: nada de lo viejo queda en pantalla ni en memoria (comparar, imágenes) y Progreso se vuelve a pedir. */
 function pfTrasFotos() {
   window._fotos = null; window._fotosGuardadas = 0;
@@ -8189,17 +8194,22 @@ function pfDescargarFotos(btn, msgId) {
   btn.disabled = true; btn.textContent = 'Preparando…'; lgMsg(msg, '');
   var fin = function (m, bien) { btn.disabled = false; btn.textContent = txt; if (m) lgMsg(msg, m, bien); };
   api('listarMisFotos').then(function (r) {
-    var lista = (r && r.fotos) || [], out = [], usados = {};
+    var lista = (r && r.fotos) || [], out = [], usados = {}, faltan = 0;
     if (!lista.length) { fin('No tienes fotos de progreso guardadas.'); return; }
     var paso = function (i) {
       if (i >= lista.length) {
+        var noEstaban = faltan ? (pfUna(faltan) ? '1 foto ya no estaba.' : faltan + ' fotos ya no estaban.') : '';
+        if (!out.length) { fin(noEstaban + ' No hay nada que descargar.'); return null; }
         var nombre = 'millofit-mis-fotos-' + hoyISO() + '.zip';
         pfGuardar(new Blob([pfZipBytes(out)], { type: 'application/zip' }), nombre, 'application/zip', 'Mis fotos de MilloFit');
-        fin('Listo: ' + (pfUna(lista.length) ? 'tu foto quedó' : 'tus ' + lista.length + ' fotos quedaron') + ' en ' + nombre + '.', true);
+        fin('Listo: ' + (pfUna(out.length) ? 'tu foto quedó' : 'tus ' + out.length + ' fotos quedaron') + ' en ' + nombre + '.' + (noEstaban ? ' ' + noEstaban : ''), true);
         return null;
       }
       btn.textContent = 'Preparando ' + (i + 1) + ' de ' + lista.length + '…';
-      return api('descargarMiFoto', lista[i].id).then(function (d) { out.push({ nombre: pfNombreFoto(lista[i], d.dataUrl, usados), bytes: pfBytes(d.dataUrl) }); return paso(i + 1); });
+      return api('descargarMiFoto', lista[i].id).then(function (d) {
+        if (!d || !d.dataUrl) { faltan++; return paso(i + 1); }   // su archivo ya no existe (yaNoEsta): se salta y se cuenta (B3 del probador)
+        out.push({ nombre: pfNombreFoto(lista[i], d.dataUrl, usados), bytes: pfBytes(d.dataUrl) }); return paso(i + 1);
+      });
     };
     return paso(0);
   }).catch(function (x) { fin('No pude preparar tus fotos: ' + (x && x.message || x)); });
@@ -8209,7 +8219,8 @@ function pfBorrarTodas(btn) {
   if (!confirm(pfUna(n) ? '¿Borrar tu foto de progreso? Se elimina de MilloFit y no se puede recuperar.' : '¿Borrar tus ' + n + ' fotos de progreso? Se eliminan de MilloFit y no se pueden recuperar.')) return;
   btn.disabled = true; btn.textContent = 'Borrando…';
   api('borrarMisFotos', {}).then(function (r) {
-    toast('Listo: ' + (pfUna(r.borradas) ? '1 foto borrada' : r.borradas + ' fotos borradas') + '.');
+    if (r.fallidas) toastBad((r.borradas ? 'Borré ' + (pfUna(r.borradas) ? '1 foto' : r.borradas + ' fotos') + '. ' : '') + pfFallidasTxt(r.fallidas));
+    else toast('Listo: ' + (pfUna(r.borradas) ? '1 foto borrada' : r.borradas + ' fotos borradas') + '.');
     pfTrasFotos();
     api('getLegal').then(lgPintarAjustes).catch(function () {});
   }).catch(function (x) { btn.disabled = false; btn.textContent = 'Borrar mis fotos'; errG(x); });
@@ -8260,22 +8271,25 @@ function pbResumenHTML(lista) {
   var pend = (lista || []).filter(function (u) { return u.borrado; }); if (!pend.length) return '';
   var urge = pend.some(function (u) { return u.borrado.aviso; });
   return '<div class="lg-aviso pb-res' + (urge ? ' urge' : '') + '"><span>' + (pend.length === 1 ? '1 persona pidió borrar su cuenta.' : pend.length + ' personas pidieron borrar su cuenta.') +
-    ' Tienes 15 días hábiles para hacerlo (Ley 1581): bórrala con «Borrar ahora».</span></div>';
+    ' Tienes 15 días hábiles para hacerlo (Ley 1581): ' + (pend.length === 1 ? 'bórrala' : 'bórralas') + ' con «Borrar ahora».</span></div>';
 }
 function pbSolicitudHTML(u, i) {
   var s = u && u.borrado; if (!s) return '';
   var plazo = s.vencida ? 'El plazo venció el ' + pbFecha(s.limite) + ': bórrala ya.' : s.aviso ? 'Lleva ' + s.habiles + ' de ' + s.plazo + ' días hábiles: quedan ' + s.quedan + ' (vence el ' + pbFecha(s.limite) + ').'
     : s.habiles ? 'Día hábil ' + s.habiles + ' de ' + s.plazo + ' (vence el ' + pbFecha(s.limite) + ').' : 'Vence el ' + pbFecha(s.limite) + ' (' + s.plazo + ' días hábiles).';
-  return '<div class="pb-sol' + (s.aviso ? ' urge' : '') + '"><span><b>Pidió borrar su cuenta el ' + esc(pbFecha(s.dia)) + '.</b> <span class="pb-plazo">' + esc(plazo) + '</span>' +
+  return '<div class="pb-sol' + (s.aviso ? ' urge' : '') + '"><span><b>' + (s.canal === 'correo' ? 'Pidió por correo borrar su cuenta el ' : 'Pidió borrar su cuenta el ') + esc(pbFecha(s.dia)) + '.</b> <span class="pb-plazo">' + esc(plazo) + '</span>' +
     (s.motivo ? '<small>“' + esc(String(s.motivo).slice(0, 140)) + '”</small>' : '') +
     (s.aMedias ? '<small class="pb-nota">El borrado anterior quedó a medias: toca «Borrar ahora» para terminarlo.</small>' : '') +
-    (s.usoDespues ? '<small class="pb-nota">Volvió a usar la app después de pedirlo (última vez: ' + esc(pbFecha(s.usoDespues)) + '). Si quieres, escríbele para confirmar antes de borrar.</small>' : '') + '</span>' +
-    '<button type="button" class="btn sec pb-btn" onclick="pbConfirmar(' + i + ')">Borrar ahora</button></div>';
+    (s.usoDespues ? '<small class="pb-nota">Volvió a usar la app después de pedirlo (última vez: ' + esc(pbFecha(s.usoDespues)) + '). Si quieres, escríbele para confirmar antes de borrar. La solicitud sigue vigente y el plazo corre igual.</small>' : '') +
+    (s.disponible ? '<small class="pb-nota">Le avisamos el ' + esc(s.acuseTxt || '') + ': así puede responder si no fue ella.</small>' : '') + '</span>' +
+    // Solicitud por correo que aún espera (esperaCorreo_, Supresion.gs; Medio 2 de seguridad-gym): en vez del botón, desde cuándo se puede
+    (s.disponible ? '<span class="pb-disp">Disponible desde el ' + esc(s.disponibleTxt || pbFecha(s.disponible)) + '</span>'
+      : '<button type="button" class="btn sec pb-btn" onclick="pbConfirmar(' + i + ')">Borrar ahora</button>') + '</div>';
 }
 function pbConfirmar(i) {
   var u = (gePersonas || [])[i]; if (!u) return;
   hojaAbrir({ titulo: 'Borrar la cuenta de ' + (u.nombre || u.correo), kicker: 'Personas e invitaciones', foco: 'pbCorreo',
-    html: '<p class="pf-p">Se borran para siempre su cuenta y todos sus datos: entrenos, comidas, peso y medidas, salud, fotos, Telegram y su acceso. No se puede deshacer.</p>' +
+    html: '<p class="pf-p">Se borran para siempre su cuenta y todos sus datos: entrenos, comidas, peso y medidas, salud, fotos, su vínculo con Telegram (los mensajes del chat los borra la persona en Telegram) y su acceso. No se puede deshacer.</p>' +
       '<p class="pf-p">Solo se conserva la prueba de lo que aceptó y de su solicitud (Ley 1581). Le llega un correo avisándole.</p>' +
       '<p class="pf-p" style="margin-bottom:6px">Para confirmar, escribe su correo: <b class="pb-correo">' + esc(u.correo || '') + '</b></p>' +
       '<input id="pbCorreo" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Correo de la persona" oninput="pbRevisar(' + i + ')">' +
@@ -8289,11 +8303,62 @@ function pbBorrar(i) {
   b.disabled = true; b.textContent = 'Borrando…'; lgMsg('pbMsg', '');
   api('borrarCuentaPersona', { id: u.id, confirmar: c.value }).then(function (r) {
     hojaCerrar();
-    gePersonas = r.personas || []; gePintarPersonas();
+    pbGuardarLista(r); gePintarPersonas();
     toast(r.yaBorrada ? 'Esa cuenta ya estaba borrada.' : 'Listo: borramos la cuenta de ' + (u.nombre || u.correo) + ' y todos sus datos. Le avisamos por correo.');
   }).catch(function (x) { b.disabled = false; b.textContent = 'Borrar la cuenta'; lgMsg('pbMsg', x && x.message || String(x)); });
 }
 /* ===== fin Privacidad: fotos y borrado de cuenta ===== */
+/* ===== Privacidad: borrado, tanda 2 (26/10/2026; dictamen del Auditor sobre #32): solicitudes por correo y sin cuenta en la lista =====
+   · Medio 2: la Política §9 ofrece pedir la supresión por correo. «Registrar una solicitud que llegó por correo» (registrarSolicitudCorreo) la deja
+     igual que una de la app (canal 'correo', el plazo corre desde el día en que llegó) y luego «Borrar ahora» con las mismas protecciones.
+   · Bajo 2: una solicitud de alguien que ya no está en la lista (`sinCuenta`) se ve como «Sin cuenta en la lista: revisa su libro a mano»; «Ya lo
+     revisé» la cierra (borrarCuentaPersona → registro de la ejecución, sin correo a la persona: D10).
+   Todo en function (no lee ningún var del final del script). */
+/** Guarda lo que trae getPersonas (o una respuesta que lo incluya): las personas y las solicitudes, también las de personas que ya no están. */
+function pbGuardarLista(r) {
+  if (r && r.personas) gePersonas = r.personas;
+  if (r && r.solicitudes) window.geSolicitudes = r.solicitudes;
+}
+function pbSinCuenta() { return (window.geSolicitudes || []).filter(function (s) { return s && s.sinCuenta; }); }
+function pbSinCuentaHTML() {
+  return pbSinCuenta().map(function (s, i) {
+    var plazo = s.vencida ? 'El plazo venció el ' + pbFecha(s.limite) + '.' : 'Vence el ' + pbFecha(s.limite) + '.';
+    return '<div class="pb-sol' + (s.aviso ? ' urge' : '') + '" id="pbSin' + i + '"><span><b>Sin cuenta en la lista: revisa su libro a mano.</b> <span class="pb-plazo">' + esc(plazo) + '</span>' +
+      '<small>' + esc(s.correo || s.nombre || s.id) + ' pidió borrar su cuenta el ' + esc(pbFecha(s.dia)) + ', pero ya no está en tu lista de personas. Busca y borra a mano lo que quede de su cuenta y luego cierra la solicitud.</small></span>' +
+      '<button type="button" class="btn sec pb-btn" style="color:var(--ink)" onclick="pbCerrarSinCuenta(' + i + ', this)">Ya lo revisé</button></div>';
+  }).join('');
+}
+function pbCerrarSinCuenta(i, btn) {
+  var s = pbSinCuenta()[i]; if (!s) return;
+  if (!confirm('¿Ya revisaste a mano lo que quedaba de la cuenta de ' + (s.correo || s.nombre || 'esa persona') + '? Al cerrar la solicitud queda el registro de que se atendió (no le llega correo).')) return;
+  btn.disabled = true;
+  api('borrarCuentaPersona', { id: s.id, confirmar: s.correo || '' }).then(function (r) {
+    pbGuardarLista(r); gePintarPersonas(); toast('Listo: la solicitud quedó cerrada.');
+  }).catch(function (x) { btn.disabled = false; errG(x); });
+}
+function pbRegistrarHTML() {
+  return '<button type="button" class="btn txt pf-gris" id="pbRegBtn" style="width:100%;margin-top:6px" onclick="pbRegistrarAbrir()">Registrar una solicitud que llegó por correo</button>';
+}
+function pbRegistrarAbrir() {
+  var hoy = hoyISO();
+  hojaAbrir({ titulo: 'Solicitud que llegó por correo', kicker: 'Personas e invitaciones', foco: 'pbRegCorreo',
+    html: '<p class="pf-p">Si alguien te pidió por correo que borres su cuenta, regístralo aquí. El plazo de 15 días hábiles corre desde el día en que llegó. A la persona le llega un correo diciendo que la recibimos. Después la borras con «Borrar ahora».</p>' +
+      '<label for="pbRegCorreo">Correo de su cuenta</label><input id="pbRegCorreo" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false">' +
+      '<label for="pbRegDia" style="margin-top:10px">Día en que llegó el correo</label><input id="pbRegDia" type="date" value="' + hoy + '" max="' + hoy + '">' +
+      '<label for="pbRegMotivo" style="margin-top:10px">Qué pidió (opcional)</label><textarea id="pbRegMotivo" rows="2" maxlength="500"></textarea>' +
+      '<button type="button" class="btn" id="pbRegEnviar" style="margin-top:12px" onclick="pbRegistrar()">Registrar la solicitud</button><p class="lg-msg" id="pbRegMsg"></p>' });
+  pfHojaLarga();
+}
+function pbRegistrar() {
+  var c = $('pbRegCorreo'), d = $('pbRegDia'), m = $('pbRegMotivo'), b = $('pbRegEnviar'); if (!c || !b) return;
+  var correo = String(c.value || '').trim();
+  if (!correo) { lgMsg('pbRegMsg', 'Escribe el correo de su cuenta.'); c.focus(); return; }
+  b.disabled = true; b.textContent = 'Registrando…'; lgMsg('pbRegMsg', '');
+  api('registrarSolicitudCorreo', { correo: correo, recibida: d && d.value || '', motivo: m && m.value || '' }).then(function (r) {
+    hojaCerrar(); pbGuardarLista(r); gePintarPersonas(); toast(r.mensaje);
+  }).catch(function (x) { b.disabled = false; b.textContent = 'Registrar la solicitud'; lgMsg('pbRegMsg', x && x.message || String(x)); });
+}
+/* ===== fin Privacidad: borrado, tanda 2 ===== */
 /* ===== Fin del programa y ciclo 2 (26/10/2026): resumen del ciclo y qué sigue =====
    Servidor: Ciclo.gs (getResumenCiclo → estado.resumenCiclo en getInicio, solo viendo hoy con el programa terminado) y empezarOtroCiclo({ variante, dias, entrada })
    en Extras.gs. La portada de "Programa terminado" muestra dos frases del resumen, "Ver el resumen" (hoja con la constancia y cada básico) y la sugerencia con su
