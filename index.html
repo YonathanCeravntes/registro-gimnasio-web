@@ -1721,7 +1721,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610262201', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610262210', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -8346,7 +8346,7 @@ function pbSolicitudHTML(u, i) {
     (s.disponible ? '<small class="pb-nota">Le avisamos el ' + esc(s.acuseTxt || '') + ': así puede responder si no fue ella.</small>' : '') +
     (s.prorroga ? '<small class="pb-nota pb-ojo">' + esc(s.prorroga) + '</small>' : '') +
     (s.sinAcuse ? '<small class="pb-nota pb-ojo">No pude mandarle el aviso a ' + esc(u.correo || '') + '. «Borrar ahora» se habilita 2 días hábiles después de que salga.</small>' : '') +
-    (s.canal === 'correo' && !s.aMedias ? '<button type="button" class="pb-link" onclick="pbRegistrarCancelacion(' + i + ', this)">Registrar que canceló</button>' : '') + '</span>' +
+    (s.canal === 'correo' && !s.aMedias && !s.tambienApp ? '<button type="button" class="pb-link" onclick="pbRegistrarCancelacion(' + i + ', this)">Registrar que canceló</button>' : '') + '</span>' +
     // Solicitud por correo que aún espera (esperaCorreo_, Supresion.gs; Medio 2 de seguridad-gym): en vez del botón, desde cuándo se puede; sin aviso, reenviarlo (tanda 3)
     (s.sinAcuse ? '<button type="button" class="btn sec pb-btn pb-reenv" onclick="pbReenviarAviso(' + i + ', this)">Reenviar aviso</button>'
       : s.disponible ? '<span class="pb-disp">Disponible desde el ' + esc(s.disponibleTxt || pbFecha(s.disponible)) + '</span>'
