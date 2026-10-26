@@ -1,5 +1,5 @@
-/* Service worker — MilloFit (versión 202610261750) */
-var V = 'gym-202610261750', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
+/* Service worker — MilloFit (versión 202610261814) */
+var V = 'gym-202610261814', MEDIA = 'gym-media-v2', MEDIA_MAX = 150;
 // './' es lo que pide la app al abrir (start_url); './index.html' era lo mismo bajado dos veces
 // Las portadas del hero (set V1, ~60 KB) van en el SHELL para que el banner no quede gris sin señal; se piden con ?v= y c.match usa ignoreSearch.
 var SHELL = ['./', './manifest.webmanifest', './icon-192.png', './icon-512.png', './portadas/v1-brazo.svg', './portadas/v1-cardio.svg', './portadas/v1-core.svg', './portadas/v1-cuerpo.svg', './portadas/v1-descanso.svg', './portadas/v1-espalda.svg', './portadas/v1-gluteo.svg', './portadas/v1-hombro.svg', './portadas/v1-isquios.svg', './portadas/v1-pecho.svg', './portadas/v1-pierna.svg'];

@@ -1119,6 +1119,11 @@
   .g-sets td.u .u2{display:block;font-size:10px;line-height:1.1;color:var(--dim);white-space:normal;max-width:30px}
   .g-kg{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
   /* ===== fin Peso de mancuernas ===== */
+  /* ===== Abdomen (26/10/2026): ejercicios sin carga (peso corporal) sin la casilla de kg ===== */
+  .g-sets.sk td.kgc,.g-sets.sk td.kgu{display:none}
+  /* Desaconsejado sin reemplazo (embarazo): el "Listo" no va en ámbar (no es el siguiente paso) */
+  .g-sets.ps tr.next .g-listo{background:var(--raise);color:var(--ink)}
+  /* ===== fin Abdomen ===== */
 </style>
 </head>
 <body>
@@ -1665,7 +1670,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610261750', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610261814', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2402,7 +2407,8 @@ function prescCorta(p, unidad) {
 }
 /** La misma dosis en palabras: "3 series · 10 a 12 reps" (o "3 series · 30 s"). */
 function prescLlana(p, unidad) {
-  var u = unidad === 'seg' ? ' s' : ' reps';
+  // 26/10/2026 (B2 del probador): el dead bug va "por lado"; las unidades son las mismas del servidor (prescripcion: reps por lado, reps por pierna)
+  var u = { seg: ' s', lado: ' reps por lado', pierna: ' reps por pierna' }[unidad] || ' reps';
   return p.series + (p.series === 1 ? ' serie' : ' series') + ' · ' + (p.rmin !== p.rmax ? p.rmin + ' a ' + p.rmax : p.rmin) + u;
 }
 /** "80 kg × 11/11/11 @2" → "80 kg: 11, 11 y 11 reps" (lo que viene del servidor, en palabras). */
@@ -2491,7 +2497,14 @@ function tarjeta(e, i) {
 var SVG_ALERTA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>';
 /** Aviso de salud en una línea: "Por la presión: deja 2–3…" → "Por la presión" (el texto completo va en el "?" y en Más). */
 function saludCorto(t) { t = String(t || ''); var m = /^([^:]{3,44}):/.exec(t); return m ? m[1] : (t.length > 58 ? t.slice(0, 56) + '…' : t); }
-function saludCompleto(e) { return String(e.salud.texto || '') + (e.salud.usarAlt ? ' Usa: ' + e.alternativa + '.' : ''); }
+function saludCompleto(e, s, v) {
+  // 26/10/2026: si la alternativa del plan tampoco sirve (el crunch con mancuerna también es crunch), el servidor manda la alternativa segura explícita (usar).
+  // Con `s` y `v` (M1 del probador): el aviso de UNA variante (variantes[v].salud); "usarOtra" = usa la otra variante. Sin ellos, el del ejercicio (e.salud).
+  s = s || e.salud; v = v || 'principal';
+  var otra = v === 'principal' ? e.alternativa : e.nombres[0];
+  var usar = s.usarAlt || s.usarOtra ? [otra] : (s.usar || []);
+  return String(s.texto || '') + (usar.length ? ' Usa: ' + usar.join(' o ') + '.' : '');
+}
 /**
  * La sugerencia del motor en UNA línea de acción: "Hoy: 80 kg, busca 12 reps" / "Hoy: 22 kg, vuelve a 8 reps" / "Hoy: ≈ 30 kg para empezar".
  * El texto completo (con "La última vez hiciste…") queda en la capa Más.
@@ -2502,16 +2515,18 @@ function sugLinea(sg, p, unidad, kg) {
   var ref = sg && sg.ref, maxRep = 0;
   var r = /Última vez: (?:[\d.,]+ kg × )?([\d/]+)/.exec(t) || (ref && ref.resumen && !ref.parecido ? /×\s*([\d/]+)/.exec(ref.resumen) : null);
   if (r) maxRep = Math.max.apply(null, r[1].split('/').map(Number));
+  if (sg && sg.porSalud) return t.replace(/\.$/, '');   // desaconsejado sin reemplazo (26/10/2026, B4): sin carga, la tarjeta no invita a hacerlo
   if (sg && sg.ampliar) return c + ', busca hasta ' + sg.ampliarA + u + ' (aún no subas el peso)';   // salto grande: amplía las reps antes de subir
   if (/^Descarga:/.test(t)) return (c || 'La misma variante') + ', suave: semana de descarga';
   if (/^¡Sube!/.test(t)) return c + ', vuelve a ' + p.rmin + u;
   if (/^Baja un poco/.test(t)) return c + ', un poco menos que la última vez';
   if (/^Mantén/.test(t)) { var obj = maxRep ? Math.min(p.rmax, maxRep + 1) : 0; return (c || 'La misma variante') + ', busca ' + (obj && obj > maxRep ? obj + u : '1 más en alguna serie'); }
   if (/^Completaste el rango\. Añade/.test(t)) return 'Añade 5–10 s por serie';
+  if (/^Completaste el rango con tu peso/.test(t)) return 'Súmale 1 o 2 reps por serie, o hazlo más lento';   // sin carga (26/10/2026)
   if (/^Completaste el rango:/.test(t)) return 'Más lento o con una mancuerna ligera';
   if (/empieza con ≈/.test(t)) { var por = /calculado de (?:tu última vez con |lo que alzas en )?([^.(]+)/.exec(t); return '≈ ' + c + (por ? ', calculado de ' + por[1].trim() : ' para empezar') + ' · ajusta en la primera serie'; }
   if (/te sobren 3–4 reps/.test(t)) return 'Elige una carga con la que te sobren 3 o 4 reps';
-  if (/RIR objetivo/.test(t)) { var rr = /\((\d+)\)/.exec(t); return 'Elige una carga que te deje ' + (rr ? rr[1] : p.rir) + ' reps de sobra'; }
+  if (/RIR objetivo/.test(t)) { var rr = /\((\d+)\)/.exec(t), nr = rr ? rr[1] : p.rir; return 'Elige una carga que te deje ' + nr + (String(nr) === '1' ? ' rep' : ' reps') + ' de sobra'; }
   return cortaSug(sg);
 }
 
@@ -2641,15 +2656,16 @@ function pintar(i, v) {
     // (tenía valores reales, no un gris). Así, deshacer una serie "Hecha" y volver a "Listo" no obliga a reescribir las reps (bug 1.3, 21/10/2026).
     var ins = tr.querySelectorAll('input'); if (tr.dataset.done !== '1' && ins.length === 2 && (tr.dataset.ed === '1' || ins[0].value !== '' || ins[1].value !== '')) previas[k] = { carga: ins[0].value, reps: ins[1].value };
   });
-  var filas = '', cargaRef = sg.carga != null ? sg.carga : '';
+  var filas = '', cargaRef = sg.carga != null && !d.sinCarga ? sg.carga : '';   // sin carga (26/10/2026): nunca kilos en gris
   for (var k = 0; k < n; k++) {
     var h = hoy[k] || {}, done = k < hechas, pv = !done && previas[k];
     var carga = done ? (h.carga !== undefined ? h.carga : '') : (pv ? pv.carga : '');
     var reps = done ? (h.reps !== undefined ? h.reps : '') : (pv ? pv.reps : '');
     var ant = k > 0 ? hoy[k - 1] : null, phCarga = !done && ajv ? ajv.carga : ant && ant.carga !== '' && ant.carga != null ? ant.carga : cargaRef;   // en gris: el ajuste por cómo se sintió, lo de la serie anterior o el sugerido
+    if (d.sinCarga) phCarga = '';   // sin carga (M1 del Auditor, 26/10/2026): nunca kilos en gris
     filas += '<tr class="g-set' + (done ? ' done' : '') + '" data-done="' + (done ? 1 : 0) + '"' + (pv ? ' data-ed="1"' : '') + '><td class="n">' + (k + 1) + '</td>' +
-      '<td><input type="number" inputmode="decimal" step="any" aria-label="' + esc(kgAria) + '" value="' + esc(carga) + '" placeholder="' + esc(phCarga) + '" onfocus="this.select()"></td>' +
-      '<td class="u">' + (kgT === 'kg' ? 'kg' : 'kg<span class="u2">' + esc(kgT.replace(/^kg /, '')) + '</span>') + '</td>' +
+      '<td class="kgc"><input type="number" inputmode="decimal" step="any" aria-label="' + esc(kgAria) + '" value="' + esc(carga) + '" placeholder="' + esc(phCarga) + '" onfocus="this.select()"></td>' +
+      '<td class="u kgu">' + (kgT === 'kg' ? 'kg' : 'kg<span class="u2">' + esc(kgT.replace(/^kg /, '')) + '</span>') + '</td>' +
       '<td><input type="number" inputmode="numeric" aria-label="' + (seg ? 'Segundos' : 'Repeticiones') + '" value="' + esc(reps) + '" placeholder="' + esc(p.rmin) + '" onfocus="this.select()"></td><td class="u">' + (seg ? 's' : 'reps') + '</td>' +
       '<td class="b"><button type="button" class="g-listo" onclick="listo(' + i + ',' + k + ')">' + (done ? 'Hecha' : 'Listo') + '</button></td></tr>';
   }
@@ -2733,7 +2749,7 @@ function elegirRir(i, r) {
 function ajustarPorRir(i, sugerida) {
   var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'], p = e.prescripcion, filas = document.querySelectorAll('#exSets' + i + ' tr');
   e._ajuste = null; e._ajusteTxt = '';
-  if (!filas.length || !d || e._rir == null || e.unidad === 'seg') return;
+  if (!filas.length || !d || e._rir == null || e.unidad === 'seg' || d.sinCarga) return;   // sin carga (26/10/2026): no hay kilos que ajustar
   var hechas = Array.prototype.filter.call(filas, function (t) { return t.dataset.done === '1'; });
   if (!hechas.length || hechas.length >= filas.length) return;   // sin series hechas o ya no queda ninguna
   var ult = hechas[hechas.length - 1].querySelectorAll('input');
@@ -2779,10 +2795,11 @@ function listo(i, k) {
     if (!(repsN > 0) || repsN > topeReps) { reps.focus(); toastBad('Revisa ' + (seg ? 'los segundos' : 'las repeticiones') + ' de la serie ' + (k + 1) + ' (entre 1 y ' + topeReps + ')'); return; }
     var kgN = ins0[0].value === '' ? 0 : Number(String(ins0[0].value).replace(',', '.'));
     if (isNaN(kgN) || kgN < 0 || kgN > 1000) { ins0[0].focus(); toastBad('Revisa el peso de la serie ' + (k + 1) + ' (entre 0 y 1000 kg)'); return; }
+    var sinKg = !!(e.variantes[e._var || 'principal'] || {}).sinCarga;   // sin carga (M1 del Auditor, 26/10/2026): la casilla de kg no se ve, nunca se llena sola
     for (j = 0; j <= k; j++) {
       var ins = filas[j].querySelectorAll('input');
       if (ins[1].value === '') continue;
-      if (ins[0].value === '' && ins[0].placeholder !== '') ins[0].value = ins[0].placeholder;   // kg vacíos = el sugerido que se veía en gris
+      if (!sinKg && ins[0].value === '' && ins[0].placeholder !== '') ins[0].value = ins[0].placeholder;   // kg vacíos = el sugerido que se veía en gris
       marcarFila(filas[j], true);
     }
     // Hora de la serie (15/10/2026): solo la del "Listo" que tocaste; las de antes marcadas de golpe quedan sin hora (no sirven para medir el descanso)
@@ -7076,6 +7093,9 @@ function reePintarHoja(i, r) {
   var prin0 = d.musculos && d.musculos.principal ? d.musculos.principal : [], m0 = (r.opciones[0].musculos && r.opciones[0].musculos.principal) || [];
   var cubre0 = !!mus && prin0.every(function (m) { return m0.indexOf(m) >= 0; });
   var h = '<p class="ree-intro">Hacen el mismo movimiento y son igual o más fáciles de dominar. ' + (cubre0 ? 'Primero las que trabajan ' + esc(mus) + ' como este; después, de la más estable a la menos.' : 'Van de la más estable a la menos.') + '</p>';
+  // 26/10/2026 (abdomen con dolor lumbar u osteoporosis): las opciones "por tu salud" van primero y NO hacen el mismo movimiento; el texto lo dice tal cual
+  var nSalud = r.opciones.filter(function (o) { return o.porSalud; }).length;
+  if (nSalud) h = '<p class="ree-intro">Por tu salud van primero las que no hacen el movimiento que te conviene evitar.' + (nSalud < r.opciones.length ? ' Las demás hacen el mismo movimiento y son igual o más fáciles de dominar.' : '') + '</p>';
   r.opciones.forEach(function (o, k) {
     var foto = o.imagenes && o.imagenes.length
       ? '<img class="ree-th" src="' + esc(o.imagenes[0]) + '" alt="' + esc(o.nombre) + ' (toca para ampliar)" loading="lazy" decoding="async" onclick="reeFoto(' + k + ')">'
@@ -7885,6 +7905,61 @@ function vpSimpleHTML(d) {
  * "Quita unas 150 kcal al día" (gcFraseRitmo); el "?" del gasto no ofrece la meta con el gasto real. Todo en `function` (lo pinta cargarPanel). */
 function txtSinAjustePeso() { return 'Aquí ves tu registro. Tu comida y tu peso los guía tu equipo de salud.'; }
 /* ===== fin Sin ajuste de calorías ===== */
+/* ===== Abdomen (26/10/2026, tanda del probador en PR #31): salud de la variante que se ve y ejercicios sin carga =====
+ * M1: el aviso de salud se evaluaba solo sobre la variante principal (e.salud). Con dolor lumbar, tras cambiar el crunch por el dead bug, "Cambiar a Crunch
+ * inverso" llevaba a una tarjeta SIN aviso. El servidor manda la salud de cada variante (variantes[v].salud, saludVariante_) y además ya no ofrece una
+ * alternativa desaconsejada junto a un ejercicio seguro (alternativaSegura_). Aquí, después de pintar, el aviso corto (.g-salud) y el completo (.g-line.bad)
+ * son los de la variante que se ve (y se crean si la tarjeta no los tenía). Con un servidor viejo (sin `saludPorVariante`) no se toca nada.
+ * B2: sin carga (peso corporal sin lastre, `variantes[v].sinCarga` = sinCargaEj_): sin la casilla de kg, la fila dice "Con tu peso corporal" y "Hoy: Hazlo con
+ * tu peso: para con 2 de sobra" (antes "Elige una carga que te deje 2 reps de sobra").
+ * B4: desaconsejado sin reemplazo (embarazo; la sugerencia llega `porSalud`, sin carga): el "Listo" no va en ámbar (clase `ps`), la tarjeta no invita a hacerlo.
+ * Todo en function (hoisted) y envuelve `pintar` como los demás bloques. */
+function abdSalud(e, v) { var d = e.variantes[v]; return e.saludPorVariante ? (d && d.salud) || null : e.salud || null; }
+function sinKgLinea(p) {
+  var r = Number(p && p.rir);
+  return 'Hazlo con tu peso: ' + (p && p.rir !== '' && p.rir != null && !isNaN(r) ? (r === 0 ? 'hasta el fallo' : 'para con ' + r + ' de sobra') : 'sin llegar al fallo');
+}
+/** La línea "Hoy:" de un ejercicio sin carga: nunca kilos (M1 del Auditor). La primera vez "Hazlo con tu peso…"; después, la de siempre sin carga
+ *  ("Con tu peso, busca 10 reps"; al completar el rango, más reps o más lento). */
+function lineaSinCarga(sg, p, unidad) {
+  var t = String(sg && sg.texto || '');
+  if (/RIR objetivo|te sobren 3–4 reps/.test(t)) return sinKgLinea(p);
+  var x = {}; for (var k in (sg || {})) x[k] = sg[k]; x.carga = null;
+  return sugLinea(x, p, unidad, 'kg').replace(/^La misma variante/, 'Con tu peso');
+}
+function abdPintar(i) {
+  var e = sesionActual && sesionActual.ejercicios[i]; if (!e) return;
+  var v = e._var || 'principal', d = e.variantes[v]; if (!d) return;
+  // 1) Salud de la variante que se ve
+  var body = $('exBody' + i), mas = $('exMas' + i);
+  if (e.saludPorVariante && body && mas) {
+    var s = abdSalud(e, v), corto = body.querySelector('.g-salud'), largo = mas.querySelector('.g-line.bad');
+    if (!s) { if (corto) corto.style.display = 'none'; if (largo) largo.style.display = 'none'; }
+    else {
+      var txt = saludCompleto(e, s, v), pl = body.querySelector('.g-pl'), mus = $('exMus' + i);
+      if (!corto && pl) { corto = document.createElement('div'); corto.className = 'g-salud'; corto.dataset.i = i; pl.parentNode.insertBefore(corto, pl); }
+      if (corto) {
+        corto.innerHTML = SVG_ALERTA + '<span>' + esc(saludCorto(s.texto)) + '</span><button type="button" class="g-q" aria-label="Ver el aviso completo">?</button>';
+        corto.querySelector('button').onclick = function () { gcInfo(txt); };
+        corto.style.display = '';
+      }
+      if (!largo && mus) { largo = document.createElement('div'); largo.className = 'g-line bad'; largo.dataset.i = i; mus.parentNode.insertBefore(largo, mus.nextSibling); }
+      if (largo) { largo.textContent = txt; largo.style.display = ''; }
+    }
+  }
+  // 2) Sin carga: sin casilla de kg y "Hazlo con tu peso"
+  var tb = $('exSets' + i), tabla = tb && tb.parentNode;
+  var sg = d.sugerencia || {};
+  if (tabla && tabla.classList) { tabla.classList.toggle('sk', !!d.sinCarga); tabla.classList.toggle('ps', !!sg.porSalud); }   // B4: sin carga sugerida y sin "Listo" en ámbar
+  if (d.sinCarga && !sg.porSalud) {
+    var hoyBox = $('exSug' + i), res = $('exRes' + i);
+    if (hoyBox && hoyBox.innerHTML) hoyBox.innerHTML = '<div class="g-hoy"><b>Hoy:</b> ' + esc(lineaSinCarga(sg, e.prescripcion, e.unidad)) + (sg.aviso ? '<span class="nota">' + esc(sg.aviso) + '</span>' : '') + '</div>';
+    if (res && !(d.hoy || []).length && e.estado === 'pendiente' && /RIR objetivo|te sobren 3–4 reps/.test(String(sg.texto || ''))) res.textContent = 'Con tu peso corporal';
+  }
+}
+var abdPintarBase = typeof pintar === 'function' ? pintar : null;   // (las pruebas evalúan solo los bloques del final: ahí no hay pintar)
+if (abdPintarBase) pintar = function (i, v) { abdPintarBase(i, v); try { abdPintar(i); } catch (x) { console.error(x); } };
+/* ===== fin Abdomen ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
