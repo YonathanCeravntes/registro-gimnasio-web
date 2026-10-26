@@ -1129,6 +1129,28 @@
   /* Desaconsejado sin reemplazo (embarazo): el "Listo" no va en ámbar (no es el siguiente paso) */
   .g-sets.ps tr.next .g-listo{background:var(--raise);color:var(--ink)}
   /* ===== fin Abdomen ===== */
+  /* ===== Fin del programa y ciclo 2 (26/10/2026): resumen del ciclo y qué sigue (sugerencia en gris con la línea ámbar: el ámbar lleno es solo el botón) ===== */
+  .cf-fr{margin-top:8px;font-size:15px;line-height:1.4;color:var(--muted)}
+  .cf-ver{display:inline-flex;align-items:center;min-height:44px;border:0;background:none;padding:0;color:var(--dim);font:700 14px var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .cf-sug{margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--card2);border-left:3px solid var(--amber)}
+  .cf-sug.cf-pri{border-left-color:var(--raise2)}
+  .cf-sug .k,.cf-k{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  .cf-sug b{display:block;margin-top:3px;font-size:17px;line-height:1.25;color:var(--ink)}
+  .cf-sug .s{margin-top:4px;font-size:14px;line-height:1.4;color:var(--muted)}
+  .cf-aviso{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:14px;line-height:1.4;color:var(--muted)}
+  .cf-link{border:0;background:none;padding:0 2px;min-height:36px;color:var(--ink);font:700 14px var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .cf-op{display:block;width:100%;margin-top:8px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);text-align:left;font:700 16px var(--body);cursor:pointer}
+  .cf-op small{display:block;margin-top:3px;font-size:13px;font-weight:500;line-height:1.35;color:var(--muted)}
+  .cf-op.sug{border-color:var(--amber)} .cf-op .tag{font-size:11px;font-weight:800;color:var(--amber);white-space:nowrap}
+  .cf-cambios{margin-top:6px;font-size:14px;line-height:1.5;color:var(--muted)} .cf-cambios b{color:var(--ink);font-weight:600}
+  .cf-const{display:flex;align-items:baseline;gap:10px;margin:4px 0 6px} .cf-const b{font-family:var(--disp);font-size:32px;font-weight:800} .cf-const span{color:var(--muted);font-size:14px}
+  .cf-nota{margin-top:6px;font-size:12px}
+  .cf-b{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+  .cf-b b{display:block;font-size:15px;font-weight:600} .cf-b small{display:block;margin-top:2px;font-size:13px;color:var(--muted)}
+  .cf-est{flex-shrink:0;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--raise);color:var(--muted)} .cf-est.ok{background:var(--green-bg);color:var(--green-ink)}
+  .cf-comida{margin:8px 0 2px;padding:10px 14px} .cf-comida .s{margin-top:2px} .cf-comida .cf-link{min-height:32px;white-space:nowrap}
+  .cf-ocupado button{opacity:.5;pointer-events:none}
+  /* ===== fin Fin del programa y ciclo 2 ===== */
   /* ===== Privacidad: fotos y borrado de cuenta (26/10/2026): "¿Qué hacemos con tus N fotos?", Tus fotos en Privacidad y datos, solicitudes de borrado del dueño ===== */
   .pf-p{font-size:14px;line-height:1.5;color:var(--muted);margin:0 0 12px}
   .pf-p b{color:var(--ink);font-weight:700;word-break:break-all}
@@ -1691,7 +1713,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610261852', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610262017', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2170,7 +2192,7 @@ function pintarEstado(e, codigo) {
   document.querySelectorAll('.kick-sem').forEach(function (x) { x.textContent = kick; });
   $('kSemana').textContent = (pg.bloque ? pg.bloque.nombre + ' · ' : '') + 'Semana ' + e.semana + ' · ' + rangoSemana(e.plan);
   $('cicloCard').innerHTML = e.cicloTerminado && e.fecha !== hoyISO() ? '<div class="card"><h2>¡Terminaste ' + esc(pg.nombre || 'el programa') + '!</h2><div class="meta">Puedes repetirlo desde el principio con tus cargas de ahora (nuevo ciclo) o cambiar de programa en Ajustes. Elige el lunes en que empiezas.</div>' +
-    '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + (e.ciclo + 1) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
+    '<div class="row" style="margin-top:8px"><input type="date" id="cicloFecha" value="' + proximoLunesISO() + '"><button class="btn small" onclick="nuevoCiclo()">Ciclo ' + cicloSiguienteApp(e) + '</button><button class="btn sec small" onclick="irAjustes(\'programa\')">Cambiar programa</button></div></div>' : '';
   pintarEntrenador(e.entrenador);
   try { pintarPasos(e); } catch (xP) { console.error(xP); }   // nunca puede tumbar Hoy (03/10: PASOS aún sin cargar al abrir dejaba Hoy en "…")
   try { if (guiaAlLlegar) { guiaAlLlegar = false; mostrarGuia('bv'); } } catch (xG) { console.error(xG); }
@@ -2237,14 +2259,18 @@ function pintarHero() {
     sub = 'Tus cargas y tu historial se quedan';
     desc = 'El ciclo nuevo empieza hoy por la primera semana, con los pesos que ya manejas.';
     cta = gcta('', 'Empezar otro ciclo', '', 'empezarOtroCicloUI()') + gcta('line', 'Cambiar de programa', '', "irAjustes('programa')");
+    // 26/10/2026: con el resumen del ciclo y la sugerencia de qué sigue (cfPortada, bloque "Fin del programa y ciclo 2" al final del JS); sin él, lo de antes
+    try { var cf = cfPortada(e); if (cf) { sub = cf.sub; desc = cf.desc; cta = cf.cta; } } catch (xCF) { console.error(xCF); }
   } else if (tipo === 'sesion') {
     chip = ['pesas', 'Día de pesas']; titulo = nombreHoy;
-    sub = nEj + ' ejercicios · ' + min + ' min';
+    sub = nEj + ' ejercicios · ' + min + ' min' + (e.cicloPrograma && e.cicloPrograma.n >= 2 ? ' · ciclo ' + e.cicloPrograma.n : '');   // ciclo 2 en adelante (26/10/2026)
     var ligera = pg.descargaPuntual || (s && s.bloque && s.bloque.descarga) || (s && s.suave);
     if (!esHoy && esDiaQueViene(e.fecha)) cta = gcta('', 'Ver la sesión', 'Se registra ese día', 'irRutina()');
     else cta = gcta('', 'Empezar', ligera ? 'Hoy toca suave: ya viene marcado' : 'Calienta 5 min primero', 'irRutina()');
     // Descarga programada (no la de fatiga): se puede saltar si te sientes bien (Coleman 2024)
     if (s && s.bloque && s.bloque.programada && !pg.descargaPuntual) cta += gcta('line', 'Me siento bien', 'Saltar la descarga', 'saltarDescargaUI()');
+    // Ciclo 2 (26/10/2026): la descarga de la mitad es opcional y se dice en la portada
+    if (s && s.bloque && s.bloque.opcional && !pg.descargaPuntual) desc = 'En este ciclo esta descarga es opcional: si te sientes con fuerza, puedes saltarla.';
   } else if (tipo === 'sinregistro') {
     chip = ['bad', 'No fuiste']; titulo = 'No registraste esta sesión';
     sub = nombreHoy + ' · ' + nEj + ' ejercicios';
@@ -2265,6 +2291,8 @@ function pintarHero() {
     var pasadoA = e.fecha < hoyISO(), nuevoA = !!(e.plan && e.plan.conHistorial);
     chip = ['desc', nuevoA ? 'Plan anterior' : 'Antes de empezar']; titulo = nuevoA ? 'Antes de tu nuevo plan' : pasadoA ? 'Aún no habías empezado' : 'Aún no empieza';
     sub = antesTexto(e.plan && e.plan.inicioPrograma, nuevoA); desc = 'Este día no cuenta en tu semana.';
+    // Ciclo nuevo del MISMO programa («Empezar el ciclo 2»; pendiente 36): no es un plan nuevo sino el ciclo siguiente
+    var cicloA = antesCiclo(e.plan); if (cicloA) { chip = ['desc', 'Ciclo anterior']; titulo = 'Antes de tu nuevo ciclo'; sub = antesTexto(e.plan.inicioPrograma, cicloA); }
     cta = pasadoA ? gcta('line', 'Anotar lo que hice', 'Si ese día entrenaste', 'anotarNoFui()') : gcta('line', 'Quiero entrenar hoy', 'Elige la sesión', 'toggleSelector()');
   } else {
     chip = ['desc', e.antesDeEmpezar ? 'Antes de empezar' : 'Descanso']; titulo = e.antesDeEmpezar ? 'Aún no empieza' : 'Hoy descansas';
@@ -3517,7 +3545,10 @@ function pintarSemanaTab() {
   if (!estado) return;
   var e = estado, dias = e.plan.dias, nombres = e.nombres, pg = e.programa || {};
   var totalSem = pg.total && pg.porSemana ? Math.ceil(pg.total / pg.porSemana) : 0;
-  $('kSemanaG').textContent = 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '') + ' · ' + rangoSemana(e.plan).toLowerCase();
+  // B10 (26/10/2026): la misma «Semana X de Y» del programa que el encabezado de Hoy (semanaPrograma). e.semana cuenta desde FechaInicio, que cambiar de
+  // programa no mueve: tras terminar un programa y cambiar a otro decía «Semana 16 de 14» aquí y «Semana 1 de 14» en Hoy
+  var semP = ''; try { semP = semanaPrograma(e); } catch (xSP) { semP = ''; }
+  $('kSemanaG').textContent = (semP || 'Semana ' + e.semana + (totalSem ? ' de ' + totalSem : '')) + ' · ' + rangoSemana(e.plan).toLowerCase();
   // "futuro" = esDiaQueViene: después de HOY de verdad (hoyISO, no del día que estés viendo): tocar un día futuro solo lo muestra, no recalcula ni escribe (vpDia)
   var strip = dias.map(function (d) {
     var p = d.etiqueta.split(' ');
@@ -3544,7 +3575,7 @@ function pintarSemanaTab() {
     } else if (d.tipo === 'cardio') { t = 'Cardio suave'; s = '20–30 min a ritmo de conversación'; r = d.esHoy ? 'Hoy' : ''; }
     else if (d.tipo === 'sinregistro') { cls += ' sinreg'; t = nombres[d.sesion] || 'Pesas'; s = 'Sin registro ese día'; r = 'No fuiste'; }
     else if (d.tipo === 'nofui') { cls += ' nofui'; t = 'No entrenaste'; s = 'La sesión pasó al siguiente día de pesas'; }
-    else if (d.tipo === 'antes') { cls += ' antes'; t = antesNombre(e.plan); s = antesTexto(e.plan.inicioPrograma, e.plan.conHistorial); }   // gris, sin culpa: no cuenta en la semana
+    else if (d.tipo === 'antes') { cls += ' antes'; t = antesNombre(e.plan); s = antesTexto(e.plan.inicioPrograma, e.plan.cicloNuevo || e.plan.conHistorial); }   // gris, sin culpa: no cuenta en la semana; con cicloNuevo, «Tu ciclo 2 …» (pendiente 36)
     else if (d.cerrado) { cls += ' cerr'; t = d.cerrado.texto; s = dpSubCerrado(d.cerrado); r = d.esHoy ? 'Hoy' : ''; }   // festivo o día fijo: gris, no es un día fallado
     else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
@@ -4273,14 +4304,17 @@ function proximoLunesISO() { var d = new Date(); d.setDate(d.getDate() + ((8 - d
 /** "Empezar otro ciclo" de la portada: el mismo programa vuelve a la semana 1 desde hoy, sin borrar historial ni cargas (empezarOtroCiclo). */
 function empezarOtroCicloUI() {
   if (!confirm('¿Empezar otro ciclo del programa desde hoy? Tus registros y tus cargas se conservan.')) return;
-  api('empezarOtroCiclo').then(function (r) { if (!r || !r.ok) { toastBad((r && r.motivo) || 'No pude empezar el ciclo nuevo'); invalidarTodo(); cargarEstado(); return; } toast('Ciclo ' + r.ciclo + ' listo'); invalidarTodo(); $('fecha').value = hoyISO(); cargarEstado(); }).catch(err);
+  api('empezarOtroCiclo').then(function (r) { if (!r || !r.ok) { toastBad((r && r.motivo) || 'No pude empezar el ciclo nuevo'); invalidarTodo(); cargarEstado(); return; } toast('Ciclo ' + (r.cicloPrograma || r.ciclo) + ' listo'); invalidarTodo(); $('fecha').value = hoyISO(); cargarEstado(); }).catch(err);
 }
+/** El número del próximo ciclo de ESTE programa (B1 del Auditor, 26/10/2026): el contador global `Ciclo` cuenta los de todos los programas (al Fundador le decía «Ciclo 3»). */
+function cicloSiguienteApp(e) { return e && e.cicloPrograma && Number(e.cicloPrograma.n) >= 1 ? Number(e.cicloPrograma.n) + 1 : (Number(e && e.ciclo) || 1) + 1; }
 function nuevoCiclo() {
   var f = $('cicloFecha').value; if (!f) return;
   if (!confirm('¿Empezar el nuevo ciclo el ' + f + '? Tus registros anteriores se conservan.')) return;
   // Si el ciclo arranca en un día que viene (por defecto, el próximo lunes), la app se queda en hoy ("Aún no empieza · Tu plan arranca el …"):
   // nunca se "entra" a un día futuro (22/10/2026, encargo #77)
-  api('iniciarCiclo', f).then(function (r) { toast('Ciclo ' + r.ciclo + ' listo desde el ' + r.inicio); invalidarTodo(); $('fecha').value = esDiaQueViene(r.inicio) ? hoyISO() : r.inicio; cargarEstado(); }).catch(err);
+  // B1 del Auditor: el aviso dice el ciclo del programa (r.cicloPrograma), no el contador global
+  api('iniciarCiclo', f).then(function (r) { toast('Ciclo ' + (r.cicloPrograma || r.ciclo) + ' listo desde el ' + r.inicio); invalidarTodo(); $('fecha').value = esDiaQueViene(r.inicio) ? hoyISO() : r.inicio; cargarEstado(); }).catch(err);
 }
 
 /* =================== CARDIO =================== */
@@ -7953,7 +7987,7 @@ function vpFueraHTML() {
 function vpSimpleHTML(d) {
   var txt = d.cerrado ? (dpSubCerrado(d.cerrado) || 'No cuenta como día fallado') :
     d.tipo === 'cardio' ? 'Cardio suave 20–30 min a ritmo de conversación.' :
-    d.tipo === 'antes' ? antesNombre(estado && estado.plan) + ' · ' + antesTexto(estado && estado.plan && estado.plan.inicioPrograma, estado && estado.plan && estado.plan.conHistorial) + '.' : 'Descanso · camina 30 min o movilidad.';   // antes de empezar (26/10/2026)
+    d.tipo === 'antes' ? antesNombre(estado && estado.plan) + ' · ' + antesTexto(estado && estado.plan && estado.plan.inicioPrograma, estado && estado.plan && (estado.plan.cicloNuevo || estado.plan.conHistorial)) + '.' : 'Descanso · camina 30 min o movilidad.';   // antes de empezar (26/10/2026)
   return '<div class="meta" style="margin:2px 2px 10px">Vista previa · no registra nada</div>' +
     '<div class="g-line">' + esc(txt) + '</div>';
 }
@@ -7965,12 +7999,15 @@ function vpSimpleHTML(d) {
  * empezado", con "Anotar lo que hice" por si sí entrenaste: gana lo hecho). Va como `function` (lo usa pintarHero al abrir; no lee ningún `var` del final). */
 function antesTexto(ip, nuevo) {
   if (!ip) return '';
-  var quien = nuevo ? 'Tu plan nuevo' : 'Tu plan';   // nuevo = ya entrenaba antes (cambio de programa, otro ciclo; plan.conHistorial)
+  // nuevo = ya entrenaba antes (cambio de programa; plan.conHistorial) o, con un número ≥ 2, el ciclo nuevo del mismo programa (plan.cicloNuevo, pendiente 36)
+  var quien = typeof nuevo === 'number' && nuevo >= 2 ? 'Tu ciclo ' + nuevo : nuevo ? 'Tu plan nuevo' : 'Tu plan';
   if (ip === hoyISO()) return quien + ' arranca hoy';
   return quien + ' ' + (esDiaQueViene(ip) ? 'arranca' : 'arrancó') + ' el ' + fechaEyebrow(ip).toLowerCase();
 }
 /** Nombre del día "antes": para quien ya entrenaba no es "Antes de empezar" sino "Antes de tu nuevo plan" (B1 del probador, 26/10/2026). */
-function antesNombre(plan) { return plan && plan.conHistorial ? 'Antes de tu nuevo plan' : 'Antes de empezar'; }
+function antesNombre(plan) { return plan && Number(plan.cicloNuevo) >= 2 ? 'Antes de tu nuevo ciclo' : plan && plan.conHistorial ? 'Antes de tu nuevo plan' : 'Antes de empezar'; }
+/** El número del ciclo nuevo del MISMO programa que arrancó esta semana («Empezar el ciclo 2»; plan.cicloNuevo del servidor) o 0 (pendiente 36, 26/10/2026). */
+function antesCiclo(plan) { var n = plan && Number(plan.cicloNuevo); return n >= 2 ? n : 0; }
 /* ===== fin Antes de empezar ===== */
 /* ===== Sin ajuste de calorías (26/10/2026): embarazo, TCA, riñón 4–5… =====
  * Con una condición de Salud que «bloquea», el servidor (sinAjusteCalorias_, Nutricion.gs) manda getPanel().sinAjusteCalorias, objetivoPeso null,
@@ -8257,6 +8294,118 @@ function pbBorrar(i) {
   }).catch(function (x) { b.disabled = false; b.textContent = 'Borrar la cuenta'; lgMsg('pbMsg', x && x.message || String(x)); });
 }
 /* ===== fin Privacidad: fotos y borrado de cuenta ===== */
+/* ===== Fin del programa y ciclo 2 (26/10/2026): resumen del ciclo y qué sigue =====
+   Servidor: Ciclo.gs (getResumenCiclo → estado.resumenCiclo en getInicio, solo viendo hoy con el programa terminado) y empezarOtroCiclo({ variante, dias, entrada })
+   en Extras.gs. La portada de "Programa terminado" muestra dos frases del resumen, "Ver el resumen" (hoja con la constancia y cada básico) y la sugerencia con su
+   porqué: un botón para aceptarla y "Elegir otra cosa" (hoja con los días por semana, las variantes del ciclo, la Vuelta al gimnasio o cambiar de programa).
+   Nunca impone. Todo en `function` (pintarHero corre antes de que termine el script). Sin jerga: nada de "RIR", "mesociclo" ni "hipertrofia". */
+function cfR() { return estado && estado.resumenCiclo && estado.resumenCiclo.sugerencia ? estado.resumenCiclo : null; }
+function cfPortada(e) {
+  var r = e && e.resumenCiclo; if (!r || !r.sugerencia) return null;
+  var s = r.sugerencia, h = '';
+  (r.frases || []).slice(0, 2).forEach(function (f) { h += '<div class="cf-fr">' + esc(f) + '</div>'; });
+  h += '<button type="button" class="cf-ver" onclick="cfResumen()">Ver el resumen ›</button>';
+  h += '<div class="cf-sug"><div class="k">Te sugiero</div><b>' + esc(s.titulo) + '</b><div class="s">' + esc(s.porque) + '</div>' + cfAvisosHTML(s) + '</div>';
+  // B7 del probador: con «Primero, tu comida» el botón del ciclo (el único ámbar) queda a la vista sin deslizar a 390×844; el aviso de la comida va
+  // justo debajo, compacto y con su enlace (antes iba arriba, como tarjeta, y empujaba el botón debajo de la barra)
+  var cta = gcta('', s.boton, '', "cfAccion('sug')") + (s.primero ? cfComidaHTML(s.primero) : '');
+  cta += gcta('ghost', 'Elegir otra cosa', '', 'cfOtra()');
+  return { sub: r.subtitulo || 'Tus cargas y tu historial se quedan', desc: h, cta: cta };
+}
+function cfComidaHTML(p) {
+  return '<div class="cf-sug cf-pri cf-comida"><div class="k">' + esc(p.titulo) + '</div><div class="s">' + esc(p.texto) +
+    ' <button type="button" class="cf-link" onclick="cfAccion(\'primero\')">' + esc(p.boton) + ' ›</button></div></div>';
+}
+function cfAvisosHTML(s) {
+  return (s.avisos || []).map(function (a, i) {
+    return '<div class="cf-aviso">' + esc(a.texto) + (a.boton ? ' <button type="button" class="cf-link" onclick="cfAccion(\'aviso\',' + i + ')">' + esc(a.boton) + '</button>' : '') + '</div>';
+  }).join('');
+}
+/** Lo que se tocó: la sugerencia ('sug'), lo de la comida ('primero'), un aviso ('aviso', i) o una opción de "Elegir otra cosa" ('op', i). */
+function cfAccion(cual, i) {
+  var r = cfR(); if (!r) return;
+  var s = r.sugerencia, a = cual === 'sug' ? s.accion : cual === 'primero' ? (s.primero || {}).accion : cual === 'aviso' ? ((s.avisos || [])[i] || {}).accion : ((s.opciones || [])[i] || {}).accion;
+  if (!a) return;
+  a = JSON.parse(JSON.stringify(a));
+  if (cual === 'op' && a.tipo === 'ciclo' && cfDiasN() !== r.dias.actual) a.dias = r.dias.porN[cfDiasN()];
+  cfEjecutar(a);
+}
+function cfEjecutar(a) {
+  if (a.tipo === 'comida') { hojaCerrar(); irAjustes('comida'); return; }
+  if (a.tipo === 'programa') { hojaCerrar(); irAjustes('programa'); return; }
+  if (cfOcupado()) return;   // B11: ya hay uno en camino
+  var op = {}; if (a.variante) op.variante = a.variante; if (a.dias) op.dias = a.dias; if (a.entrada) op.entrada = true;
+  // Como el botón de antes, se confirma: empezar el ciclo nuevo no se deshace desde la app
+  if (!confirm('¿Empezar ' + (a.entrada ? 'con la Vuelta al gimnasio' : 'el ciclo nuevo') + ' desde hoy?' + (a.dias ? ' Con ' + a.dias.split(',').length + ' días: ' + a.dias.split(',').join(', ') + '.' : '') +
+               ' Tus registros y tus cargas se conservan.')) return;
+  hojaCerrar();
+  cfBloquear(true);
+  api('empezarOtroCiclo', op).then(function (r) {
+    if (!r || !r.ok) { cfBloquear(false); toastBad((r && r.motivo) || 'No pude empezar el ciclo nuevo'); invalidarTodo(); cargarEstado(); return; }
+    toast('Ciclo ' + (r.cicloPrograma || r.ciclo) + ' listo' + (r.entrada ? ': empiezas con la Vuelta al gimnasio' : r.dias ? ' con ' + r.dias.split(',').length + ' días' : ''));
+    invalidarTodo(); $('fecha').value = hoyISO(); cargarEstado();
+    window._cfOcupado = false;   // los botones viejos siguen desactivados hasta que la portada nueva los reemplace
+  }).catch(function (x) { cfBloquear(false); err(x); });
+}
+/* B11: «Empezar» desactivado mientras espera la respuesta (en window: el bloque es solo function) */
+function cfOcupado() { return !!window._cfOcupado; }
+function cfBloquear(si) {
+  window._cfOcupado = !!si;
+  var box = $('ctaBox'); if (!box) return;
+  box.classList.toggle('cf-ocupado', !!si);
+  box.querySelectorAll('button').forEach(function (b) { b.disabled = !!si; });
+}
+/* "Elegir otra cosa": días por semana (los tuyos o los sugeridos) y las opciones; la sugerida va marcada */
+function cfDiasN() { var b = document.querySelector('#cfDias button.on'); return b ? Number(b.dataset.n) : ((cfR() || {}).dias || {}).actual; }
+function cfDiasElegir(n) {
+  document.querySelectorAll('#cfDias button').forEach(function (b) { b.classList.toggle('on', Number(b.dataset.n) === n); });
+  var r = cfR(), t = $('cfDiasTxt'); if (t && r) t.textContent = String(r.dias.porN[n] || '').split(',').join(', ') + (n === r.dias.actual ? ' · tus días' : '');
+  // B5 del probador: las opciones y «Con ejercicios nuevos cambian» con los días elegidos (con 3, sin curl martillo y sin serie extra)
+  var ops = $('cfOps'), cam = $('cfCamb'); if (ops && r) ops.innerHTML = cfOpcionesHTML(r, n); if (cam && r) cam.innerHTML = cfCambiosHTML(r, n);
+}
+function cfOpcionesHTML(r, n) {
+  return (r.sugerencia.opciones || []).map(function (o, i) {
+    var m = o.menosDias && n <= o.menosDias.hasta ? o.menosDias : null;   // «Ejercicios nuevos y una serie más» con 2 o 3 días: no suma serie
+    return '<button type="button" class="cf-op' + (o.sugerida ? ' sug' : '') + '" onclick="cfAccion(\'op\',' + i + ')">' + esc(m ? m.titulo : o.titulo) +
+      (o.sugerida ? ' <span class="tag">Te lo sugiero</span>' : '') + '<small>' + esc(m ? m.texto : o.texto) + '</small></button>';
+  }).join('');
+}
+function cfCambiosHTML(r, n) {
+  var l = r.cambiosPorN && r.cambiosPorN[n] ? r.cambiosPorN[n] : (r.cambiosCiclo2 || []);   // sin cambiosPorN (servidor viejo): los de tus días
+  if (!l.length) return '';
+  return '<div class="cf-k" style="margin-top:14px">Con ejercicios nuevos cambian</div><div class="cf-cambios">' +
+    l.map(function (c) { return '<div>' + esc(c.antes) + ' → <b>' + esc(c.ahora) + '</b></div>'; }).join('') + '</div><div class="meta">Los fuertes no cambian: con ellos ves tu progreso.</div>';
+}
+function cfOtra() {
+  var r = cfR(); if (!r) return;
+  var s = r.sugerencia, sugN = s.accion && s.accion.dias ? s.accion.dias.split(',').length : r.dias.actual;
+  var ns = [3, 4, 5]; if (r.dias.actual <= 2 || sugN <= 2) ns.unshift(2);
+  var h = '<div class="cf-k">Días por semana</div><div class="toggle" id="cfDias">' + ns.map(function (n) { return '<button type="button" data-n="' + n + '" onclick="cfDiasElegir(' + n + ')">' + n + '</button>'; }).join('') + '</div>' +
+    '<div class="meta" id="cfDiasTxt"></div><div class="cf-k" style="margin-top:14px">Qué hacer ahora</div><div id="cfOps"></div><div id="cfCamb"></div>';
+  h += '<div class="meta" style="margin-top:12px">Tus cargas y tu historial se quedan.</div>';
+  hojaAbrir({ titulo: 'Opciones', kicker: 'Tu próximo ciclo', html: h });   // títulos sin mayúsculas con tilde: .hoja-h b (line-height 1 + overflow) recorta la tilde
+  cfDiasElegir(sugN);
+}
+/* "Ver el resumen": constancia, cada básico (de dónde a dónde, subió/igual/bajó y si se estancó al final) y la sugerencia */
+function cfResumen() {
+  var r = cfR(); if (!r) return;
+  var c = r.constancia || {}, s = r.sugerencia;
+  var h = '<div class="meta">' + esc(r.semanas + ' semanas · del ' + fechaCortaIso(r.desde) + ' al ' + fechaCortaIso(r.hasta)) + '</div>';
+  if (c.previstas) h += '<div class="cf-k" style="margin-top:12px">Constancia</div><div class="cf-const"><b>' + c.pct + ' %</b><span>Fuiste a ' + c.hechas + ' de ' + c.previstas + ' sesiones</span></div>' +
+    '<div class="bar"><i class="' + (c.pct >= 80 ? 'ok' : '') + '" style="width:' + Math.min(100, c.pct) + '%"></i></div>' +
+    '<div class="meta cf-nota">No cuentan los festivos, los días en que no puedes ir ni los de antes de empezar.</div>';
+  h += '<div class="cf-k" style="margin-top:14px">Tus básicos</div>';
+  if (!(r.basicos || []).length) h += '<div class="meta">Aún no hay suficientes series anotadas para comparar.</div>';
+  (r.basicos || []).forEach(function (b) {
+    var et = b.estado === 'subio' ? '<span class="cf-est ok">Subió</span>' : b.estado === 'bajo' ? '<span class="cf-est">Bajó</span>' : '<span class="cf-est">Igual</span>';
+    var est = b.estancado ? (b.estado === 'subio' ? ' · al final se frenó' : ' · se estancó al final') : '';   // B2: con «Subió» no se dice «se estancó»
+    h += '<div class="cf-b"><div><b>' + esc(b.nombre) + '</b><small>' + esc(b.texto) + est + '</small></div>' + et + '</div>';
+  });
+  h += '<div class="cf-sug" style="margin-top:14px"><div class="k">Te sugiero</div><b>' + esc(s.titulo) + '</b><div class="s">' + esc(s.porque) + '</div>' + cfAvisosHTML(s) + '</div>';
+  if (s.primero) h += '<div class="cf-sug cf-pri"><div class="k">Primero</div><b>' + esc(s.primero.titulo) + '</b><div class="s">' + esc(s.primero.texto) + '</div></div>';
+  hojaAbrir({ titulo: 'Tu ciclo', kicker: 'Así te fue · ' + r.programa.nombre + (r.ciclo >= 2 ? ' · ciclo ' + r.ciclo : ''), html: h });
+}
+/* ===== fin Fin del programa y ciclo 2 ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
