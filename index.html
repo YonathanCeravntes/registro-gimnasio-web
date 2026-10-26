@@ -1119,6 +1119,11 @@
   .g-sets td.u .u2{display:block;font-size:10px;line-height:1.1;color:var(--dim);white-space:normal;max-width:30px}
   .g-kg{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
   /* ===== fin Peso de mancuernas ===== */
+  /* ===== Antes de empezar (26/10/2026): días anteriores al inicio de tu plan, en gris y sin culpa (no son "No fuiste") ===== */
+  #semChip b.antes{color:var(--faint)}
+  .g-dia.antes{color:var(--faint)} .g-dia.antes i{background:transparent}
+  .g-fila.antes{opacity:.75} .g-fila.antes .t{color:var(--dim)}
+  /* ===== fin Antes de empezar ===== */
   /* ===== Abdomen (26/10/2026): ejercicios sin carga (peso corporal) sin la casilla de kg ===== */
   .g-sets.sk td.kgc,.g-sets.sk td.kgu{display:none}
   /* Desaconsejado sin reemplazo (embarazo): el "Listo" no va en ámbar (no es el siguiente paso) */
@@ -1686,7 +1691,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610261841', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610261852', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -2192,7 +2197,7 @@ function pintarHero() {
   var esHoy = e.fecha === hoyISO();
   if (e.noFui && !c && e.fecha < hoyISO()) tipo = 'nofui';   // cerrado con "No fui" (aunque luego fijaras la sesión en otro día)
   else if (tipo === 'sesion' && !c && e.fecha < hoyISO()) tipo = 'sinregistro';   // día pasado de pesas sin nada anotado
-  var pesas = tipo === 'sesion' || tipo === 'sinregistro' || !!c || (tipo === 'nofui' && $('rutina').dataset.ver === e.fecha);
+  var pesas = tipo === 'sesion' || tipo === 'sinregistro' || !!c || ((tipo === 'nofui' || tipo === 'antes') && $('rutina').dataset.ver === e.fecha);   // "Anotar lo que hice" (anotarNoFui) abre la rutina de ese día
   var pendientes = s ? s.ejercicios.filter(function (x) { return x.estado === 'pendiente'; }) : [];
   // Hoy ya entrenaste (nada pendiente): abajo va la sesión que sigue; la portada sigue siendo lo de hoy
   var hoyListo = !!(c && esHoy && !pendientes.length && s && s.codigo === e.sugerida);
@@ -2208,7 +2213,7 @@ function pintarHero() {
   var sImg = pesas && s ? s : (prox || s);
   var img = portadaHero(c ? 'sesion' : tipo, (pesas || prox) ? sImg : null);
   if ($('heroImg').getAttribute('src') !== img) $('heroImg').src = img;
-  $('heroKickerTxt').textContent = fechaEyebrow(e.fecha) + (semanaPrograma(e) ? ' · ' + semanaPrograma(e) : '');
+  $('heroKickerTxt').textContent = fechaEyebrow(e.fecha) + (tipo !== 'antes' && semanaPrograma(e) ? ' · ' + semanaPrograma(e) : '');   // antes de empezar: sin "Semana N" (no cabe con el chip a 360 px y no aplica)
   var chip, titulo, sub = '', cta = '', desc = '', fin = false;
   var nEj = s ? s.ejercicios.length : 0, min = s ? minutosSesion(s) : 0;
   var nombreHoy = s ? s.nombre : (e.nombres[e.sugerida] || 'Sesión');
@@ -2254,6 +2259,13 @@ function pintarHero() {
     var cd = pg.cardio || { minutos: '20–30', zona: 'Zona 2' };
     sub = cd.minutos + ' min · ' + String(cd.zona).split(' (')[0].split(',')[0] + ' (puedes hablar en frases) · + movilidad';
     cta = gcta('', 'Registrar cardio', 'A ritmo cómodo', 'abrirCardio()') + gcta('line', 'Prefiero pesas', 'Elige la sesión', 'toggleSelector()');
+  } else if (tipo === 'antes') {
+    // Antes de empezar (26/10/2026, pendiente 14): un día anterior al inicio de tu plan, sin nada anotado. Gris y sin culpa: nunca "No fuiste".
+    // Quien ya entrenaba (cambio de programa, otro ciclo; plan.conHistorial) no "empezó" ahora: "Antes de tu nuevo plan" (B1 del probador)
+    var pasadoA = e.fecha < hoyISO(), nuevoA = !!(e.plan && e.plan.conHistorial);
+    chip = ['desc', nuevoA ? 'Plan anterior' : 'Antes de empezar']; titulo = nuevoA ? 'Antes de tu nuevo plan' : pasadoA ? 'Aún no habías empezado' : 'Aún no empieza';
+    sub = antesTexto(e.plan && e.plan.inicioPrograma, nuevoA); desc = 'Este día no cuenta en tu semana.';
+    cta = pasadoA ? gcta('line', 'Anotar lo que hice', 'Si ese día entrenaste', 'anotarNoFui()') : gcta('line', 'Quiero entrenar hoy', 'Elige la sesión', 'toggleSelector()');
   } else {
     chip = ['desc', e.antesDeEmpezar ? 'Antes de empezar' : 'Descanso']; titulo = e.antesDeEmpezar ? 'Aún no empieza' : 'Hoy descansas';
     var ayer = ultimaSesionHecha(e), prx = proximaSesion(e);
@@ -3509,12 +3521,12 @@ function pintarSemanaTab() {
   // "futuro" = esDiaQueViene: después de HOY de verdad (hoyISO, no del día que estés viendo): tocar un día futuro solo lo muestra, no recalcula ni escribe (vpDia)
   var strip = dias.map(function (d) {
     var p = d.etiqueta.split(' ');
-    var cls = d.estado === 'hecho' ? 'hecho' : d.cerrado ? 'cerr' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : 'libre';
-    var lbl = d.estado === 'hecho' ? 'hecho' : d.cerrado ? d.cerrado.texto.toLowerCase() : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : 'libre';
+    var cls = d.estado === 'hecho' ? 'hecho' : d.cerrado ? 'cerr' : d.tipo === 'sesion' ? 'plan' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sinreg' : d.tipo === 'nofui' ? 'nofui' : d.tipo === 'antes' ? 'antes' : 'libre';
+    var lbl = d.estado === 'hecho' ? 'hecho' : d.cerrado ? d.cerrado.texto.toLowerCase() : d.tipo === 'sesion' ? 'planeado' : d.tipo === 'cardio' ? 'cardio' : d.tipo === 'sinregistro' ? 'sin registro' : d.tipo === 'nofui' ? 'no entrenaste' : d.tipo === 'antes' ? antesNombre(e.plan).toLowerCase() : 'libre';
     var act = esDiaQueViene(d.fecha) ? 'vpDia(\'' + d.fecha + '\')' : 'irFecha(\'' + d.fecha + '\');irA(\'hoy\')';
     return '<button class="g-dia ' + cls + (d.esHoy ? ' hoy' : '') + '" onclick="' + act + '" aria-label="' + esc(diaLargoEtiqueta(d.etiqueta)) + ', ' + lbl + '"><small>' + esc(p[0]) + '</small><b>' + esc(p[1]) + '</b><i></i></button>';
   }).join('');
-  $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas · toca un día para verlo</div>';
+  $('semanaResumen').innerHTML = '<div class="g-dias">' + strip + '</div><div class="g-sub">' + (e.plan.arrancaProxima ? 'Tus sesiones arrancan la próxima semana' : e.plan.arrancaEl ? antesTexto(e.plan.arrancaEl, e.plan.conHistorial) : e.hechasSemana + ' de ' + e.metaSemana + ' sesiones hechas') + ' · toca un día para verlo</div>';   // sin "0 de 0" (B2)
   $('semanaRows').innerHTML = dias.map(function (d) {
     var p = d.etiqueta.split(' '), c = e.cumpl && e.cumpl[d.fecha];
     var cls = 'g-fila', t, s, r = '';
@@ -3532,6 +3544,7 @@ function pintarSemanaTab() {
     } else if (d.tipo === 'cardio') { t = 'Cardio suave'; s = '20–30 min a ritmo de conversación'; r = d.esHoy ? 'Hoy' : ''; }
     else if (d.tipo === 'sinregistro') { cls += ' sinreg'; t = nombres[d.sesion] || 'Pesas'; s = 'Sin registro ese día'; r = 'No fuiste'; }
     else if (d.tipo === 'nofui') { cls += ' nofui'; t = 'No entrenaste'; s = 'La sesión pasó al siguiente día de pesas'; }
+    else if (d.tipo === 'antes') { cls += ' antes'; t = antesNombre(e.plan); s = antesTexto(e.plan.inicioPrograma, e.plan.conHistorial); }   // gris, sin culpa: no cuenta en la semana
     else if (d.cerrado) { cls += ' cerr'; t = d.cerrado.texto; s = dpSubCerrado(d.cerrado); r = d.esHoy ? 'Hoy' : ''; }   // festivo o día fijo: gris, no es un día fallado
     else { cls += ' desc'; t = 'Descanso'; s = 'Camina 30 min o movilidad'; r = d.esHoy ? 'Hoy' : ''; }
     if (d.esHoy) cls += ' hoy';
@@ -3816,9 +3829,9 @@ var semanaVista = null;
 function pintarSemana(plan) {
   var chip = $('semChip'); if (!chip || !plan) return;
   chip.innerHTML = plan.dias.map(function (d) {
-    var cls = d.estado === 'hecho' ? 'ok' : d.cerrado ? 'cerr' : d.tipo === 'sinregistro' ? 'bad' : d.tipo === 'nofui' ? 'nf' : d.tipo === 'sesion' ? 'plan' : 'dim';   // nofui y cerrado (festivo, día fijo): gris
+    var cls = d.estado === 'hecho' ? 'ok' : d.cerrado ? 'cerr' : d.tipo === 'sinregistro' ? 'bad' : d.tipo === 'nofui' ? 'nf' : d.tipo === 'antes' ? 'antes' : d.tipo === 'sesion' ? 'plan' : 'dim';   // nofui, cerrado (festivo, día fijo) y antes de empezar: gris
     if (d.esHoy) cls += ' hoy';
-    return '<b class="' + cls + '" title="' + esc(d.fecha + (d.cerrado && d.estado !== 'hecho' ? ' · ' + d.cerrado.texto : '')) + '">' + esc(String(d.etiqueta || '').split(' ')[0]) + '</b>';
+    return '<b class="' + cls + '" title="' + esc(d.fecha + (d.cerrado && d.estado !== 'hecho' ? ' · ' + d.cerrado.texto : d.tipo === 'antes' ? ' · ' + antesNombre(plan) : '')) + '">' + esc(String(d.etiqueta || '').split(' ')[0]) + '</b>';
   }).join('');
 }
 /* Ir a un día. Nunca se "entra" a un día que viene (22/10/2026, encargo #77): ahí solo se VE (vista previa de solo lectura, vpDia), sin tocar
@@ -3841,6 +3854,8 @@ function abrirPlanificador(k) {
       '<div class="dias">' + pl.dias.map(function (d) {
         var bloq = d.estado === 'hecho', cerr = d.cerrado && !bloq;   // festivo o día fijo: en gris y sin casilla activa
         if (cerr) return '<label class="dp-cerr" title="' + esc(d.cerrado.texto) + '"><input type="checkbox" value="' + d.fecha + '" disabled><span>' + d.etiqueta + '<small>' + esc(dpCortoCerrado(d.cerrado)) + '</small></span></label>';
+        // Antes de empezar (26/10/2026, B2 del probador): como un día cerrado, sin marcar y sin casilla activa (no cuenta en la semana)
+        if (d.tipo === 'antes') return '<label class="dp-cerr" title="' + esc(antesNombre(pl)) + '"><input type="checkbox" value="' + d.fecha + '" disabled><span>' + d.etiqueta + '<small>antes</small></span></label>';
         return '<label><input type="checkbox" value="' + d.fecha + '"' + (d.seleccionado ? ' checked' : '') + (bloq ? ' disabled' : '') + '>' + d.etiqueta + '</label>';
       }).join('') + '</div>' +
       '<div class="meta" id="planPrev" style="margin-top:8px"></div>' +
@@ -3854,7 +3869,7 @@ function previewPlan(pl) {
   var pesas = pl.dias.filter(function (d) { return d.tipo === 'sesion'; }), cardio = pl.dias.filter(function (d) { return d.tipo === 'cardio'; });
   var et = function (d) { return d.etiqueta.split(' ')[0]; };
   $('planPrev').innerHTML = (pesas.length ? '<b>' + pesas.length + ' de pesas</b>: ' + pesas.map(et).join(', ') : 'Sin pesas esta semana') +
-    (cardio.length ? ' · <b>cardio</b>: ' + cardio.map(et).join(', ') : '') + (pl.cambioPrograma && pl.nota ? '<br>' + esc(pl.nota) : '');
+    (cardio.length ? ' · <b>cardio</b>: ' + cardio.map(et).join(', ') : '') + ((pl.cambioPrograma || pl.inicioEnSemana) && pl.nota ? '<br>' + esc(pl.nota) : '');
 }
 function guardarPlan() {
   var f = []; document.querySelectorAll('#planificador input:checked').forEach(function (x) { f.push(x.value); });
@@ -7597,7 +7612,7 @@ function dpElegir(modo, btn) {
 function dpSumar() {
   var e = estado, a = e && e.plan && e.plan.acomodo; if (!a || !a.libres || !a.libres.length) return;
   var prop = a.propuestos || [];
-  var html = '<div class="meta">Te faltan ' + esc(dpTxtDias(a.faltan)) + ' para tus ' + a.porSemana + ' sesiones. Marca los que puedes ir.</div>' +
+  var html = '<div class="meta">' + (Number(a.faltan) === 1 ? 'Te falta ' : 'Te faltan ') + esc(dpTxtDias(a.faltan)) + ' para tus ' + (a.sesiones || a.porSemana) + ' sesiones. Marca los que puedes ir.</div>' +   // a.sesiones: en la semana de inicio, las que quedaban (M1)
     '<div class="dias dp-sumar">' + a.libres.map(function (f) { return '<label><input type="checkbox" value="' + esc(f) + '"' + (prop.indexOf(f) >= 0 ? ' checked' : '') + '>' + esc(dpEtiqueta(f)) + '</label>'; }).join('') + '</div>' +
     '<div class="acts" style="margin-top:12px"><button class="btn sec" onclick="hojaCerrar()">Cerrar</button><button class="btn" id="dpSumarBtn" onclick="dpSumarGuardar(this)">Sumar</button></div>';
   hojaAbrir({ kicker: 'Esta semana', titulo: 'Sumar días', html: html });
@@ -7854,7 +7869,7 @@ function portadaUrl(nombre) { return 'portadas/v1-' + nombre + '.svg' + (typeof 
 function portadaHero(tipo, sImg) {
   var musc = { PE: 'pecho', ES: 'espalda', PI: 'pierna', HO: 'hombro', IS: 'isquios' };
   if (tipo === 'cardio') return portadaUrl('cardio');
-  if (tipo === 'descanso' || tipo === 'nofui') return portadaUrl('descanso');
+  if (tipo === 'descanso' || tipo === 'nofui' || tipo === 'antes') return portadaUrl('descanso');   // antes de empezar (26/10/2026): neutro, como el descanso
   var cod = sImg && sImg.codigo ? String(sImg.codigo) : '';
   var m = cod.match(/^RT\d?-(PE|ES|PI|HO|IS)$/);   // full body rotativo: el sufijo es el músculo protagonista del día
   return portadaUrl(m ? musc[m[1]] : 'cuerpo');     // default seguro: nunca se queda sin imagen ni con la foto vieja
@@ -7903,7 +7918,7 @@ function vpDia(fecha) {
       pintado = true; b.innerHTML = vpSesionHTML(s);
     }).catch(function () { var b = $('vpBody'); if (b && b.dataset.f === fecha && !pintado) b.innerHTML = '<div class="meta" style="padding:8px 2px">No se pudo cargar la vista previa. Revisa tu conexión e inténtalo de nuevo.</div>'; });
   } else {
-    var tit = d.cerrado ? (d.cerrado.texto || 'Gimnasio cerrado') : d.tipo === 'cardio' ? 'Cardio suave' : 'Descanso';
+    var tit = d.cerrado ? (d.cerrado.texto || 'Gimnasio cerrado') : d.tipo === 'cardio' ? 'Cardio suave' : d.tipo === 'antes' ? antesNombre(estado && estado.plan) : 'Descanso';   // B5
     hojaAbrir({ titulo: tit, kicker: kicker, html: vpSimpleHTML(d) });
   }
 }
@@ -7937,11 +7952,26 @@ function vpFueraHTML() {
 /** Vista previa breve de cardio, descanso o día cerrado (festivo/fijo): solo texto, sin acción. */
 function vpSimpleHTML(d) {
   var txt = d.cerrado ? (dpSubCerrado(d.cerrado) || 'No cuenta como día fallado') :
-    d.tipo === 'cardio' ? 'Cardio suave 20–30 min a ritmo de conversación.' : 'Descanso · camina 30 min o movilidad.';
+    d.tipo === 'cardio' ? 'Cardio suave 20–30 min a ritmo de conversación.' :
+    d.tipo === 'antes' ? antesNombre(estado && estado.plan) + ' · ' + antesTexto(estado && estado.plan && estado.plan.inicioPrograma, estado && estado.plan && estado.plan.conHistorial) + '.' : 'Descanso · camina 30 min o movilidad.';   // antes de empezar (26/10/2026)
   return '<div class="meta" style="margin:2px 2px 10px">Vista previa · no registra nada</div>' +
     '<div class="g-line">' + esc(txt) + '</div>';
 }
 /* ===== fin Vista previa de días futuros ===== */
+/* ===== Antes de empezar (26/10/2026, pendiente 14) =====
+ * Una persona nueva que hacía el Primer día un miércoles veía el lunes y el martes ANTERIORES como "Sin registro · No fuiste" (y la meta contaba con
+ * ellos). Lo decide el servidor (antesDeEmpezar_ en Semana.gs, la única definición): un día anterior al inicio del programa sin nada hecho llega como
+ * tipo 'antes' y aquí se pinta en gris en la tira de Hoy (#semChip), en «Tu semana» (tira y filas) y en la portada al abrir ese día ("Aún no habías
+ * empezado", con "Anotar lo que hice" por si sí entrenaste: gana lo hecho). Va como `function` (lo usa pintarHero al abrir; no lee ningún `var` del final). */
+function antesTexto(ip, nuevo) {
+  if (!ip) return '';
+  var quien = nuevo ? 'Tu plan nuevo' : 'Tu plan';   // nuevo = ya entrenaba antes (cambio de programa, otro ciclo; plan.conHistorial)
+  if (ip === hoyISO()) return quien + ' arranca hoy';
+  return quien + ' ' + (esDiaQueViene(ip) ? 'arranca' : 'arrancó') + ' el ' + fechaEyebrow(ip).toLowerCase();
+}
+/** Nombre del día "antes": para quien ya entrenaba no es "Antes de empezar" sino "Antes de tu nuevo plan" (B1 del probador, 26/10/2026). */
+function antesNombre(plan) { return plan && plan.conHistorial ? 'Antes de tu nuevo plan' : 'Antes de empezar'; }
+/* ===== fin Antes de empezar ===== */
 /* ===== Sin ajuste de calorías (26/10/2026): embarazo, TCA, riñón 4–5… =====
  * Con una condición de Salud que «bloquea», el servidor (sinAjusteCalorias_, Nutricion.gs) manda getPanel().sinAjusteCalorias, objetivoPeso null,
  * semanas sin decisión y getComida().adaptativa = null. Aquí: Progreso → "Tu peso de hoy" sin "Meta: −0,6 kg por semana" y con esta frase en vez de
