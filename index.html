@@ -1124,6 +1124,22 @@
   /* Desaconsejado sin reemplazo (embarazo): el "Listo" no va en ámbar (no es el siguiente paso) */
   .g-sets.ps tr.next .g-listo{background:var(--raise);color:var(--ink)}
   /* ===== fin Abdomen ===== */
+  /* ===== Privacidad: fotos y borrado de cuenta (26/10/2026): "¿Qué hacemos con tus N fotos?", Tus fotos en Privacidad y datos, solicitudes de borrado del dueño ===== */
+  .pf-p{font-size:14px;line-height:1.5;color:var(--muted);margin:0 0 12px}
+  .pf-p b{color:var(--ink);font-weight:700;word-break:break-all}
+  .btn.pf-borrar{background:var(--bad);border-color:var(--bad);color:#fff}
+  .btn.pf-borrar:disabled{opacity:.4}
+  .pf-box{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line)}
+  .pf-box b{display:block;color:var(--ink);font-size:15px} .pf-box small{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin:3px 0 10px}
+  .lg-aviso.pf-aviso{flex-wrap:wrap} .pf-aviso span{flex-basis:100%} .pf-aviso .pf-acts{display:flex;gap:8px;align-items:center} .pf-aviso .pf-acts .btn.txt{font-size:14px;min-height:40px;padding:6px 4px}
+  .pb-res.urge{border-color:var(--bad);color:var(--ink)}
+  .pb-sol{display:flex;gap:10px;align-items:center;margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:13px;line-height:1.45;color:var(--muted)}
+  .pb-sol>span{flex:1;min-width:0} .pb-sol b{color:var(--ink);font-weight:700} .pb-sol small{display:block;margin-top:2px;color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
+  .pb-sol.urge{border-color:var(--bad)} .pb-sol.urge .pb-plazo{color:var(--bad);font-weight:700}
+  .pb-sol .pb-btn{width:auto;flex-shrink:0;min-height:40px;padding:6px 12px;font-size:15px;color:var(--bad)}
+  .btn.txt.pf-gris{color:var(--muted)}
+  .pf-hoja .hoja-h b{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.05}
+  /* ===== fin Privacidad: fotos y borrado de cuenta ===== */
 </style>
 </head>
 <body>
@@ -1287,7 +1303,7 @@
     <button class="g-row" id="fotoRow" aria-expanded="false" onclick="gcToggle('fotoBox', this)"><span class="n"><b>Foto de progreso</b><span class="s" id="fEstado">Cada 4 semanas: frente, perfil y espalda.</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="fotoBox">
       <div id="lgFotoAviso"></div>
-      <div class="g-foto" style="margin-top:0;padding:0;background:none"><div class="n"><b>Tomar una foto</b><span class="s">Misma luz y misma pose cada vez.</span></div>
+      <div class="g-foto" id="fTomarFila" style="margin-top:0;padding:0;background:none"><div class="n"><b>Tomar una foto</b><span class="s">Misma luz y misma pose cada vez.</span></div>
         <select id="fTipo" aria-label="Tipo de foto"><option value="frente">Frente</option><option value="perfil">Perfil</option><option value="espalda">Espalda</option></select>
         <label class="btn" for="fArchivo" id="fTomar"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="fArchivoTxt">Tomar</span></label></div>
       <input id="fArchivo" class="oculto" type="file" accept="image/*" onchange="fotoProgresoElegida(this)">
@@ -1670,7 +1686,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610261814', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610261841', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 // La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
 if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
@@ -1743,7 +1759,7 @@ function api(fn) {
     }
     return j;
   }).then(function (j) {
-    if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true); throw new Error(j.error || 'Error del servidor'); }
+    if (!j.ok) { if (j.codigo === 'token') mostrarVincular(true, !!j.borrada); throw new Error(j.error || 'Error del servidor'); }
     return j.r;
   });
 }
@@ -1833,10 +1849,15 @@ function llamarDirecto(url, fn, args, t, intento) {
     });
   });
 }
-function mostrarVincular(tokenMalo) {
+/* Sesión que el servidor ya no reconoce (venció, se cerró o la cuenta se borró): lo que esa sesión dejó guardado en este celular (la caché de
+   las pantallas, claves CACHE_V) se borra al momento (Ley 1581; probador, Bajo 1). Con la cuenta borrada (borrada: el servidor reconoce el
+   token de una cuenta que ya no existe; no revela si un correo existe) también lo que esperaba señal (cola), la lista del mercado y el enlace (cfg). */
+function mostrarVincular(tokenMalo, borrada) {
+  if (tokenMalo) { try { if (typeof invalidarTodo === 'function') invalidarTodo(); } catch (e) {} }
+  if (borrada) { try { ['cola', 'mercado', 'cfg'].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {} }
   var v = $('vincular'); v.classList.remove('hidden');
-  $('vincMsg').textContent = tokenMalo ? 'Tu sesión venció o no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
-  if (tokenMalo && $('enMsg')) accMsg('enMsg', 'Tu sesión venció: entra de nuevo con tu correo y tu contraseña.');
+  $('vincMsg').textContent = borrada ? 'Esta cuenta ya no existe: sus datos se borraron.' : tokenMalo ? 'Tu sesión venció o no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
+  if (tokenMalo && $('enMsg')) accMsg('enMsg', borrada ? 'Esta cuenta ya no existe: sus datos se borraron. Si quieres volver a usar MilloFit, crea una cuenta nueva.' : 'Tu sesión venció: entra de nuevo con tu correo y tu contraseña.');
   if (!$('accTabs')) return;
   // Llegó por el enlace de invitación: Crear cuenta con el código puesto. Desde Ajustes → "Cambiar mi contraseña": el paso del código.
   if (!tokenMalo && window.INV_CODIGO) { accVista('crear'); $('crInv').value = window.INV_CODIGO; $('crInvOk').style.display = 'block'; }
@@ -4836,6 +4857,9 @@ function verProgreso(nombre) {
 function cargarFotos() {
   api('getFotos').then(function (f) {
     window._fotos = f;
+    window._fotosGuardadas = f.apagado ? (f.guardadas || 0) : 0;   // Fotos de progreso apagado: se ven 0 y el aviso dice cuántas quedan guardadas
+    try { lgAvisosPantalla(); } catch (e) {}
+    if (f.apagado) { $('fEstado').textContent = pfEstadoApagado(f.guardadas || 0); $('fComparar').innerHTML = ''; return; }
     if (!f.fechas.length) { $('fEstado').textContent = 'Toma la primera hoy: es tu punto de partida.'; $('fComparar').innerHTML = ''; return; }
     var dias = f.ultima ? Math.round((new Date(hoyISO()) - new Date(f.ultima)) / 86400000) : 0;
     $('fEstado').textContent = 'Última: ' + (dias === 0 ? 'hoy' : dias === 1 ? 'ayer' : 'hace ' + dias + ' días') + (dias >= 28 ? ' · ya toca tomar nuevas' : '') + ' · ' + f.fechas.length + (f.fechas.length === 1 ? ' sesión' : ' sesiones');
@@ -6213,10 +6237,11 @@ function gePintarPersonas() {
   var b = $('perBody'); if (!b) return;
   var lista = gePersonas || [];
   if (!lista.length) { b.innerHTML = '<div class="meta">Todavía no se ha registrado nadie con tu código.</div>'; return; }
-  b.innerHTML = lista.map(function (u, i) {
+  b.innerHTML = pbResumenHTML(lista) + lista.map(function (u, i) {
     return '<div class="per-row"><div class="n"><b>' + esc(u.nombre || 'Sin nombre') + '</b><small>' + esc(u.correo || '') + (u.creado ? ' · desde ' + fechaCortaIso(String(u.creado).slice(0, 10)) : '') + '</small>' +
       (u.ia ? '<span class="tag">IA activa</span>' : '') + (u.pro ? '<span class="tag" style="margin-left:8px">Pro</span>' : '') + '</div>' +
-      '<label class="per-sw" aria-label="IA para ' + esc(u.nombre || '') + '"><span>IA</span><input type="checkbox" id="perIa' + i + '"' + (u.ia ? ' checked' : '') + ' onchange="geAutorizar(' + i + ', this)"><i></i></label></div>';
+      '<label class="per-sw" aria-label="IA para ' + esc(u.nombre || '') + '"><span>IA</span><input type="checkbox" id="perIa' + i + '"' + (u.ia ? ' checked' : '') + ' onchange="geAutorizar(' + i + ', this)"><i></i></label></div>' +
+      pbSolicitudHTML(u, i);   // pidió borrar su cuenta: plazo y "Borrar ahora" (bloque "Privacidad: fotos y borrado de cuenta")
   }).join('');
 }
 function geAutorizar(i, inp) {
@@ -6669,11 +6694,12 @@ function lgCasillaHTML(id, titulo, linea, marcada, extra) {
 function lgNotaFinalidad(f, d) {
   if (f.id === 'salud' && d.tieneSalud) return 'Tienes condiciones guardadas: sin esta casilla dejan de usarse.';
   if (f.id === 'medidas' && d.tieneMedidas) return 'Tienes tu peso guardado: sin esta casilla deja de usarse.';
+  if (f.id === 'fotos' && d.tieneFotos) return pfNotaCasilla(d.tieneFotos);
   return '';
 }
 function lgEfecto(id) {
   return { medidas: 'Tu peso deja de usarse: sin él no calculamos tu meta de comida ni tus cargas iniciales.', salud: 'Tus condiciones y medicamentos dejan de usarse en la comida y los ejercicios.',
-    ia: 'El Coach y la comida con IA quedan apagados para ti.', fotos: 'No podrás subir fotos nuevas de progreso.', comunidad: 'Tus datos dejan de sumarse, sin nombre, a las recomendaciones para otros.',
+    ia: 'El Coach y la comida con IA quedan apagados para ti.', fotos: 'No podrás subir fotos nuevas y las que ya tienes dejarán de verse en Progreso.', comunidad: 'Tus datos dejan de sumarse, sin nombre, a las recomendaciones para otros.',
     avisos: 'Dejas de recibir recordatorios e informes (los códigos para entrar sí te llegan).' }[id] || '';
 }
 
@@ -6726,12 +6752,15 @@ function lgLeerFinalidades(pref) {
   ((window.lgDatos && window.lgDatos.finalidades) || []).forEach(function (f) { if (!f.obligatoria) { var c = $(pref + f.id); fin[f.id] = !!(c && c.checked); } });
   return fin;
 }
-function lgOvPedir() {
+function lgOvPedir(borrarFotos) {
   var d = window.lgDatos || {};
   if (!$('lgoMayor').checked) { lgMsg('lgOvMsg', 'Para seguir, confirma que tienes 18 años o más.'); return; }
   if (!$('lgoAcepto').checked) { lgMsg('lgOvMsg', 'Para seguir, marca "Leí y acepto los Términos y la Política".'); return; }
+  var fin = lgLeerFinalidades('lgo_');
+  // Sin la casilla Fotos y con fotos guardadas: antes del código, qué hacemos con ellas (26/10/2026, bloque "Privacidad: fotos y borrado de cuenta")
+  if (borrarFotos === undefined && pfHayQuePreguntar(d, fin)) { pfPreguntar(d.tieneFotos, function (b2) { lgOvPedir(!!b2); }, null); return; }
   var b = $('lgOvBtn'); b.disabled = true; b.textContent = 'Enviando…'; lgMsg('lgOvMsg', '');
-  api('pedirFirmaLegal', { documentos: (d.documentos || []).map(function (x) { return { id: x.id, version: x.version, sha256: x.sha256 }; }), finalidades: lgLeerFinalidades('lgo_'), mayorDeEdad: true })
+  api('pedirFirmaLegal', { documentos: (d.documentos || []).map(function (x) { return { id: x.id, version: x.version, sha256: x.sha256 }; }), finalidades: fin, mayorDeEdad: true, borrar: borrarFotos ? { fotos: true } : null })
     .then(function (r) {
       b.disabled = false; b.textContent = 'Enviarme el código';
       $('lgOvPaso1').style.display = 'none'; $('lgOvPaso2').style.display = '';
@@ -6750,6 +6779,7 @@ function lgOvFirmar() {
   api('firmarLegal', { codigo: c }).then(function (r) {
     window.lgDatos = r; $('lgOv').classList.add('hidden');
     toast('Listo: quedó firmado. Lo ves en Ajustes → Privacidad y datos.');
+    if (r.borrado && r.borrado.fotos) pfTrasFotos();
     lgTrasCambio();
   }).catch(function (x) { b.disabled = false; b.textContent = 'Firmar y seguir'; lgMsg('lgOvMsg', x.message || x); });
 }
@@ -6762,7 +6792,9 @@ function lgAvisosPantalla() {
   if (pa) pa.innerHTML = med ? '' : lgAvisoHTML('Activa la autorización de medidas para guardar tu peso. Sin tu peso no calculamos tu meta de comida ni tus cargas iniciales.', 'medidas');
   if (fila) fila.style.display = med ? '' : 'none';
   var sa = $('lgSaludAviso'); if (sa) sa.innerHTML = lgPermiso('salud') ? '' : lgAvisoHTML('Para usar tus condiciones y medicamentos, autoriza Salud.', 'salud');
-  var fo = $('lgFotoAviso'); if (fo) fo.innerHTML = lgPermiso('fotos') ? '' : lgAvisoHTML('Para guardar fotos de tu cuerpo, autoriza Fotos de progreso.', 'fotos');
+  var fo = $('lgFotoAviso'), ng = window._fotosGuardadas || 0;
+  if (fo) fo.innerHTML = lgPermiso('fotos') ? '' : ng ? pfAvisoProgresoHTML(ng) : lgAvisoHTML('Para guardar fotos de tu cuerpo, autoriza Fotos de progreso.', 'fotos');
+  var tf = $('fTomarFila'); if (tf) tf.style.display = lgPermiso('fotos') ? '' : 'none';   // sin el permiso no se puede subir: el aviso dice cómo activarlo
 }
 
 /* ---------- Activar una finalidad que pide código (hoja inferior) ---------- */
@@ -6793,6 +6825,7 @@ function lgActFirmar(id) {
     var f = (r.finalidades || []).filter(function (x) { return x.id === id; })[0];
     toast('Listo: ' + (f ? f.nombre : 'permiso') + ' activado.');
     if ($('lgBody') && ajSec === 'privacidad') lgPintarAjustes(r);
+    if (id === 'fotos') pfTrasFotos();   // Progreso vuelve a mostrar las fotos guardadas (Privacidad: fotos y borrado de cuenta)
     lgTrasCambio();
   }).catch(function (x) { b.disabled = false; b.textContent = 'Firmar y activar'; lgMsg('lgActMsg', x.message || x); });
 }
@@ -6820,9 +6853,7 @@ function lgPintarAjustes(d) {
     return '<div class="per-row"><div class="n"><b>' + esc(f.nombre) + (f.sensible ? ' <span class="sens" style="font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--muted);border:1px solid var(--raise2);border-radius:999px;padding:1px 6px">SENSIBLE</span>' : '') + '</b><small>' + esc(f.linea) + '</small></div>' +
       '<label class="per-sw lg-sw" aria-label="' + esc(f.nombre) + '"><input type="checkbox" id="lgSw_' + f.id + '"' + (f.activa ? ' checked' : '') + (d.vigente ? '' : ' disabled') + ' onchange="lgCambiar(\'' + f.id + '\', this)"><i></i></label></div>';
   }).join('');
-  h += '<h2 style="margin-top:20px">Tus derechos</h2><div class="meta">Puedes conocer, corregir y borrar tus datos (Ley 1581 de 2012).</div>' +
-    '<button type="button" class="btn sec" id="lgDescBtn" style="margin-top:10px" onclick="lgDescargar(this)">Descargar mis datos</button>' +
-    '<button type="button" class="btn txt lg-bad" style="width:100%;margin-top:4px" onclick="lgPedirBorrado()">Pedir que borren mi cuenta</button><p class="lg-msg" id="lgAjMsg"></p>';
+  h += pfDerechosHTML(d);   // Tus derechos: datos, fotos (también con el permiso apagado) y borrar la cuenta (bloque "Privacidad: fotos y borrado de cuenta")
   if ((d.historial || []).length) h += '<details style="margin-top:8px"><summary>Historial de firmas (' + d.historial.length + ')</summary>' + d.historial.map(function (x) {
     var canal = { registro: 'Al crear la cuenta', reaceptacion: 'Aceptaste los términos', cambio_finalidades: 'Cambiaste permisos' }[x.canal] || x.canal;
     var met = x.metodo === 'otp_correo' ? 'código al correo' : 'desde la app';
@@ -6837,15 +6868,27 @@ function lgCambiar(id, inp) {
   var on = !!inp.checked, borrar = null;
   if (on && f.codigo) { inp.checked = false; lgActivar(id); return; }
   if (!on) {
+    // Con fotos guardadas, la hoja "¿Qué hacemos con tus N fotos?" ya es la decisión (y cerrarla deja el permiso): sin confirm() antes (probador, Bajo 3)
+    if (id === 'fotos' && (d.tieneFotos || 0) > 0) {
+      inp.disabled = true;
+      pfPreguntar(d.tieneFotos, function (b) { lgCambiarEnviar(id, inp, f, false, b ? { fotos: true } : null); }, function () { inp.disabled = false; inp.checked = true; },
+        'Vas a quitar el permiso de ' + f.nombre + ': ' + lgEfecto(id).charAt(0).toLowerCase() + lgEfecto(id).slice(1) + ' Si cierras esta hoja, el permiso queda como está.');
+      return;
+    }
     if (!confirm('¿Quitar el permiso de ' + f.nombre + '? ' + lgEfecto(id))) { inp.checked = true; return; }
     if (id === 'salud' && d.tieneSalud && confirm('¿Borrar también tus condiciones, medicamentos y lesiones guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { salud: true };
     if (id === 'medidas' && d.tieneMedidas && confirm('¿Borrar también tu peso y las medidas de la báscula guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { medidas: true };
   }
+  lgCambiarEnviar(id, inp, f, on, borrar);
+}
+function lgCambiarEnviar(id, inp, f, on, borrar) {
+  var antes = (window.lgDatos && window.lgDatos.tieneFotos) || 0;
   inp.disabled = true;
   var p = { finalidades: {} }; p.finalidades[id] = on; if (borrar) p.borrar = borrar;
   api('cambiarFinalidades', p).then(function (r) {
     lgPintarAjustes(r);
-    toast(on ? f.nombre + ': activado' : f.nombre + ': permiso quitado' + (borrar ? ' y datos borrados' : ''));
+    toast(id === 'fotos' && !on ? pfToastQuitar(r, antes) : on ? f.nombre + ': activado' : f.nombre + ': permiso quitado' + (borrar ? ' y datos borrados' : ''));
+    if (id === 'fotos' && !on) pfTrasFotos();
     lgTrasCambio();
   }).catch(function (x) { inp.disabled = false; inp.checked = !on; errG(x); });
 }
@@ -7960,6 +8003,230 @@ function abdPintar(i) {
 var abdPintarBase = typeof pintar === 'function' ? pintar : null;   // (las pruebas evalúan solo los bloques del final: ahí no hay pintar)
 if (abdPintarBase) pintar = function (i, v) { abdPintarBase(i, v); try { abdPintar(i); } catch (x) { console.error(x); } };
 /* ===== fin Abdomen ===== */
+/* ===== Privacidad: fotos y borrado de cuenta (26/10/2026; dictamen de legal-gym, hallazgos 1 y 5f) =====
+   · Fotos de progreso sin la finalidad `fotos`: Progreso no las muestra (getFotos → apagado) y dice cuántas quedan guardadas. Al quitar el permiso
+     (Privacidad y datos, o al firmar sin la casilla) se pregunta "¿Qué hacemos con tus N fotos?": Borrar mis fotos / Dejarlas guardadas /
+     Descargarlas primero. En Privacidad y datos, "Descargar mis fotos" (un .zip armado aquí, sin librerías) y "Borrar mis fotos" están siempre,
+     también con el permiso apagado (listarMisFotos, descargarMiFoto, borrarMisFotos: solo las de tu hoja).
+   · Borrado real de una cuenta: el dueño ve las solicitudes en Personas e invitaciones (plazo de 15 días hábiles, en rojo desde el 10) y las
+     ejecuta con "Borrar ahora" escribiendo el correo de la persona (borrarCuentaPersona, Supresion.gs).
+   Todo va en function: lgAvisosPantalla y lgPintarOv (al abrir) llaman pfAvisoProgresoHTML/pfNotaCasilla antes de que termine el script. */
+function pfUna(n) { return Number(n) === 1; }
+function pfFotosTxt(n) { return pfUna(n) ? '1 foto' : n + ' fotos'; }
+/** Nota de la casilla Fotos en la aceptación (lgNotaFinalidad). */
+function pfNotaCasilla(n) { return 'Tienes ' + pfFotosTxt(n) + (pfUna(n) ? ' guardada: sin esta casilla deja de verse y te preguntamos qué hacemos con ella.' : ' guardadas: sin esta casilla dejan de verse y te preguntamos qué hacemos con ellas.'); }
+/** Progreso con fotos guardadas y el permiso apagado (texto del dictamen). */
+function pfAvisoProgresoTexto(n) {
+  return pfUna(n) ? 'Tienes 1 foto guardada, pero Fotos de progreso está apagado y por eso no se ve. Si quieres verla o sumar nuevas, actívalo. También puedes descargarla o borrarla en Privacidad y datos.'
+    : 'Tienes ' + n + ' fotos guardadas, pero Fotos de progreso está apagado y por eso no se ven. Si quieres verlas o sumar nuevas, actívalo. También puedes descargarlas o borrarlas en Privacidad y datos.';
+}
+function pfAvisoProgresoHTML(n) {
+  return '<div class="lg-aviso pf-aviso"><span>' + esc(pfAvisoProgresoTexto(n)) + '</span><div class="pf-acts"><button type="button" class="btn sec" onclick="lgActivar(\'fotos\')">Activar</button>' +
+    '<button type="button" class="btn txt pf-gris" onclick="irAjustes(\'privacidad\')">Privacidad y datos</button></div></div>';
+}
+function pfEstadoApagado(n) { return n ? 'Apagado · ' + pfFotosTxt(n) + (pfUna(n) ? ' guardada, sin mostrarse' : ' guardadas, sin mostrarse') : 'Apagado en Privacidad y datos.'; }
+/** ¿Hay que preguntar qué hacer con las fotos? (al firmar sin la casilla Fotos teniendo fotos, y si antes no estaba ya apagada) */
+function pfHayQuePreguntar(d, fin) { return !!(d && fin && !fin.fotos && (d.tieneFotos || 0) > 0 && !(d.actuales && d.actuales.fotos === false)); }
+function pfToastQuitar(r, antes) {
+  var b = r && r.borrado || {}, n = b.fotos ? (b.fotosBorradas || 0) : (r && r.tieneFotos) || antes || 0;
+  if (b.fotos) return 'Fotos de progreso: permiso quitado y ' + (pfUna(n) ? '1 foto borrada' : n + ' fotos borradas');
+  return 'Fotos de progreso: permiso quitado.' + (n ? (pfUna(n) ? ' Tu foto queda guardada, sin mostrarse' : ' Tus ' + n + ' fotos quedan guardadas, sin mostrarse') : '');
+}
+/** Después de quitar el permiso o borrar: nada de lo viejo queda en pantalla ni en memoria (comparar, imágenes) y Progreso se vuelve a pedir. */
+function pfTrasFotos() {
+  window._fotos = null; window._fotosGuardadas = 0;
+  var im = $('fImgs'); if (im) im.innerHTML = '';
+  var co = $('fComparar'); if (co) co.innerHTML = '';
+  try { invalidarTodo(); } catch (e) {}
+  try { cargarFotos(); } catch (e2) {}
+  try { lgAvisosPantalla(); } catch (e3) {}
+}
+
+/* ---------- "¿Qué hacemos con tus N fotos?" (hoja inferior; texto del dictamen) ---------- */
+function pfPreguntar(n, alElegir, alCancelar, intro) {
+  window.pfEleccion = { hecha: false, alElegir: alElegir, alCancelar: alCancelar };
+  var una = pfUna(n);
+  hojaAbrir({ titulo: una ? '¿Qué hacemos con tu foto?' : '¿Qué hacemos con tus ' + n + ' fotos?', kicker: 'Fotos de progreso',
+    html: (intro ? '<p class="pf-p" id="pfIntro">' + esc(intro) + '</p>' : '') + '<p class="pf-p">' + esc(una
+      ? 'Si la borramos, se elimina de MilloFit y no se puede recuperar; las copias de seguridad se borran solas en el plazo que dice la Política de tratamiento. Si la dejamos, sigue guardada, pero no se muestra ni se usa para nada. Lo puedes cambiar cuando quieras en Ajustes → Tu cuenta → Privacidad y datos.'
+      : 'Si las borramos, se eliminan de MilloFit y no se pueden recuperar; las copias de seguridad se borran solas en el plazo que dice la Política de tratamiento. Si las dejamos, siguen guardadas, pero no se muestran ni se usan para nada. Lo puedes cambiar cuando quieras en Ajustes → Tu cuenta → Privacidad y datos.') + '</p>' +
+      '<button type="button" class="btn pf-borrar" id="pfBorrar" onclick="pfElegir(true)">' + (una ? 'Borrar mi foto' : 'Borrar mis fotos') + '</button>' +
+      '<button type="button" class="btn sec" id="pfDejar" style="margin-top:8px" onclick="pfElegir(false)">' + (una ? 'Dejarla guardada' : 'Dejarlas guardadas') + '</button>' +
+      '<button type="button" class="btn txt pf-gris" id="pfPrimero" style="width:100%;margin-top:4px" onclick="pfDescargarFotos(this, \'pfMsg\')">' + (una ? 'Descargarla primero' : 'Descargarlas primero') + '</button>' +
+      '<p class="lg-msg" id="pfMsg"></p>',
+    alCerrar: function () { var e = window.pfEleccion; window.pfEleccion = null; if (e && !e.hecha && e.alCancelar) e.alCancelar(); } });
+  pfHojaLarga();
+}
+/** La hoja con un título largo ("¿Qué hacemos con tus 3 fotos?", "Borrar la cuenta de …") lo muestra completo, en dos líneas. */
+function pfHojaLarga() { var h = document.querySelector('#hojaOv .hoja'); if (h) h.classList.add('pf-hoja'); }
+function pfElegir(borrar) {
+  var e = window.pfEleccion; if (!e) return;
+  e.hecha = true; hojaCerrar();
+  if (e.alElegir) e.alElegir(!!borrar);
+}
+
+/* ---------- Descargar mis fotos: un .zip (método "store", sin comprimir: las JPG ya vienen comprimidas) ---------- */
+function pfCrc32(u) {
+  var t = pfCrc32.t;
+  if (!t) { t = pfCrc32.t = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } }
+  var crc = -1;
+  for (var i = 0; i < u.length; i++) crc = t[(crc ^ u[i]) & 255] ^ (crc >>> 8);
+  return (crc ^ -1) >>> 0;
+}
+/** archivos = [{ nombre, bytes: Uint8Array }] → los bytes del .zip (Uint8Array). Nombres en UTF-8 (bit 11). */
+function pfZipBytes(archivos, fecha) {
+  var d = fecha || new Date(), dosF = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate(), dosH = (d.getHours() << 11) | (d.getMinutes() << 5);
+  var enc = new TextEncoder(), partes = [], centro = [], off = 0;
+  archivos.forEach(function (a) {
+    var nom = enc.encode(a.nombre), crc = pfCrc32(a.bytes), n = a.bytes.length;
+    var h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, dosH, true); h.setUint16(12, dosF, true);
+    h.setUint32(14, crc, true); h.setUint32(18, n, true); h.setUint32(22, n, true); h.setUint16(26, nom.length, true); h.setUint16(28, 0, true);
+    partes.push(new Uint8Array(h.buffer), nom, a.bytes);
+    var c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, dosH, true); c.setUint16(14, dosF, true);
+    c.setUint32(16, crc, true); c.setUint32(20, n, true); c.setUint32(24, n, true); c.setUint16(28, nom.length, true); c.setUint32(42, off, true);
+    centro.push(new Uint8Array(c.buffer), nom);
+    off += 30 + nom.length + n;
+  });
+  var tam = 0; centro.forEach(function (x) { tam += x.length; });
+  var f = new DataView(new ArrayBuffer(22));
+  f.setUint32(0, 0x06054b50, true); f.setUint16(8, archivos.length, true); f.setUint16(10, archivos.length, true); f.setUint32(12, tam, true); f.setUint32(16, off, true);
+  var todo = partes.concat(centro, [new Uint8Array(f.buffer)]), total = 0; todo.forEach(function (x) { total += x.length; });
+  var out = new Uint8Array(total), p = 0; todo.forEach(function (x) { out.set(x, p); p += x.length; });
+  return out;
+}
+function pfBytes(dataUrl) { var b = atob(String(dataUrl).split(',')[1] || ''), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+/** "2026-09-20_frente.jpg" (si se repite, "-2", "-3"…) */
+function pfNombreFoto(f, dataUrl, usados) {
+  var m = /^data:image\/([a-z]+)/.exec(String(dataUrl)), ext = m ? (m[1] === 'jpeg' ? 'jpg' : m[1]) : 'jpg';
+  var base = String(f.fecha || 'sin-fecha').replace(/[^0-9a-z-]/gi, '') + '_' + String(f.tipo || 'foto').replace(/[^a-z]/gi, '');
+  usados[base] = (usados[base] || 0) + 1;
+  return base + (usados[base] > 1 ? '-' + usados[base] : '') + '.' + ext;
+}
+/** Entrega un archivo: compartir (iPhone, APK) o descargar; si compartir ya no se permite (pasó mucho desde el toque), descarga. */
+function pfGuardar(blob, nombre, tipo, titulo) {
+  var bajar = function () {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  };
+  var archivo = null; try { archivo = new File([blob], nombre, { type: tipo }); } catch (e) {}
+  if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    navigator.share({ files: [archivo], title: titulo }).catch(function (x) { if (!x || x.name !== 'AbortError') bajar(); });
+    return;
+  }
+  bajar();
+}
+function pfDescargarFotos(btn, msgId) {
+  var txt = btn.textContent, msg = msgId || 'lgAjMsg';
+  btn.disabled = true; btn.textContent = 'Preparando…'; lgMsg(msg, '');
+  var fin = function (m, bien) { btn.disabled = false; btn.textContent = txt; if (m) lgMsg(msg, m, bien); };
+  api('listarMisFotos').then(function (r) {
+    var lista = (r && r.fotos) || [], out = [], usados = {};
+    if (!lista.length) { fin('No tienes fotos de progreso guardadas.'); return; }
+    var paso = function (i) {
+      if (i >= lista.length) {
+        var nombre = 'millofit-mis-fotos-' + hoyISO() + '.zip';
+        pfGuardar(new Blob([pfZipBytes(out)], { type: 'application/zip' }), nombre, 'application/zip', 'Mis fotos de MilloFit');
+        fin('Listo: ' + (pfUna(lista.length) ? 'tu foto quedó' : 'tus ' + lista.length + ' fotos quedaron') + ' en ' + nombre + '.', true);
+        return null;
+      }
+      btn.textContent = 'Preparando ' + (i + 1) + ' de ' + lista.length + '…';
+      return api('descargarMiFoto', lista[i].id).then(function (d) { out.push({ nombre: pfNombreFoto(lista[i], d.dataUrl, usados), bytes: pfBytes(d.dataUrl) }); return paso(i + 1); });
+    };
+    return paso(0);
+  }).catch(function (x) { fin('No pude preparar tus fotos: ' + (x && x.message || x)); });
+}
+function pfBorrarTodas(btn) {
+  var n = (window.lgDatos && window.lgDatos.tieneFotos) || 0;
+  if (!confirm(pfUna(n) ? '¿Borrar tu foto de progreso? Se elimina de MilloFit y no se puede recuperar.' : '¿Borrar tus ' + n + ' fotos de progreso? Se eliminan de MilloFit y no se pueden recuperar.')) return;
+  btn.disabled = true; btn.textContent = 'Borrando…';
+  api('borrarMisFotos', {}).then(function (r) {
+    toast('Listo: ' + (pfUna(r.borradas) ? '1 foto borrada' : r.borradas + ' fotos borradas') + '.');
+    pfTrasFotos();
+    api('getLegal').then(lgPintarAjustes).catch(function () {});
+  }).catch(function (x) { btn.disabled = false; btn.textContent = 'Borrar mis fotos'; errG(x); });
+}
+
+/** "Borrar mis datos de salud" / "Borrar mi peso y medidas" (borrarMisDatosSensibles: no cambia ninguna autorización). */
+function pfBorrarSensible(tipo, btn) {
+  var txt = btn.textContent;
+  if (!confirm(tipo === 'salud' ? '¿Borrar tus condiciones de salud, medicamentos y lesiones guardados? No se pueden recuperar.' : '¿Borrar tu peso y las medidas de la báscula de todos los días? No se pueden recuperar.')) return;
+  btn.disabled = true; btn.textContent = 'Borrando…';
+  var p = {}; p[tipo] = true;
+  api('borrarMisDatosSensibles', p).then(function (r) {
+    lgPintarAjustes(r);
+    toast(tipo === 'salud' ? 'Listo: tus datos de salud quedaron borrados.' : 'Listo: tu peso y tus medidas quedaron borrados.');
+    lgTrasCambio();
+  }).catch(function (x) { btn.disabled = false; btn.textContent = txt; errG(x); });
+}
+
+/* ---------- Privacidad y datos → "Tus derechos" (lgPintarAjustes) ---------- */
+function pfDerechosHTML(d) {
+  var n = d.tieneFotos || 0, fotosOn = !!((d.finalidades || []).filter(function (f) { return f.id === 'fotos' && f.activa; })[0]);
+  var h = '<h2 style="margin-top:20px">Tus derechos</h2><div class="meta">Puedes conocer, corregir y borrar tus datos (Ley 1581 de 2012).</div>' +
+    '<button type="button" class="btn sec" id="lgDescBtn" style="margin-top:10px" onclick="lgDescargar(this)">Descargar mis datos</button>';
+  if (n) h += '<div class="pf-box" id="pfBox"><b>Tus fotos de progreso · ' + n + '</b><small>' +
+    (fotosOn ? 'Se descargan aparte de tus datos, en un archivo .zip.' : 'Fotos de progreso está apagado: no se muestran ni se usan. Puedes descargarlas o borrarlas.') + '</small>' +
+    '<button type="button" class="btn sec" id="pfDescBtn" onclick="pfDescargarFotos(this)">Descargar mis fotos</button>' +
+    '<button type="button" class="btn txt lg-bad" id="pfBorrarBtn" style="width:100%;margin-top:2px" onclick="pfBorrarTodas(this)">Borrar mis fotos</button></div>';
+  // Lo sensible que tengas guardado (Política §14: si lo conservaste sin usarlo, lo borras cuando quieras aquí), con o sin el permiso
+  if (d.tieneSalud || d.tieneMedidas) h += '<div class="pf-box" id="pfSens"><b>Otros datos sensibles guardados</b><small>Bórralos cuando quieras; no se pueden recuperar.</small>' +
+    (d.tieneSalud ? '<button type="button" class="btn txt lg-bad" id="pfBorrarSalud" style="width:100%" onclick="pfBorrarSensible(\'salud\', this)">Borrar mis datos de salud</button>' : '') +
+    (d.tieneMedidas ? '<button type="button" class="btn txt lg-bad" id="pfBorrarMedidas" style="width:100%" onclick="pfBorrarSensible(\'medidas\', this)">Borrar mi peso y medidas</button>' : '') + '</div>';
+  if (d.borradoPedido) h += '<div class="lg-aviso" id="pfPedido"><span>Pediste borrar tu cuenta el ' + esc(lgFecha(d.borradoPedido)) + '. El dueño de MilloFit la atiende en máximo 15 días hábiles y te avisa por correo. Si cambias de opinión, puedes cancelarla.</span></div>' +
+    '<button type="button" class="btn txt pf-gris" id="pfCancelarPedido" style="width:100%;margin-top:4px" onclick="pfCancelarPedido(this)">Cancelar mi solicitud</button>';
+  else h += '<button type="button" class="btn txt lg-bad" style="width:100%;margin-top:4px" onclick="lgPedirBorrado()">Pedir que borren mi cuenta</button>';
+  return h + '<p class="lg-msg" id="lgAjMsg"></p>';
+}
+
+/** "Cancelar mi solicitud" (seguridad-gym, B3): la cuenta sigue como estaba y el dueño ya no la ve pendiente. */
+function pfCancelarPedido(btn) {
+  if (!confirm('¿Cancelas tu solicitud de borrar la cuenta? Tu cuenta y tus datos siguen como están.')) return;
+  btn.disabled = true; btn.textContent = 'Cancelando…';
+  api('cancelarBorrarCuenta').then(function (r) { lgPintarAjustes(r); toast(r.mensaje); }).catch(function (x) { btn.disabled = false; btn.textContent = 'Cancelar mi solicitud'; errG(x); });
+}
+
+/* ---------- Personas e invitaciones (dueño): solicitudes de borrado y "Borrar ahora" ---------- */
+function pbFecha(iso) { var p = String(iso || '').split('-'); return p.length === 3 ? Number(p[2]) + ' ' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'][Number(p[1]) - 1] : ''; }
+function pbResumenHTML(lista) {
+  var pend = (lista || []).filter(function (u) { return u.borrado; }); if (!pend.length) return '';
+  var urge = pend.some(function (u) { return u.borrado.aviso; });
+  return '<div class="lg-aviso pb-res' + (urge ? ' urge' : '') + '"><span>' + (pend.length === 1 ? '1 persona pidió borrar su cuenta.' : pend.length + ' personas pidieron borrar su cuenta.') +
+    ' Tienes 15 días hábiles para hacerlo (Ley 1581): bórrala con «Borrar ahora».</span></div>';
+}
+function pbSolicitudHTML(u, i) {
+  var s = u && u.borrado; if (!s) return '';
+  var plazo = s.vencida ? 'El plazo venció el ' + pbFecha(s.limite) + ': bórrala ya.' : s.aviso ? 'Lleva ' + s.habiles + ' de ' + s.plazo + ' días hábiles: quedan ' + s.quedan + ' (vence el ' + pbFecha(s.limite) + ').'
+    : s.habiles ? 'Día hábil ' + s.habiles + ' de ' + s.plazo + ' (vence el ' + pbFecha(s.limite) + ').' : 'Vence el ' + pbFecha(s.limite) + ' (' + s.plazo + ' días hábiles).';
+  return '<div class="pb-sol' + (s.aviso ? ' urge' : '') + '"><span><b>Pidió borrar su cuenta el ' + esc(pbFecha(s.dia)) + '.</b> <span class="pb-plazo">' + esc(plazo) + '</span>' +
+    (s.motivo ? '<small>“' + esc(String(s.motivo).slice(0, 140)) + '”</small>' : '') +
+    (s.aMedias ? '<small class="pb-nota">El borrado anterior quedó a medias: toca «Borrar ahora» para terminarlo.</small>' : '') +
+    (s.usoDespues ? '<small class="pb-nota">Volvió a usar la app después de pedirlo (última vez: ' + esc(pbFecha(s.usoDespues)) + '). Si quieres, escríbele para confirmar antes de borrar.</small>' : '') + '</span>' +
+    '<button type="button" class="btn sec pb-btn" onclick="pbConfirmar(' + i + ')">Borrar ahora</button></div>';
+}
+function pbConfirmar(i) {
+  var u = (gePersonas || [])[i]; if (!u) return;
+  hojaAbrir({ titulo: 'Borrar la cuenta de ' + (u.nombre || u.correo), kicker: 'Personas e invitaciones', foco: 'pbCorreo',
+    html: '<p class="pf-p">Se borran para siempre su cuenta y todos sus datos: entrenos, comidas, peso y medidas, salud, fotos, Telegram y su acceso. No se puede deshacer.</p>' +
+      '<p class="pf-p">Solo se conserva la prueba de lo que aceptó y de su solicitud (Ley 1581). Le llega un correo avisándole.</p>' +
+      '<p class="pf-p" style="margin-bottom:6px">Para confirmar, escribe su correo: <b class="pb-correo">' + esc(u.correo || '') + '</b></p>' +
+      '<input id="pbCorreo" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Correo de la persona" oninput="pbRevisar(' + i + ')">' +
+      '<button type="button" class="btn pf-borrar" id="pbBtn" style="margin-top:12px" disabled onclick="pbBorrar(' + i + ')">Borrar la cuenta</button><p class="lg-msg" id="pbMsg"></p>' });
+  pfHojaLarga();
+}
+function pbCorreoIgual(a, b) { return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase() && String(b || '').trim() !== ''; }
+function pbRevisar(i) { var u = (gePersonas || [])[i], b = $('pbBtn'), c = $('pbCorreo'); if (u && b && c) b.disabled = !pbCorreoIgual(c.value, u.correo); }
+function pbBorrar(i) {
+  var u = (gePersonas || [])[i], b = $('pbBtn'), c = $('pbCorreo'); if (!u || !b || !c || !pbCorreoIgual(c.value, u.correo)) return;
+  b.disabled = true; b.textContent = 'Borrando…'; lgMsg('pbMsg', '');
+  api('borrarCuentaPersona', { id: u.id, confirmar: c.value }).then(function (r) {
+    hojaCerrar();
+    gePersonas = r.personas || []; gePintarPersonas();
+    toast(r.yaBorrada ? 'Esa cuenta ya estaba borrada.' : 'Listo: borramos la cuenta de ' + (u.nombre || u.correo) + ' y todos sus datos. Le avisamos por correo.');
+  }).catch(function (x) { b.disabled = false; b.textContent = 'Borrar la cuenta'; lgMsg('pbMsg', x && x.message || String(x)); });
+}
+/* ===== fin Privacidad: fotos y borrado de cuenta ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
