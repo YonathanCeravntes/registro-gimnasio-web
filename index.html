@@ -1721,7 +1721,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610270120', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610270152', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 /* La URL del servidor tiene UNA definición: API_PUBLICA (hotfix 27/10/2026: un cfg con la URL vacía, indefinida, de github.io, de
    script.googleusercontent.com o del proxy viejo hacía POST a GitHub Pages → «error HTTP 405»). Lo que no sea exactamente API_PUBLICA
@@ -3997,7 +3997,7 @@ function abrirChat() {
   var hilo = c.historial.slice().reverse();   // de la más vieja a la más nueva
   var v = $('coachChat'); v.classList.remove('hidden');
   v.innerHTML = '<div class="ch-top"><div><div class="kicker">Coach</div><b>Pregúntale</b></div><button class="gear" onclick="cerrarChat()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
-    '<div class="chat" id="chat"><div class="msg coach">Hola. Conozco tus últimas 2 semanas: series, RIR, comida, peso y notas. Pídeme un plan ("quiero 4 días para glúteo"), cuéntame una molestia o pregúntame cómo vas.</div>' +
+    '<div class="chat" id="chat"><div class="msg coach">Hola. Conozco tus últimas 2 semanas: ' + esc(c.conozco || 'series, RIR, comida, peso y notas') + '. Pídeme un plan ("quiero 4 días para glúteo"), cuéntame una molestia o pregúntame cómo vas.</div>' +
     hilo.map(function (x) {
       // En el historial solo lo que escribió la persona: el pedido técnico de un plan se resume
       var yo = x.tipo === 'pregunta' ? x.pregunta : x.tipo === 'plan' ? 'Pedí un plan desde el chat' : 'Analiza mis últimas 2 semanas';
