@@ -1100,6 +1100,58 @@
   .dp-aviso .dp-cambiar{display:block;margin-top:10px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--raise2);background:transparent;color:var(--ink);font:700 14px var(--body);cursor:pointer}
   .dp-aviso .dp-cambiar:disabled{opacity:.5}
   .dp-sw{margin-top:8px;border-top:1px solid var(--line)}
+  /* ===== Control cada 4 semanas (26/10/2026; Control.gs): tarjeta de Hoy en gris (D1), hoja «Tu control», «Así vas», Progreso → Controles y Ajustes.
+     Ámbar solo para el siguiente paso DENTRO de la hoja (Guardar, Aplicar, Listo); verde = hecho; ningún número del cuerpo se pinta por subir o bajar. ===== */
+  .ctl-card{margin-top:10px}
+  .ctl-card .kicker{font-size:11px}
+  .ctl-card .ctl-t{display:block;font-size:17px;font-weight:800;line-height:1.25;margin-top:4px;color:var(--ink)}
+  .ctl-card .meta{margin-top:6px;line-height:1.45}
+  .ctl-acts{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;margin-top:12px}
+  .ctl-acts .btn.sec{width:auto;min-height:44px;font-size:16px;padding:0 18px}
+  .ctl-acts .btn.txt{color:var(--muted);min-height:44px;font-size:14px}
+  .ctl-prow .s .pt,.ctl-rowh .s .pt{display:inline-block;width:7px;height:7px;border-radius:99px;background:var(--faint);margin-right:6px;vertical-align:1px}
+  .ctl-hoja .hoja-h b{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.05}
+  .ctl-p{margin:0 0 8px;font-size:14px;line-height:1.45;color:var(--muted)}
+  .ctl-sec{display:flex;align-items:center;gap:8px;margin-top:12px}
+  .ctl-sec b{font-size:15px;font-weight:800}
+  .ctl-q{width:26px;height:26px;border-radius:99px;border:1px solid var(--raise2);background:none;color:var(--muted);font:700 13px var(--body);cursor:pointer;padding:0}
+  .ctl-hoja .row label{margin-top:6px}
+  .ctl-in{position:relative} .ctl-in input{padding-right:40px} .ctl-in span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;pointer-events:none}
+  .ctl-hoja .ctl-mini{font-size:12.5px;color:var(--dim);margin-top:6px;line-height:1.4}
+  .ctl-aviso{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .ctl-aviso .ctl-acts{margin-top:8px}
+  .ctl-err{color:var(--bad);font-size:13.5px;margin-top:8px;min-height:0}
+  .ctl-peso{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--green-bg);border:1px solid var(--green-line)}
+  .ctl-peso b{display:block;color:var(--green-ink);font-size:15px} .ctl-peso span{display:block;color:var(--green-ink);font-size:12.5px;opacity:.85;margin-top:2px}
+  .ctl-guia{margin-top:6px} .ctl-guia ol{margin:2px 0 0;padding-left:18px;font-size:13.5px;line-height:1.45;color:var(--ink)} .ctl-guia li{margin-bottom:4px}
+  .ctl-hoja .g-row{margin-top:8px;background:var(--card2)}
+  .ctl-hoja .g-fold{background:var(--card2);margin-top:6px;padding:10px 12px;border-radius:14px}
+  .ctl-hoja textarea{min-height:64px}
+  .ctl-pie-t{font-size:12px;color:var(--faint);line-height:1.45;margin-top:12px}
+  .ctl-pie{position:sticky;bottom:-16px;display:flex;gap:10px;margin:12px -16px -16px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
+  .ctl-pie .btn{flex:1;min-height:48px;font-size:17px;white-space:nowrap;padding:0 12px} .ctl-pie .btn.sec{flex:0 0 auto;width:auto;padding:0 16px}
+  .ctl-hoja .hoja-h .k{letter-spacing:.4px;font-size:10.5px}
+  .ctl-res .btn.txt,#ajCtl .btn.txt,#ctlAj .btn.txt{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+  .ctl-aviso:empty{display:none}
+  .ctl-ok{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--green-bg);color:var(--green-ink);font-weight:700;font-size:14px}
+  .ctl-ok svg{width:18px;height:18px;fill:none;stroke:var(--green-ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+  .ctl-res b.ctl-tt{display:block;font-size:17px;margin-top:12px;color:var(--ink)}
+  .ctl-bt{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-top:14px}
+  .ctl-l{font-size:14px;line-height:1.45;color:var(--ink);margin-top:6px}
+  .ctl-nota{font-size:12.5px;color:var(--faint);margin-top:6px;line-height:1.4}
+  .ctl-qh{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-top:16px}
+  .ctl-prop{margin-top:8px;padding:12px;border-radius:14px;background:var(--card2);border:1px solid var(--line)}
+  .ctl-prop ul{margin:6px 0 0;padding-left:18px;font-size:14px;line-height:1.45} .ctl-prop .ctl-l{margin-top:8px;font-weight:600}
+  .ctl-prop .ctl-acts .btn{width:auto;min-height:44px;font-size:16px;padding:0 20px}
+  .ctl-lista button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;min-height:52px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:500 14px var(--body);text-align:left;cursor:pointer;padding:8px 0}
+  .ctl-lista button:first-child{border-top:0} .ctl-lista b{font-weight:700} .ctl-lista small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px} .ctl-lista .v{flex-shrink:0;color:var(--ink);font-weight:700;font-size:13.5px;text-align:right}
+  .ctl-graf{margin:4px 0 2px} .ctl-graf svg{display:block;width:100%;height:96px}
+  .ctl-fold-acts{display:flex;flex-direction:column;gap:2px;margin-top:10px}
+  .ctl-fold-acts .btn.sec{min-height:44px;font-size:16px}
+  .ctl-fold-acts .btn.txt{width:100%;color:var(--muted)}
+  #ctlAj .per-row b{white-space:normal} #ctlAj select{margin-top:2px}
+  #ctlAj .toggle{margin:4px 0 0}
+  /* ===== fin Control cada 4 semanas ===== */
   /* ===== Barra inferior fija en iPhone (07/10/2026) ===== */
   /* Solo actúa con body.bf-corrido: lo pone bfCorregir (JS, mismo bloque) cuando el iPhone deja la ventana visible corrida después de cerrar el
      teclado. La barra, el aviso y las capas de pantalla completa vuelven a lo que se ve; la píldora del descanso, arriba. Sin ese error no cambia nada. */
@@ -1206,6 +1258,7 @@
       <div id="pendBox"></div>
       <div id="dpBox"></div>
       <div id="habBox"></div>
+      <div id="ctlBox"></div>
       <div class="g-chips" id="hoyChips"></div>
       <div id="entrenadorBox"></div>
       <div id="pasosBox"></div>
@@ -1335,6 +1388,8 @@
       <div class="g-frase" id="cuFrase"></div>
     </div>
     <div id="panel"><div class="empty">Cargando…</div></div>
+    <button class="g-row ctl-prow" id="ctlRow" aria-expanded="false" style="display:none" onclick="gcToggle('ctlFold', this)"><span class="n"><b>Controles de medidas</b><span class="s" id="ctlSub">Cada 4 semanas, si quieres</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="card g-fold" id="ctlFold"></div>
     <button class="g-row" id="fotoRow" aria-expanded="false" onclick="gcToggle('fotoBox', this)"><span class="n"><b>Foto de progreso</b><span class="s" id="fEstado">Cada 4 semanas: frente, perfil y espalda.</span></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="card g-fold" id="fotoBox">
       <div id="lgFotoAviso"></div>
@@ -1502,6 +1557,10 @@
     <div class="card" data-sec="gimnasio" id="dpCard">
       <h2>Días que no puedo ir</h2>
       <div id="dpAjustes"><div class="meta">Cargando…</div></div>
+    </div>
+    <div class="card" data-sec="gimnasio" id="ctlCard" style="display:none">
+      <h2>Control cada 4 semanas</h2>
+      <div id="ctlAj"><div class="meta">Cargando…</div></div>
     </div>
     <div class="card" data-sec="comida">
       <h2>Objetivo y meta</h2>
@@ -1721,7 +1780,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610270152', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610270155', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 /* La URL del servidor tiene UNA definición: API_PUBLICA (hotfix 27/10/2026: un cfg con la URL vacía, indefinida, de github.io, de
    script.googleusercontent.com o del proxy viejo hacía POST a GitHub Pages → «error HTTP 405»). Lo que no sea exactamente API_PUBLICA
@@ -1893,7 +1952,7 @@ function llamarDirecto(url, fn, args, t, intento) {
    las pantallas, claves CACHE_V) se borra al momento (Ley 1581; probador del PR #32, Bajo 1). El servidor no guarda nada del token de una cuenta
    borrada (Auditor, Bajo 1 = D7), así que el texto es neutro y vale para los dos casos. */
 function mostrarVincular(tokenMalo) {
-  if (tokenMalo) { try { if (typeof invalidarTodo === 'function') invalidarTodo(); } catch (e) {} }
+  if (tokenMalo) { try { if (typeof invalidarTodo === 'function') invalidarTodo(); if (typeof ctlBorradorQuitar === 'function') ctlBorradorQuitar(); } catch (e) {} }   // + el borrador del control (no está en CACHE_V)
   var v = $('vincular'); v.classList.remove('hidden');
   $('vincMsg').textContent = tokenMalo ? 'Tu sesión ya no es válida. Entra con tu correo o pega tu enlace.' : 'Si tienes tu enlace privado (te llegó por correo), pégalo aquí o ábrelo directamente en este celular.';
   if (tokenMalo && $('enMsg')) accMsg('enMsg', 'Tu sesión ya no es válida. Si pediste borrar tu cuenta, ya no existe; si no, entra de nuevo con tu correo.');
@@ -4283,7 +4342,7 @@ function vaciarCola(forzar) {
         if (nuevo) toast('Lo del ' + (fechaEyebrow(item.p && item.p.fecha) || 'día que anotaste').toLowerCase() + ' sigue guardado en tu celular: para el servidor ese día aún no llega. Se envía solo cuando llegue; revisa la fecha y la hora del celular.'); }
       vaciarCola(); return;
     }
-    r.splice(i, 1); guardarCola(r); toast('No se pudo enviar un cambio: ' + (e.message || e)); vaciarCola();
+    r.splice(i, 1); guardarCola(r); toast((item.fn === 'guardarControl' ? 'No se guardó tu control: ' : 'No se pudo enviar un cambio: ') + (e.message || e)); vaciarCola();   // regla 8 del control: se descarta con aviso, no se reintenta para siempre
   });
 }
 function invalidarTodo() { try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(CACHE_V) === 0) localStorage.removeItem(k); }); } catch (e) {} }
@@ -4294,6 +4353,7 @@ setInterval(vaciarCola, 30000);
    sin pisar series que estés escribiendo. */
 function hayCambiosSinGuardar() {
   if (typeof gdFormSucio === 'function' && gdFormSucio()) return true;
+  if (typeof ctlFormSucio === 'function' && ctlFormSucio()) return true;   // la hoja «Tu control» con algo escrito (Control cada 4 semanas)
   return seriesSinGuardar();
 }
 /** Series de Hoy escritas a mano sin "Listo" (o guardándose). */
@@ -5758,7 +5818,7 @@ function ajObjetivo(id) {
 function cambiarClaveUI() {
   if (!confirm('Te mandamos un código a tu correo para elegir la contraseña nueva. Sales de la app en este celular y vuelves a entrar con la nueva. ¿Seguir?')) return;
   var cfg = null; try { cfg = JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) {}
-  var fin = function () { try { localStorage.removeItem('cfg'); } catch (e) {} location.hash = 'olvide'; location.reload(); };
+  var fin = function () { try { invalidarTodo(); ctlBorradorQuitar(); localStorage.removeItem('cfg'); } catch (e) {} location.hash = 'olvide'; location.reload(); };   // sale de la sesión: su caché y el borrador del control se van del celular
   if (cfg && cfg.api && cfg.t) fetch(cfg.api.replace(/[/]api$/, '') + '/cuenta/salir', { method: 'POST', body: JSON.stringify({ t: cfg.t }) }).then(fin, fin); else fin();
 }
 function enlaceInvitacion(r) { return String(r.enlace || '').replace(/#.*$/, '') + '#inv=' + encodeURIComponent(r.codigo || ''); }
@@ -6781,12 +6841,12 @@ function lgCasillaHTML(id, titulo, linea, marcada, extra) {
 }
 function lgNotaFinalidad(f, d) {
   if (f.id === 'salud' && d.tieneSalud) return 'Tienes condiciones guardadas: sin esta casilla dejan de usarse.';
-  if (f.id === 'medidas' && d.tieneMedidas) return 'Tienes tu peso guardado: sin esta casilla deja de usarse.';
+  if (f.id === 'medidas' && d.tieneMedidas) return 'Tienes tu peso o tus medidas guardados: sin esta casilla dejan de usarse.';
   if (f.id === 'fotos' && d.tieneFotos) return pfNotaCasilla(d.tieneFotos);
   return '';
 }
 function lgEfecto(id) {
-  return { medidas: 'Tu peso deja de usarse: sin él no calculamos tu meta de comida ni tus cargas iniciales.', salud: 'Tus condiciones y medicamentos dejan de usarse en la comida y los ejercicios.',
+  return { medidas: 'Tu peso y tus medidas del control dejan de usarse: sin ellos no calculamos tu meta de comida ni tus cargas iniciales, ni hacemos el control de avance.', salud: 'Tus condiciones y medicamentos dejan de usarse en la comida y los ejercicios.',
     ia: 'El Coach y la comida con IA quedan apagados para ti.', fotos: 'No podrás subir fotos nuevas y las que ya tienes dejarán de verse en Progreso.', comunidad: 'Tus datos dejan de sumarse, sin nombre, a las recomendaciones para otros.',
     avisos: 'Dejas de recibir recordatorios e informes (los códigos para entrar sí te llegan).' }[id] || '';
 }
@@ -6971,7 +7031,7 @@ function lgCambiar(id, inp) {
     }
     if (!confirm('¿Quitar el permiso de ' + f.nombre + '? ' + lgEfecto(id))) { inp.checked = true; return; }
     if (id === 'salud' && d.tieneSalud && confirm('¿Borrar también tus condiciones, medicamentos y lesiones guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { salud: true };
-    if (id === 'medidas' && d.tieneMedidas && confirm('¿Borrar también tu peso y las medidas de la báscula guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { medidas: true };
+    if (id === 'medidas' && d.tieneMedidas && confirm('¿Borrar también tu peso, los datos de la báscula y tus controles guardados? Si dices que no, se quedan guardados pero no se usan.')) borrar = { medidas: true };
   }
   lgCambiarEnviar(id, inp, f, on, borrar);
 }
@@ -6983,6 +7043,7 @@ function lgCambiarEnviar(id, inp, f, on, borrar) {
     lgPintarAjustes(r);
     toast(id === 'fotos' && !on ? pfToastQuitar(r, antes) : on ? f.nombre + ': activado' : f.nombre + ': permiso quitado' + (borrar ? ' y datos borrados' : ''));
     if (id === 'fotos' && !on) pfTrasFotos();
+    if (id === 'medidas' && !on) ctlBorradorQuitar();   // el borrador del control (cintura, peso, nota) se va del celular, se borre o no lo guardado
     lgTrasCambio();
   }).catch(function (x) { inp.disabled = false; inp.checked = !on; errG(x); });
 }
@@ -7972,7 +8033,7 @@ function ptOvBorrar(d, fin) {
   var antes = d.actuales || null, b = {};
   var quita = function (f) { return !fin[f] && !(antes && antes[f] === false); };
   if (d.tieneSalud && quita('salud') && confirm('No marcaste Salud. ¿Borrar también tus condiciones, medicamentos y lesiones guardados? Si dices que no, se quedan guardados pero no se usan.')) b.salud = true;
-  if (d.tieneMedidas && quita('medidas') && confirm('No marcaste Peso y medidas. ¿Borrar también tu peso y las medidas de la báscula guardados? Si dices que no, se quedan guardados pero no se usan.')) b.medidas = true;
+  if (d.tieneMedidas && quita('medidas') && confirm('No marcaste Peso y medidas. ¿Borrar también tu peso, los datos de la báscula y tus controles guardados? Si dices que no, se quedan guardados pero no se usan.')) b.medidas = true;
   return b.salud || b.medidas ? b : null;
 }
 /** B6 del Auditor del PR #33: el paso del código recuerda qué se borra al firmar (el texto lo arma el servidor, textoBorrara_, y va igual en el correo). */
@@ -8295,11 +8356,12 @@ function pfBorrarTodas(btn) {
 /** "Borrar mis datos de salud" / "Borrar mi peso y medidas" (borrarMisDatosSensibles: no cambia ninguna autorización). */
 function pfBorrarSensible(tipo, btn) {
   var txt = btn.textContent;
-  if (!confirm(tipo === 'salud' ? '¿Borrar tus condiciones de salud, medicamentos y lesiones guardados? No se pueden recuperar.' : '¿Borrar tu peso y las medidas de la báscula de todos los días? No se pueden recuperar.')) return;
+  if (!confirm(tipo === 'salud' ? '¿Borrar tus condiciones de salud, medicamentos y lesiones guardados? No se pueden recuperar.' : '¿Borrar tu peso, los datos de la báscula de todos los días y tus controles de medidas? No se pueden recuperar.')) return;
   btn.disabled = true; btn.textContent = 'Borrando…';
   var p = {}; p[tipo] = true;
   api('borrarMisDatosSensibles', p).then(function (r) {
     lgPintarAjustes(r);
+    if (tipo === 'medidas') ctlBorradorQuitar();
     toast(tipo === 'salud' ? 'Listo: tus datos de salud quedaron borrados.' : 'Listo: tu peso y tus medidas quedaron borrados.');
     lgTrasCambio();
   }).catch(function (x) { btn.disabled = false; btn.textContent = txt; errG(x); });
@@ -8622,6 +8684,435 @@ function cfResumen() {
   hojaAbrir({ titulo: 'Tu ciclo', kicker: 'Así te fue · ' + r.programa.nombre + (r.ciclo >= 2 ? ' · ciclo ' + r.ciclo : ''), html: h });
 }
 /* ===== fin Fin del programa y ciclo 2 ===== */
+/* ===== Control cada 4 semanas (26/10/2026; servidor Control.gs; diseño de disenador-gym, decisiones D1–D15 del Director y reglas 1–8 de legal-gym) =====
+ * Opcional y nunca bloquea: getEstado y getSesion no lo leen; la app lo pide aparte con getControl (máx. una vez por minuto, salvo tras responder) y
+ * nada espera por él. Hoy: #ctlBox (P1; el botón SIEMPRE gris, D1; un solo «Hoy no», D2; plegada con «Primeros pasos» o el fin del ciclo a la vista, D14,
+ * o con series anotadas hoy: nunca dos tarjetas grandes a la vez). La hoja «Tu control» (P2) y «Así vas» (P3) en la hoja inferior; Progreso →
+ * «Controles de medidas» (P4, #ctlRow/#ctlFold); Ajustes → Mi gimnasio (P5, #ctlCard); Ajustes → Tu comida: «Volver a la anterior» si aplicaste una
+ * propuesta. Con una condición que «bloquea» (getControl().oculto, D4) no se ve nada. Ámbar solo para el siguiente paso DENTRO de la hoja (Guardar,
+ * Aplicar, Listo); ningún número del cuerpo se pinta por subir o bajar. Todo en function (pintarHero lo llama al abrir). */
+var ctlDatos = null, ctlT = 0, ctlPidiendo = false, ctlEsperan = [], ctlForm = null, ctlRes = null;
+function ctlCargar(forzar, luego) {
+  if (luego) ctlEsperan.push(luego);
+  if (ctlPidiendo) return;
+  if (!forzar && ctlDatos && Date.now() - ctlT < 60000) { ctlSoltar(); return; }
+  ctlPidiendo = true;
+  api('getControl').then(function (d) { ctlPidiendo = false; ctlDatos = d || null; ctlT = Date.now(); if (d && !d.oculto && d.medidas === false) ctlBorradorQuitar(); ctlRepintar(); ctlSoltar(); })
+    .catch(function () { ctlPidiendo = false; ctlEsperan = []; });
+}
+function ctlSoltar() { var l = ctlEsperan; ctlEsperan = []; l.forEach(function (f) { try { f(ctlDatos); } catch (x) { console.error(x); } }); }
+function ctlRepintar() {
+  try { ctlPintarHoy(); } catch (x1) { console.error(x1); }
+  try { ctlPintarProgreso(); } catch (x2) { console.error(x2); }
+  try { ctlPintarAjustes(); } catch (x3) { console.error(x3); }
+  try { ctlPintarComidaAj(); } catch (x4) { console.error(x4); }
+}
+function ctlChev() { return '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'; }
+function ctlNum(v) { var t = String(v == null ? '' : v).trim().replace(',', '.'); if (!t) return ''; var n = Number(t); return isNaN(n) ? NaN : n; }
+function ctlF1(x) { return (Math.round(Number(x) * 10) / 10).toFixed(1).replace('.', ','); }
+function ctlCada() { return ctlDatos && ctlDatos.cada === 8 ? 8 : 4; }
+/** «Control de 4 u 8 semanas» del que toca: lo manda el servidor (getControl().semanas = semanasControl_; 8 con esa cadencia o en la evaluación completa). §32: la app no repite la regla. */
+function ctlSemanas() { return ctlDatos && ctlDatos.semanas ? ctlDatos.semanas : ctlCada(); }
+function ctlCorta(f) { return diaSemanaIso(f).slice(0, 3) + ' ' + fechaCortaIso(f); }   // "dom 22 nov"
+
+/* ---------- P1 · Hoy ---------- */
+function ctlSerieHoy() {
+  var s = sesionActual;
+  return !!(s && s.fecha === hoyISO() && s.ejercicios.some(function (x) { return Object.keys(x.variantes).some(function (v) { return (x.variantes[v].hoy || []).length; }); }));
+}
+function ctlPintarHoy() {
+  var box = $('ctlBox'); if (!box) return;
+  var d = ctlDatos, t = d && !d.oculto ? d.tarjeta : null;
+  if (!estado || estado.fecha !== hoyISO() || !t || (estado.programa && estado.programa.bienvenida)) { box.innerHTML = ''; return; }
+  var pasos = $('pasosBox'), ciclo = $('cicloCard');
+  var plegada = !!(t.plegada || (pasos && pasos.innerHTML.trim()) || (ciclo && ciclo.innerHTML.trim()) || ctlSerieHoy());
+  box.innerHTML = ctlTarjetaHTML(t, plegada);
+}
+function ctlTextos(t) {
+  var c = ctlSemanas();
+  if (t.tipo === 'sinMedidas') return { k: 'Peso y medidas', t: 'Revisa tu avance cada ' + c + ' semanas, si quieres',
+    s: 'Para comparar tu cintura y tu peso necesitas activar «Peso y medidas». Son datos sensibles y darlos es opcional: sin ellos tu plan sigue igual.',
+    si: 'Activar peso y medidas', fnSi: 'ctlActivarMedidas()', no: 'No, gracias', fnNo: "ctlResponder('noGracias')", fila: 'Revisa tu avance cada ' + c + ' semanas, si quieres' };
+  if (t.tipo === 'optin') return { k: 'Control de ' + c + ' semanas', t: '¿Quieres revisar tu avance cada ' + c + ' semanas?',
+    s: 'Te mides la cintura y comparamos con tu inicio. Es opcional, sin afán, y lo apagas cuando quieras. Sin esto tu plan sigue igual.',
+    si: 'Sí, empezar', fnSi: 'ctlEmpezar()', no: 'No por ahora', fnNo: "ctlResponder('noPorAhora')", fila: '¿Quieres revisar tu avance? · cuando quieras' };
+  if (t.tipo === 'pregunta8') return { k: 'Control de 4 semanas', t: '¿Lo pasamos a cada 8 semanas?', ocho: true, fila: '¿Lo pasamos a cada 8 semanas?',
+    s: 'Has dejado pasar los últimos controles y está bien: cada quien tiene su ritmo. Puedo preguntarte cada 8 semanas, o apagarlo.' };
+  if (t.tipo === 'cero') return { k: 'Control de ' + c + ' semanas', t: 'Empecemos con tu punto de partida',
+    s: 'Si quieres, mídete la cintura una vez: así tendrás con qué comparar dentro de ' + c + ' semanas. Son 2 minutos.',
+    si: 'Hacer mi primer control', fnSi: 'ctlAbrir()', no: 'Hoy no', fnNo: "ctlResponder('hoyNo')", fila: 'Pendiente · cuando quieras' };
+  return { k: 'Control de ' + c + ' semanas', t: 'Tu control de ' + c + ' semanas está listo',
+    s: 'Si quieres, mídete la cintura y anota tu peso de la semana.' + (t.evaluacion ? ' Esta vez comparamos con tu inicio.' : '') + ' Son 2 minutos.',
+    si: 'Hacer el control', fnSi: 'ctlAbrir()', no: 'Hoy no', fnNo: "ctlResponder('hoyNo')", fila: 'Pendiente · cuando quieras' };
+}
+function ctlAccionesHTML(x) {
+  if (x.ocho) return '<button type="button" class="btn sec small" onclick="ctlResponder(\'cada8\')">Cada 8 semanas</button><button type="button" class="btn sec small" onclick="ctlResponder(\'apagar\')">Apagarlo</button>' +
+    '<button type="button" class="btn txt" onclick="ctlResponder(\'dejar\')">Dejarlo como está</button>';
+  return '<button type="button" class="btn sec small" onclick="' + x.fnSi + '">' + esc(x.si) + '</button><button type="button" class="btn txt" onclick="' + x.fnNo + '">' + esc(x.no) + '</button>';
+}
+/** P1 (D1: el botón SIEMPRE en gris; en Hoy el único ámbar sigue siendo EMPEZAR/CONTINUAR). Plegada = una fila gris («Pendiente · cuando quieras»). */
+function ctlTarjetaHTML(t, plegada) {
+  var x = ctlTextos(t);
+  if (plegada) return '<button type="button" class="g-row ctl-rowh" onclick="ctlTocar()"><span class="n"><b>' + esc(x.k) + '</b><span class="s"><i class="pt"></i>' + esc(x.fila) + '</span></span>' + ctlChev() + '</button>';
+  return '<div class="card ctl-card" id="ctlCardHoy"><div class="kicker">' + esc(x.k) + '</div><b class="ctl-t">' + esc(x.t) + '</b><div class="meta">' + esc(x.s) + '</div>' +
+    '<div class="ctl-acts">' + ctlAccionesHTML(x) + '</div></div>';
+}
+/** La fila plegada: el control abre la hoja; las preguntas (opt-in, sin permiso, cada 8 semanas) abren la misma pregunta en la hoja. */
+function ctlTocar() {
+  var t = ctlDatos && ctlDatos.tarjeta; if (!t) return;
+  if (t.tipo === 'cero' || t.tipo === 'n') { ctlAbrir(); return; }
+  var x = ctlTextos(t);
+  hojaAbrir({ kicker: x.k, titulo: 'Tu control', html: '<div id="ctlOpc"><b class="ctl-t" style="display:block;font-size:17px">' + esc(x.t) + '</b><div class="meta" style="margin-top:6px;line-height:1.45">' + esc(x.s) + '</div>' +
+    '<div class="ctl-acts">' + ctlAccionesHTML(x) + '</div></div>' });
+  ctlHojaLarga();
+}
+function ctlResponder(a) {
+  if (hojaEstado.abierta && $('ctlOpc')) hojaCerrar();
+  enviar('responderControl', { accion: a }).then(function (d) {
+    if (d && d.enCola) { if (ctlDatos && ctlDatos.tarjeta) { if (a === 'hoyNo') ctlDatos.tarjeta.plegada = true; else ctlDatos.tarjeta = null; } }
+    else if (d) { ctlDatos = d; ctlT = Date.now(); }
+    ctlRepintar();
+    if (a === 'apagar') toast('Listo. Si cambias de idea: Ajustes → Mi gimnasio.');
+    if (a === 'cada8') toast('Listo: te pregunto cada 8 semanas.');
+  }).catch(errG);
+}
+function ctlEmpezar() {
+  // M1 del probador: cerrar SIN animación. Con animación, su setTimeout(fin, 220) borraba la hoja «Tu control» que ctlAbrir abre si la respuesta llega antes de 220 ms
+  if (hojaEstado.abierta && $('ctlOpc')) hojaCerrar(true);
+  api('responderControl', { accion: 'empezar' }).then(function (d) { ctlDatos = d; ctlT = Date.now(); ctlRepintar(); ctlAbrir(); }).catch(errG);
+}
+function ctlActivarMedidas() { if (hojaEstado.abierta) hojaCerrar(); irAjustes('privacidad'); }
+function ctlHojaLarga() { var h = document.querySelector('#hojaOv .hoja'); if (h) h.classList.add('ctl-hoja'); }
+
+/* ---------- P2 · La hoja «Tu control» ---------- */
+function ctlCampo(id, label, val, ph, u, enter) {
+  var v = val === '' || val == null ? '' : String(val).replace('.', ',');
+  return '<div><label for="' + id + '">' + esc(label) + '</label><div class="ctl-in"><input id="' + id + '" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="' + (enter || 'next') + '"' +
+    (ph ? ' placeholder="' + esc(ph) + '"' : '') + ' value="' + esc(v) + '" oninput="ctlTocado(this)"><span>' + esc(u) + '</span></div></div>';
+}
+function ctlPliegue(id, titulo, sub, abierto, cuerpo) {
+  return '<button type="button" class="g-row" aria-expanded="' + (abierto ? 'true' : 'false') + '" onclick="gcToggle(\'' + id + '\', this)"><span class="n"><b>' + esc(titulo) + '</b><span class="s">' + esc(sub) + '</span></span>' + ctlChev() + '</button>' +
+    '<div class="g-fold' + (abierto ? ' open' : '') + '" id="' + id + '">' + cuerpo + '</div>';
+}
+function ctlFormHTML(d, v, f) {
+  var cero = f.tipo === 'cero' && !f.corrige, ev = !f.corrige && f.tipo === 'n' && d.proximo && d.proximo.evaluacion, l = v.lecturas || [], ps = d.pesoSemana || { n: 0 }, h = '';
+  if (cero) h += '<p class="ctl-p">Este control es solo para ver tu avance. Si medirte te genera angustia o has tenido dificultades con la comida, puedes saltártelo cuando quieras: tu plan sigue igual.</p>' +
+    '<p class="ctl-p">Este es tu punto de partida. Las primeras veces uno se mide con más error; por eso comparamos en meses, no en días.</p>';
+  h += '<div class="meta">En ayunas y después de ir al baño.</div>';
+  h += '<div class="ctl-sec"><b>Cintura</b><button type="button" class="ctl-q" aria-label="Cómo medir la cintura" onclick="ctlGuiaAbrir()">?</button></div>';
+  h += '<div class="row">' + ctlCampo('ctlL1', 'Lectura 1', l[0], '84,5', 'cm') + ctlCampo('ctlL2', 'Lectura 2', l[1], 'Otra vez', 'cm') + '</div>';
+  h += '<div id="ctlL3Box"' + (l[2] ? '' : ' class="hidden"') + '><div class="ctl-aviso" id="ctlDifTxt"></div><div class="row">' + ctlCampo('ctlL3', 'Lectura 3', l[2], '', 'cm') + '<div></div></div></div>';
+  h += '<div class="ctl-mini">Dos lecturas dan un número más firme. Con una también sirve.</div>';
+  // Guía (regla 7): solo los tres pasos se atribuyen a la OMS; «en ayunas», «después de ir al baño» y el cordón no
+  h += '<details class="ctl-guia" id="ctlGuia"' + (cero ? ' open' : '') + '><summary>Cómo medir la cintura</summary><ol><li>De pie, sin meter ni sacar la barriga, al final de una exhalación normal.</li>' +
+    '<li>Pon el metro a la mitad entre la última costilla y el borde de arriba del hueso de la cadera, paralelo al piso.</li><li>Que quede justo, sin hundir la piel. Mídete siempre en el mismo punto.</li></ol>' +
+    '<div class="ctl-mini">Pasos basados en la guía de la OMS (2008).</div><div class="ctl-mini">¿Sin metro? Un cordón sirve: lo marcas y lo mides con una regla.</div></details>';
+  // Peso: con 4 pesajes en la semana, su promedio (verde = ya está); si no, la casilla
+  if (!f.corrige && ps.n >= 4) h += '<div class="ctl-peso"><b>Tu peso: ' + ctlF1(ps.prom) + ' kg</b><span>promedio de ' + ps.n + ' pesajes esta semana</span></div>';
+  else if (f.corrige && v.pesoProm) h += '<div class="ctl-peso"><b>Peso: ' + ctlF1(v.pesoProm) + ' kg</b><span>promedio de tus pesajes de esa semana</span></div>';
+  else {
+    h += '<div class="row" style="margin-top:4px">' + ctlCampo('ctlPeso', 'Tu peso', v.peso, '', 'kg', 'done') + '<div></div></div>';
+    if (!f.corrige) h += '<div class="ctl-mini">' + (ps.n ? 'Esta semana tienes ' + ps.n + (ps.n === 1 ? ' pesaje' : ' pesajes') : 'Esta semana no tienes pesajes') + '. Con 4 el promedio es más firme; hoy anota el tuyo.</div>';
+  }
+  // Pliegues opcionales: brazo y muslo (ganar), cadera (bajar grasa), báscula, fotos (solo con el permiso) y la nota
+  if (d.objetivo === 'ganar') h += ctlPliegue('ctlBM', 'Brazo y muslo · opcional', ev ? 'En este control también miramos brazo y muslo' : 'Solo para que veas cómo van', ev || !!(v.brazo || v.muslo),
+    '<div class="ctl-mini" style="margin-top:0">Solo para que veas cómo van.</div><div class="row">' + ctlCampo('ctlBrazo', 'Brazo', v.brazo, '', 'cm') + ctlCampo('ctlMuslo', 'Muslo', v.muslo, '', 'cm') + '</div>' +
+    '<div class="ctl-mini">Brazo: relajado, a la mitad entre el hombro y el codo. Muslo: de pie, a la mitad entre la ingle y la rótula.</div>' +
+    '<div class="ctl-mini">Siempre el mismo brazo y la misma pierna. No lo midas con el músculo adolorido (1 o 2 días después de entrenarlo).</div>');
+  if (d.objetivo === 'perder') h += ctlPliegue('ctlCad', 'Cadera · opcional', ev ? 'En este control también miramos la cadera' : 'Solo para que veas cómo va', ev || !!v.cadera,
+    '<div class="row">' + ctlCampo('ctlCadera', 'Cadera', v.cadera, '', 'cm') + '<div></div></div><div class="ctl-mini">La parte más ancha de los glúteos, con los pies juntos.</div>');
+  var bas = d.bascula || {}, gr = f.corrige ? v.grasa : (v.grasa !== undefined && v.grasa !== '' ? v.grasa : bas.grasa), mu = f.corrige ? v.musculo : (v.musculo !== undefined && v.musculo !== '' ? v.musculo : bas.musculo);
+  h += ctlPliegue('ctlBas', 'Datos de tu báscula · opcional', 'Si tienes báscula de grasa', false,
+    '<div class="row">' + ctlCampo('ctlGrasa', 'Grasa', gr, '', '%') + ctlCampo('ctlMusculo', 'Músculo', mu, '', 'kg') + '</div>' +
+    '<div class="ctl-mini">Cada báscula mide distinto. Sirve para ver tu tendencia, no para compararte con otra báscula.</div>');
+  if (d.fotos && !f.corrige) h += ctlPliegue('ctlFot', 'Fotos · opcional', 'Frente, perfil y espalda', false,
+    '<div class="ctl-mini" style="margin-top:0">Misma luz, misma pose, misma distancia. Se guardan solo en tu cuenta.</div><button type="button" class="btn sec small" style="margin-top:10px" onclick="ctlIrFotos()">Ir a mis fotos</button>');
+  h += ctlPliegue('ctlNot', 'Una nota para ti · opcional', 'Para recordar', !!v.nota,
+    '<textarea id="ctlNota" rows="2" maxlength="500" placeholder="Lo que quieras recordar de este mes" oninput="ctlTocado(this)">' + esc(v.nota || '') + '</textarea>' +
+    '<div class="ctl-mini">Es tuya: no la usamos para calcular nada ni la mostramos a nadie en la app.</div>');
+  // Regla 3 (versión completa: el borrado de controles existe en Progreso → Controles y en Privacidad y datos)
+  h += '<div class="ctl-pie-t">Tus medidas son tuyas: las descargas o las borras cuando quieras en Ajustes → Tu cuenta → Privacidad y datos. ¿No quieres controles? Los apagas en Ajustes → Mi gimnasio.</div>';
+  h += '<div class="ctl-err" id="ctlErr" role="alert"></div><div id="ctlSalto"></div>';
+  h += '<div class="ctl-pie"><button type="button" class="btn" id="ctlGuardarBtn" onclick="ctlGuardar()">' + (f.corrige ? 'Guardar cambios' : 'Guardar control') + '</button>' +
+    (f.corrige ? '' : '<button type="button" class="btn sec" onclick="ctlHoyNoHoja()">Hoy no</button>') + '</div>';
+  return h;
+}
+/** Abre la hoja: el control que toca (o el abierto sin cintura, o el borrador de hoy) u opc.corregir = un control guardado (D9 y regla 3). */
+function ctlAbrir(opc) {
+  opc = opc || {};
+  if (!ctlDatos) { ctlCargar(true, function (d) { if (d) ctlAbrir(opc); }); return; }
+  var d = ctlDatos; if (d.oculto) return;
+  if (!d.medidas) { ctlTocar(); return; }
+  var corr = opc.corregir || null, ab = !corr && d.abierto ? d.abierto : null, fecha = corr ? corr.fecha : ab ? ab.fecha : hoyISO();
+  var tipo = corr ? corr.tipo : d.proximo && d.proximo.pendiente ? d.proximo.tipo : (d.historial && d.historial.some(function (x) { return x.tipo === 'cero' || x.tipo === 'n'; }) ? 'n' : 'cero');
+  var b = corr ? null : ctlBorradorLeer(fecha);
+  var v = corr ? corr.valores : b ? b.v : ab ? { lecturas: ab.lecturas, peso: ab.peso, cadera: ab.cadera, brazo: ab.brazo, muslo: ab.muslo, grasa: ab.grasa, musculo: ab.musculo, nota: ab.nota } : {};
+  ctlForm = { id: corr ? corr.id : ab ? ab.id : b && b.id ? b.id : 'ctl-' + fecha + '-' + Math.random().toString(36).slice(2, 8), fecha: fecha, tipo: tipo, corrige: !!corr, sinPesoOk: false, l3: !!(v.lecturas && v.lecturas[2]), saltoOk: false, base: '' };
+  var kick = corr ? 'Corregir · ' + ctlCorta(fecha) : tipo === 'cero' ? 'Punto de partida · ' + ctlCorta(fecha) : 'Control de ' + ctlSemanas() + ' semanas · ' + ctlCorta(fecha);
+  hojaAbrir({ kicker: kick, titulo: 'Tu control', html: ctlFormHTML(d, v, ctlForm), foco: corr ? '' : 'ctlL1', alCerrar: ctlAlCerrar });
+  ctlHojaLarga();
+  var hb = $('hojaB'); if (hb) hb.addEventListener('keydown', ctlEnter);
+  ctlForm.base = ctlFirma();
+}
+function ctlLeer() {
+  var g = function (id) { var el = $(id); return el ? el.value : ''; };
+  return { l1: g('ctlL1'), l2: g('ctlL2'), l3: g('ctlL3'), peso: g('ctlPeso'), brazo: g('ctlBrazo'), muslo: g('ctlMuslo'), cadera: g('ctlCadera'), grasa: g('ctlGrasa'), musculo: g('ctlMusculo'), nota: g('ctlNota') };
+}
+function ctlFirma() { return JSON.stringify(ctlLeer()); }
+/** La hoja abierta con algo escrito que no se ha guardado (hayCambiosSinGuardar: no recarga la app encima). */
+function ctlFormSucio() { return !!(ctlForm && hojaEstado.abierta && $('ctlL1') && ctlFirma() !== ctlForm.base); }
+/** «Cerrar ✕» conserva lo escrito como borrador (P2): se guarda en el celular mientras escribes (al cerrar la hoja la casilla ya no existe). */
+function ctlTocado(el) {
+  if (!ctlForm || ctlForm.corrige) return;
+  if (el && el.id === 'ctlPeso' && ctlForm.sinPesoOk) { ctlForm.sinPesoOk = false; var b = $('ctlGuardarBtn'); if (b) b.textContent = 'Guardar control'; }
+  var x = ctlLeer(), n = function (s) { return String(s || '').trim(); };
+  var v = { lecturas: [x.l1, x.l2, x.l3].map(n).filter(Boolean).map(function (s) { return s.replace(',', '.'); }), peso: n(x.peso).replace(',', '.'), brazo: n(x.brazo).replace(',', '.'), muslo: n(x.muslo).replace(',', '.'),
+            cadera: n(x.cadera).replace(',', '.'), grasa: n(x.grasa).replace(',', '.'), musculo: n(x.musculo).replace(',', '.'), nota: x.nota };
+  try { localStorage.setItem(ctlBorradorClave(), JSON.stringify({ fecha: ctlForm.fecha, id: ctlForm.id, v: v })); } catch (e) {}
+}
+/** El borrador vive en el celular y es de UNA persona (legal-gym, Medio 1): la clave lleva el hash del token (CACHE_V) pero NO empieza por él, así invalidarTodo
+ *  (que corre en el uso normal, p. ej. al guardar el peso) no lo toca (Director). Se borra SOLO de forma explícita (ctlBorradorQuitar): sesión inválida o cuenta
+ *  borrada (mostrarVincular, construir-web.js), cambiar la contraseña (cierra la sesión), «Borrar todos mis controles», quitar «Peso y medidas» (se borre o no lo
+ *  guardado), «Borrar mi peso y medidas» y un getControl que llega sin el permiso. */
+function ctlBorradorClave() { return 'ctl:borrador:' + (typeof CACHE_V === 'string' ? CACHE_V : ''); }
+function ctlBorradorLeer(fecha) {   // un borrador de OTRA fecha ya no sirve: se borra al leerlo (Bajo 3 del Auditor)
+  try { var b = JSON.parse(localStorage.getItem(ctlBorradorClave()) || 'null'); if (b && b.fecha !== fecha) { ctlBorradorQuitar(); return null; } return b; } catch (e) { return null; }
+}
+function ctlBorradorQuitar() { try { localStorage.removeItem(ctlBorradorClave()); localStorage.removeItem('ctl:borrador'); } catch (e) {} }
+function ctlAlCerrar() { ctlForm = null; }
+function ctlEnter(ev) {
+  if (ev.key !== 'Enter' || !ev.target || ev.target.tagName !== 'INPUT') return;
+  ev.preventDefault();
+  var ids = ['ctlL1', 'ctlL2', 'ctlL3', 'ctlPeso'].filter(function (id) { var el = $(id); return el && el.offsetParent !== null; }), i = ids.indexOf(ev.target.id);
+  if (i >= 0 && i < ids.length - 1) $(ids[i + 1]).focus(); else ev.target.blur();
+}
+function ctlGuiaAbrir() { var g = $('ctlGuia'); if (!g) return; g.open = true; try { g.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
+function ctlHoyNoHoja() {   // D2: el mismo «Hoy no» de la tarjeta; cierra sin guardar, sin toast ni culpa (lo escrito queda de borrador)
+  hojaCerrar();
+  if (ctlDatos && ctlDatos.tarjeta && (ctlDatos.tarjeta.tipo === 'cero' || ctlDatos.tarjeta.tipo === 'n')) ctlResponder('hoyNo');
+}
+function ctlIrFotos() { hojaCerrar(); irA('panel'); setTimeout(function () { var row = $('fotoRow'), box = $('fotoBox'); if (box && !box.classList.contains('open')) gcToggle('fotoBox', row); if (row) row.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 80); }
+function ctlIrAjustes() { hojaCerrar(); irAjustes('gimnasio'); }
+function ctlPintarSalto(cint) {
+  var d = ctlDatos, dif = Math.round(Math.abs(cint - d.anterior.cintura) * 10) / 10;
+  $('ctlSalto').innerHTML = '<div class="ctl-aviso">Esta medida es ' + String(dif).replace('.', ',') + ' cm distinta a la de tu último control (' + ctlF1(d.anterior.cintura) + ' cm). ¿Está bien?' +
+    '<div class="ctl-acts"><button type="button" class="btn sec small" onclick="ctlSaltoSi()">Sí, es correcta</button><button type="button" class="btn txt" onclick="ctlSaltoNo()">Corregir</button></div></div>';
+  try { $('ctlSalto').scrollIntoView({ block: 'nearest' }); } catch (e) {}
+}
+function ctlSaltoSi() { if (ctlForm) ctlForm.saltoOk = true; $('ctlSalto').innerHTML = ''; ctlGuardar(); }
+function ctlSaltoNo() { $('ctlSalto').innerHTML = ''; var el = $('ctlL1'); if (el) el.focus(); }
+function ctlGuardar() {
+  var f = ctlForm, d = ctlDatos; if (!f || !d) return;
+  var v = ctlLeer(), err = $('ctlErr'), R = d.rangos;   // §32: los rangos y umbrales los manda getControl (CONTROL_RANGOS, saltoCm, lecturasDif)
+  if (err) err.textContent = '';
+  var mal = function (t, id) { if (err) err.textContent = t; var el = $(id); if (el) { try { el.focus(); } catch (x) {} } };
+  var lect = [], ids = ['ctlL1', 'ctlL2', 'ctlL3'], i, x;
+  for (i = 0; i < 3; i++) {
+    x = ctlNum(v['l' + (i + 1)]); if (x === '') continue;
+    if (isNaN(x) || x < R.cintura[0] || x > R.cintura[1]) return mal('La cintura debe estar entre ' + R.cintura[0] + ' y ' + R.cintura[1] + ' cm. Revisa el número.', ids[i]);
+    lect.push(x);
+  }
+  var opc = {}, NOM = { cadera: ['La cadera', 'ctlCadera'], brazo: ['El brazo', 'ctlBrazo'], muslo: ['El muslo', 'ctlMuslo'] }, ks = ['cadera', 'brazo', 'muslo'];
+  for (i = 0; i < ks.length; i++) {
+    x = ctlNum(v[ks[i]]); if (x === '') { opc[ks[i]] = ''; continue; }
+    if (isNaN(x) || x < R[ks[i]][0] || x > R[ks[i]][1]) return mal(NOM[ks[i]][0] + ' debe estar entre ' + R[ks[i]][0] + ' y ' + R[ks[i]][1] + ' cm. Revisa el número.', NOM[ks[i]][1]);
+    opc[ks[i]] = x;
+  }
+  var peso = ctlNum(v.peso), grasa = ctlNum(v.grasa), musculo = ctlNum(v.musculo), nota = String(v.nota || '').trim();
+  var fuera = function (x, k) { return isNaN(x) || x < R[k][0] || x > R[k][1]; };
+  if (peso !== '' && fuera(peso, 'peso')) return mal('Ese peso no parece real. Revísalo.', 'ctlPeso');
+  if (grasa !== '' && fuera(grasa, 'grasa')) return mal('Ese % de grasa no parece real. Revísalo.', 'ctlGrasa');
+  if (musculo !== '' && fuera(musculo, 'musculo')) return mal('Esa masa muscular no parece real. Revísala.', 'ctlMusculo');
+  if (!lect.length && peso === '' && opc.cadera === '' && opc.brazo === '' && opc.muslo === '' && grasa === '' && musculo === '' && !nota) {
+    toast('Para guardar el control necesito al menos una lectura de la cintura. Si prefieres, toca «Hoy no».'); return mal('', 'ctlL1');
+  }
+  // Dos lecturas que difieren más de 1 cm: una tercera (una sola vez; si guarda con dos, el resultado lo dice)
+  if (lect.length === 2 && Math.abs(lect[0] - lect[1]) > d.lecturasDif && !f.l3) {
+    f.l3 = true; $('ctlL3Box').classList.remove('hidden');
+    $('ctlDifTxt').textContent = 'Tus dos lecturas difieren más de ' + String(d.lecturasDif).replace('.', ',') + ' cm (' + ctlF1(lect[0]) + ' y ' + ctlF1(lect[1]) + '). Mídete una tercera vez.';
+    try { $('ctlL3').focus(); } catch (e) {}
+    return;
+  }
+  // D8 (criterio de diseño): una lectura más de saltoCm (8 cm) distinta a la cintura del control anterior se confirma. Se mira cada lectura, no la cintura
+  // calculada: así la app no repite la regla de cinturaDeLecturas_ del servidor (§32, Bajo 6 del Auditor) y un error de dedo en cualquiera se ve.
+  var salto = d.anterior ? lect.reduce(function (m, x) { return Math.abs(x - d.anterior.cintura) > Math.abs(m - d.anterior.cintura) ? x : m; }, d.anterior.cintura) : null;
+  if (salto !== null && !f.saltoOk && !f.corrige && Math.abs(salto - d.anterior.cintura) > d.saltoCm) { ctlPintarSalto(salto); return; }
+  // Falta el peso de hoy (con menos de 4 pesajes en la semana): se avisa una vez y se puede guardar sin él (control parcial)
+  if (lect.length && $('ctlPeso') && peso === '' && !f.sinPesoOk && !f.corrige) {
+    f.sinPesoOk = true; toast('Para cerrar el control falta tu peso de hoy. Si prefieres, toca «Hoy no».');
+    var bp = $('ctlGuardarBtn'); if (bp) bp.textContent = 'Guardar sin el peso';
+    try { $('ctlPeso').focus(); } catch (e) {}
+    return;
+  }
+  var p = { id: f.id, fecha: f.fecha, lecturas: lect, peso: peso, cadera: opc.cadera, brazo: opc.brazo, muslo: opc.muslo, grasa: grasa, musculo: musculo, nota: nota };
+  var btn = $('ctlGuardarBtn'), texto = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+  enviar('guardarControl', p).then(function (r) {
+    ctlBorradorQuitar();
+    if (r && r.enCola) { ctlForm = null; hojaCerrar(); toast('Quedó guardado en tu celular. Cuando haya señal te muestro cómo vas.'); if (ctlDatos && ctlDatos.tarjeta) ctlDatos.tarjeta = null; ctlRepintar(); return; }
+    ctlForm = null; ctlDatos = r.control || ctlDatos; ctlT = Date.now();
+    ctlMostrarResultado(r.resultado, true);
+    ctlRepintar();
+  }).catch(function (e) {
+    if (btn) { btn.disabled = false; btn.textContent = texto; }
+    var m = String(e && e.message || e);
+    if (err) err.textContent = /Revisa|autoriza|Privacidad|necesito|aún no llega|no puedo guardar/i.test(m) ? m : 'No pude guardar el control. Lo que escribiste sigue aquí; intenta de nuevo.';
+  });
+}
+
+/* ---------- P3 · «Así vas» ---------- */
+function ctlResultadoHTML(res, nuevo) {
+  var h = '<div class="ctl-res">';
+  if (nuevo && res.tipo !== 'abierto') h += '<div class="ctl-ok">' + SVG.check + 'Control guardado</div>';
+  if (res.titulo) h += '<b class="ctl-tt">' + esc(res.titulo) + '</b>';
+  (res.bloques || []).forEach(function (bl) {
+    if (bl.tit) h += '<div class="ctl-bt">' + esc(bl.tit) + '</div>';
+    (bl.lineas || []).forEach(function (l) { if (l) h += '<div class="ctl-l">' + esc(l) + '</div>'; });
+    if (bl.nota) h += '<div class="ctl-nota">' + esc(bl.nota) + '</div>';
+  });
+  var dc = res.decision;
+  if (dc && dc.texto) {
+    h += '<div class="ctl-qh">Qué haremos</div>';
+    if (dc.propuesta) {
+      h += '<div class="ctl-prop" id="ctlProp">' + (dc.senales && dc.senales.length ? '<div class="ctl-l" style="margin-top:0;font-weight:400">Dos señales coinciden:</div><ul>' + dc.senales.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '') +
+        '<div class="ctl-l">' + esc(dc.texto) + '</div>' +
+        '<div class="ctl-acts"><button type="button" class="btn" onclick="ctlAplicar(true, this)">Aplicar</button><button type="button" class="btn sec" onclick="ctlAplicar(false, this)">Dejarlo</button></div>' +
+        '<div class="ctl-nota">Se queda así al menos 3 semanas para ver el efecto.</div>' +
+        // Regla 6 de legal-gym: el pie fijo bajo cada propuesta
+        '<div class="ctl-nota">Es una orientación general calculada con tu cintura y tu peso, no una indicación médica ni de nutrición. Tú decides si la aplicas, y la deshaces cuando quieras en Ajustes → Tu comida. Si tienes una condición de salud o tomas medicamentos, consúltalo con tu profesional.</div></div>';
+    } else h += '<div class="ctl-l">' + esc(dc.texto) + '</div>';
+  }
+  if (res.proximo) h += '<div class="ctl-l" style="margin-top:14px">' + esc(res.proximo) + '</div>';
+  if (res.cambiarDia) h += '<div class="ctl-nota">¿Otro día? <button type="button" class="btn txt" style="min-height:0;display:inline;font-size:12.5px" onclick="ctlIrAjustes()">Cambiar</button></div>';
+  return h + '</div>';
+}
+function ctlMostrarResultado(res, nuevo) {
+  var b = $('hojaB'); if (!res || !b) { hojaCerrar(); return; }
+  ctlRes = res;
+  var abierto = res.tipo === 'abierto', k = $('hojaKick'), t = $('hojaTit'), pend = !!(res.decision && res.decision.propuesta);
+  if (k) k.textContent = abierto ? 'Control de ' + ctlSemanas() + ' semanas' : 'Control hecho';
+  if (t) t.textContent = abierto ? 'Tu control' : 'Así vas';
+  b.innerHTML = ctlResultadoHTML(res, nuevo) + '<div class="ctl-pie"><button type="button" class="' + (pend ? 'btn sec' : 'btn') + '" id="ctlListo" onclick="ctlListo()">Listo</button></div>';
+  b.scrollTop = 0;
+}
+function ctlListo() { hojaCerrar(); ctlCargar(true); }
+function ctlAplicar(si, btn) {
+  var r0 = ctlRes; if (!r0) return;
+  if (btn) btn.disabled = true;
+  api('aplicarControl', { id: r0.id, aplicar: !!si }).then(function (r) {
+    toast(r.texto || '');
+    var box = $('ctlProp'); if (box) box.innerHTML = '<div class="ctl-l" style="margin-top:0">' + esc(r.ok && r.aplicada ? 'Aplicado: tu meta ahora es ' + miles(r.meta) + ' kcal.' : (r.texto || '')) + '</div>';
+    var l = $('ctlListo'); if (l) l.className = 'btn';
+    if (r.ok && r.aplicada) { invalidarTodo(); if (typeof pcDatos !== 'undefined') pcDatos = null; }
+    ctlCargar(true);
+  }).catch(function (e) { if (btn) btn.disabled = false; errG(e); });
+}
+/* Progreso → tocar un control: el resultado en solo lectura con «Corregir medidas» (regla 3: en cualquier momento; no regenera propuestas) */
+function ctlVer(id) {
+  api('verControl', { id: id }).then(function (res) {
+    ctlRes = res;
+    hojaAbrir({ kicker: res.etiqueta + ' · ' + res.fechaTexto, titulo: 'Tu control', html: ctlResultadoHTML(res, false) +
+      '<div class="ctl-fold-acts"><button type="button" class="btn sec" onclick="ctlCorregir()">Corregir medidas</button></div>' });
+    ctlHojaLarga();
+  }).catch(errG);
+}
+function ctlCorregir() { if (ctlRes) ctlAbrir({ corregir: ctlRes }); }
+
+/* ---------- P4 · Progreso → «Controles de medidas» ---------- */
+function ctlGrafHTML(serie) {
+  if (!serie || serie.length < 2) return '';
+  var vs = serie.map(function (s) { return Number(s.cintura); }), mn = Math.min.apply(null, vs) - 1, mx = Math.max.apply(null, vs) + 1, W = 300, H = 80;
+  var xy = serie.map(function (s, i) { return [Math.round(16 + i * (W - 32) / (serie.length - 1)), Math.round(8 + (mx - s.cintura) / (mx - mn) * (H - 16))]; });
+  return '<div class="ctl-bt" style="margin-top:2px">Cintura (cm)</div><div class="ctl-graf"><svg viewBox="0 0 ' + W + ' ' + (H + 16) + '" role="img" aria-label="Tu cintura en cada control">' +
+    '<polyline points="' + xy.map(function (p) { return p.join(','); }).join(' ') + '" fill="none" stroke="var(--muted)" stroke-width="2"/>' +
+    xy.map(function (p, i) { return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.5" fill="var(--ink)"/>' + (i === 0 || i === xy.length - 1 ? '<text x="' + p[0] + '" y="' + (H + 13) + '" fill="var(--dim)" font-size="11" text-anchor="' + (i ? 'end' : 'start') + '">' + ctlF1(vs[i]) + '</text>' : ''); }).join('') +
+    '</svg></div><div class="ctl-nota">Cada punto es un control. Una diferencia de 1 a 2 cm puede ser error de medida.</div>';
+}
+function ctlPintarProgreso() {
+  var row = $('ctlRow'), fold = $('ctlFold'), sub = $('ctlSub'); if (!row || !fold || !sub) return;
+  var d = ctlDatos;
+  if (!d || d.oculto) { row.style.display = 'none'; fold.classList.remove('open'); fold.innerHTML = ''; return; }
+  row.style.display = '';
+  var hist = d.historial || [], cuentan = hist.filter(function (x) { return x.tipo === 'cero' || x.tipo === 'n'; }), ult = cuentan[0], s = '', pt = false, h = '';
+  if (!d.medidas) {
+    s = 'Necesitas activar «Peso y medidas»';
+    h = '<div class="meta" style="line-height:1.45">Para comparar tu cintura y tu peso necesitas activar «Peso y medidas». Son datos sensibles y darlos es opcional: sin ellos tu plan sigue igual.</div>' +
+      '<div class="ctl-fold-acts"><button type="button" class="btn sec" onclick="ctlActivarMedidas()">Activar peso y medidas</button></div>';
+  } else if (!hist.length) {
+    s = d.estado === 'apagado' ? 'Apagados · Activar' : 'Aún no has hecho tu primer control';
+    h = '<div class="g-vacio" style="margin-top:0"><b>Aquí vivirán tus controles</b><div class="s">Cada ' + ctlCada() + ' semanas te mides la cintura y comparamos, sin afán. Tu primer control te lleva 2 minutos.</div>' +
+      '<button type="button" class="btn sec" onclick="ctlAbrir()">Hacer mi primer control</button></div>' +
+      (d.estado === 'apagado' ? '<div class="ctl-fold-acts"><button type="button" class="btn txt" onclick="ctlAjGuardar({ activo: true })">Activar los controles</button></div>' : '');
+  } else {
+    if (d.estado === 'apagado') s = 'Apagados · Activar';
+    else if (d.estado === 'activo' && d.proximo && d.proximo.pendiente) { s = 'Pendiente desde el ' + d.proximo.corta; pt = true; }
+    else s = ult ? 'Último: ' + ult.corta + ' · cintura ' + ctlF1(ult.cintura) + ' cm' : 'Aún no has hecho tu primer control';
+    h = ctlGrafHTML(d.serie);
+    h += '<div class="ctl-lista">' + hist.map(function (x) {
+      var val = [x.cintura ? ctlF1(x.cintura) + ' cm' : '', x.peso ? ctlF1(x.peso) + ' kg' : ''].filter(Boolean).join(' · ');
+      return '<button type="button" onclick="ctlVer(\'' + esc(x.id) + '\')"><span><b>' + esc(x.corta) + '</b><small>' + esc(x.etiqueta) + '</small></span><span class="v">' + esc(val) + '</span></button>';
+    }).join('') + '</div>';
+    if ((d.bascTendencia || []).length) h += '<div class="ctl-bt">Tendencia de tu báscula</div>' + d.bascTendencia.map(function (b) {
+      return '<div class="ctl-l">' + esc(b.corta) + ' · ' + [b.grasa !== null ? 'grasa ' + ctlF1(b.grasa) + ' %' : '', b.musculo !== null ? 'músculo ' + ctlF1(b.musculo) + ' kg' : ''].filter(Boolean).join(' · ') + '</div>';
+    }).join('') + '<div class="ctl-nota">Promedio del mes; no se compara con otra báscula.</div>';
+    h += '<div class="ctl-fold-acts"><button type="button" class="btn sec" onclick="ctlAbrir()">Hacer un control ahora</button>' +
+      (d.estado === 'apagado' ? '<button type="button" class="btn txt" onclick="ctlAjGuardar({ activo: true })">Activar los controles</button>' : '<button type="button" class="btn txt" onclick="irAjustes(\'gimnasio\')">Ajustes del control</button>') +
+      '<button type="button" class="btn txt lg-bad" onclick="ctlBorrarTodos(this)">Borrar todos mis controles</button></div>';
+  }
+  sub.innerHTML = (pt ? '<i class="pt"></i>' : '') + esc(s);
+  fold.innerHTML = h;
+}
+function ctlBorrarTodos(btn) {
+  var n = ((ctlDatos && ctlDatos.historial) || []).length;
+  if (!confirm('¿Borrar ' + (n === 1 ? 'tu control' : 'tus ' + n + ' controles') + '? También vuelve a 0 el ajuste de calorías que salió de ellos. No se pueden recuperar.')) return;
+  if (btn) btn.disabled = true;
+  api('borrarControles').then(function (r) { ctlBorradorQuitar(); toast(r.texto); invalidarTodo(); if (typeof pcDatos !== 'undefined') pcDatos = null; ctlCargar(true); }).catch(function (e) { if (btn) btn.disabled = false; errG(e); });
+}
+
+/* ---------- P5 · Ajustes → Mi gimnasio, y Ajustes → Tu comida ---------- */
+function ctlPintarAjustes() {
+  var card = $('ctlCard'), box = $('ctlAj'); if (!card || !box) return;
+  var d = ctlDatos;
+  if (!d || d.oculto) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  var on = d.estado === 'activo', c = d.cada === 8 ? 8 : 4, p = d.proximo;
+  var est = on ? 'Activo' : d.estado === 'apagado' ? 'Apagado' : 'Aún no lo activas', est2 = on ? (p ? (p.pendiente ? 'Pendiente desde el ' + p.corta : 'El próximo: ' + p.larga) : 'Te lo propongo en Hoy') : 'Lo enciendes o lo apagas cuando quieras.';
+  var dias = [1, 2, 3, 4, 5, 6, 0].map(function (n) { return '<option value="' + n + '"' + (d.dia === n ? ' selected' : '') + '>' + ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'][n] + '</option>'; }).join('');
+  box.innerHTML = '<div class="per-row" style="border-top:0;padding-top:0"><div class="n"><b>' + esc(est) + '</b><small>' + esc(est2) + '</small></div>' +
+    '<label class="per-sw lg-sw" aria-label="Control de medidas"><input type="checkbox" id="ctlSw"' + (on ? ' checked' : '') + ' onchange="ctlAjGuardar({ activo: this.checked })"><i></i></label></div>' +
+    '<div class="row"><div><label for="ctlDia">Día</label><select id="ctlDia" onchange="ctlAjGuardar({ dia: Number(this.value) })">' + dias + '</select></div>' +
+    '<div><label>Cada (semanas)</label><div class="toggle"><button type="button" class="' + (c === 4 ? 'on' : '') + '" aria-label="Cada 4 semanas" onclick="ctlAjGuardar({ cada: 4 })">4</button><button type="button" class="' + (c === 8 ? 'on' : '') + '" aria-label="Cada 8 semanas" onclick="ctlAjGuardar({ cada: 8 })">8</button></div></div></div>' +
+    '<div class="meta" style="margin-top:8px;line-height:1.45">Te mides la cintura con el metro y miramos tu peso de la semana. Es opcional y nunca bloquea nada: sin controles tu plan sigue igual.</div>' +
+    (d.medidas ? '' : '<div class="meta" style="margin-top:6px;line-height:1.45">Para hacer controles necesitas activar «Peso y medidas» en Ajustes → Tu cuenta → Privacidad y datos.</div>') +
+    // Bajo 5 de legal-gym (texto exacto): cómo llegan los avisos del control y cómo se apagan o se vuelven a activar
+    '<div class="meta faint" id="ctlAvisosTxt" style="margin-top:6px;line-height:1.45">Avisos del control: por Telegram (usan tus recordatorios de Ajustes → Tu cuenta → Telegram) y con una línea en el informe del domingo por correo. ' +
+    'Los apagas con «No avisarme de esto» en el mensaje de Telegram o con el interruptor de arriba.' +
+    (d.avisar === false ? ' Los que apagaste con «No avisarme de esto» los vuelves a activar aquí: <button type="button" class="btn txt" style="min-height:0;display:inline" onclick="ctlAjGuardar({ avisar: true })">Volver a activarlos</button>' : '') + '</div>';
+}
+function ctlAjGuardar(p) { api('guardarAjustesControl', p).then(function (d) { ctlDatos = d; ctlT = Date.now(); ctlRepintar(); toast('Guardado'); }).catch(errG); }
+/** Ajustes → Tu comida: si aplicaste una propuesta del control, la meta lo dice y se deshace con «Volver a la anterior» (regla 6). */
+function ctlPintarComidaAj() {
+  var m = $('ajMeta'); if (!m) return;
+  var viejo = $('ajCtl'); if (viejo) viejo.parentNode.removeChild(viejo);
+  var a = ctlDatos && !ctlDatos.oculto ? ctlDatos.ajuste : null, com = typeof ajData !== 'undefined' && ajData ? ajData.comida : null;
+  if (!a || !a.kcal || !com || com.sinMeta || com.adaptativa) return;
+  m.insertAdjacentHTML('beforeend', '<div class="meta" id="ajCtl" style="margin-top:6px">Incluye el ajuste ' + (a.corta ? 'del control del ' + esc(a.corta) : 'de tu control') + ': ' + (a.kcal > 0 ? '+' : '−') + Math.abs(a.kcal) + ' kcal al día.' +
+    (a.puedeVolver ? ' <button type="button" class="btn txt" style="min-height:0;display:inline" onclick="ctlVolverMeta(this)">Volver a la anterior</button>' : '') + '</div>');
+}
+function ctlVolverMeta(btn) {
+  if (btn) btn.disabled = true;
+  api('volverMetaControl').then(function (r) { toast(r.texto || ''); invalidarTodo(); if (typeof pcDatos !== 'undefined') pcDatos = null; ctlCargar(true); try { cargarAjustes(); } catch (x) {} })
+    .catch(function (e) { if (btn) btn.disabled = false; errG(e); });
+}
+var ctlHeroBase = typeof pintarHero === 'function' ? pintarHero : null;
+if (ctlHeroBase) pintarHero = function () { ctlHeroBase(); try { if (ctlDatos) ctlPintarHoy(); ctlCargar(false); } catch (x) { console.error(x); } };
+var ctlPanelBase = typeof cargarPanel === 'function' ? cargarPanel : null;
+if (ctlPanelBase) cargarPanel = function () { ctlPanelBase(); try { ctlCargar(true); } catch (x) { console.error(x); } };
+var ctlAjustesBase = typeof cargarAjustes === 'function' ? cargarAjustes : null;
+if (ctlAjustesBase) cargarAjustes = function () { ctlAjustesBase(); try { ctlCargar(true); } catch (x) { console.error(x); } };
+var ctlComAjBase = typeof pintarComidaAjustes === 'function' ? pintarComidaAjustes : null;
+if (ctlComAjBase) pintarComidaAjustes = function (c) { ctlComAjBase(c); try { ctlPintarComidaAj(); } catch (x) { console.error(x); } };
+/* ===== fin Control cada 4 semanas ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
