@@ -1780,7 +1780,7 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610270155', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610270359', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
 /* La URL del servidor tiene UNA definición: API_PUBLICA (hotfix 27/10/2026: un cfg con la URL vacía, indefinida, de github.io, de
    script.googleusercontent.com o del proxy viejo hacía POST a GitHub Pages → «error HTTP 405»). Lo que no sea exactamente API_PUBLICA
@@ -5150,7 +5150,7 @@ function pintarPicker() {
   var q = sinAcentos($('pkBuscar').value.trim()), g = sinAcentos(pkGrupo);
   var enUso = pkModo && pkModo.modo !== 'alternativa' ? mp.sesiones[pkModo.i].ejercicios.map(function (e) { return e.ejercicio; }) : [];
   pkLista = mp.biblioteca.filter(function (b) {
-    if (g && sinAcentos(b.grupo).indexOf(g) < 0) return false;
+    if (g && !pkGrupoCoincide(b.grupo, g)) return false;   // Catálogo de ejercicios (27/10/2026): "Hombro" y "Espalda" también por deltoides, dorsal y trapecio
     if (q && sinAcentos(b.nombre).indexOf(q) < 0 && sinAcentos(b.grupo).indexOf(q) < 0) return false;
     return true;
   });
@@ -7223,7 +7223,8 @@ function tgRecGuardar(desdeSw) {
 var REE_MOTIVO = 'Me cuesta la técnica', reeDatos = null;
 /** "Sentadilla con barra" → "la sentadilla con barra" (para "Volver a la…"). */
 function reeArt(n) {
-  var t = String(n || ''), w = t.split(' ')[0].toLowerCase(), art = /ión$/.test(w) ? 'la' : /as$/.test(w) ? 'las' : /(os|es)$/.test(w) ? 'los' : /a$/.test(w) ? 'la' : 'el';
+  // -iones es femenino (27/10/2026, B2 del probador: «Volver a los elevaciones…» → «las elevaciones»)
+  var t = String(n || ''), w = t.split(' ')[0].toLowerCase(), art = /ión$/.test(w) ? 'la' : /(as|iones)$/.test(w) ? 'las' : /(os|es)$/.test(w) ? 'los' : /a$/.test(w) ? 'la' : 'el';
   return art + ' ' + t.charAt(0).toLowerCase() + t.slice(1);
 }
 function reeVolverTxt(n) { return ('Volver a ' + reeArt(n)).replace(/^Volver a el /, 'Volver al '); }
@@ -7239,8 +7240,8 @@ function reePintar(i) {
   var h = '', aj = e.ajuste;
   // Ya cambiado (por la persona o por el Coach): de dónde viene y cómo volver
   if (aj && (aj.accion === 'sustituir' || aj.accion === 'sustituir_hoy') && e.original && v === 'principal')
-    h += '<div class="ree-act"><span>' + (aj.accion === 'sustituir_hoy' ? 'Solo hoy, en lugar de ' : 'En lugar de ') + esc(e.original) + '</span>' +
-      '<button type="button" class="ree-volver" onclick="reeVolver(' + i + ')">' + esc(reeVolverTxt(e.original)) + '</button></div>';
+    h += '<div class="ree-act"><span>' + (aj.accion === 'sustituir_hoy' ? 'Solo hoy, en lugar de ' : 'En lugar de ') + esc(e.enLugarDe || e.original) + '</span>' +
+      '<button type="button" class="ree-volver" onclick="reeVolver(' + i + ')">' + esc(reeVolverTxt(e.enLugarDe || e.original)) + '</button></div>';
   var r = e.reemplazo && e.reemplazo.variante === v ? e.reemplazo : null;
   if (!r && e.estado === 'omitido' && e.motivo === REE_MOTIVO && d.nOtros) r = { tipo: 'tecnica', fecha: sesionActual.fecha, ejercicio: d.nombre, texto: 'Marcaste que te cuesta la técnica. ¿Lo cambiamos por algo más fácil de dominar?' };
   if (r && e.estado !== 'hecho' && !reeDescartado(r))
@@ -7274,7 +7275,7 @@ function reeAbrir(i) {
   var e = sesionActual.ejercicios[i], d = e.variantes[e._var || 'principal'];
   reeDatos = null;
   var b = hojaAbrir({ titulo: 'Otros ejercicios', kicker: 'En vez de ' + d.nombre, html: '<div class="meta">Buscando opciones…</div>' });
-  api('reemplazosEjercicio', { nombre: d.nombre, sesion: sesionActual.codigo, fecha: sesionActual.fecha, original: e.original || '' }).then(function (r) {
+  api('reemplazosEjercicio', { nombre: d.nombre, sesion: sesionActual.codigo, fecha: sesionActual.fecha, original: e.original || '', ejercicio: e.original || e.nombres[0] }).then(function (r) {
     if (!hojaEstado.abierta || $('hojaB') !== b) return;
     reeDatos = r; reeDatos.i = i; reePintarHoja(i, r);
   }).catch(function (x) { if ($('hojaB') === b) b.innerHTML = '<div class="g-err">' + esc(x && x.message ? x.message : x) + '</div>'; });
@@ -7299,7 +7300,7 @@ function reePintarHoja(i, r) {
       ? '<img class="ree-th" src="' + esc(o.imagenes[0]) + '" alt="' + esc(o.nombre) + ' (toca para ampliar)" loading="lazy" decoding="async" onclick="reeFoto(' + k + ')">'
       : '<div class="ree-th ree-sinfoto">Sin foto</div>';
     h += '<div class="ree-op"><div class="ree-top">' + foto + '<div class="ree-n"><b>' + esc(o.nombre) + '</b><div class="r">' + esc(o.razon) + '</div>' +
-      (o.cargaTexto ? '<div class="c">' + esc(o.cargaTexto) + '</div>' : '') + (o.variante ? '<span class="ree-tag">Tu alternativa del plan</span>' : '') + '</div></div>' +
+      (o.cargaTexto ? '<div class="c">' + esc(o.cargaTexto) + '</div>' : '') + (o.variante ? '<span class="ree-tag">' + (o.variante === 'principal' ? 'Tu ejercicio del plan' : 'Tu alternativa del plan') + '</span>' : '') + '</div></div>' +
       '<div class="ree-bs"><button type="button"' + (conSeries ? ' disabled' : '') + ' onclick="reeElegir(' + k + ',\'hoy\', this)">Solo hoy</button>' +
       '<button type="button" class="fuerte"' + (conSeries ? ' disabled' : '') + ' onclick="reeElegir(' + k + ',\'siempre\', this)">Desde ahora</button></div></div>';
   });
@@ -7317,8 +7318,10 @@ function reeElegir(k, modo, btn) {
   if (modo === 'hoy' && o.variante) { hojaCerrar(); cambiarVariante(i, o.variante); toast('Hoy haces ' + o.nombre); return; }
   Array.prototype.forEach.call(document.querySelectorAll('#hojaB .ree-bs button'), function (x) { x.disabled = true; });
   if (btn) btn.textContent = 'Cambiando…';
-  api('cambiarEjercicio', { ejercicio: e.original || e.nombres[0], nombre: d.nombre, reemplazo: o.nombre, sesion: sesionActual.codigo, fecha: sesionActual.fecha, modo: modo }).then(function () {
+  api('cambiarEjercicio', { ejercicio: e.original || e.nombres[0], nombre: d.nombre, reemplazo: o.nombre, sesion: sesionActual.codigo, fecha: sesionActual.fecha, modo: modo }).then(function (r) {
     hojaCerrar();
+    // «Desde ahora» con tu ejercicio del plan (27/10/2026, M1 del Auditor): es volver a esa variante; el servidor no guarda nada y la tarjeta cambia de variante
+    if (r && r.variante) { cambiarVariante(i, r.variante); toast('Vuelves a ' + o.nombre + ', tu ejercicio del plan.'); return; }
     reeRecargar(i, modo === 'hoy' ? 'Solo hoy: ' + o.nombre : 'Listo: ' + o.nombre + ' desde ahora. Puedes volver cuando quieras.');
   }).catch(function (x) { errG(x); if (reeDatos) reePintarHoja(i, reeDatos); });
 }
@@ -7326,7 +7329,7 @@ function reeVolver(i) {
   var e = sesionActual.ejercicios[i];
   if (seriesHoy(e) > 0) { toastBad('Hoy ya anotaste series de ' + e.nombres[0] + ': vuelve desde la próxima sesión.'); return; }
   api('cambiarEjercicio', { ejercicio: e.original, nombre: e.nombres[0], sesion: sesionActual.codigo, fecha: sesionActual.fecha, modo: 'volver' })
-    .then(function () { reeRecargar(i, 'Volviste a ' + e.original); }).catch(errG);
+    .then(function () { reeRecargar(i, 'Volviste a ' + (e.enLugarDe || e.original)); }).catch(errG);
 }
 /** Tras un cambio: el plan cambió (también en otros días), así que se olvida la caché, se trae la sesión y la tarjeta queda abierta. */
 function reeRecargar(i, msg) {
@@ -9113,6 +9116,17 @@ if (ctlAjustesBase) cargarAjustes = function () { ctlAjustesBase(); try { ctlCar
 var ctlComAjBase = typeof pintarComidaAjustes === 'function' ? pintarComidaAjustes : null;
 if (ctlComAjBase) pintarComidaAjustes = function (c) { ctlComAjBase(c); try { ctlPintarComidaAj(); } catch (x) { console.error(x); } };
 /* ===== fin Control cada 4 semanas ===== */
+/* ===== Catálogo de ejercicios (27/10/2026, encargo C): grupos del selector de Armar mi plan =====
+   El selector filtraba por el texto del grupo de la ficha: "Hombro" no traía ninguno (las fichas dicen "Deltoides…") y "Espalda" dejaba fuera las de
+   "Dorsal" y "Trapecio". Mismos nombres de músculo que la app ya usa (Musculos.gs: hombro = deltoides; espalda = dorsal). */
+function pkGrupoSinonimos(g) {
+  return { hombro: ['hombro', 'deltoides'], espalda: ['espalda', 'dorsal', 'trapecio'] }[g] || [g];
+}
+function pkGrupoCoincide(grupo, g) {
+  var t = sinAcentos(grupo);
+  return pkGrupoSinonimos(g).some(function (x) { return t.indexOf(x) >= 0; });
+}
+/* ===== fin Catálogo de ejercicios ===== */
 /* ===== Barra inferior fija en iPhone (07/10/2026) =====
  * Captura del Fundador (iPhone, app instalada): la barra de pestañas quedó a media pantalla, con la página visible por debajo, después de
  * escribir en una casilla (nota del ejercicio, kg o reps). Causa probable (no se ha visto en un iPhone): error de WebKit en iOS al cerrar el
