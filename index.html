@@ -1721,18 +1721,23 @@
 </div>
 
 <script>
-var INICIAL = null, APP_VERSION = '202610262210', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
+var INICIAL = null, APP_VERSION = '202610270120', API_PUBLICA = 'https://registro-gimnasio-servidor.onrender.com/api', API_PROXY = '';
 var CFG = (function () { try { return JSON.parse(localStorage.getItem('cfg') || 'null'); } catch (e) { return null; } })();
-// La app se mudó de Apps Script al servidor nuevo: el mismo token sirve allá
-if (CFG && CFG.api && /script\.google\.com/.test(CFG.api) && !/script\.google\.com/.test(API_PUBLICA)) {
-  CFG.api = API_PUBLICA; try { localStorage.setItem('cfg', JSON.stringify(CFG)); } catch (e) {}
+/* La URL del servidor tiene UNA definición: API_PUBLICA (hotfix 27/10/2026: un cfg con la URL vacía, indefinida, de github.io, de
+   script.googleusercontent.com o del proxy viejo hacía POST a GitHub Pages → «error HTTP 405»). Lo que no sea exactamente API_PUBLICA
+   se cambia por API_PUBLICA y se guarda; el token (CFG.t) se conserva tal cual. Se aplica al arrancar, en abrirSesion y en guardarCfgDesdeEnlace. */
+function cfgConServidor(c) {
+  if (!c || typeof c !== 'object') return c;
+  if (c.api !== API_PUBLICA) { c.api = API_PUBLICA; try { localStorage.setItem('cfg', JSON.stringify(c)); } catch (e) {} }
+  return c;
 }
+CFG = cfgConServidor(CFG);
 (function () {
   // Enlace de instalación: https://…/#api=<url>&t=<token>  → se guarda y se limpia de la barra
   var h = location.hash || '';
   var a = /[#&]api=([^&]+)/.exec(h), t = /[#&]t=([^&]+)/.exec(h);
   if (a && t) {
-    CFG = { api: decodeURIComponent(a[1]), t: decodeURIComponent(t[1]) };
+    CFG = cfgConServidor({ api: decodeURIComponent(a[1]), t: decodeURIComponent(t[1]) });
     try { localStorage.setItem('cfg', JSON.stringify(CFG)); } catch (e) {}
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   }
@@ -1909,7 +1914,7 @@ function postCuenta(ruta, datos) {
 }
 function abrirSesion(j) {
   if (!j.t) throw new Error('El servidor no devolvió la sesión');
-  try { localStorage.setItem('cfg', JSON.stringify({ api: j.api || API_PUBLICA, t: j.t })); } catch (e) {}
+  try { localStorage.setItem('cfg', JSON.stringify(cfgConServidor({ api: API_PUBLICA, t: j.t }))); } catch (e) {}
   location.href = location.pathname;
 }
 function ocupado(b, txt) { b.dataset.t = b.dataset.t || b.textContent; b.disabled = !!txt; b.textContent = txt || b.dataset.t; }
@@ -2027,7 +2032,7 @@ function olvideGuardar() {
 function guardarCfgDesdeEnlace(txt) {
   var a = /[#&?]api=([^&\s]+)/.exec(txt), t = /[#&?]t=([^&\s]+)/.exec(txt);
   if (!a || !t) return false;
-  try { localStorage.setItem('cfg', JSON.stringify({ api: decodeURIComponent(a[1]), t: decodeURIComponent(t[1]) })); } catch (e) {}
+  try { localStorage.setItem('cfg', JSON.stringify(cfgConServidor({ api: decodeURIComponent(a[1]), t: decodeURIComponent(t[1]) }))); } catch (e) {}
   return true;
 }
 function vincular() {
